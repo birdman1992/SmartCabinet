@@ -13,8 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwidget.cpp
+        mainwidget.cpp \
+    Cabinet/cabinetpanel.cpp
 
-HEADERS  += mainwidget.h
+HEADERS  += mainwidget.h \
+    Cabinet/cabinetpanel.h
 
-FORMS    += mainwidget.ui
+FORMS    += mainwidget.ui \
+    Cabinet/cabinetpanel.ui

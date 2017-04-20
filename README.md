@@ -1,1 +1,2 @@
-# SmartCabinet
+# 智能药品柜
+柜门控制

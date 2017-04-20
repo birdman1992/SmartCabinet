@@ -2,6 +2,7 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
+#include "Cabinet/cabinetpanel.h"
 
 namespace Ui {
 class MainWidget;
@@ -17,6 +18,7 @@ public:
 
 private:
     Ui::MainWidget *ui;
+    CabinetPanel* cabinets;
 };
 
 #endif // MAINWIDGET_H
