@@ -14,9 +14,11 @@ class CabinetPanel : public QWidget
 public:
     explicit CabinetPanel(QWidget *parent = 0);
     ~CabinetPanel();
+    void item_add(int row,int low,QString str);
 
 private:
     Ui::CabinetPanel *ui;
+
 };
 
 #endif // CABINETPANEL_H

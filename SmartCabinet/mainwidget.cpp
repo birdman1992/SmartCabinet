@@ -17,8 +17,10 @@ MainWidget::MainWidget(QWidget *parent) :
     btn_right = new QPushButton("add");
     btn_left->resize(200,600);
     btn_right->resize(200,600);
+
     //--初始化主药柜，必须在添加时初始化，如果先初始化而不加入布局，会出现bug
     cabinets = new CabinetPanel(this);
+    cabinets->item_add(0,0,"板蓝根");
 
     ui->caseLayout->addWidget(btn_left);
     ui->caseLayout->addWidget(cabinets);
@@ -108,6 +110,7 @@ void MainWidget::btn_cabinet_add()
         ui->caseLayout->addWidget(cabinets);
         ui->caseLayout->addWidget(btn_right);
         mkdir_cabinet_txt("cabinets1",cabinets1);
+        cabinets1->item_add(0,0,tr("冬虫夏草"));
         num++;
         break;
     case 2:
@@ -116,6 +119,7 @@ void MainWidget::btn_cabinet_add()
         ui->caseLayout->addWidget(cabinets2);
         ui->caseLayout->addWidget(btn_right);
         mkdir_cabinet_txt("cabinets2",cabinets2);
+        cabinets2->item_add(0,0,"甘草");
         num++;
         break;
     case 3:
@@ -124,6 +128,7 @@ void MainWidget::btn_cabinet_add()
         ui->caseLayout->addWidget(cabinets1);
         ui->caseLayout->addWidget(btn_right);
         mkdir_cabinet_txt("cabinets3",cabinets3);
+        cabinets3->item_add(0,0,"灵芝");
         num++;
         break;
     case 4:
@@ -132,6 +137,7 @@ void MainWidget::btn_cabinet_add()
         ui->caseLayout->addWidget(cabinets4);
         ui->caseLayout->addWidget(btn_right);
         mkdir_cabinet_txt("cabinets4",cabinets4);
+        cabinets4->item_add(0,0,"人参");
         num++;
         break;
     default:
