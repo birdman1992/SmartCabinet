@@ -10,13 +10,14 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
-    num = 1;
-//    str = "cabinets";
+    num = 1;//--初始一个药柜
 
+    //--初始化添加按钮，失败，需要改进
     btn_left = new QPushButton("add");
     btn_right = new QPushButton("add");
     btn_left->resize(200,600);
     btn_right->resize(200,600);
+    //--初始化主药柜，必须在添加时初始化，如果先初始化而不加入布局，会出现bug
     cabinets = new CabinetPanel(this);
 
     ui->caseLayout->addWidget(btn_left);
@@ -24,15 +25,21 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->caseLayout->addWidget(btn_right);
     cabinets->show();
 
-    /*创建药柜文件夹*/
+    //--创建药柜文件夹
     mkdir_cabinet();
-
+    //--读取配置信息
     readSettings();
 
+    //connect
     connect(btn_left,SIGNAL(clicked(bool)),this,SLOT(btn_cabinet_add()));
     connect(btn_right,SIGNAL(clicked(bool)),this,SLOT(btn_cabinet_add()));
 }
-
+/**************************
+ * 函 数 名：mkdir_cabinet
+ * 函数功能：建立存放txt文件的上层目录
+ * 参   数：无
+ * 返 回 值：无
+ * ***************************/
 void MainWidget::mkdir_cabinet()
 {
     /*获取当前路径*/
@@ -56,7 +63,13 @@ void MainWidget::mkdir_cabinet()
         dir_cabinet.mkdir(path_cabinet);
     }
 }
-
+/**************************
+ * 函 数 名：mkdir_cabinet_txt
+ * 函数功能：创建药柜对应的txt文件
+ * 参   数：QString name--txt文件名
+ *          CabinetPanel *cab--药柜句柄，用于写入或者读取药柜信息
+ * 返 回 值：无
+ * ***************************/
 void MainWidget::mkdir_cabinet_txt(QString name,CabinetPanel *cab)
 {
     QString path;
@@ -79,6 +92,13 @@ void MainWidget::mkdir_cabinet_txt(QString name,CabinetPanel *cab)
    file.close();
 }
 
+/**************************
+ * 函 数 名：btn_cabinet_add
+ * 函数功能：药柜添加函数，槽函数，绑定添加药柜按钮，最多
+ *          增加到5个药柜，奇数药柜在主药柜左边，偶数在右边
+ * 参   数：无
+ * 返 回 值：无
+ * ***************************/
 void MainWidget::btn_cabinet_add()
 {
     switch (num) {
@@ -119,7 +139,12 @@ void MainWidget::btn_cabinet_add()
     };
     cabinets->show();
 }
-
+/**************************
+ * 函 数 名：readSettings
+ * 函数功能：读配置文件，读取程序状态数据等，在程序开始时执行
+ * 参   数：无
+ * 返 回 值：无
+ * ***************************/
 void MainWidget::readSettings()//读取程序设置
 {
     QSettings setting("Option.ini",QSettings::IniFormat);
@@ -138,13 +163,18 @@ void MainWidget::readSettings()//读取程序设置
         }
     }
 }
-
+/**************************
+ * 函 数 名：writeSettings
+ * 函数功能：写配置文件，记录程序状态数据等，在程序结束时执行
+ * 参   数：无
+ * 返 回 值：无
+ * ***************************/
 void MainWidget::writeSettings()//保存程序设置
 {
     QSettings settings("Option.ini",QSettings::IniFormat);
     settings.setValue("num",num);
     settings.setValue("path",path_cabinet);
-//    settings.setValue("text",edit->toPlainText());
+    /*药柜分组*/
     settings.beginGroup("cabinet1");
     settings.setValue("num",num);
     settings.endGroup();
@@ -163,5 +193,6 @@ void MainWidget::writeSettings()//保存程序设置
 MainWidget::~MainWidget()
 {
     delete ui;
+    //--写入配置信息
     writeSettings();
 }

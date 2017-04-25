@@ -29,14 +29,14 @@ protected:
 
 private:
     Ui::MainWidget *ui;
-    CabinetPanel* cabinets;
+    CabinetPanel* cabinets;//--定义药柜
     CabinetPanel* cabinets1;
     CabinetPanel* cabinets2;
     CabinetPanel* cabinets3;
     CabinetPanel* cabinets4;
-    QPushButton *btn_left;
+    QPushButton *btn_left; //--添加药柜按钮
     QPushButton *btn_right;
-    int num;
+    int num;//--药柜数目
     QString path_cabinet;//药柜文件路径
 
 };
