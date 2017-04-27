@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwidget.cpp \
-    Cabinet/cabinetpanel.cpp
+    Cabinet/cabinetpanel.cpp \
+    medinf.cpp
 
 HEADERS  += mainwidget.h \
-    Cabinet/cabinetpanel.h
+    Cabinet/cabinetpanel.h \
+    medinf.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui

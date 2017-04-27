@@ -7,9 +7,6 @@ CabinetPanel::CabinetPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tableWidget->setFont(QFont("Helvetica")); //设置字体
-//    ui->tableWidget->setBackgroundColor(QColor(0,60,10)); //设置单元格背景颜色
-//    ui->tableWidget->setTextColor(QColor(200,111,30)); //设置文字颜色
-//    ui->tableWidget->sett
 }
 
 /**************************
@@ -23,6 +20,29 @@ CabinetPanel::CabinetPanel(QWidget *parent) :
 void CabinetPanel::item_add(int row,int low,QString str)
 {
     ui->tableWidget->setItem(row,low,new QTableWidgetItem(str));
+}
+
+/**************************
+ * 函 数 名：Cabinet_lattice_num_set(int num)
+ * 函数功能：添加item
+ * 参   数：int num--药柜格子总数
+ * 返 回 值：无
+ * ***************************/
+void CabinetPanel::Cabinet_lattice_num_set(int num)
+{
+    ui->tableWidget->setRowCount(num);
+}
+
+/**************************
+ * 函 数 名：Cabinet_lattice_num_set(int num)
+ * 函数功能：添加item
+ * 参   数：int num--药柜格子总数
+ * 返 回 值：无
+ * ***************************/
+int CabinetPanel::return_row_num()
+{
+    int num = ui->tableWidget->rowCount();
+    return num;
 }
 
 CabinetPanel::~CabinetPanel()
