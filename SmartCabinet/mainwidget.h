@@ -5,6 +5,7 @@
 #include "Cabinet/cabinetpanel.h"
 #include <QPushButton>
 #include <QSettings>
+#include "Device/controldevice.h"
 
 namespace Ui {
 class MainWidget;
@@ -29,6 +30,7 @@ protected:
 
 private:
     Ui::MainWidget *ui;
+    ControlDevice ctrlUi;
     CabinetPanel* cabinets;//--定义药柜
     CabinetPanel* cabinets1;
     CabinetPanel* cabinets2;
