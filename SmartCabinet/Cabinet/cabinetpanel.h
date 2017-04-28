@@ -14,7 +14,11 @@ class CabinetPanel : public QWidget
 public:
     explicit CabinetPanel(QWidget *parent = 0);
     ~CabinetPanel();
+    //--添加item,即添加格子
     void item_add(int row,int low,QString str);
+    //--设置药柜格子总数，添加格子要和总数配套使用，当格子大于总数添加无效
+    void Cabinet_lattice_num_set(int num);
+    int return_row_num();
 
 private:
     Ui::CabinetPanel *ui;

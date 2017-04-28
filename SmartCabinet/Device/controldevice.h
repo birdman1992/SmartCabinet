@@ -32,8 +32,8 @@ private:
 signals:
     void cardReaderTimeout();//读卡超时
     void lockCtrlData(QByteArray);//暂无
-    void cardReaderData(QByteArray);
-    void codeScanData(QByteArray);
+    void cardReaderData(QByteArray);//当前可用
+    void codeScanData(QByteArray);//当前可用
 
 public slots:
 

@@ -10,6 +10,7 @@ DeviceSimulate::DeviceSimulate(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("模拟控制台");
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
 
     ui->listWidget->addItems(QStringList()<<"读卡器"<<"扫码枪"<<"锁控");
     ui->listWidget->item(0)->setSizeHint(QSize(210, 70));

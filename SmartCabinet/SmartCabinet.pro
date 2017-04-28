@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     Device/Hid/qhid.cpp \
     Device/controldevice.cpp \
     Device/Hid/hid.c \
-    Device/devicesimulate.cpp
+    Device/devicesimulate.cpp \
+    medinf.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -30,7 +31,8 @@ HEADERS  += mainwidget.h \
     Device/Hid/qhid.h \
     Device/controldevice.h \
     Device/Hid/hid.h \
-    Device/devicesimulate.h
+    Device/devicesimulate.h \
+    medinf.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

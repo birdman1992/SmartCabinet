@@ -4,6 +4,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    //--显示中文
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF8"));
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF8"));
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF8"));
