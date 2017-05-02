@@ -2,7 +2,7 @@
 #define CABINETPANEL_H
 
 #include <QWidget>
-
+#include <QTableWidgetItem>
 namespace Ui {
 class CabinetPanel;
 }
@@ -19,6 +19,12 @@ public:
     //--设置药柜格子总数，添加格子要和总数配套使用，当格子大于总数添加无效
     void Cabinet_lattice_num_set(int num);
     int return_row_num();
+
+signals:
+    void lattice_inf(int row);
+
+public slots:
+    void double_click(QTableWidgetItem* item);
 
 private:
     Ui::CabinetPanel *ui;
