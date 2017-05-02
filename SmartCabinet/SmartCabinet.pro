@@ -15,11 +15,25 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwidget.cpp \
     Cabinet/cabinetpanel.cpp \
+    Device/Qextserial/qextserialport.cpp \
+    Device/Qextserial/qextserialport_unix.cpp \
+    Device/Hid/qhid.cpp \
+    Device/controldevice.cpp \
+    Device/Hid/hid.c \
+    Device/devicesimulate.cpp \
     medinf.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
+    Device/Qextserial/qextserialport.h \
+    Device/Qextserial/qextserialport_p.h \
+    Device/Qextserial/qextserialport_global.h \
+    Device/Hid/qhid.h \
+    Device/controldevice.h \
+    Device/Hid/hid.h \
+    Device/devicesimulate.h \
     medinf.h
 
 FORMS    += mainwidget.ui \
-    Cabinet/cabinetpanel.ui
+    Cabinet/cabinetpanel.ui \
+    Device/devicesimulate.ui

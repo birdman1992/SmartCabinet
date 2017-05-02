@@ -23,9 +23,15 @@ MainWidget::MainWidget(QWidget *parent) :
     list = new QListWidget(this);   //创建一个列表框
     qhbox_main = new QHBoxLayout;
     //往这个列表框里面添加元素
-    list->insertItem(0, tr("主界面"));list->setSpacing(50);
+    list->insertItem(0, tr("主界面"));
     list->insertItem(1, tr("菜单"));
     list->insertItem(2, tr("简介"));
+    list->item(0)->setSizeHint(QSize(100,100));
+    list->item(1)->setSizeHint(QSize(100,100));
+    list->item(2)->setSizeHint(QSize(100,100));
+    list->item(0)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    list->item(1)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    list->item(2)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     list->setMinimumWidth(150);
     list->setMinimumHeight(400);
 
