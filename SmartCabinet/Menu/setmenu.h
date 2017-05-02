@@ -2,6 +2,7 @@
 #define SETMENU_H
 
 #include <QWidget>
+#include "Countdown/countdown.h"
 
 namespace Ui {
 class SetMenu;
@@ -15,8 +16,12 @@ public:
     explicit SetMenu(QWidget *parent = 0);
     ~SetMenu();
 
+private slots:
+    void btn_in();
+
 private:
     Ui::SetMenu *ui;
+    CountDown *count_down;
 };
 
 #endif // SETMENU_H

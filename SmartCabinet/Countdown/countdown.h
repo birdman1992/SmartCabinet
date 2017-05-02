@@ -2,7 +2,7 @@
 #define COUNTDOWN_H
 
 #include <QWidget>
-
+#include <QTimer>
 namespace Ui {
 class CountDown;
 }
@@ -15,6 +15,10 @@ public:
     explicit CountDown(QWidget *parent = 0);
     ~CountDown();
 
+    int i;
+    QTimer *timer;
+public slots:
+    void time_out();
 private:
     Ui::CountDown *ui;
 };

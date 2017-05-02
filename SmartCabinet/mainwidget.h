@@ -12,7 +12,8 @@
 #include <QStackedWidget>
 #include <QListWidget>
 #include <QLabel>
-
+#include "Menu/setmenu.h"
+#include "ShowInf/showinf.h"
 
 namespace Ui {
 class MainWidget;
@@ -36,6 +37,7 @@ public slots:
     void cabinets_lattice_two(int row);
     void cabinets_lattice_three(int row);
     void cabinets_lattice_four(int row);
+    void check_code(QByteArray);
 
 protected:
     void mkdir_cabinet();
@@ -58,12 +60,14 @@ private:
 
     QList<MedInf> medinf[5];           //--定义5个qlist，用于存储药柜信息
 
-    ControlDevice ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
+    ControlDevice *ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框
     QWidget *cab_widget;
-    QWidget *menu_widget;
+    SetMenu *menu_widget;
+    ShowInf *show_inf;
+//    QWidget *menu_widget;
     QVBoxLayout *qvbox_menu_layout;
 
     QHBoxLayout *qhbox_main;

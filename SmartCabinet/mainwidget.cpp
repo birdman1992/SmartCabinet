@@ -96,8 +96,10 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(&cabinets[2],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_two(int)));
     connect(&cabinets[3],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_three(int)));
     connect(&cabinets[4],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_four(int)));
+        ctrlUi = new ControlDevice;
+    connect(ctrlUi,SIGNAL(codeScanData(QByteArray)),this,SLOT(check_code(QByteArray)));
     //--创建药柜文件夹
-    mkdir_cabinet();
+//    mkdir_cabinet();
 
 }
 
@@ -109,11 +111,7 @@ MainWidget::MainWidget(QWidget *parent) :
  * ***************************/
 void MainWidget::menu_set_init()
 {
-    label = new QLabel("菜单");
-    menu_widget = new QWidget;
-    qvbox_menu_layout = new QVBoxLayout();
-    qvbox_menu_layout->addWidget(label);
-    menu_widget->setLayout(qvbox_menu_layout);
+    menu_widget = new SetMenu;
     stack->addWidget(menu_widget);
 }
 
@@ -379,6 +377,8 @@ void MainWidget::lattice_add(int cab,int row)
     /* 保存药品的信息在MedInf类中，加入qlist链表中 */
     MedInf med;
     med.num = row;
+    med.cab_num = cab;
+    med.lat_num = row;
     med.name = str;
     med.application = "application" + row;
     med.ShelfLife = "ShelfLife" + row;
@@ -389,6 +389,27 @@ void MainWidget::lattice_add(int cab,int row)
 
     cab_lattice_num[cab]++;
 
+}
+
+void MainWidget::check_code(QByteArray qby)
+{
+    QString str = qby;
+    show_inf = new ShowInf;
+    for(int j = 0;j < num; j++)
+    {
+        for(int i = 0;i < cab_lattice_num[j]; i++)
+        {
+            if(medinf[j].at(i).name == str)
+            {
+                show_inf->check_exist(medinf[j].at(i));
+            }
+            else
+            {
+                show_inf->check_no_exist(medinf[j].at(i));
+            }
+        }
+    }
+    show_inf->show();
 }
 
 MainWidget::~MainWidget()
