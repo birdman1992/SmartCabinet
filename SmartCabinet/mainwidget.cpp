@@ -13,36 +13,129 @@ MainWidget::MainWidget(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
     num = 1;//--初始一个药柜
     lattice_num = 7;
-    cab_lattice_num  = 0;
+    cab_lattice_num[0]  = 0; //--每个药柜格子使用数初始化
+    cab_lattice_num[1]  = 0;
+    cab_lattice_num[2]  = 0;
+    cab_lattice_num[3]  = 0;
+    cab_lattice_num[4]  = 0;
 
-    //--初始化添加按钮，失败，需要改进
-    btn_left = new QPushButton("add");
-    btn_right = new QPushButton("add");
-    btn_add_lattice = new QPushButton("add lattice");//--添加格子按钮
-    btn_left->resize(200,600);
-    btn_right->resize(200,600);
+    stack = new QStackedWidget(this); //为这个主窗体创建一个堆栈窗体
+    list = new QListWidget(this);   //创建一个列表框
+    qhbox_main = new QHBoxLayout;
+    //往这个列表框里面添加元素
+    list->insertItem(0, tr("主界面"));list->setSpacing(50);
+    list->insertItem(1, tr("菜单"));
+    list->insertItem(2, tr("简介"));
+    list->setMinimumWidth(150);
+    list->setMinimumHeight(400);
 
-    //--设置主药柜的格子数 接口
-    cabinets[0].Cabinet_lattice_num_set(lattice_num);
+    //--添加药柜btn
+    btn_cabinet_add_one = new QPushButton("add");
+    btn_cabinet_add_one->setMinimumWidth(200);
+    btn_cabinet_add_one->setMinimumHeight(400);
+    btn_cabinet_add_two = new QPushButton("add");
+    btn_cabinet_add_two->setMinimumWidth(200);
+    btn_cabinet_add_two->setMinimumHeight(400);
+    btn_cabinet_add_three = new QPushButton("add");
+    btn_cabinet_add_three->setMinimumWidth(200);
+    btn_cabinet_add_three->setMinimumHeight(400);
+    btn_cabinet_add_four = new QPushButton("add");
+    btn_cabinet_add_four->setMinimumWidth(200);
+    btn_cabinet_add_four->setMinimumHeight(400);
+    qvbox_zero_layout = new QVBoxLayout();
+    qvbox_one_layout = new QVBoxLayout();
+    qvbox_two_layout = new QVBoxLayout();
+    qvbox_three_layout = new QVBoxLayout();
+    qvbox_four_layout = new QVBoxLayout();
 
-    btn_box = new QVBoxLayout;
-    btn_box->addWidget(btn_left);
-    btn_box->addWidget(btn_add_lattice);
-
-    ui->caseLayout->addLayout(btn_box);
-    ui->caseLayout->addWidget(&cabinets[0]);
-    ui->caseLayout->addWidget(btn_right);
-//    cabinets->show();
-
-    //--创建药柜文件夹
-    mkdir_cabinet();
     //--读取配置信息
     readSettings();
 
-    //connect
-    connect(btn_left,SIGNAL(clicked(bool)),this,SLOT(btn_cabinet_add()));
-    connect(btn_right,SIGNAL(clicked(bool)),this,SLOT(btn_cabinet_add()));
-    connect(btn_add_lattice,SIGNAL(clicked(bool)),this,SLOT(btn_lattice_add()));
+    qvbox_zero_layout->addWidget(&cabinets[0]);
+    qvbox_one_layout->addWidget(btn_cabinet_add_one);
+    qvbox_two_layout->addWidget(btn_cabinet_add_two);
+    qvbox_three_layout->addWidget(btn_cabinet_add_three);
+    qvbox_four_layout->addWidget(btn_cabinet_add_four);
+    qhbox_main->addLayout(qvbox_three_layout);
+    qhbox_main->addLayout(qvbox_one_layout);
+    qhbox_main->addLayout(qvbox_zero_layout);
+    qhbox_main->addLayout(qvbox_two_layout);
+    qhbox_main->addLayout(qvbox_four_layout);
+    qhbox_main->setStretchFactor(qvbox_three_layout,1);
+    qhbox_main->setStretchFactor(qvbox_one_layout,1);
+    qhbox_main->setStretchFactor(qvbox_zero_layout,1);
+    qhbox_main->setStretchFactor(qvbox_two_layout,1);
+    qhbox_main->setStretchFactor(qvbox_four_layout,1);
+
+
+    cab_widget = new QWidget;
+    cab_widget->setLayout(qhbox_main);
+    stack->addWidget(cab_widget);
+    menu_set_init();
+    //--设置主药柜的格子数 接口
+    cabinets[0].Cabinet_lattice_num_set(lattice_num);
+
+    ui->caseLayout->addWidget(list);  //把list里面的内容加到窗体里面
+    ui->caseLayout->addWidget(stack, 0, Qt::AlignHCenter);
+    ui->caseLayout->setStretchFactor(list, 1);  //设定为可伸缩的控件，第一个参数是用于指定设置的控件，第二个大于0表示这个控件可伸缩
+    ui->caseLayout->setStretchFactor(stack, 5);
+
+    connect(list, SIGNAL(currentRowChanged(int)), stack, SLOT(setCurrentIndex(int)));
+    connect(btn_cabinet_add_one,SIGNAL(clicked(bool)),this,SLOT(btn_one()));
+    connect(btn_cabinet_add_two,SIGNAL(clicked(bool)),this,SLOT(btn_two()));
+    connect(btn_cabinet_add_three,SIGNAL(clicked(bool)),this,SLOT(btn_three()));
+    connect(btn_cabinet_add_four,SIGNAL(clicked(bool)),this,SLOT(btn_four()));
+    connect(&cabinets[0],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_zero(int)));
+    connect(&cabinets[1],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_one(int)));
+    connect(&cabinets[2],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_two(int)));
+    connect(&cabinets[3],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_three(int)));
+    connect(&cabinets[4],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_four(int)));
+    //--创建药柜文件夹
+    mkdir_cabinet();
+
+}
+
+/**************************
+ * 函 数 名：menu_set_init
+ * 函数功能：stackwidget中菜单的初始化
+ * 参   数：无
+ * 返 回 值：无
+ * ***************************/
+void MainWidget::menu_set_init()
+{
+    label = new QLabel("菜单");
+    menu_widget = new QWidget;
+    qvbox_menu_layout = new QVBoxLayout();
+    qvbox_menu_layout->addWidget(label);
+    menu_widget->setLayout(qvbox_menu_layout);
+    stack->addWidget(menu_widget);
+}
+
+/**************************
+ * 函 数 名：cabinets_lattice_zero
+ * 函数功能：主药柜的格子添加接口，双击可触发信号，连接此槽函数
+ * 参   数：int row--要添加格子的序号
+ * 返 回 值：无
+ * ***************************/
+void MainWidget::cabinets_lattice_zero(int row)
+{
+    lattice_add(0,row);//--药柜添加第row个格子
+}
+void MainWidget::cabinets_lattice_one(int row)
+{
+    lattice_add(1,row);
+}
+void MainWidget::cabinets_lattice_two(int row)
+{
+    lattice_add(2,row);
+}
+void MainWidget::cabinets_lattice_three(int row)
+{
+    lattice_add(3,row);
+}
+void MainWidget::cabinets_lattice_four(int row)
+{
+    lattice_add(4,row);
 }
 
 /**************************
@@ -105,54 +198,38 @@ void MainWidget::mkdir_cabinet_txt(QString name,CabinetPanel *cab)
 }
 
 /**************************
- * 函 数 名：btn_cabinet_add
- * 函数功能：药柜添加函数，槽函数，绑定添加药柜按钮，最多
- *          增加到5个药柜，奇数药柜在主药柜左边，偶数在右边
+ * 函 数 名：btn_one
+ * 函数功能：添加药柜接口
  * 参   数：无
  * 返 回 值：无
  * ***************************/
-void MainWidget::btn_cabinet_add()
+void MainWidget::btn_one()
 {
-    switch (num) {
-    case 1:
-        ui->caseLayout->addWidget(&cabinets[1]);
-        ui->caseLayout->addWidget(&cabinets[0]);
-        ui->caseLayout->addWidget(btn_right);
-        mkdir_cabinet_txt("cabinets1",&cabinets[1]);
-        cabinets[1].item_add(0,0,tr("冬虫夏草"));
-        cabinets[1].Cabinet_lattice_num_set(2);
-        num++;
-        break;
-    case 2:
-        ui->caseLayout->addWidget(&cabinets[0]);
-        ui->caseLayout->addWidget(&cabinets[2]);
-        ui->caseLayout->addWidget(btn_right);
-        mkdir_cabinet_txt("cabinets2",&cabinets[2]);
-        cabinets[2].item_add(0,0,"甘草");
-        cabinets[2].Cabinet_lattice_num_set(3);
-        num++;
-        break;
-    case 3:
-        ui->caseLayout->addWidget(&cabinets[3]);
-        ui->caseLayout->addWidget(&cabinets[1]);
-        ui->caseLayout->addWidget(btn_right);
-        mkdir_cabinet_txt("cabinets3",&cabinets[3]);
-        cabinets[3].item_add(0,0,"灵芝");
-        cabinets[3].Cabinet_lattice_num_set(4);
-        num++;
-        break;
-    case 4:
-        ui->caseLayout->addWidget(&cabinets[2]);
-        ui->caseLayout->addWidget(&cabinets[4]);
-        ui->caseLayout->addWidget(btn_right);
-        mkdir_cabinet_txt("cabinets4",&cabinets[4]);
-        cabinets[4].item_add(0,0,"人参");
-        cabinets[4].Cabinet_lattice_num_set(5);
-        num++;
-        break;
-    default:
-        break;
-    };
+    qvbox_one_layout->removeWidget(btn_cabinet_add_one);//--移除btn控件
+    btn_cabinet_add_one->deleteLater();
+    qvbox_one_layout->addWidget(&cabinets[1]);          //--重新加入药柜
+    num++;
+}
+void MainWidget::btn_two()
+{
+    qvbox_two_layout->removeWidget(btn_cabinet_add_two);
+    btn_cabinet_add_two->deleteLater();
+    qvbox_two_layout->addWidget(&cabinets[2]);
+    num++;
+}
+void MainWidget::btn_three()
+{
+    qvbox_three_layout->removeWidget(btn_cabinet_add_three);
+    btn_cabinet_add_three->deleteLater();
+    qvbox_three_layout->addWidget(&cabinets[3]);
+    num++;
+}
+void MainWidget::btn_four()
+{
+    qvbox_four_layout->removeWidget(btn_cabinet_add_four);
+    btn_cabinet_add_four->deleteLater();
+    qvbox_four_layout->addWidget(&cabinets[4]);
+    num++;
 }
 
 /**************************
@@ -161,7 +238,7 @@ void MainWidget::btn_cabinet_add()
  * 参   数：无
  * 返 回 值：无
  * ***************************/
-void MainWidget::readSettings()//读取程序设置
+int MainWidget::readSettings()//读取程序设置
 {
     //--读取主配置文件
     QSettings setting("Option.ini",QSettings::IniFormat);
@@ -177,7 +254,22 @@ void MainWidget::readSettings()//读取程序设置
             {
                 num = i;
                 //--重新恢复药柜
-                btn_cabinet_add();
+                switch (i) {
+                case 1:
+                    btn_one();
+                    break;
+                case 2:
+                    btn_two();
+                    break;
+                case 3:
+                    btn_three();
+                    break;
+                case 4:
+                    btn_four();
+                    break;
+                default:
+                    break;
+                }
             }
         }
 
@@ -187,11 +279,11 @@ void MainWidget::readSettings()//读取程序设置
             QSettings cabinetsettings("cabinet" + QString::number(j,10) + ".ini",QSettings::IniFormat);
             cabinetsettings.beginGroup("cabinet");
             lattice_num = cabinetsettings.value("LatticeNum").toInt();
-            cab_lattice_num = cabinetsettings.value("UsedLatticeNum").toInt();
+            cab_lattice_num[j] = cabinetsettings.value("UsedLatticeNum").toInt();
             cabinetsettings.endGroup();
 
             /*读取每个格子的信息放入qlist；cab_lattice_num为使用的格子数*/
-            for(int i = 0;i < cab_lattice_num; i++)
+            for(int i = 0;i < cab_lattice_num[j]; i++)
             {
                 MedInf med;//--创建临时药品信息类
                 cabinetsettings.beginGroup("lattice" + QString::number(i,10));
@@ -205,9 +297,15 @@ void MainWidget::readSettings()//读取程序设置
                 cabinetsettings.endGroup();
 
                 //--恢复所有格子
-                cabinets[j].item_add(i,0,med.name);
+                cabinets[j].item_add(med.num,0,med.name);
+                qDebug()<<"med.num:"<<med.num;
             }
         }
+        return 0;
+    }
+    else
+    {
+        return 1;
     }
 }
 
@@ -232,23 +330,25 @@ void MainWidget::writeSettings()//保存程序设置
 
         cabinetsettings.beginGroup("cabinet");
         cabinetsettings.setValue("LatticeNum",lattice_num);
-        cabinetsettings.setValue("UsedLatticeNum",cab_lattice_num);
+        cabinetsettings.setValue("UsedLatticeNum",cab_lattice_num[j]);
         cabinetsettings.endGroup();
-
+//qDebug()<<"j:"<<j;
         /*先检查药柜是否为空，在写入每个格子的信息*/
         if(!medinf[j].isEmpty())
         {
-            for(int i = 0;i < cab_lattice_num; i++)
+            for(int i = 0;i < cab_lattice_num[j]; i++)
             {
                 //--lattice代表格子名称 i表示第几个格子，为每个格子分组
+                int seral_num = medinf[j].at(i).num;
                 cabinetsettings.beginGroup("lattice" + QString::number(i,10));
-                cabinetsettings.setValue(QString::number(i,10) + "aaa",medinf[j].at(i).num);
+                cabinetsettings.setValue(QString::number(i,10) + "aaa",seral_num);
                 cabinetsettings.setValue(QString::number(i,10) + "bbb",medinf[j].at(i).name);
                 cabinetsettings.setValue(QString::number(i,10) + "ccc",medinf[j].at(i).application);
                 cabinetsettings.setValue(QString::number(i,10) + "ddd",medinf[j].at(i).Features);
                 cabinetsettings.setValue(QString::number(i,10) + "eee",medinf[j].at(i).ProductionDate);
                 cabinetsettings.setValue(QString::number(i,10) + "fff",medinf[j].at(i).ShelfLife);
                 cabinetsettings.endGroup();
+//                qDebug()<<"i:"<<i;
             }
         }
         else
@@ -264,32 +364,25 @@ void MainWidget::writeSettings()//保存程序设置
  * 参   数：无
  * 返 回 值：无
  * ***************************/
-void MainWidget::btn_lattice_add()
+void MainWidget::lattice_add(int cab,int row)
 {
     QString str = "gouji";//--药品名称接口
-    if(cab_lattice_num < lattice_num)//--格子满了不予以放入
-    {
-        //--加入格子内，要显示信息自己控制，此处只显示名字
-        cabinets[0].item_add(cab_lattice_num,0,str);
-        /* 保存药品的信息在MedInf类中，加入qlist链表中 */
-        MedInf med;
-        med.num = cab_lattice_num;
-        med.name = str;
-        med.application = "application" + cab_lattice_num;
-        med.ShelfLife = "ShelfLife" + cab_lattice_num;
-        med.ProductionDate = "ProductionDate" + cab_lattice_num;
-        med.Features = "Features" + cab_lattice_num;
-        //--此处只写入了主药柜的.可根据不同控件对应
-        medinf[0].append(med);
 
-        cab_lattice_num++;
-    }
-    else
-    {
-        QMessageBox msgBox;
-        msgBox.setText("药柜格子不足");
-        msgBox.exec();
-    }
+    //--加入格子内，要显示信息自己控制，此处只显示名字
+    cabinets[cab].item_add(row,0,str);
+    /* 保存药品的信息在MedInf类中，加入qlist链表中 */
+    MedInf med;
+    med.num = row;
+    med.name = str;
+    med.application = "application" + row;
+    med.ShelfLife = "ShelfLife" + row;
+    med.ProductionDate = "ProductionDate" + row;
+    med.Features = "Features" + row;
+    //--此处只写入了主药柜的.可根据不同控件对应
+    medinf[cab].append(med);
+
+    cab_lattice_num[cab]++;
+
 }
 
 MainWidget::~MainWidget()

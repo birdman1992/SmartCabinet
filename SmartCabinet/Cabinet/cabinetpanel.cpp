@@ -1,12 +1,23 @@
 #include "cabinetpanel.h"
 #include "ui_cabinetpanel.h"
-
+#include <QDebug>
 CabinetPanel::CabinetPanel(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CabinetPanel)
 {
     ui->setupUi(this);
     ui->tableWidget->setFont(QFont("Helvetica")); //设置字体
+    connect(ui->tableWidget,SIGNAL(itemDoubleClicked(QTableWidgetItem*)),this,SLOT(double_click(QTableWidgetItem*)));
+}
+
+void CabinetPanel::double_click(QTableWidgetItem* item)
+{
+    qDebug()<<"row:"<<item->row();
+    if(item->text().length() << 2)
+    {
+        qDebug()<<"add";
+        emit lattice_inf(item->row());
+    }
 }
 
 /**************************
