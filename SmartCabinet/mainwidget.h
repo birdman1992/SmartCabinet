@@ -5,6 +5,7 @@
 #include "Cabinet/cabinetpanel.h"
 #include <QPushButton>
 #include <QSettings>
+#include "Device/controldevice.h"
 #include "medinf.h"
 #include <QList>
 #include <QVBoxLayout>
@@ -46,6 +47,7 @@ protected:
 
 private:
     Ui::MainWidget *ui;
+//<<<<<<< HEAD
 
     CabinetPanel cabinets[5];          //--定义5药柜
 
@@ -56,6 +58,13 @@ private:
     QString path_cabinet;              //药柜文件路径
 
     QList<MedInf> medinf[5];           //--定义5个qlist，用于存储药柜信息
+//=======
+    ControlDevice ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
+//    CabinetPanel cabinets[5];//--定义5药柜
+    QPushButton *btn_left; //--添加药柜按钮
+    QPushButton *btn_add_lattice;
+    QPushButton *btn_right;
+//>>>>>>> birdman1992/master
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框
