@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "medinf.h"
-
+#include <medinf.h>
 namespace Ui {
 class ShowInf;
 }
@@ -21,7 +21,8 @@ public slots:
     void btn_save();
     void btn_close();
 signals:
-    void cabinet_inf(int row,int low,int num);
+//    void cabinet_inf(MedInf med);
+        void cabinet_inf(MedInf med);
     void inf_save();
 private:
     Ui::ShowInf *ui;
@@ -29,6 +30,8 @@ private:
     int add_num;
     int cabinet_num;
     int lattice_num;
+    int Exist;
+//        CountDown *count_down;
 };
 
 #endif // SHOWINF_H

@@ -14,6 +14,7 @@
 #include <QLabel>
 #include "Menu/setmenu.h"
 #include "ShowInf/showinf.h"
+#include "Countdown/countdown.h"
 
 namespace Ui {
 class MainWidget;
@@ -32,20 +33,13 @@ public slots:
     void btn_two();
     void btn_three();
     void btn_four();
-    void cabinets_lattice_zero(int row);
-    void cabinets_lattice_one(int row);
-    void cabinets_lattice_two(int row);
-    void cabinets_lattice_three(int row);
-    void cabinets_lattice_four(int row);
     void check_code(QByteArray);
+    void read_showinf(MedInf );
 
 protected:
-    void mkdir_cabinet();
-    void mkdir_cabinet_txt(QString name,CabinetPanel *cab);
     int readSettings();                //--读配置信息
     void writeSettings();              //--写配置信息
     void menu_set_init();
-    void lattice_add(int cab, int row);//--添加药柜格子
 
 private:
     Ui::MainWidget *ui;
@@ -67,6 +61,7 @@ private:
     QWidget *cab_widget;
     SetMenu *menu_widget;
     ShowInf *show_inf;
+    CountDown *count_down;
 //    QWidget *menu_widget;
     QVBoxLayout *qvbox_menu_layout;
 

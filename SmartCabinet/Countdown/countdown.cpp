@@ -11,7 +11,6 @@ CountDown::CountDown(QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(time_out()));
     timer->start(1000);
-
 }
 
 void CountDown::time_out()
@@ -25,7 +24,14 @@ void CountDown::time_out()
     }
 }
 
+void CountDown::close_count()
+{
+    timer->stop();
+    this->close();
+}
+
 CountDown::~CountDown()
 {
     delete ui;
+    timer->stop();
 }
