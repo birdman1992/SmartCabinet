@@ -14,7 +14,6 @@
 #include <QLabel>
 #include "Menu/setmenu.h"
 #include "ShowInf/showinf.h"
-#include "Countdown/countdown.h"
 
 namespace Ui {
 class MainWidget;
@@ -61,8 +60,6 @@ private:
     QWidget *cab_widget;
     SetMenu *menu_widget;
     ShowInf *show_inf;
-    CountDown *count_down;
-//    QWidget *menu_widget;
     QVBoxLayout *qvbox_menu_layout;
 
     QHBoxLayout *qhbox_main;

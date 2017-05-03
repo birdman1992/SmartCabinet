@@ -15,7 +15,7 @@ class SetMenu : public QWidget
 public:
     explicit SetMenu(QWidget *parent = 0);
     ~SetMenu();
-
+    void count_close();
 private slots:
     void btn_in();
 

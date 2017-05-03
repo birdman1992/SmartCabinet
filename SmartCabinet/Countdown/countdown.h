@@ -17,7 +17,7 @@ public:
 
     int i;
     QTimer *timer;
-    void close_count();
+
 public slots:
     void time_out();
 private:

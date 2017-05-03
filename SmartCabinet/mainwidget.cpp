@@ -12,7 +12,6 @@ MainWidget::MainWidget(QWidget *parent) :
     ui(new Ui::MainWidget)
 {
     ui->setupUi(this);
-    count_down = new CountDown;
     this->setWindowFlags(Qt::FramelessWindowHint);
     num = 1;//--初始一个药柜
     lattice_num = 7;
@@ -346,7 +345,7 @@ void MainWidget::check_code(QByteArray qby)
         show_inf->check_no_exist(med);
     }
     show_inf->show();//show information
-    count_down->close_count();//close count
+    menu_widget->count_close();
 }
 
 /**************************

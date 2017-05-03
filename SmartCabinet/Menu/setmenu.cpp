@@ -7,6 +7,7 @@ SetMenu::SetMenu(QWidget *parent) :
     ui(new Ui::SetMenu)
 {
     ui->setupUi(this);
+
     connect(ui->pushButton,SIGNAL(clicked(bool)),this,SLOT(btn_in()));
 }
 
@@ -14,6 +15,12 @@ void SetMenu::btn_in()
 {
     count_down = new CountDown;
     count_down->show();
+}
+
+void SetMenu::count_close()
+{
+    count_down->close();
+    delete count_down;
 }
 
 SetMenu::~SetMenu()
