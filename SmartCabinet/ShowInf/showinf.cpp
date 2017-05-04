@@ -70,5 +70,5 @@ void ShowInf::btn_save()
     med.ProductionDate = "ProductionDate" ;
     med.Features = "Features" ;
     emit cabinet_inf(med);
-    this->close();
+//    this->close();
 }

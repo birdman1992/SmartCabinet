@@ -24,7 +24,9 @@ SOURCES += main.cpp\
     medinf.cpp \
     Menu/setmenu.cpp \
     Countdown/countdown.cpp \
-    ShowInf/showinf.cpp
+    ShowInf/showinf.cpp \
+    PrimaryUser/primaryuser.cpp \
+    PrimaryUser/userinf.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -38,11 +40,14 @@ HEADERS  += mainwidget.h \
     medinf.h \
     Menu/setmenu.h \
     Countdown/countdown.h \
-    ShowInf/showinf.h
+    ShowInf/showinf.h \
+    PrimaryUser/primaryuser.h \
+    PrimaryUser/userinf.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
     Device/devicesimulate.ui \
     Menu/setmenu.ui \
     Countdown/countdown.ui \
-    ShowInf/showinf.ui
+    ShowInf/showinf.ui \
+    PrimaryUser/primaryuser.ui

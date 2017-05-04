@@ -42,7 +42,7 @@
     <string>取出</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QPushButton" name="adduser">
    <property name="geometry">
     <rect>
      <x>50</x>

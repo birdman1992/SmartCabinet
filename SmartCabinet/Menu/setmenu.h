@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "Countdown/countdown.h"
-
+#include "PrimaryUser/primaryuser.h"
 namespace Ui {
 class SetMenu;
 }
@@ -18,10 +18,12 @@ public:
     void count_close();
 private slots:
     void btn_in();
+    void btn_add();
 
 private:
     Ui::SetMenu *ui;
     CountDown *count_down;
+    PrimaryUser *user;
 };
 
 #endif // SETMENU_H

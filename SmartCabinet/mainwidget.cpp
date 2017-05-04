@@ -105,8 +105,13 @@ MainWidget::MainWidget(QWidget *parent) :
 
     ctrlUi = new ControlDevice;//控制台，接受型号
     connect(ctrlUi,SIGNAL(codeScanData(QByteArray)),this,SLOT(check_code(QByteArray)));
+    connect(ctrlUi,SIGNAL(cardReaderData(QByteArray)),this,SLOT(scan_user(QByteArray)));
     show_inf = new ShowInf;//显示性息窗口
     connect(show_inf,SIGNAL(cabinet_inf(MedInf)),this,SLOT(read_showinf(MedInf)));
+    Pri_user = new PrimaryUser;
+    connect(Pri_user,SIGNAL(new_pri_user(UserInf)),this,SLOT(New_Pri_User(UserInf)));
+
+     check_pri_use();
 }
 
 /**************************
@@ -358,16 +363,67 @@ void MainWidget::read_showinf(MedInf med)
 {
     if(med.exist == 0)//药品不存在，插入
     {
-        med.exist = 1;
-        medinf[med.cab_num].insert(med.lat_num,med);
-        cab_lattice_num[med.cab_num]++;
-        cabinets[med.cab_num].item_add(med.lat_num,0,med.name);
+        if(medinf[med.cab_num].at(med.lat_num).exist != 1)//
+        {
+            med.exist = 1;
+            medinf[med.cab_num].insert(med.lat_num,med);
+            cab_lattice_num[med.cab_num]++;
+            cabinets[med.cab_num].item_add(med.lat_num,0,med.name);
+            show_inf->btn_close();
+            QMessageBox msgBox;
+            msgBox.setText("存放完毕，请关好柜门！");
+            msgBox.exec();
+        }
+        else
+        {
+            QMessageBox msgBox;
+            msgBox.setText("请放入空药柜！");
+            msgBox.exec();
+        }
     }
     else if(med.exist == 1)//药品存在，覆盖
     {
         medinf[med.cab_num].removeAt(med.lat_num);
         medinf[med.cab_num].insert(med.lat_num,med);
+        show_inf->btn_close();
+        QMessageBox msgBox;
+        msgBox.setText("存放完毕，请关好柜门！");
+        msgBox.exec();
     }
+}
+
+void MainWidget::check_pri_use()
+{
+    //--读取主配置文件
+    QSettings setting("user/User.ini",QSettings::IniFormat);
+    /*读取num药柜数并重新建立药柜*/
+    setting.beginGroup("primary user");
+    if(!setting.contains("name"))//--如果存在就读取
+    {
+//        Pri_user->setWindowModality(Qt::ApplicationModal);
+        Pri_user->show();
+    }
+    else
+    {
+        UserInf user;
+        user.name = setting.value("name").toString();
+        user.authority = setting.value("authority").toInt();
+        USER.append(user);
+    }
+    setting.endGroup();
+}
+
+void MainWidget::New_Pri_User(UserInf user)
+{
+     QSettings setting("user/User.ini",QSettings::IniFormat);
+     setting.beginGroup("primary user");
+     setting.setValue("name",user.name);
+     setting.setValue("authority",user.authority);
+     setting.endGroup();
+}
+void MainWidget::scan_user(QByteArray qb)
+{
+    Pri_user->scan_user_inf(qb);
 }
 
 MainWidget::~MainWidget()
