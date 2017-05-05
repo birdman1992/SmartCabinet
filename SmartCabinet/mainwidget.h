@@ -12,11 +12,16 @@
 #include <QStackedWidget>
 #include <QListWidget>
 #include <QLabel>
+
 #include "cabinetconfig.h"
 #include "Widgets/standbywidget.h"
 #include "Widgets/userwidget.h"
 #include "Widgets/cabinetset.h"
 
+#include "Menu/setmenu.h"
+#include "ShowInf/showinf.h"
+#include "PrimaryUser/primaryuser.h"
+#include "PrimaryUser/userinf.h"
 
 namespace Ui {
 class MainWidget;
@@ -35,19 +40,16 @@ public slots:
     void btn_two();
     void btn_three();
     void btn_four();
-    void cabinets_lattice_zero(int row);
-    void cabinets_lattice_one(int row);
-    void cabinets_lattice_two(int row);
-    void cabinets_lattice_three(int row);
-    void cabinets_lattice_four(int row);
+    void check_code(QByteArray);
+    void read_showinf(MedInf );
+    void New_Pri_User(UserInf);
+    void scan_user(QByteArray);
 
 protected:
-    void mkdir_cabinet();
-    void mkdir_cabinet_txt(QString name,CabinetPanel *cab);
     int readSettings();                //--读配置信息
     void writeSettings();              //--写配置信息
     void menu_set_init();
-    void lattice_add(int cab, int row);//--添加药柜格子
+    void check_pri_use();
 
 private:
     Ui::MainWidget *ui;
@@ -61,8 +63,9 @@ private:
     QString path_cabinet;              //药柜文件路径
 
     QList<MedInf> medinf[5];           //--定义5个qlist，用于存储药柜信息
+    QList<UserInf> USER;
 
-    ControlDevice ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
+    ControlDevice *ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
 
     CabinetConfig* cabinetConf;
     UserWidget* win_user_manage;//用户管理窗口
@@ -72,7 +75,10 @@ private:
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框
     QWidget *cab_widget;
-    QWidget *menu_widget;
+    SetMenu *menu_widget;
+    ShowInf *show_inf;
+    PrimaryUser *Pri_user;
+
     QVBoxLayout *qvbox_menu_layout;
 
     QHBoxLayout *qhbox_main;

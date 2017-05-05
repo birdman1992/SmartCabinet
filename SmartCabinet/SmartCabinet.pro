@@ -27,7 +27,13 @@ SOURCES += main.cpp\
     cabinetconfig.cpp \
     Structs/userinfo.cpp \
     Widgets/cabinetset.cpp \
-    Structs/cabinetinfo.cpp
+    Structs/cabinetinfo.cpp \
+    Menu/setmenu.cpp \
+    Countdown/countdown.cpp \
+    ShowInf/showinf.cpp \
+    PrimaryUser/primaryuser.cpp \
+    PrimaryUser/userinf.cpp
+
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -45,11 +51,21 @@ HEADERS  += mainwidget.h \
     Structs/userinfo.h \
     defines.h \
     Widgets/cabinetset.h \
-    Structs/cabinetinfo.h
+    Structs/cabinetinfo.h \
+    Menu/setmenu.h \
+    Countdown/countdown.h \
+    ShowInf/showinf.h \
+    PrimaryUser/primaryuser.h \
+    PrimaryUser/userinf.h
+
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
     Device/devicesimulate.ui \
     Widgets/standbywidget.ui \
     Widgets/userwidget.ui \
-    Widgets/cabinetset.ui
+    Widgets/cabinetset.ui \
+    Menu/setmenu.ui \
+    Countdown/countdown.ui \
+    ShowInf/showinf.ui \
+    PrimaryUser/primaryuser.ui

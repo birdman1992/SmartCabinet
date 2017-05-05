@@ -15,6 +15,9 @@ class MedInf
 public:
     MedInf();
     int num;//--序号
+    int cab_num;
+    int lat_num;
+    int exist;
     QString name;//--药材名字
     QString Features;//--药材功能
     QString application;//--药材的应用

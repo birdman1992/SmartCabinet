@@ -440,9 +440,7 @@
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="lockCtrl">
-      <zorder>listWidget</zorder>
-     </widget>
+     <widget class="QWidget" name="lockCtrl"/>
     </widget>
    </item>
   </layout>

@@ -60,7 +60,7 @@ void CabinetConfig::readCabinetConfig()
     }
 
     QSettings settings(CONF_USER,QSettings::IniFormat);
-    int size = settings.beginReadArray("cabinets")
+//    int size = settings.beginReadArray("cabinets");
 }
 
 //添加新用户
