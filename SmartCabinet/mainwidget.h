@@ -12,6 +12,10 @@
 #include <QStackedWidget>
 #include <QListWidget>
 #include <QLabel>
+#include "cabinetconfig.h"
+#include "Widgets/standbywidget.h"
+#include "Widgets/userwidget.h"
+#include "Widgets/cabinetset.h"
 
 
 namespace Ui {
@@ -60,6 +64,11 @@ private:
 
     ControlDevice ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
 
+    CabinetConfig* cabinetConf;
+    UserWidget* win_user_manage;//用户管理窗口
+    StandbyWidget* win_standby;//待机窗口
+    CabinetSet* win_cabinet_set;//智能柜组合设置窗口
+
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框
     QWidget *cab_widget;
@@ -80,6 +89,8 @@ private:
 
     QLabel *label;
 
+    void init_xiangang();
+    void init_huangpo();
 };
 
 #endif // MAINWIDGET_H

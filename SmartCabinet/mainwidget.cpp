@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QTextStream>
+#include "defines.h"
 
 MainWidget::MainWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,94 +12,8 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
-    num = 1;//--初始一个药柜
-    lattice_num = 7;
-    cab_lattice_num[0]  = 0; //--每个药柜格子使用数初始化
-    cab_lattice_num[1]  = 0;
-    cab_lattice_num[2]  = 0;
-    cab_lattice_num[3]  = 0;
-    cab_lattice_num[4]  = 0;
-
-    stack = new QStackedWidget(this); //为这个主窗体创建一个堆栈窗体
-    list = new QListWidget(this);   //创建一个列表框
-    qhbox_main = new QHBoxLayout;
-    //往这个列表框里面添加元素
-    list->insertItem(0, tr("主界面"));
-    list->insertItem(1, tr("菜单"));
-    list->insertItem(2, tr("简介"));
-    list->item(0)->setSizeHint(QSize(100,100));
-    list->item(1)->setSizeHint(QSize(100,100));
-    list->item(2)->setSizeHint(QSize(100,100));
-    list->item(0)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-    list->item(1)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-    list->item(2)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-    list->setMinimumWidth(150);
-    list->setMinimumHeight(400);
-
-    //--添加药柜btn
-    btn_cabinet_add_one = new QPushButton("add");
-    btn_cabinet_add_one->setMinimumWidth(200);
-    btn_cabinet_add_one->setMinimumHeight(400);
-    btn_cabinet_add_two = new QPushButton("add");
-    btn_cabinet_add_two->setMinimumWidth(200);
-    btn_cabinet_add_two->setMinimumHeight(400);
-    btn_cabinet_add_three = new QPushButton("add");
-    btn_cabinet_add_three->setMinimumWidth(200);
-    btn_cabinet_add_three->setMinimumHeight(400);
-    btn_cabinet_add_four = new QPushButton("add");
-    btn_cabinet_add_four->setMinimumWidth(200);
-    btn_cabinet_add_four->setMinimumHeight(400);
-    qvbox_zero_layout = new QVBoxLayout();
-    qvbox_one_layout = new QVBoxLayout();
-    qvbox_two_layout = new QVBoxLayout();
-    qvbox_three_layout = new QVBoxLayout();
-    qvbox_four_layout = new QVBoxLayout();
-
-    //--读取配置信息
-    readSettings();
-
-    qvbox_zero_layout->addWidget(&cabinets[0]);
-    qvbox_one_layout->addWidget(btn_cabinet_add_one);
-    qvbox_two_layout->addWidget(btn_cabinet_add_two);
-    qvbox_three_layout->addWidget(btn_cabinet_add_three);
-    qvbox_four_layout->addWidget(btn_cabinet_add_four);
-    qhbox_main->addLayout(qvbox_three_layout);
-    qhbox_main->addLayout(qvbox_one_layout);
-    qhbox_main->addLayout(qvbox_zero_layout);
-    qhbox_main->addLayout(qvbox_two_layout);
-    qhbox_main->addLayout(qvbox_four_layout);
-    qhbox_main->setStretchFactor(qvbox_three_layout,1);
-    qhbox_main->setStretchFactor(qvbox_one_layout,1);
-    qhbox_main->setStretchFactor(qvbox_zero_layout,1);
-    qhbox_main->setStretchFactor(qvbox_two_layout,1);
-    qhbox_main->setStretchFactor(qvbox_four_layout,1);
-
-
-    cab_widget = new QWidget;
-    cab_widget->setLayout(qhbox_main);
-    stack->addWidget(cab_widget);
-    menu_set_init();
-    //--设置主药柜的格子数 接口
-    cabinets[0].Cabinet_lattice_num_set(lattice_num);
-
-    ui->caseLayout->addWidget(list);  //把list里面的内容加到窗体里面
-    ui->caseLayout->addWidget(stack, 0, Qt::AlignHCenter);
-    ui->caseLayout->setStretchFactor(list, 1);  //设定为可伸缩的控件，第一个参数是用于指定设置的控件，第二个大于0表示这个控件可伸缩
-    ui->caseLayout->setStretchFactor(stack, 5);
-
-    connect(list, SIGNAL(currentRowChanged(int)), stack, SLOT(setCurrentIndex(int)));
-    connect(btn_cabinet_add_one,SIGNAL(clicked(bool)),this,SLOT(btn_one()));
-    connect(btn_cabinet_add_two,SIGNAL(clicked(bool)),this,SLOT(btn_two()));
-    connect(btn_cabinet_add_three,SIGNAL(clicked(bool)),this,SLOT(btn_three()));
-    connect(btn_cabinet_add_four,SIGNAL(clicked(bool)),this,SLOT(btn_four()));
-    connect(&cabinets[0],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_zero(int)));
-    connect(&cabinets[1],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_one(int)));
-    connect(&cabinets[2],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_two(int)));
-    connect(&cabinets[3],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_three(int)));
-    connect(&cabinets[4],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_four(int)));
-    //--创建药柜文件夹
-    mkdir_cabinet();
-
+    init_huangpo();
+//    init_xiangang();
 }
 
 /**************************
@@ -389,6 +304,125 @@ void MainWidget::lattice_add(int cab,int row)
 
     cab_lattice_num[cab]++;
 
+}
+
+void MainWidget::init_xiangang()
+{
+    num = 1;//--初始一个药柜
+    lattice_num = 7;
+    cab_lattice_num[0]  = 0; //--每个药柜格子使用数初始化
+    cab_lattice_num[1]  = 0;
+    cab_lattice_num[2]  = 0;
+    cab_lattice_num[3]  = 0;
+    cab_lattice_num[4]  = 0;
+
+    stack = new QStackedWidget(this); //为这个主窗体创建一个堆栈窗体
+    list = new QListWidget(this);   //创建一个列表框
+    qhbox_main = new QHBoxLayout;
+    //往这个列表框里面添加元素
+    list->insertItem(0, tr("主界面"));
+    list->insertItem(1, tr("菜单"));
+    list->insertItem(2, tr("简介"));
+    list->item(0)->setSizeHint(QSize(100,100));
+    list->item(1)->setSizeHint(QSize(100,100));
+    list->item(2)->setSizeHint(QSize(100,100));
+    list->item(0)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    list->item(1)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    list->item(2)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    list->setMinimumWidth(150);
+    list->setMinimumHeight(400);
+
+    //--添加药柜btn
+    btn_cabinet_add_one = new QPushButton("add");
+    btn_cabinet_add_one->setMinimumWidth(200);
+    btn_cabinet_add_one->setMinimumHeight(400);
+    btn_cabinet_add_two = new QPushButton("add");
+    btn_cabinet_add_two->setMinimumWidth(200);
+    btn_cabinet_add_two->setMinimumHeight(400);
+    btn_cabinet_add_three = new QPushButton("add");
+    btn_cabinet_add_three->setMinimumWidth(200);
+    btn_cabinet_add_three->setMinimumHeight(400);
+    btn_cabinet_add_four = new QPushButton("add");
+    btn_cabinet_add_four->setMinimumWidth(200);
+    btn_cabinet_add_four->setMinimumHeight(400);
+    qvbox_zero_layout = new QVBoxLayout();
+    qvbox_one_layout = new QVBoxLayout();
+    qvbox_two_layout = new QVBoxLayout();
+    qvbox_three_layout = new QVBoxLayout();
+    qvbox_four_layout = new QVBoxLayout();
+
+    //--读取配置信息
+    readSettings();
+
+    qvbox_zero_layout->addWidget(&cabinets[0]);
+    qvbox_one_layout->addWidget(btn_cabinet_add_one);
+    qvbox_two_layout->addWidget(btn_cabinet_add_two);
+    qvbox_three_layout->addWidget(btn_cabinet_add_three);
+    qvbox_four_layout->addWidget(btn_cabinet_add_four);
+    qhbox_main->addLayout(qvbox_three_layout);
+    qhbox_main->addLayout(qvbox_one_layout);
+    qhbox_main->addLayout(qvbox_zero_layout);
+    qhbox_main->addLayout(qvbox_two_layout);
+    qhbox_main->addLayout(qvbox_four_layout);
+    qhbox_main->setStretchFactor(qvbox_three_layout,1);
+    qhbox_main->setStretchFactor(qvbox_one_layout,1);
+    qhbox_main->setStretchFactor(qvbox_zero_layout,1);
+    qhbox_main->setStretchFactor(qvbox_two_layout,1);
+    qhbox_main->setStretchFactor(qvbox_four_layout,1);
+
+
+    cab_widget = new QWidget;
+    cab_widget->setLayout(qhbox_main);
+    stack->addWidget(cab_widget);
+    menu_set_init();
+    //--设置主药柜的格子数 接口
+    cabinets[0].Cabinet_lattice_num_set(lattice_num);
+
+    ui->caseLayout->addWidget(list);  //把list里面的内容加到窗体里面
+    ui->caseLayout->addWidget(stack, 0, Qt::AlignHCenter);
+    ui->caseLayout->setStretchFactor(list, 1);  //设定为可伸缩的控件，第一个参数是用于指定设置的控件，第二个大于0表示这个控件可伸缩
+    ui->caseLayout->setStretchFactor(stack, 5);
+
+    connect(list, SIGNAL(currentRowChanged(int)), stack, SLOT(setCurrentIndex(int)));
+    connect(btn_cabinet_add_one,SIGNAL(clicked(bool)),this,SLOT(btn_one()));
+    connect(btn_cabinet_add_two,SIGNAL(clicked(bool)),this,SLOT(btn_two()));
+    connect(btn_cabinet_add_three,SIGNAL(clicked(bool)),this,SLOT(btn_three()));
+    connect(btn_cabinet_add_four,SIGNAL(clicked(bool)),this,SLOT(btn_four()));
+    connect(&cabinets[0],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_zero(int)));
+    connect(&cabinets[1],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_one(int)));
+    connect(&cabinets[2],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_two(int)));
+    connect(&cabinets[3],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_three(int)));
+    connect(&cabinets[4],SIGNAL(lattice_inf(int)),this,SLOT(cabinets_lattice_four(int)));
+    //--创建药柜文件夹
+    mkdir_cabinet();
+
+}
+
+void MainWidget::init_huangpo()
+{
+    cabinetConf = new CabinetConfig();
+
+    //待机界面
+    win_standby = new StandbyWidget(this);
+
+    //用户管理界面
+    win_user_manage = new UserWidget(this);
+    win_user_manage->installGlobalConfig(cabinetConf);
+    connect(win_user_manage, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(&ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
+
+    //智能柜组合设置界面
+    win_cabinet_set = new CabinetSet(this);
+
+    ui->stackedWidget->addWidget(win_standby);
+    ui->stackedWidget->addWidget(win_user_manage);
+    ui->stackedWidget->addWidget(win_cabinet_set);
+
+    if(cabinetConf->isFirstUse())
+        ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
+    else
+        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
+    qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
 }
 
 MainWidget::~MainWidget()

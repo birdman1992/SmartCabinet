@@ -21,7 +21,13 @@ SOURCES += main.cpp\
     Device/controldevice.cpp \
     Device/Hid/hid.c \
     Device/devicesimulate.cpp \
-    medinf.cpp
+    medinf.cpp \
+    Widgets/standbywidget.cpp \
+    Widgets/userwidget.cpp \
+    cabinetconfig.cpp \
+    Structs/userinfo.cpp \
+    Widgets/cabinetset.cpp \
+    Structs/cabinetinfo.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -32,8 +38,18 @@ HEADERS  += mainwidget.h \
     Device/controldevice.h \
     Device/Hid/hid.h \
     Device/devicesimulate.h \
-    medinf.h
+    medinf.h \
+    Widgets/standbywidget.h \
+    Widgets/userwidget.h \
+    cabinetconfig.h \
+    Structs/userinfo.h \
+    defines.h \
+    Widgets/cabinetset.h \
+    Structs/cabinetinfo.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
-    Device/devicesimulate.ui
+    Device/devicesimulate.ui \
+    Widgets/standbywidget.ui \
+    Widgets/userwidget.ui \
+    Widgets/cabinetset.ui
