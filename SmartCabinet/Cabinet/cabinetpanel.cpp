@@ -7,7 +7,8 @@ CabinetPanel::CabinetPanel(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tableWidget->setFont(QFont("Helvetica")); //设置字体
-    connect(ui->tableWidget,SIGNAL(itemDoubleClicked(QTableWidgetItem*)),this,SLOT(double_click(QTableWidgetItem*)));
+//    connect(ui->tableWidget,SIGNAL(itemDoubleClicked(QTableWidgetItem*)),this,SLOT(double_click(QTableWidgetItem*)));
+    connect(ui->tableWidget,SIGNAL(itemClicked(QTableWidgetItem*)),this,SLOT(double_click(QTableWidgetItem*)));
 }
 
 void CabinetPanel::double_click(QTableWidgetItem* item)

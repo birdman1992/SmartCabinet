@@ -44,6 +44,11 @@ void MainWidget::btn_one()
     for(int i = 0;i < LatticeNum;i++)
     {
         MedInf med;
+        med.name = "无";
+        med.cab_num = 1;
+        med.lat_num = i;
+        med .exist = 0;
+        med.num = 0;
         medinf[1].append(med);
     }
     num++;
@@ -56,6 +61,11 @@ void MainWidget::btn_two()
     for(int i = 0;i < LatticeNum;i++)
     {
         MedInf med;
+        med.name = "无";
+        med.cab_num = 2;
+        med.lat_num = i;
+        med .exist = 0;
+        med.num = 0;
         medinf[2].append(med);
     }
     num++;
@@ -68,6 +78,11 @@ void MainWidget::btn_three()
     for(int i = 0;i < LatticeNum;i++)
     {
         MedInf med;
+        med.name = "无";
+        med.cab_num = 3;
+        med.lat_num = i;
+        med .exist = 0;
+        med.num = 0;
         medinf[3].append(med);
     }
     num++;
@@ -80,6 +95,11 @@ void MainWidget::btn_four()
     for(int i = 0;i < LatticeNum;i++)
     {
         MedInf med;
+        med.name = "无";
+        med.cab_num = 4;
+        med.lat_num = i;
+        med .exist = 0;
+        med.num = 0;
         medinf[4].append(med);
     }
     num++;
@@ -131,8 +151,8 @@ int MainWidget::readSettings()//读取程序设置
         {
             QSettings cabinetsettings("cabinet" + QString::number(j,10) + ".ini",QSettings::IniFormat);
             cabinetsettings.beginGroup("cabinet");
-            lattice_num = cabinetsettings.value("LatticeNum").toInt();
-            cab_lattice_num[j] = cabinetsettings.value("UsedLatticeNum").toInt();
+//            lattice_num = cabinetsettings.value("LatticeNum").toInt();
+//            cab_lattice_num[j] = cabinetsettings.value("UsedLatticeNum").toInt();
             cabinetsettings.endGroup();
 
             /*读取每个格子的信息放入qlist；cab_lattice_num为使用的格子数*/
@@ -140,7 +160,7 @@ int MainWidget::readSettings()//读取程序设置
             {
                 MedInf med;//--创建临时药品信息类
                 cabinetsettings.beginGroup("lattice" + QString::number(i,10));
-                med.num = cabinetsettings.value(QString::number(i,10) + "aaa").toInt();
+                med.num = cabinetsettings.value(QString::number(i,10) + "num").toInt();
                 med.exist = cabinetsettings.value(QString::number(i,10) + "exist").toInt();
                 med.cab_num = cabinetsettings.value(QString::number(i,10) + "cab_num").toInt();
                 med.lat_num = cabinetsettings.value(QString::number(i,10) + "lat_num").toInt();
@@ -188,7 +208,7 @@ void MainWidget::writeSettings()//保存程序设置
         QSettings cabinetsettings("cabinet" + QString::number(j,10) + ".ini",QSettings::IniFormat);
 
         cabinetsettings.beginGroup("cabinet");
-        cabinetsettings.setValue("UsedLatticeNum",cab_lattice_num[j]);
+//        cabinetsettings.setValue("UsedLatticeNum",cab_lattice_num[j]);
         cabinetsettings.endGroup();
         /*先检查药柜是否为空，在写入每个格子的信息*/
             for(int i = 0;i < LatticeNum; i++)
@@ -196,7 +216,7 @@ void MainWidget::writeSettings()//保存程序设置
                 //--lattice代表格子名称 i表示第几个格子，为每个格子分组
                 int seral_num = medinf[j].at(i).num;
                 cabinetsettings.beginGroup("lattice" + QString::number(i,10));
-                cabinetsettings.setValue(QString::number(i,10) + "aaa",seral_num);
+                cabinetsettings.setValue(QString::number(i,10) + "num",seral_num);
                 cabinetsettings.setValue(QString::number(i,10) + "exist",medinf[j].at(i).exist);
                 cabinetsettings.setValue(QString::number(i,10) + "cab_num",medinf[j].at(i).cab_num);
                 cabinetsettings.setValue(QString::number(i,10) + "lat_num",medinf[j].at(i).lat_num);
@@ -238,23 +258,29 @@ void MainWidget::check_code(QByteArray qby)
     if(exist == true)//存在药品，做出处理
     {
         show_inf->check_exist(medinf[low].at(row));
+        show_inf->show();//show information
+        ui_inf_exist = false;
+        menu_widget->count_close();
     }
     else//不存在，做出处理
     {
-        MedInf med;
-        med.num = row;
-        med.cab_num = low;
-        med.lat_num = row;
-        med.name = str;
-        med.exist = 0;
-        med.application = "application" + row;
-        med.ShelfLife = "ShelfLife" + row;
-        med.ProductionDate = "ProductionDate" + row;
-        med.Features = "Features" + row;
-        show_inf->check_no_exist(med);
+        if(ui_inf_exist == true)//判断界面是否存在
+        {
+            MedInf med;
+            med.name = str;
+            med.exist = 0;
+            med.cab_num = cabinet_num;
+            med.lat_num = lattice_num;
+            show_inf->check_exist(med);
+        }
+        else
+        {
+            QMessageBox msgBox;
+            msgBox.setText("请选择要存放的药柜.");
+            msgBox.exec();
+            list->setCurrentRow(0);
+        }
     }
-    show_inf->show();//show information
-    menu_widget->count_close();
 }
 
 /**************************
@@ -265,35 +291,19 @@ void MainWidget::check_code(QByteArray qby)
  * ***************************/
 void MainWidget::read_showinf(MedInf med)
 {
-    if(med.exist == 0)//药品不存在，插入
-    {
-        if(medinf[med.cab_num].at(med.lat_num).exist != 1)//
-        {
-            med.exist = 1;
-            medinf[med.cab_num].insert(med.lat_num,med);
-            cab_lattice_num[med.cab_num]++;
-            cabinets[med.cab_num].item_add(med.lat_num,0,med.name);
-            show_inf->btn_close();
-            QMessageBox msgBox;
-            msgBox.setText("存放完毕，请关好柜门！");
-            msgBox.exec();
-        }
-        else
-        {
-            QMessageBox msgBox;
-            msgBox.setText("请放入空药柜！");
-            msgBox.exec();
-        }
-    }
-    else if(med.exist == 1)//药品存在，覆盖
-    {
+    qDebug()<<"sss"<<med.exist;
+    qDebug()<<"cab_num"<<med.cab_num;
+    qDebug()<<"lat_num"<<med.lat_num;
+    med.exist = 1;
         medinf[med.cab_num].removeAt(med.lat_num);
         medinf[med.cab_num].insert(med.lat_num,med);
+        cabinets[cabinet_num].item_add(med.lat_num,0,med.name);
         show_inf->btn_close();
+        ui_inf_exist = false;
         QMessageBox msgBox;
-        msgBox.setText("存放完毕，请关好柜门！");
+        msgBox.setText("存取完毕，请关好柜门！");
         msgBox.exec();
-    }
+
 }
 
 void MainWidget::check_pri_use()
@@ -334,11 +344,8 @@ void MainWidget::init_xiangang()
 {
     num = 1;//--初始一个药柜
     lattice_num = 7;
-    cab_lattice_num[0]  = 0; //--每个药柜格子使用数初始化
-    cab_lattice_num[1]  = 0;
-    cab_lattice_num[2]  = 0;
-    cab_lattice_num[3]  = 0;
-    cab_lattice_num[4]  = 0;
+
+    ui_inf_exist = false;
 
     stack = new QStackedWidget(this); //为这个主窗体创建一个堆栈窗体
     list = new QListWidget(this);   //创建一个列表框
@@ -406,6 +413,11 @@ void MainWidget::init_xiangang()
     for(int i = 0;i < LatticeNum;i++)
     {
         MedInf med;
+        med.name = "无";
+        med.cab_num = 0;
+        med.lat_num = i;
+        med .exist = 0;
+        med.num = 0;
         medinf[0].append(med);
     }
     //--读取配置信息
@@ -429,8 +441,54 @@ void MainWidget::init_xiangang()
     connect(show_inf,SIGNAL(cabinet_inf(MedInf)),this,SLOT(read_showinf(MedInf)));
     Pri_user = new PrimaryUser;
     connect(Pri_user,SIGNAL(new_pri_user(UserInf)),this,SLOT(New_Pri_User(UserInf)));
+    connect(&cabinets[0],SIGNAL(lattice_inf(int)),this,SLOT(cabinet_cleck(int)));
+    connect(&cabinets[1],SIGNAL(lattice_inf(int)),this,SLOT(cabinet_cleck_one(int)));
+    connect(&cabinets[2],SIGNAL(lattice_inf(int)),this,SLOT(cabinet_cleck_two(int)));
+    connect(&cabinets[3],SIGNAL(lattice_inf(int)),this,SLOT(cabinet_cleck_three(int)));
+    connect(&cabinets[4],SIGNAL(lattice_inf(int)),this,SLOT(cabinet_cleck_four(int)));
 
     check_pri_use();
+}
+
+void MainWidget::cabinet_cleck(int num)
+{
+        show_inf->check_exist(medinf[0].at(num));
+        show_inf->show();
+        ui_inf_exist = true;
+        lattice_num = num;
+        cabinet_num = 0;
+}
+void MainWidget::cabinet_cleck_one(int num)
+{
+        show_inf->check_exist(medinf[1].at(num));
+        show_inf->show();
+        ui_inf_exist = true;
+        lattice_num = num;
+        cabinet_num = 1;
+}
+void MainWidget::cabinet_cleck_two(int num)
+{
+        show_inf->check_exist(medinf[2].at(num));
+        show_inf->show();
+        ui_inf_exist = true;
+        lattice_num = num;
+        cabinet_num = 2;
+}
+void MainWidget::cabinet_cleck_three(int num)
+{
+        show_inf->check_exist(medinf[3].at(num));
+        show_inf->show();
+        ui_inf_exist = true;
+        lattice_num = num;
+        cabinet_num = 3;
+}
+void MainWidget::cabinet_cleck_four(int num)
+{
+        show_inf->check_exist(medinf[4].at(num));
+        show_inf->show();
+        ui_inf_exist = true;
+        lattice_num = num;
+        cabinet_num = 4;
 }
 
 void MainWidget::init_huangpo()
