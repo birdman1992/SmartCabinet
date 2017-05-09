@@ -23,6 +23,14 @@ CabinetSet::~CabinetSet()
     delete ui;
 }
 
+bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
+{
+    if(globalConfig == NULL)
+        return false;
+    config = globalConfig;
+    return true;
+}
+
 void CabinetSet::on_add_left_clicked()
 {
     int i;

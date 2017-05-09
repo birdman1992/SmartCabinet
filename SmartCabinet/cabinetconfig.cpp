@@ -52,6 +52,7 @@ void CabinetConfig::readUserConfig()
     }
 }
 
+//读取柜子配置
 void CabinetConfig::readCabinetConfig()
 {
     if(!QFile(CONF_CABINET).exists())
@@ -61,6 +62,16 @@ void CabinetConfig::readCabinetConfig()
 
     QSettings settings(CONF_USER,QSettings::IniFormat);
 //    int size = settings.beginReadArray("cabinets");
+}
+
+//创建柜子配置文件  qba:柜子位置信息
+void CabinetConfig::creatCabinetConfig(QByteArray qba)
+{
+    int i = 0;
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+
+//    for(i=0; )
+    settings.beginGroup(QString("Cabinet%1").arg(i));
 }
 
 //添加新用户
