@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     Countdown/countdown.cpp \
     ShowInf/showinf.cpp \
     PrimaryUser/primaryuser.cpp \
-    PrimaryUser/userinf.cpp
+    PrimaryUser/userinf.cpp \
+    Cabinet/cabinet.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -56,7 +57,8 @@ HEADERS  += mainwidget.h \
     Countdown/countdown.h \
     ShowInf/showinf.h \
     PrimaryUser/primaryuser.h \
-    PrimaryUser/userinf.h
+    PrimaryUser/userinf.h \
+    Cabinet/cabinet.h
 
 
 FORMS    += mainwidget.ui \
@@ -68,4 +70,5 @@ FORMS    += mainwidget.ui \
     Menu/setmenu.ui \
     Countdown/countdown.ui \
     ShowInf/showinf.ui \
-    PrimaryUser/primaryuser.ui
+    PrimaryUser/primaryuser.ui \
+    Cabinet/cabinet.ui

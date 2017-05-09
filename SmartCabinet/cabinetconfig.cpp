@@ -68,10 +68,38 @@ void CabinetConfig::readCabinetConfig()
 void CabinetConfig::creatCabinetConfig(QByteArray qba)
 {
     int i = 0;
+    int j = 0;
+    qDebug()<<"creatCabinetConfig1";
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
 
-//    for(i=0; )
-    settings.beginGroup(QString("Cabinet%1").arg(i));
+    settings.setValue("CabNum",qba.size());
+    for(i=0; i<qba.size(); i++)//保存柜子位置编号
+    {
+        settings.setValue(QString("Cab%1PosNum").arg(i),QVariant(qba[i]));
+    }
+
+    settings.beginWriteArray(QString("Cabinet0"));
+    for(j=0; j<Main_CAB_CASE_NUM; j++)
+    {
+        settings.setArrayIndex(j);
+        settings.setValue("name",QVariant(QString()));
+        settings.setValue("num", QVariant(0));
+    }
+    settings.endArray();
+
+    for(i=1; i<qba.size(); i++)
+    {
+        settings.beginWriteArray(QString("Cabinet%1").arg(i));
+        for(j=0; j<VICE_CAB_CASE_NUM; j++)
+        {
+            settings.setArrayIndex(j);
+            settings.setValue("name",QVariant(QString()));
+            settings.setValue("num", QVariant(0));
+        }
+        settings.endArray();
+    }
+    settings.sync();
+    qDebug()<<"creatCabinetConfig2";
 }
 
 //添加新用户
