@@ -15,6 +15,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
 
+
     QSettings set("Option.ini",QSettings::IniFormat);
     if(set.contains("qb"))
     {
@@ -61,6 +62,9 @@ void MainWidget::win_swich_2(int)
             break;
         }
     }
+
+
+
 }
 
 
@@ -555,6 +559,7 @@ void MainWidget::cabinet_cleck_four(int num)
 void MainWidget::init_huangpo()
 {
     cabinetConf = new CabinetConfig();
+    ctrlUi = new ControlDevice;
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -567,6 +572,8 @@ void MainWidget::init_huangpo()
 
     //智能柜组合设置界面
     win_cabinet_set = new CabinetSet(this);
+    connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+//    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ui->stackedWidget->addWidget(win_standby);
     ui->stackedWidget->addWidget(win_user_manage);

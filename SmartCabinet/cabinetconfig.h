@@ -17,6 +17,7 @@ public:
     ~CabinetConfig();
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);
+    void creatCabinetConfig(QByteArray);
 
     QList<UserInfo*> list_user;
 //    QList<>
@@ -28,6 +29,9 @@ private:
     void readUserConfig();//读取用户配置
     void readCabinetConfig();//读取柜子配置
     void addNewUser(UserInfo* info);
+
+public slots:
+
 
 };
 
