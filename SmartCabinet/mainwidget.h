@@ -50,12 +50,17 @@ public slots:
     void cabinet_cleck_two(int);
     void cabinet_cleck_three(int);
     void cabinet_cleck_four(int);
+    void win_swich_2(int);
+    void set_cabinet(QByteArray);
 
 protected:
     int readSettings();                //--读配置信息
     void writeSettings();            //--写配置信息
     void menu_set_init();
     void check_pri_use();
+    void readSettings_cabinet(int );
+    void writeSettings_cabinet(int);
+    void create_cabinet();
 
 private:
     Ui::MainWidget *ui;
@@ -66,6 +71,8 @@ private:
     int lattice_num;                   //--药柜格子数目
     int cabinet_num;
     int cab_lattice_num[5];            //--主药柜格子数目
+    int qb_num[5];
+    QByteArray qb_cabinet_order;
 
     QString path_cabinet;              //药柜文件路径
 
