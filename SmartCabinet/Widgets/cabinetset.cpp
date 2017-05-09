@@ -85,7 +85,7 @@ void CabinetSet::on_clear_clicked()
 void CabinetSet::on_save_clicked()
 {
     qDebug()<<cabinet_pos.toHex();
-    setCabinet(cabinet_pos);
+    emit setCabinet(cabinet_pos);
     emit winSwitch(INDEX_STANDBY);
 }
 

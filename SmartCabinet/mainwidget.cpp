@@ -14,8 +14,8 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
-//    init_huangpo();
-    init_xiangang();
+    init_huangpo();
+//    init_xiangang();
 }
 
 /**************************
