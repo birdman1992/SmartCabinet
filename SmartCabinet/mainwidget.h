@@ -34,6 +34,7 @@ class MainWidget : public QWidget
 public:
     explicit MainWidget(QWidget *parent = 0);
     ~MainWidget();
+    bool ui_inf_exist;
 
 public slots:
     void btn_one();
@@ -44,10 +45,15 @@ public slots:
     void read_showinf(MedInf );
     void New_Pri_User(UserInf);
     void scan_user(QByteArray);
+    void cabinet_cleck(int);
+    void cabinet_cleck_one(int);
+    void cabinet_cleck_two(int);
+    void cabinet_cleck_three(int);
+    void cabinet_cleck_four(int);
 
 protected:
     int readSettings();                //--读配置信息
-    void writeSettings();              //--写配置信息
+    void writeSettings();            //--写配置信息
     void menu_set_init();
     void check_pri_use();
 
@@ -58,6 +64,7 @@ private:
 
     int num;                           //--药柜数目
     int lattice_num;                   //--药柜格子数目
+    int cabinet_num;
     int cab_lattice_num[5];            //--主药柜格子数目
 
     QString path_cabinet;              //药柜文件路径

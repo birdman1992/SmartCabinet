@@ -20,6 +20,7 @@ public:
 public slots:
     void btn_save();
     void btn_close();
+    void btn_out();
 signals:
 //    void cabinet_inf(MedInf med);
         void cabinet_inf(MedInf med);
