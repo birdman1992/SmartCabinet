@@ -23,6 +23,14 @@ CabinetSet::~CabinetSet()
     delete ui;
 }
 
+bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
+{
+    if(globalConfig == NULL)
+        return false;
+    config = globalConfig;
+    return true;
+}
+
 void CabinetSet::on_add_left_clicked()
 {
     int i;
@@ -77,6 +85,8 @@ void CabinetSet::on_clear_clicked()
 void CabinetSet::on_save_clicked()
 {
     qDebug()<<cabinet_pos.toHex();
+
+    config->creatCabinetConfig(cabinet_pos);
     emit setCabinet(cabinet_pos);
     emit winSwitch(INDEX_STANDBY);
 }

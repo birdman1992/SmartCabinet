@@ -2,7 +2,7 @@
 #define CABINETINFO_H
 #include <QString>
 
-class CabinetInfo
+class CabinetInfo//单个柜格的耗材信息
 {
 public:
     CabinetInfo();

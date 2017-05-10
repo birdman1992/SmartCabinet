@@ -15,6 +15,7 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
 
+
     init_xiangang();
 
 //    init_huangpo();
@@ -119,9 +120,6 @@ void MainWidget::menu_set_init()
  * ***************************/
 void MainWidget::btn_one()
 {
-//    qvbox_one_layout->removeWidget(btn_cabinet_add_one);//--移除btn控件
-//    btn_cabinet_add_one->deleteLater();
-//    qvbox_one_layout->addWidget(&cabinets[1]);          //--重新加入药柜
     cabinets[1].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -136,9 +134,6 @@ void MainWidget::btn_one()
 }
 void MainWidget::btn_two()
 {
-//    qvbox_two_layout->removeWidget(btn_cabinet_add_two);
-//    btn_cabinet_add_two->deleteLater();
-//    qvbox_two_layout->addWidget(&cabinets[2]);
         cabinets[2].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -153,9 +148,6 @@ void MainWidget::btn_two()
 }
 void MainWidget::btn_three()
 {
-//    qvbox_three_layout->removeWidget(btn_cabinet_add_three);
-//    btn_cabinet_add_three->deleteLater();
-//    qvbox_three_layout->addWidget(&cabinets[3]);
         cabinets[3].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -170,9 +162,6 @@ void MainWidget::btn_three()
 }
 void MainWidget::btn_four()
 {
-//    qvbox_four_layout->removeWidget(btn_cabinet_add_four);
-//    btn_cabinet_add_four->deleteLater();
-//    qvbox_four_layout->addWidget(&cabinets[4]);
         cabinets[4].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -199,7 +188,6 @@ int MainWidget::readSettings()//读取程序设置
     /*读取num药柜数并重新建立药柜*/
     if(setting.contains("num"))//--如果存在就读取
     {
-//        num = setting.value("num").toInt();
         qb_cabinet_order = setting.value("qb").toByteArray();
         num = qb_cabinet_order.length();
         readSettings_cabinet(0);
@@ -525,10 +513,6 @@ cabinets[4].hide();
     ui->caseLayout->setStretchFactor(stack, 5);
 
     connect(list, SIGNAL(currentRowChanged(int)), stack, SLOT(setCurrentIndex(int)));
-//    connect(btn_cabinet_add_one,SIGNAL(clicked(bool)),this,SLOT(btn_one()));
-//    connect(btn_cabinet_add_two,SIGNAL(clicked(bool)),this,SLOT(btn_two()));
-//    connect(btn_cabinet_add_three,SIGNAL(clicked(bool)),this,SLOT(btn_three()));
-//    connect(btn_cabinet_add_four,SIGNAL(clicked(bool)),this,SLOT(btn_four()));
 
     ctrlUi = new ControlDevice;//控制台，接受型号
     connect(ctrlUi,SIGNAL(codeScanData(QByteArray)),this,SLOT(check_code(QByteArray)));
@@ -590,6 +574,7 @@ void MainWidget::cabinet_cleck_four(int num)
 void MainWidget::init_huangpo()
 {
     cabinetConf = new CabinetConfig();
+    ctrlUi = new ControlDevice;
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -602,6 +587,8 @@ void MainWidget::init_huangpo()
 
     //智能柜组合设置界面
     win_cabinet_set = new CabinetSet(this);
+    connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+//    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ui->stackedWidget->addWidget(win_standby);
     ui->stackedWidget->addWidget(win_user_manage);
