@@ -57,6 +57,28 @@ int CabinetPanel::return_row_num()
     return num;
 }
 
+//初始化药柜界面
+void CabinetPanel::panel_init(QList<Cabinet *> cabinets)
+{
+    int index = cabinets.count()-1;
+    ui->tableWidget->hide();
+
+    for(; index>0; index--)
+    {
+        if(index%2)
+            ui->horizontalLayout->addWidget(cabinets.at(index));
+    }
+
+    ui->horizontalLayout->addWidget(cabinets.at(0));
+
+    index = 2;
+    for(; index<(cabinets.count()); index++)
+    {
+        if(!(index%2))
+            ui->horizontalLayout->addWidget(cabinets.at(index));
+    }
+}
+
 CabinetPanel::~CabinetPanel()
 {
     delete ui;

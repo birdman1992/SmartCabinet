@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QTableWidgetItem>
+#include <QList>
+#include"Cabinet/cabinet.h"
 namespace Ui {
 class CabinetPanel;
 }
@@ -19,6 +21,7 @@ public:
     //--设置药柜格子总数，添加格子要和总数配套使用，当格子大于总数添加无效
     void Cabinet_lattice_num_set(int num);
     int return_row_num();
+    void panel_init(QList<Cabinet*> cabinets);
 
 signals:
     void lattice_inf(int row);

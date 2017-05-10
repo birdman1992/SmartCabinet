@@ -561,6 +561,8 @@ void MainWidget::init_huangpo()
     cabinetConf = new CabinetConfig();
     ctrlUi = new ControlDevice;
 
+    win_cabinet = new CabinetPanel(this);
+
     //待机界面
     win_standby = new StandbyWidget(this);
 
@@ -578,12 +580,15 @@ void MainWidget::init_huangpo()
     ui->stackedWidget->addWidget(win_standby);
     ui->stackedWidget->addWidget(win_user_manage);
     ui->stackedWidget->addWidget(win_cabinet_set);
+    ui->stackedWidget->addWidget(win_cabinet);
 
     if(cabinetConf->isFirstUse())
         ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
     else
-        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
+        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
+
+    win_cabinet->panel_init(cabinetConf->list_cabinet);
 
 }
 

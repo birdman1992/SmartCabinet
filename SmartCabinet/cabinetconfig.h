@@ -8,6 +8,7 @@
 #include <QList>
 #include "Structs/userinfo.h"
 #include "Structs/cabinetinfo.h"
+#include "Cabinet/cabinet.h"
 #include "medinf.h"
 
 class CabinetConfig
@@ -20,6 +21,7 @@ public:
     void creatCabinetConfig(QByteArray);
 
     QList<UserInfo*> list_user;
+    QList<Cabinet*> list_cabinet;
 //    QList<>
 
 private:
