@@ -15,19 +15,54 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
 
+    init_xiangang();
+
+//    init_huangpo();
+
+}
+
+void MainWidget::init_xiangang()
+{
     QSettings set("Option.ini",QSettings::IniFormat);
     if(set.contains("qb"))
     {
-        init_xiangang();
+        init_xg_ui_set();
             //--读取配置信息
             readSettings();
     }
     else
     {
-        init_huangpo();
+        config_ui_set();
         connect(win_cabinet_set,SIGNAL(winSwitch(int)),this,SLOT(win_swich_2(int)));
         connect(win_cabinet_set,SIGNAL(setCabinet(QByteArray)),this,SLOT(set_cabinet(QByteArray)));
     }
+}
+
+void MainWidget::config_ui_set()
+{
+    cabinetConf = new CabinetConfig();
+
+    //待机界面
+    win_standby = new StandbyWidget(this);
+
+    //用户管理界面
+    win_user_manage = new UserWidget(this);
+    win_user_manage->installGlobalConfig(cabinetConf);
+    connect(win_user_manage, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
+
+    //智能柜组合设置界面
+    win_cabinet_set = new CabinetSet(this);
+
+    ui->stackedWidget->addWidget(win_standby);
+    ui->stackedWidget->addWidget(win_user_manage);
+    ui->stackedWidget->addWidget(win_cabinet_set);
+
+    if(cabinetConf->isFirstUse())
+        ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
+    else
+        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
+    qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
 }
 
 void MainWidget::set_cabinet(QByteArray qb)
@@ -38,7 +73,7 @@ void MainWidget::set_cabinet(QByteArray qb)
 
 void MainWidget::win_swich_2(int)
 {
-    init_xiangang();
+    init_xg_ui_set();
     qDebug("ssss");
     num = qb_cabinet_order.length();
     for(int i = 0;i < num;i++)
@@ -412,13 +447,13 @@ void MainWidget::scan_user(QByteArray qb)
     Pri_user->scan_user_inf(qb);
 }
 
-void MainWidget::init_xiangang()
+void MainWidget::init_xg_ui_set()
 {
     num = 1;//--初始一个药柜
     lattice_num = 7;
 
     ui_inf_exist = false;
-ui->stackedWidget->close();
+    ui->stackedWidget->close();
     stack = new QStackedWidget(this); //为这个主窗体创建一个堆栈窗体
     list = new QListWidget(this);   //创建一个列表框
     qhbox_main = new QHBoxLayout;
