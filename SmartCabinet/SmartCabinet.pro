@@ -58,7 +58,8 @@ HEADERS  += mainwidget.h \
     ShowInf/showinf.h \
     PrimaryUser/primaryuser.h \
     PrimaryUser/userinf.h \
-    Cabinet/cabinet.h
+    Cabinet/cabinet.h \
+    beautifului.h
 
 
 FORMS    += mainwidget.ui \
@@ -72,3 +73,8 @@ FORMS    += mainwidget.ui \
     ShowInf/showinf.ui \
     PrimaryUser/primaryuser.ui \
     Cabinet/cabinet.ui
+
+RESOURCES += \
+    image.qrc
+
+DISTFILES +=
