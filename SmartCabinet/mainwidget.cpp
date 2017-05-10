@@ -16,19 +16,54 @@ MainWidget::MainWidget(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
 
 
+    init_xiangang();
+
+//    init_huangpo();
+
+}
+
+void MainWidget::init_xiangang()
+{
     QSettings set("Option.ini",QSettings::IniFormat);
     if(set.contains("qb"))
     {
-        init_xiangang();
+        init_xg_ui_set();
             //--读取配置信息
             readSettings();
     }
     else
     {
-        init_huangpo();
+        config_ui_set();
         connect(win_cabinet_set,SIGNAL(winSwitch(int)),this,SLOT(win_swich_2(int)));
         connect(win_cabinet_set,SIGNAL(setCabinet(QByteArray)),this,SLOT(set_cabinet(QByteArray)));
     }
+}
+
+void MainWidget::config_ui_set()
+{
+    cabinetConf = new CabinetConfig();
+
+    //待机界面
+    win_standby = new StandbyWidget(this);
+
+    //用户管理界面
+    win_user_manage = new UserWidget(this);
+    win_user_manage->installGlobalConfig(cabinetConf);
+    connect(win_user_manage, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
+
+    //智能柜组合设置界面
+    win_cabinet_set = new CabinetSet(this);
+
+    ui->stackedWidget->addWidget(win_standby);
+    ui->stackedWidget->addWidget(win_user_manage);
+    ui->stackedWidget->addWidget(win_cabinet_set);
+
+    if(cabinetConf->isFirstUse())
+        ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
+    else
+        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
+    qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
 }
 
 void MainWidget::set_cabinet(QByteArray qb)
@@ -39,7 +74,7 @@ void MainWidget::set_cabinet(QByteArray qb)
 
 void MainWidget::win_swich_2(int)
 {
-    init_xiangang();
+    init_xg_ui_set();
     qDebug("ssss");
     num = qb_cabinet_order.length();
     for(int i = 0;i < num;i++)
@@ -62,9 +97,6 @@ void MainWidget::win_swich_2(int)
             break;
         }
     }
-
-
-
 }
 
 
@@ -88,9 +120,6 @@ void MainWidget::menu_set_init()
  * ***************************/
 void MainWidget::btn_one()
 {
-//    qvbox_one_layout->removeWidget(btn_cabinet_add_one);//--移除btn控件
-//    btn_cabinet_add_one->deleteLater();
-//    qvbox_one_layout->addWidget(&cabinets[1]);          //--重新加入药柜
     cabinets[1].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -105,9 +134,6 @@ void MainWidget::btn_one()
 }
 void MainWidget::btn_two()
 {
-//    qvbox_two_layout->removeWidget(btn_cabinet_add_two);
-//    btn_cabinet_add_two->deleteLater();
-//    qvbox_two_layout->addWidget(&cabinets[2]);
         cabinets[2].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -122,9 +148,6 @@ void MainWidget::btn_two()
 }
 void MainWidget::btn_three()
 {
-//    qvbox_three_layout->removeWidget(btn_cabinet_add_three);
-//    btn_cabinet_add_three->deleteLater();
-//    qvbox_three_layout->addWidget(&cabinets[3]);
         cabinets[3].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -139,9 +162,6 @@ void MainWidget::btn_three()
 }
 void MainWidget::btn_four()
 {
-//    qvbox_four_layout->removeWidget(btn_cabinet_add_four);
-//    btn_cabinet_add_four->deleteLater();
-//    qvbox_four_layout->addWidget(&cabinets[4]);
         cabinets[4].show();
     for(int i = 0;i < LatticeNum;i++)
     {
@@ -168,7 +188,6 @@ int MainWidget::readSettings()//读取程序设置
     /*读取num药柜数并重新建立药柜*/
     if(setting.contains("num"))//--如果存在就读取
     {
-//        num = setting.value("num").toInt();
         qb_cabinet_order = setting.value("qb").toByteArray();
         num = qb_cabinet_order.length();
         readSettings_cabinet(0);
@@ -416,13 +435,13 @@ void MainWidget::scan_user(QByteArray qb)
     Pri_user->scan_user_inf(qb);
 }
 
-void MainWidget::init_xiangang()
+void MainWidget::init_xg_ui_set()
 {
     num = 1;//--初始一个药柜
     lattice_num = 7;
 
     ui_inf_exist = false;
-ui->stackedWidget->close();
+    ui->stackedWidget->close();
     stack = new QStackedWidget(this); //为这个主窗体创建一个堆栈窗体
     list = new QListWidget(this);   //创建一个列表框
     qhbox_main = new QHBoxLayout;
@@ -494,10 +513,6 @@ cabinets[4].hide();
     ui->caseLayout->setStretchFactor(stack, 5);
 
     connect(list, SIGNAL(currentRowChanged(int)), stack, SLOT(setCurrentIndex(int)));
-//    connect(btn_cabinet_add_one,SIGNAL(clicked(bool)),this,SLOT(btn_one()));
-//    connect(btn_cabinet_add_two,SIGNAL(clicked(bool)),this,SLOT(btn_two()));
-//    connect(btn_cabinet_add_three,SIGNAL(clicked(bool)),this,SLOT(btn_three()));
-//    connect(btn_cabinet_add_four,SIGNAL(clicked(bool)),this,SLOT(btn_four()));
 
     ctrlUi = new ControlDevice;//控制台，接受型号
     connect(ctrlUi,SIGNAL(codeScanData(QByteArray)),this,SLOT(check_code(QByteArray)));

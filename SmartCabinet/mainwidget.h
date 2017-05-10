@@ -61,6 +61,8 @@ protected:
     void readSettings_cabinet(int );
     void writeSettings_cabinet(int);
     void create_cabinet();
+    void init_xg_ui_set();
+    void config_ui_set();
 
 private:
     Ui::MainWidget *ui;
