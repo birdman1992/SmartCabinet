@@ -15,7 +15,6 @@ MainWidget::MainWidget(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
 
-
 //    init_xiangang();
 
     init_huangpo();
@@ -24,16 +23,18 @@ MainWidget::MainWidget(QWidget *parent) :
 
 void MainWidget::init_xiangang()
 {
+     ctrlUi = new ControlDevice;//控制台，接受型号
     QSettings set("Option.ini",QSettings::IniFormat);
     if(set.contains("qb"))
     {
         init_xg_ui_set();
-            //--读取配置信息
-            readSettings();
+        //--读取配置信息
+        readSettings();
     }
     else
     {
         config_ui_set();
+
         connect(win_cabinet_set,SIGNAL(winSwitch(int)),this,SLOT(win_swich_2(int)));
         connect(win_cabinet_set,SIGNAL(setCabinet(QByteArray)),this,SLOT(set_cabinet(QByteArray)));
     }
@@ -49,6 +50,7 @@ void MainWidget::config_ui_set()
     //用户管理界面
     win_user_manage = new UserWidget(this);
     win_user_manage->installGlobalConfig(cabinetConf);
+
     connect(win_user_manage, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
 
@@ -58,7 +60,7 @@ void MainWidget::config_ui_set()
     ui->stackedWidget->addWidget(win_standby);
     ui->stackedWidget->addWidget(win_user_manage);
     ui->stackedWidget->addWidget(win_cabinet_set);
-
+qDebug("3.1");
     if(cabinetConf->isFirstUse())
         ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
     else
@@ -75,7 +77,6 @@ void MainWidget::set_cabinet(QByteArray qb)
 void MainWidget::win_swich_2(int)
 {
     init_xg_ui_set();
-    qDebug("ssss");
     num = qb_cabinet_order.length();
     for(int i = 0;i < num;i++)
     {
@@ -209,11 +210,10 @@ void MainWidget::create_cabinet()
     for(int i = 0;i < num;i++)
     {
         qb_num[i] = qb_cabinet_order.toHex().at(2*i+1) - '0';
-        qDebug()<<"i:"<<qb_num[i];
-        switch (qb_num[i]) {
+        switch (qb_num[i]) {            //qb_num数组存放的是药柜创建的顺序
         case 1:
-            btn_one();
-            readSettings_cabinet(1);
+            btn_one();                           //创建药柜
+            readSettings_cabinet(1);   //读取该药柜的配置文件
             break;
         case 2:
             btn_two();
@@ -308,23 +308,22 @@ void MainWidget::writeSettings_cabinet(int row)
     cabinetsettings.beginGroup("cabinet");
     cabinetsettings.endGroup();
     /*先检查药柜是否为空，在写入每个格子的信息*/
-        for(int i = 0;i < LatticeNum; i++)
-        {
-            //--lattice代表格子名称 i表示第几个格子，为每个格子分组
-            int seral_num = medinf[row].at(i).num;
-            cabinetsettings.beginGroup("lattice" + QString::number(i,10));
-            cabinetsettings.setValue(QString::number(i,10) + "num",seral_num);
-            cabinetsettings.setValue(QString::number(i,10) + "exist",medinf[row].at(i).exist);
-            cabinetsettings.setValue(QString::number(i,10) + "cab_num",medinf[row].at(i).cab_num);
-            cabinetsettings.setValue(QString::number(i,10) + "lat_num",medinf[row].at(i).lat_num);
-            cabinetsettings.setValue(QString::number(i,10) + "bbb",medinf[row].at(i).name);
-            cabinetsettings.setValue(QString::number(i,10) + "ccc",medinf[row].at(i).application);
-            cabinetsettings.setValue(QString::number(i,10) + "ddd",medinf[row].at(i).Features);
-            cabinetsettings.setValue(QString::number(i,10) + "eee",medinf[row].at(i).ProductionDate);
-            cabinetsettings.setValue(QString::number(i,10) + "fff",medinf[row].at(i).ShelfLife);
-            cabinetsettings.endGroup();
-        }
-
+    for(int i = 0;i < LatticeNum; i++)
+    {
+        //--lattice代表格子名称 i表示第几个格子，为每个格子分组
+        int seral_num = medinf[row].at(i).num;
+        cabinetsettings.beginGroup("lattice" + QString::number(i,10));
+        cabinetsettings.setValue(QString::number(i,10) + "num",seral_num);
+        cabinetsettings.setValue(QString::number(i,10) + "exist",medinf[row].at(i).exist);
+        cabinetsettings.setValue(QString::number(i,10) + "cab_num",medinf[row].at(i).cab_num);
+        cabinetsettings.setValue(QString::number(i,10) + "lat_num",medinf[row].at(i).lat_num);
+        cabinetsettings.setValue(QString::number(i,10) + "bbb",medinf[row].at(i).name);
+        cabinetsettings.setValue(QString::number(i,10) + "ccc",medinf[row].at(i).application);
+        cabinetsettings.setValue(QString::number(i,10) + "ddd",medinf[row].at(i).Features);
+        cabinetsettings.setValue(QString::number(i,10) + "eee",medinf[row].at(i).ProductionDate);
+        cabinetsettings.setValue(QString::number(i,10) + "fff",medinf[row].at(i).ShelfLife);
+        cabinetsettings.endGroup();
+    }
 }
 
 /**************************
@@ -343,7 +342,7 @@ void MainWidget::check_code(QByteArray qby)
     {
         for( int i = 0 ;i < LatticeNum; i++)
         {
-            if(medinf[j].at(i).name == str)
+            if(medinf[qb_num[j]].at(i).name == str)
             {
                 exist = true;//找到物品，记录位子：row--药柜 low--格子
                 row = i;
@@ -390,15 +389,14 @@ void MainWidget::check_code(QByteArray qby)
 void MainWidget::read_showinf(MedInf med)
 {
     med.exist = 1;
-        medinf[med.cab_num].removeAt(med.lat_num);
-        medinf[med.cab_num].insert(med.lat_num,med);
-        cabinets[med.cab_num].item_add(med.lat_num,0,med.name);
-        show_inf->btn_close();
-        ui_inf_exist = false;
-        QMessageBox msgBox;
-        msgBox.setText("存取完毕，请关好柜门！");
-        msgBox.exec();
-
+    medinf[med.cab_num].removeAt(med.lat_num);
+    medinf[med.cab_num].insert(med.lat_num,med);
+    cabinets[med.cab_num].item_add(med.lat_num,0,med.name);
+    show_inf->btn_close();
+    ui_inf_exist = false;
+    QMessageBox msgBox;
+    msgBox.setText("存取完毕，请关好柜门！");
+    msgBox.exec();
 }
 
 void MainWidget::check_pri_use()
@@ -464,15 +462,15 @@ void MainWidget::init_xg_ui_set()
     qvbox_three_layout = new QVBoxLayout();
     qvbox_four_layout = new QVBoxLayout();
 
-qvbox_zero_layout->addWidget(&cabinets[0]);
-qvbox_one_layout->addWidget(&cabinets[1]);          //--重新加入药柜
-qvbox_two_layout->addWidget(&cabinets[2]);          //--重新加入药柜
-qvbox_three_layout->addWidget(&cabinets[3]);          //--重新加入药柜
-qvbox_four_layout->addWidget(&cabinets[4]);          //--重新加入药柜
-cabinets[1].hide();
-cabinets[2].hide();
-cabinets[3].hide();
-cabinets[4].hide();
+    qvbox_zero_layout->addWidget(&cabinets[0]);
+    qvbox_one_layout->addWidget(&cabinets[1]);          //--重新加入药柜
+    qvbox_two_layout->addWidget(&cabinets[2]);          //--重新加入药柜
+    qvbox_three_layout->addWidget(&cabinets[3]);          //--重新加入药柜
+    qvbox_four_layout->addWidget(&cabinets[4]);          //--重新加入药柜
+    cabinets[1].hide();
+    cabinets[2].hide();
+    cabinets[3].hide();
+    cabinets[4].hide();
     qhbox_main->addLayout(qvbox_three_layout);
     qhbox_main->addLayout(qvbox_one_layout);
     qhbox_main->addLayout(qvbox_zero_layout);
@@ -514,7 +512,7 @@ cabinets[4].hide();
 
     connect(list, SIGNAL(currentRowChanged(int)), stack, SLOT(setCurrentIndex(int)));
 
-    ctrlUi = new ControlDevice;//控制台，接受型号
+//    ctrlUi = new ControlDevice;//控制台，接受型号
     connect(ctrlUi,SIGNAL(codeScanData(QByteArray)),this,SLOT(check_code(QByteArray)));
     connect(ctrlUi,SIGNAL(cardReaderData(QByteArray)),this,SLOT(scan_user(QByteArray)));
     show_inf = new ShowInf;//显示性息窗口

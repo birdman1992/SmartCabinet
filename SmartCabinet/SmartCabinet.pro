@@ -64,7 +64,9 @@ HEADERS  += mainwidget.h \
     Cabinet/cabinet.h \
     Cabinet/cabinetwidget.h \
     Json/jsk_json.h \
-    Structs/caseaddress.h
+    Structs/caseaddress.h \
+    beautifului.h
+
 
 
 FORMS    += mainwidget.ui \
@@ -79,3 +81,8 @@ FORMS    += mainwidget.ui \
     PrimaryUser/primaryuser.ui \
     Cabinet/cabinet.ui \
     Cabinet/cabinetwidget.ui
+
+RESOURCES += \
+    image.qrc
+
+DISTFILES +=

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>image/black.css</file>
+        <file>image/black1.css</file>
+    </qresource>
+</RCC>
