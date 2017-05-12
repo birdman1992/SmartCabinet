@@ -13,7 +13,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui(new Ui::CabinetWidget)
 {
     ui->setupUi(this);
-    clickLock = false;
+    clickLock = true;
     waitForCodeScan = false;
     waitForInit = true;
 }
@@ -33,20 +33,23 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     int index = cabinets.count()-1;
     qDebug()<<"index"<<index;
 
+    ui->cabinet_layout->addStretch();
+
     for(; index>0; index--)
     {
-        if(index%2)
+        if(cabinets.at(index)->isInLeft())
             ui->cabinet_layout->addWidget(cabinets.at(index));
     }
     ui->cabinet_layout->addWidget(cabinets.at(0));
     connect(cabinets.at(0), SIGNAL(logoClicked()), this, SLOT(logoClicked()));
 
-    index = 2;
+    index = 1;
     for(; index<(cabinets.count()); index++)
     {
-        if(!(index%2))
+        if(!cabinets.at(index)->isInLeft())
             ui->cabinet_layout->addWidget(cabinets.at(index));
     }
+    ui->cabinet_layout->addStretch();
 
     for(index=0; index<cabinets.count(); index++)
     {
@@ -63,11 +66,14 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
             return;
         else
             config->list_cabinet.at(cabSeqNum)->clearSelectState(caseIndex);
+        return;
     }
 
     bool clickRepeat = false;
     if((caseIndex==selectCase) && (cabSeqNum == selectCab))
         clickRepeat = true;//标记为重复点击
+    if(!config->list_cabinet[cabSeqNum]->list_case[caseIndex]->name.isEmpty())
+        clickRepeat = true;
 
     clickLock = true;
     selectCab = cabSeqNum;
@@ -79,6 +85,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(clickRepeat)
         {
             config->list_cabinet[0]->showMsg(MSG_STORE_SELECT_REPEAT, false);
+            clickLock = false;
+            return;
         }
         config->list_cabinet[selectCab]->setCaseName(scanInfo, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);

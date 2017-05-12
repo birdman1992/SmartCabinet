@@ -28,6 +28,7 @@ public:
     void clearSelectState(int row);//清除选中状态
     void showMsg(QString msg, bool showBigCharacter);
     void setCaseName(QString name, int index);//设置柜格存放物品名
+    bool isInLeft();//true:柜子在主柜左边 false:柜子在主柜右边
 
     QList<CabinetInfo*> list_case;//柜格列表
 

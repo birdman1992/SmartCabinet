@@ -86,7 +86,6 @@ void CabinetSet::on_clear_clicked()
 void CabinetSet::on_save_clicked()
 {
     qDebug()<<cabinet_pos.toHex();
-    qDebug()<<config->list_cabinet.count();
     config->creatCabinetConfig(cabinet_pos);
     qDebug()<<"creat over";
 //    emit setCabinet(cabinet_pos);

@@ -598,6 +598,7 @@ void MainWidget::init_huangpo()
 
     //智能柜组合设置界面
     win_cabinet_set = new CabinetSet(this);
+    win_cabinet_set->installGlobalConfig(cabinetConf);
     connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));

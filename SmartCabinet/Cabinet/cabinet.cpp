@@ -128,6 +128,11 @@ void Cabinet::setCaseName(QString name, int index)
     ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
 }
 
+bool Cabinet::isInLeft()
+{
+    return posNum%2;
+}
+
 void Cabinet::on_tableWidget_cellClicked(int row, int)
 {
     emit caseSelect(row, seqNum);

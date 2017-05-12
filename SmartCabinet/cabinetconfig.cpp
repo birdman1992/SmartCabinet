@@ -40,7 +40,7 @@ int CabinetConfig::checkUser(QString userId)
     int i = 0;
 
     for(i=0; i<list_user.count(); i++)
-    {qDebug()<<list_user.at(i)->userId;
+    {
         if(list_user.at(i)->userId == userId)
             return i;
     }
@@ -83,17 +83,14 @@ void CabinetConfig::readCabinetConfig()
     int i = 0;
     int j = 0;
 
-qDebug("1>>");
     for(i=0; i<cabNum; i++)
-    {qDebug()<<i;
+    {
         Cabinet* cab = new Cabinet();
-        int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();qDebug()<<"PosNum"<<pos<<cab;
+        int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
         cab->CabinetInit(i, pos, VICE_CAB_CASE_NUM,(i==0));qDebug()<<cab;
-        qDebug()<<list_cabinet.isEmpty();
-        qDebug()<<list_cabinet.count();
-        list_cabinet<<cab;qDebug("002");
+        list_cabinet<<cab;
     }
-qDebug("<<1");
+
     settings.beginReadArray("Cabinet0");
     for(j=0; j<Main_CAB_CASE_NUM; j++)
     {
@@ -156,8 +153,7 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
     }
     settings.sync();
 
-    qDebug()<<"read1";
-    readCabinetConfig();qDebug()<<"read2";
+    readCabinetConfig();
 }
 
 //void CabinetConfig::writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo *info)
