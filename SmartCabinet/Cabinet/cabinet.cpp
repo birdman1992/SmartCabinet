@@ -87,6 +87,10 @@ void Cabinet::consumableOut(int index)
 {
     if(index >= list_case.count())
         return;
+
+    if(list_case.at(index)->num == 0)
+        return;
+
     list_case.at(index)->num--;
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
@@ -136,6 +140,25 @@ bool Cabinet::isInLeft()
 void Cabinet::on_tableWidget_cellClicked(int row, int)
 {
     emit caseSelect(row, seqNum);
+}
+
+void Cabinet::setCaseState(int index, int numState)
+{
+    if(index > list_case.count())
+        return;
+
+    if(numState == 0)
+    {
+        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
+    }
+    else if(numState == 1)
+    {
+        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 170, 0));
+    }
+    else if(numState == 2)
+    {
+        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 0, 0));
+    }
 }
 
 bool Cabinet::eventFilter(QObject *obj, QEvent *event)

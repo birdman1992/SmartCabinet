@@ -7,6 +7,9 @@
 #define MSG_STORE "请扫描待存放物品条形码 并放入存放柜 存放完毕请点击此处并关闭柜门"
 #define MSG_STORE_SELECT "请选择存放位置 柜门打开后请重新扫描条形码"
 #define MSG_STORE_SELECT_REPEAT "选择的位置被占用 请重新选择"
+#define MSG_FETCH "请选择要取出的物品 柜门打开后请扫描条形码取出"
+#define MSG_FETCH_SCAN "请扫描条形码取出物品 取用完毕请点击此处并关闭柜门"
+#define MSG_FETCH_EMPTY "没有库存了 请关好柜门 点击此处退出"
 
 CabinetWidget::CabinetWidget(QWidget *parent) :
     QWidget(parent),
@@ -92,6 +95,21 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
         config->list_cabinet[0]->showMsg(MSG_STORE, false);
     }
+    else if(config->state == STATE_FETCH)
+    {
+        if(!clickRepeat)//如果该柜格没有存放药品
+        {qDebug()<<"empty";
+            selectCab = -1;
+            selectCase = -1;
+            clickLock = false;
+            return;
+        }
+        //打开对应柜门
+        qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
+        waitForCodeScan = true;
+        scanInfo = QString();
+        config->list_cabinet[0]->showMsg(MSG_FETCH_SCAN, false);
+    }
 }
 
 void CabinetWidget::recvScanData(QByteArray qba)
@@ -99,9 +117,10 @@ void CabinetWidget::recvScanData(QByteArray qba)
     if(!waitForCodeScan)
     {
         qDebug()<<"[CabinetWidget]"<<"scan data not need";
+        return;
     }
     bool newStore = false;
-    if(scanInfo != QString(qba))
+    if((scanInfo != QString(qba)) && (config->state != STATE_FETCH))
     {
         newStore = true;
         storeNum = 0;
@@ -116,18 +135,44 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else
     {
-        //打开对应柜门
-        qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
-        storeNum++;
-        config->list_cabinet[0]->showMsg(MSG_STORE+
-            QString("\n已放入\n%1 ×%2").arg(config->list_cabinet[selectCab]->list_case[selectCase]->name).arg(storeNum), false);
-        config->list_cabinet[selectCab]->consumableIn(selectCase);
+        if(config->state == STATE_STORE)
+        {
+            //打开对应柜门
+            qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
+            storeNum++;
+            config->list_cabinet[0]->showMsg(MSG_STORE+
+                                             QString("\n已放入\n%1 ×%2").arg(config->list_cabinet[selectCab]->list_case[selectCase]->name).arg(storeNum), false);
+            config->list_cabinet[selectCab]->consumableIn(selectCase);
+        }
+        else if(config->state == STATE_FETCH)
+        {
+            if(config->list_cabinet[selectCab]->list_case[selectCase]->num == 0)
+            {
+                config->list_cabinet[0]->showMsg(MSG_FETCH_EMPTY, false);
+                return;
+            }
+            if(config->list_cabinet[selectCab]->list_case[selectCase]->name != scanInfo)
+            {
+                return;
+            }
+            storeNum++;
+            config->list_cabinet[0]->showMsg(MSG_FETCH_SCAN+
+                                             QString("\n已取出\n%1 ×%2").arg(config->list_cabinet[selectCab]->list_case[selectCase]->name).arg(storeNum), false);
+            config->list_cabinet[selectCab]->consumableOut(selectCase);
+        }
     }
 }
 
 void CabinetWidget::logoClicked()
 {
     if(config->state == STATE_STORE)
+    {
+        config->state = STATE_NO;
+        waitForCodeScan = false;
+        config->list_cabinet.at(selectCab)->clearSelectState(selectCase);
+        emit winSwitch(INDEX_STANDBY);
+    }
+    else if(config->state == STATE_FETCH)
     {
         config->state = STATE_NO;
         waitForCodeScan = false;
@@ -148,6 +193,13 @@ void CabinetWidget::showEvent(QShowEvent *)
     {
         waitForCodeScan = true;
         config->list_cabinet[0]->showMsg(MSG_STORE, false);
+    }
+    else if(config->state == STATE_FETCH)
+    {
+        clickLock = false;
+        selectCab = -1;
+        selectCase = -1;
+        config->list_cabinet[0]->showMsg(MSG_FETCH, false);
     }
 }
 

@@ -25,6 +25,8 @@ private slots:
     void wait_timeout();
     void on_cun_clicked();
 
+    void on_qu_clicked();
+
 signals:
     void winSwitch(int);
 

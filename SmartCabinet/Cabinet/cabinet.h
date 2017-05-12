@@ -48,6 +48,7 @@ private:
     int state;//0:
 
     void setCase(CabinetInfo* info);
+    void setCaseState(int index, int numState);//设置柜格状态,0:没有库存，1:库存紧张,2:库存充足
     bool eventFilter(QObject *obj, QEvent *event);
 };
 

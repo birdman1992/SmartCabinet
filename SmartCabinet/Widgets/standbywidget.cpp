@@ -21,6 +21,7 @@ StandbyWidget::~StandbyWidget()
 void StandbyWidget::on_cun_clicked()//存放按钮
 {
     waitForCardReader = true;
+    config->state = STATE_STORE;
     msgBox = new QMessageBox(QMessageBox::NoIcon, "身份验证", "请刷卡验证身份",QMessageBox::Ok,NULL,
            Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
     msgBox->setModal(false);
@@ -60,8 +61,10 @@ void StandbyWidget::recvUserInfo(QByteArray qba)
     }
     else
     {
-        config->state = STATE_STORE;
-        emit winSwitch(INDEX_CAB_SHOW);
+        if(config->state == STATE_STORE)
+            emit winSwitch(INDEX_CAB_SHOW);
+        else if(config->state = STATE_FETCH)
+            emit winSwitch(INDEX_CAB_SHOW);
     }
 
     waitForCardReader = false;
@@ -99,4 +102,15 @@ bool StandbyWidget::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     return true;
+}
+
+void StandbyWidget::on_qu_clicked()
+{
+    waitForCardReader = true;
+    config->state = STATE_FETCH;
+    msgBox = new QMessageBox(QMessageBox::NoIcon, "身份验证", "请刷卡验证身份",QMessageBox::Ok,NULL,
+           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+    msgBox->setModal(false);
+    msgBox->show();
+    QTimer::singleShot(3000,this, SLOT(wait_timeout()));
 }
