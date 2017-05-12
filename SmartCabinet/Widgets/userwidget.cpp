@@ -71,7 +71,6 @@ void UserWidget::showEvent(QShowEvent*)
     if(config->isFirstUse())
     {
         firstUse = true;
-        qDebug()<<"123"<<firstUse;
         waitForCardReader = true;
         msgBox = new QMessageBox(QMessageBox::NoIcon, "添加管理员用户", "请刷卡添加管理员用户",QMessageBox::Ok,NULL,
                Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
@@ -90,11 +89,9 @@ void UserWidget::recvUserInfo(QByteArray qba)
 
     waitForCardReader = false;
     UserInfo* info = new UserInfo();
-
     info->userId = QString(qba);
     config->addUser(info);
     listUpdate();
-
     msgBox->close();
     msgBox->deleteLater();
 }

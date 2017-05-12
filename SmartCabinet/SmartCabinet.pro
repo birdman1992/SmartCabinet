@@ -33,7 +33,10 @@ SOURCES += main.cpp\
     ShowInf/showinf.cpp \
     PrimaryUser/primaryuser.cpp \
     PrimaryUser/userinf.cpp \
-    Cabinet/cabinet.cpp
+    Cabinet/cabinet.cpp \
+    Cabinet/cabinetwidget.cpp \
+    Json/jsk_json.cpp \
+    Structs/caseaddress.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -58,7 +61,10 @@ HEADERS  += mainwidget.h \
     ShowInf/showinf.h \
     PrimaryUser/primaryuser.h \
     PrimaryUser/userinf.h \
-    Cabinet/cabinet.h
+    Cabinet/cabinet.h \
+    Cabinet/cabinetwidget.h \
+    Json/jsk_json.h \
+    Structs/caseaddress.h
 
 
 FORMS    += mainwidget.ui \
@@ -71,4 +77,5 @@ FORMS    += mainwidget.ui \
     Countdown/countdown.ui \
     ShowInf/showinf.ui \
     PrimaryUser/primaryuser.ui \
-    Cabinet/cabinet.ui
+    Cabinet/cabinet.ui \
+    Cabinet/cabinetwidget.ui

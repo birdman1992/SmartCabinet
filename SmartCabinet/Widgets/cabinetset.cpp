@@ -74,6 +74,7 @@ void CabinetSet::on_add_right_clicked()
 void CabinetSet::on_clear_clicked()
 {
     cabinet_pos.clear();
+    cabinet_pos[0] = 0;
     ui->label_1->hide();
     ui->label_2->hide();
     ui->label_3->hide();
@@ -85,9 +86,11 @@ void CabinetSet::on_clear_clicked()
 void CabinetSet::on_save_clicked()
 {
     qDebug()<<cabinet_pos.toHex();
-
+    qDebug()<<config->list_cabinet.count();
     config->creatCabinetConfig(cabinet_pos);
-    emit setCabinet(cabinet_pos);
+    qDebug()<<"creat over";
+//    emit setCabinet(cabinet_pos);
+    emit cabinetCreated();
     emit winSwitch(INDEX_STANDBY);
 }
 

@@ -17,6 +17,7 @@
 #include "Widgets/standbywidget.h"
 #include "Widgets/userwidget.h"
 #include "Widgets/cabinetset.h"
+#include "Cabinet/cabinetwidget.h"
 
 #include "Menu/setmenu.h"
 #include "ShowInf/showinf.h"
@@ -87,7 +88,7 @@ private:
     UserWidget* win_user_manage;//用户管理窗口
     StandbyWidget* win_standby;//待机窗口
     CabinetSet* win_cabinet_set;//智能柜组合设置窗口
-    CabinetPanel* win_cabinet;//智能柜窗口
+    CabinetWidget* win_cabinet;//智能柜窗口
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框

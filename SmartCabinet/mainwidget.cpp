@@ -16,9 +16,9 @@ MainWidget::MainWidget(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
 
 
-    init_xiangang();
+//    init_xiangang();
 
-//    init_huangpo();
+    init_huangpo();
 
 }
 
@@ -573,13 +573,24 @@ void MainWidget::cabinet_cleck_four(int num)
 
 void MainWidget::init_huangpo()
 {
+    //智能柜配置
     cabinetConf = new CabinetConfig();
+    qDebug()<<cabinetConf->list_cabinet.count();
+
+    //仿真控制台
     ctrlUi = new ControlDevice;
 
-    win_cabinet = new CabinetPanel(this);
+    //智能柜展示界面
+    win_cabinet = new CabinetWidget(this);
+    win_cabinet->installGlobalConfig(cabinetConf);
+    connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
+    connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
     //待机界面
     win_standby = new StandbyWidget(this);
+    win_standby->installGlobalConfig(cabinetConf);
+    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_standby, SLOT(recvUserInfo(QByteArray)));
+    connect(win_standby, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
     //用户管理界面
     win_user_manage = new UserWidget(this);
@@ -590,6 +601,7 @@ void MainWidget::init_huangpo()
     //智能柜组合设置界面
     win_cabinet_set = new CabinetSet(this);
     connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ui->stackedWidget->addWidget(win_standby);
@@ -600,11 +612,12 @@ void MainWidget::init_huangpo()
     if(cabinetConf->isFirstUse())
         ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
     else
-        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
+    {
+        ui->stackedWidget->setCurrentIndex(INDEX_STANDBY);
+        win_cabinet->panel_init(cabinetConf->list_cabinet);
+    }
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
-
-    win_cabinet->panel_init(cabinetConf->list_cabinet);
-
+    qDebug()<<cabinetConf->list_cabinet.count();
 }
 
 MainWidget::~MainWidget()

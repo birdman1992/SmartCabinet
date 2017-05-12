@@ -5,11 +5,16 @@
 
 CabinetConfig::CabinetConfig()
 {
+    state = STATE_NO;//qDebug("a");
+    list_user.clear();
+    list_cabinet.clear();//qDebug("b");
+//    qDebug()<<list_cabinet.count();
     if(!QDir("config").exists())
     {
         QDir dir;
         dir.mkdir("config");
     }
+
     readUserConfig();
     readCabinetConfig();
 }
@@ -28,6 +33,18 @@ bool CabinetConfig::isFirstUse()
 void CabinetConfig::addUser(UserInfo *info)
 {
     addNewUser(info);
+}
+
+int CabinetConfig::checkUser(QString userId)
+{
+    int i = 0;
+
+    for(i=0; i<list_user.count(); i++)
+    {qDebug()<<list_user.at(i)->userId;
+        if(list_user.at(i)->userId == userId)
+            return i;
+    }
+    return -1;
 }
 
 void CabinetConfig::readUserConfig()
@@ -66,14 +83,17 @@ void CabinetConfig::readCabinetConfig()
     int i = 0;
     int j = 0;
 
+qDebug("1>>");
     for(i=0; i<cabNum; i++)
-    {
+    {qDebug()<<i;
         Cabinet* cab = new Cabinet();
-        int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-        cab->CabinetInit(i, pos, VICE_CAB_CASE_NUM,(i==0));
-        list_cabinet<<cab;
+        int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();qDebug()<<"PosNum"<<pos<<cab;
+        cab->CabinetInit(i, pos, VICE_CAB_CASE_NUM,(i==0));qDebug()<<cab;
+        qDebug()<<list_cabinet.isEmpty();
+        qDebug()<<list_cabinet.count();
+        list_cabinet<<cab;qDebug("002");
     }
-
+qDebug("<<1");
     settings.beginReadArray("Cabinet0");
     for(j=0; j<Main_CAB_CASE_NUM; j++)
     {
@@ -85,7 +105,6 @@ void CabinetConfig::readCabinetConfig()
         list_cabinet[0]->addCase(info);
     }
     settings.endArray();
-
     for(i=1; i<cabNum; i++)
     {
         settings.beginReadArray(QString("Cabinet%1").arg(i));
@@ -119,8 +138,8 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
     for(j=0; j<Main_CAB_CASE_NUM; j++)
     {
         settings.setArrayIndex(j);
-        settings.setValue("name",QVariant(QString("药品0%1").arg(j)));
-        settings.setValue("num", QVariant(1));
+        settings.setValue("name",QVariant(QString()));
+        settings.setValue("num", QVariant(0));
     }
     settings.endArray();
 
@@ -130,12 +149,42 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
         for(j=0; j<VICE_CAB_CASE_NUM; j++)
         {
             settings.setArrayIndex(j);
-            settings.setValue("name",QVariant(QString("药品%1%2").arg(i).arg(j)));
-            settings.setValue("num", QVariant(1));
+            settings.setValue("name",QVariant(QString()));
+            settings.setValue("num", QVariant(0));
         }
         settings.endArray();
     }
     settings.sync();
+
+    qDebug()<<"read1";
+    readCabinetConfig();qDebug()<<"read2";
+}
+
+//void CabinetConfig::writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo *info)
+//{
+
+//}
+
+CaseAddress CabinetConfig::checkCabinetByName(QString name)
+{
+    int i = 0;
+    int j = 0;
+    CaseAddress ret;
+
+    for(i=0; i<list_cabinet.count(); i++)
+    {
+        for(j=0; j<list_cabinet.at(i)->list_case.count(); j++)
+        {
+            if(list_cabinet.at(i)->list_case.at(j)->name == name)
+            {
+                ret.cabinetSeqNUM = i;
+                ret.caseIndex = j;
+                return ret;
+            }
+        }
+    }
+
+    return ret;
 }
 
 //添加新用户
@@ -151,5 +200,6 @@ void CabinetConfig::addNewUser(UserInfo *info)
     settings.setValue("id",QVariant(info->userId));
     settings.endGroup();
     list_user<<info;
+    settings.setValue("userNum", QVariant(list_user.count()));
     firstUse = false;
 }

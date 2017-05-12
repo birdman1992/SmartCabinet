@@ -13,17 +13,58 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="cun">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>140</y>
+     <x>140</x>
+     <y>90</y>
      <width>141</width>
      <height>101</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>19</pointsize>
+    </font>
+   </property>
    <property name="text">
-    <string>standby</string>
+    <string>存放</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="qu">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>90</y>
+     <width>141</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>19</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>取用</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="user_manage">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>90</y>
+     <width>141</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>19</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>用户管理</string>
    </property>
   </widget>
  </widget>
