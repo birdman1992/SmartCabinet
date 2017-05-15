@@ -53,8 +53,15 @@ void Cabinet::addCase(CabinetInfo *info)
     list_case<<info;
     ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name));
 
-    if(!info->name.isEmpty())
-        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
+    if(info->name.isEmpty())
+        setCaseState(index,3);
+    else
+    {
+        if(info->num == 0)
+            setCaseState(index,2);
+        else
+            setCaseState(index,0);
+    }
 }
 
 int Cabinet::getIndexByName(QString findName)
@@ -74,6 +81,10 @@ void Cabinet::consumableIn(int index)
 {
     if(index >= list_case.count())
         return;
+
+    if(list_case.at(index)->num == 0)
+        setCaseState(index, 0);
+
     list_case.at(index)->num++;
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
@@ -98,6 +109,8 @@ void Cabinet::consumableOut(int index)
     settings.setArrayIndex(index);
     settings.setValue("num",list_case.at(index)->num);
     settings.endArray();
+    if(list_case.at(index)->num == 0)
+        setCaseState(index, 2);
 }
 
 int Cabinet::cabinetPosNum()
@@ -147,17 +160,21 @@ void Cabinet::setCaseState(int index, int numState)
     if(index > list_case.count())
         return;
 
-    if(numState == 0)
+    if(numState == 0)//库存充足
     {
         ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
     }
-    else if(numState == 1)
+    else if(numState == 1)//库存不足
     {
         ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 170, 0));
     }
-    else if(numState == 2)
+    else if(numState == 2)//库存耗尽
     {
         ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 0, 0));
+    }
+    else if(numState == 3)//空柜格
+    {
+        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 255, 255));
     }
 }
 

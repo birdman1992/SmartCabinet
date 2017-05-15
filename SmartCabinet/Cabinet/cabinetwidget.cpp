@@ -16,6 +16,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui(new Ui::CabinetWidget)
 {
     ui->setupUi(this);
+    storeNum = 0;
     clickLock = true;
     waitForCodeScan = false;
     waitForInit = true;
@@ -141,8 +142,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
             qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
             storeNum++;
             config->list_cabinet[0]->showMsg(MSG_STORE+
-                                             QString("\n已放入\n%1 ×%2").arg(config->list_cabinet[selectCab]->list_case[selectCase]->name).arg(storeNum), false);
-            config->list_cabinet[selectCab]->consumableIn(selectCase);
+                                             QString("\n已放入\n%1 ×%2").arg(config->list_cabinet[casePos.cabinetSeqNUM]->list_case[casePos.caseIndex]->name).arg(storeNum), false);
+            config->list_cabinet[casePos.cabinetSeqNUM]->consumableIn(casePos.caseIndex);
         }
         else if(config->state == STATE_FETCH)
         {
@@ -164,21 +165,24 @@ void CabinetWidget::recvScanData(QByteArray qba)
 }
 
 void CabinetWidget::logoClicked()
-{
+{//qDebug("logoClicked1");
     if(config->state == STATE_STORE)
     {
         config->state = STATE_NO;
         waitForCodeScan = false;
-        config->list_cabinet.at(selectCab)->clearSelectState(selectCase);
+        storeNum = 0;
+//        config->list_cabinet.at(selectCab)->clearSelectState(selectCase);
         emit winSwitch(INDEX_STANDBY);
     }
     else if(config->state == STATE_FETCH)
     {
         config->state = STATE_NO;
         waitForCodeScan = false;
-        config->list_cabinet.at(selectCab)->clearSelectState(selectCase);
+        storeNum = 0;
+//        config->list_cabinet.at(selectCab)->clearSelectState(selectCase);
         emit winSwitch(INDEX_STANDBY);
     }
+//    qDebug("logoClicked2");
 }
 
 void CabinetWidget::cabinetInit()
