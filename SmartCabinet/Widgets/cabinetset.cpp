@@ -90,18 +90,5 @@ void CabinetSet::on_save_clicked()
     qDebug()<<"creat over";
 //    emit setCabinet(cabinet_pos);
     emit cabinetCreated();
-    emit winSwitch(INDEX_STANDBY);
-}
-
-void CabinetSet::on_cancel_clicked()
-{
-    cabinet_pos.clear();
-    ui->label_1->hide();
-    ui->label_2->hide();
-    ui->label_3->hide();
-    ui->label_4->hide();
-    ui->add_left->setEnabled(true);
-    ui->add_right->setEnabled(true);
-
-    emit winSwitch(INDEX_STANDBY);
+    emit winSwitch(INDEX_CAB_SHOW);
 }

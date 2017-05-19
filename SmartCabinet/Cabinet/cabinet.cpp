@@ -11,7 +11,7 @@ Cabinet::Cabinet(QWidget *parent) :
     ui(new Ui::Cabinet)
 {
     ui->setupUi(this);
-    ui->logo->installEventFilter(this);
+
 }
 
 Cabinet::~Cabinet()
@@ -23,17 +23,28 @@ void Cabinet::CabinetInit(int seq, int pos, int num, bool mainCab)
 {
     seqNum = seq;
     posNum = pos;
-    caseNum = num;
+//    caseNum = num;
     isMainCabinet = mainCab;
 
     if(!isMainCabinet)
     {
+        cabType = 0;
+        caseNum = CAB_CASE_0_NUM;
         ui->logo->hide();
         ui->tableWidget->setRowCount(caseNum);
         return;
     }
+    else
+    {
+        cabType = 1;
+        caseNum = CAB_CASE_1_NUM;
+        ui->tableWidget->setRowCount(caseNum);
+        logo = new QLabel(this);
+        logo->installEventFilter(this);
+        ui->logo->hide();
+        ui->tableWidget->setCellWidget(1,0,logo);
 
-    ui->tableWidget->setRowCount(caseNum-2);
+    }
 }
 
 void Cabinet::setCabPos(int pos)
@@ -41,11 +52,16 @@ void Cabinet::setCabPos(int pos)
     posNum = pos;
 }
 
+void Cabinet::setCabType(int _type)
+{
+    cabType = _type;
+}
+
 void Cabinet::addCase(CabinetInfo *info)
 {
     if(list_case.count()>=caseNum)
     {
-        qDebug()<<"[addCase]"<<"case is full";
+        qDebug()<<"[addCase]"<<"case is full"<<seqNum<<caseNum;
         return;
     }
 
@@ -125,11 +141,11 @@ void Cabinet::clearSelectState(int row)
 
 void Cabinet::showMsg(QString msg, bool showBigCharacter)
 {
-    ui->logo->setText(msg);
+    logo->setText(msg);
     if(showBigCharacter)
-        ui->logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
     else
-        ui->logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 9pt \"Sans Serif\";");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 9pt \"Sans Serif\";");
 }
 
 void Cabinet::setCaseName(QString name, int index)
@@ -153,6 +169,40 @@ bool Cabinet::isInLeft()
 void Cabinet::on_tableWidget_cellClicked(int row, int)
 {
     emit caseSelect(row, seqNum);
+}
+
+void Cabinet::caseDraw(int _type)
+{
+    int baseHeight = this->geometry().height()/10;
+    if(_type == 0)//副柜
+    {
+        if(ui->tableWidget->rowCount() != CAB_CASE_0_NUM)
+            ui->tableWidget->setRowCount(CAB_CASE_0_NUM);
+
+        ui->tableWidget->setColumnWidth(0,this->geometry().width());
+        ui->tableWidget->setRowHeight(0,baseHeight*3);
+        ui->tableWidget->setRowHeight(1,baseHeight*1);
+        ui->tableWidget->setRowHeight(2,baseHeight*1);
+        ui->tableWidget->setRowHeight(3,baseHeight*1);
+        ui->tableWidget->setRowHeight(4,baseHeight*1);
+        ui->tableWidget->setRowHeight(5,baseHeight*1);
+        ui->tableWidget->setRowHeight(6,baseHeight*1);
+        ui->tableWidget->setRowHeight(7,baseHeight*1);
+    }
+    else if(_type == 1)//单列主柜
+    {
+        if(ui->tableWidget->rowCount() != CAB_CASE_1_NUM)
+            ui->tableWidget->setRowCount(CAB_CASE_1_NUM);
+
+        ui->tableWidget->setColumnWidth(0,this->geometry().width());
+        ui->tableWidget->setRowHeight(0,baseHeight*3);
+        ui->tableWidget->setRowHeight(1,baseHeight*3);
+        ui->tableWidget->setRowHeight(2,baseHeight*1);
+        ui->tableWidget->setRowHeight(3,baseHeight*1);
+        ui->tableWidget->setRowHeight(4,baseHeight*1);
+        ui->tableWidget->setRowHeight(5,baseHeight*1);
+        logo->resize(ui->tableWidget->columnWidth(0), ui->tableWidget->rowHeight(1));
+    }
 }
 
 void Cabinet::setCaseState(int index, int numState)
@@ -180,7 +230,7 @@ void Cabinet::setCaseState(int index, int numState)
 
 bool Cabinet::eventFilter(QObject *obj, QEvent *event)
 {
-    if(obj == ui->logo)
+    if(obj == logo)
     {
         if(event->type() == QEvent::MouseButtonPress)
         {
@@ -194,4 +244,9 @@ bool Cabinet::eventFilter(QObject *obj, QEvent *event)
 
     // pass the event on to the parent class
     return QWidget::eventFilter(obj, event);
+}
+
+void Cabinet::resizeEvent(QResizeEvent*)
+{
+    caseDraw(cabType);
 }

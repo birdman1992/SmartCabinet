@@ -210,24 +210,6 @@
     <string>保存</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="cancel">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>80</y>
-     <width>91</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>20</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>取消</string>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>

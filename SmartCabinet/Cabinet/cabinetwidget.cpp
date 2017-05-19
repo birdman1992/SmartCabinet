@@ -19,7 +19,10 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     storeNum = 0;
     clickLock = true;
     waitForCodeScan = false;
+    waitForGoodsListCode = false;
     waitForInit = true;
+    msgBox = NULL;
+    optUser = QString();
 }
 
 CabinetWidget::~CabinetWidget()
@@ -59,7 +62,6 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     {
         connect(cabinets.at(index), SIGNAL(caseSelect(int,int)), this, SLOT(caseClicked(int,int)));
     }
-
 }
 
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
@@ -190,6 +192,8 @@ void CabinetWidget::cabinetInit()
     panel_init(config->list_cabinet);
 }
 
+
+
 void CabinetWidget::showEvent(QShowEvent *)
 {
 //    qDebug()<<"[CabinetWidget]"<<"showEvent";
@@ -223,4 +227,138 @@ void CabinetWidget::caseLock()
 void CabinetWidget::caseUnlock()
 {
     clickLock = false;
+}
+
+void CabinetWidget::on_store_clicked()
+{
+    waitForCardReader = true;
+    config->state = STATE_STORE;
+//    if(msgBox != NULL)
+//    {
+//        msgBox->close();
+//        msgBox->deleteLater();
+//        msgBox = NULL;
+//    }
+//    msgBox = new QMessageBox(QMessageBox::NoIcon, "身份验证", "请刷卡验证身份",QMessageBox::Ok,NULL,
+//           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+//    msgBox->setModal(false);
+//    msgBox->show();
+    msgShow("身份验证", "请刷卡验证身份",false);
+    QTimer::singleShot(10000,this, SLOT(wait_timeout()));
+}
+
+void CabinetWidget::on_fetch_clicked()
+{
+    waitForCardReader = true;
+    config->state = STATE_FETCH;
+    msgShow("身份验证", "请刷卡验证身份",false);
+//    msgBox = new QMessageBox(QMessageBox::NoIcon, "身份验证", "请刷卡验证身份",QMessageBox::Ok,NULL,
+//           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+//    msgBox->setModal(false);
+//    msgBox->show();
+    QTimer::singleShot(10000,this, SLOT(wait_timeout()));
+}
+
+void CabinetWidget::wait_timeout()
+{
+    if(msgBox == NULL)
+        return;
+
+    if(!waitForCardReader)
+        return;
+    waitForCardReader = false;
+    msgShow("等待超时", "身份校验超时",false);
+//    msgBox->close();
+//    msgBox->deleteLater();
+//    msgBox = NULL;
+
+//    msgBox = new QMessageBox(QMessageBox::NoIcon, "等待超时", "身份校验超时",QMessageBox::Ok,NULL,
+//           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+//    msgBox->setModal(true);
+//    msgBox->exec();
+//    msgBox->deleteLater();
+//    msgBox = NULL;
+}
+
+void CabinetWidget::warningMsgBox(QString title, QString msg)
+{
+    QMessageBox* box = new QMessageBox(QMessageBox::NoIcon, title, msg,QMessageBox::Ok,NULL,
+           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+    box->setModal(true);
+    box->exec();
+    box->deleteLater();
+}
+
+void CabinetWidget::msgClear()
+{
+    if(msgBox != NULL)
+    {
+        msgBox->close();
+        msgBox->deleteLater();
+        msgBox = NULL;
+    }
+}
+
+void CabinetWidget::msgShow(QString title, QString msg, bool setmodal)
+{
+    msgClear();
+
+    if(setmodal)
+    {
+        msgBox = new QMessageBox(QMessageBox::NoIcon, title, msg,QMessageBox::Ok,NULL,
+                                 Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+        msgBox->setModal(true);
+        msgBox->exec();
+        msgClear();
+    }
+    else
+    {
+        msgBox = new QMessageBox(QMessageBox::NoIcon, title, msg,QMessageBox::Ok,NULL,
+                                 Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+        msgBox->setModal(false);
+        msgBox->show();
+    }
+}
+
+void CabinetWidget::recvUserInfo(QByteArray qba)
+{
+    if(!waitForCardReader)
+    {
+        qDebug()<<"[StandbyWidget]"<<"recvUserInfo not need.";
+        msgClear();
+        return;
+    }
+//    waitForCardReader = false;
+    optUser = QString(qba);
+    msgShow("身份验证", "身份验证中...",false);
+    emit requireUserCheck(optUser);
+//    if(msgBox != NULL)
+//    {
+//        msgBox->close();
+//        msgBox->deleteLater();
+//        msgBox = NULL;
+//    }
+//    msgBox = new QMessageBox(QMessageBox::NoIcon, "身份验证", "身份验证中...",QMessageBox::Ok,NULL,
+//           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+//    msgBox->setModal(false);
+//    msgBox->show();
+}
+
+void CabinetWidget::recvUserCheckRst(bool pass)
+{
+//    msgClear();
+
+    if(pass)
+    {
+        msgShow("身份验证", "身份验证通过，请扫描送货单条码",true);
+//        warningMsgBox("身份验证", "身份验证通过，请扫描送货单条码");
+        waitForCodeScan = true;
+        waitForGoodsListCode = true;
+        waitForCardReader = false;
+    }
+    else
+    {
+        warningMsgBox("身份验证", "身份验证失败");
+    }
+    qDebug("rst");
 }

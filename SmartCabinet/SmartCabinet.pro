@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,9 +35,10 @@ SOURCES += main.cpp\
     PrimaryUser/userinf.cpp \
     Cabinet/cabinet.cpp \
     Cabinet/cabinetwidget.cpp \
-    Json/jsk_json.cpp \
-    Structs/caseaddress.cpp
-
+    Structs/caseaddress.cpp \
+    cabinetserver.cpp \
+    Json/cJSON.c \
+    Structs/goodslist.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -63,11 +64,11 @@ HEADERS  += mainwidget.h \
     PrimaryUser/userinf.h \
     Cabinet/cabinet.h \
     Cabinet/cabinetwidget.h \
-    Json/jsk_json.h \
     Structs/caseaddress.h \
-    beautifului.h
-
-
+    beautifului.h \
+    cabinetserver.h \
+    Json/cJSON.h \
+    Structs/goodslist.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -85,4 +86,5 @@ FORMS    += mainwidget.ui \
 RESOURCES += \
     image.qrc
 
-DISTFILES +=
+DISTFILES += \
+    Jsoncpp/sconscript

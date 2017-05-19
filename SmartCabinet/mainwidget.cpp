@@ -573,7 +573,10 @@ void MainWidget::init_huangpo()
 {
     //智能柜配置
     cabinetConf = new CabinetConfig();
-    qDebug()<<cabinetConf->list_cabinet.count();
+
+    //http通信类
+    cabServer = new CabinetServer(this);
+    cabServer->installGlobalConfig(cabinetConf);
 
     //仿真控制台
     ctrlUi = new ControlDevice;
@@ -582,7 +585,10 @@ void MainWidget::init_huangpo()
     win_cabinet = new CabinetWidget(this);
     win_cabinet->installGlobalConfig(cabinetConf);
     connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
+    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
     connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+    connect(cabServer, SIGNAL(loginRst(bool)), win_cabinet, SLOT(recvUserCheckRst(bool)));
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -609,10 +615,15 @@ void MainWidget::init_huangpo()
     ui->stackedWidget->addWidget(win_cabinet);
 
     if(cabinetConf->isFirstUse())
-        ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
+    {
+        if(cabinetConf->list_user.count())
+            ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
+        else
+            ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
+    }
     else
     {
-        ui->stackedWidget->setCurrentIndex(INDEX_STANDBY);
+        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
         win_cabinet->panel_init(cabinetConf->list_cabinet);
     }
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();

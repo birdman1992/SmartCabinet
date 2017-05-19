@@ -14,6 +14,7 @@
 #include <QLabel>
 
 #include "cabinetconfig.h"
+#include "cabinetserver.h"
 #include "Widgets/standbywidget.h"
 #include "Widgets/userwidget.h"
 #include "Widgets/cabinetset.h"
@@ -85,6 +86,7 @@ private:
     ControlDevice *ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
 
     CabinetConfig* cabinetConf;
+    CabinetServer* cabServer;
     UserWidget* win_user_manage;//用户管理窗口
     StandbyWidget* win_standby;//待机窗口
     CabinetSet* win_cabinet_set;//智能柜组合设置窗口

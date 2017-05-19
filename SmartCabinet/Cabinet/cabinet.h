@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <QLabel>
 #include "Structs/cabinetinfo.h"
 
 namespace Ui {
@@ -19,6 +20,7 @@ public:
 
     void CabinetInit(int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
     void setCabPos(int pos);
+    void setCabType(int _type);
     void addCase(CabinetInfo* info);//用于读取配置信息添加到信息列表尾部
 
     int getIndexByName(QString findName);//根据药品名检索柜格下标
@@ -46,10 +48,14 @@ private:
     int posNum;//位置编号
     int caseNum;//柜格数
     int state;//0:
+    int cabType;//柜子型号:0：副柜，1：单列主柜，2：双列主柜
+    QLabel* logo;
 
+    void caseDraw(int _type);
     void setCase(CabinetInfo* info);
     void setCaseState(int index, int numState);//设置柜格状态,0:没有库存，1:库存紧张,2:库存充足
     bool eventFilter(QObject *obj, QEvent *event);
+    void resizeEvent(QResizeEvent* event);
 };
 
 #endif // CABINET_H

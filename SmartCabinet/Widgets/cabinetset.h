@@ -25,7 +25,6 @@ private slots:
     void on_add_right_clicked();
     void on_clear_clicked();
     void on_save_clicked();
-    void on_cancel_clicked();
 
 signals:
     void winSwitch(int index);//窗口切换

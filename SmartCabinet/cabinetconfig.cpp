@@ -6,6 +6,7 @@
 CabinetConfig::CabinetConfig()
 {
     state = STATE_NO;//qDebug("a");
+    cabId = QString();
     list_user.clear();
     list_cabinet.clear();//qDebug("b");
 //    qDebug()<<list_cabinet.count();
@@ -23,6 +24,13 @@ CabinetConfig::~CabinetConfig()
 {
     qDeleteAll(list_user.begin(), list_user.end());
     list_user.clear();
+}
+
+void CabinetConfig::setCabinetId(QString id)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("CabinetId",QVariant(id));
+    settings.sync();
 }
 
 bool CabinetConfig::isFirstUse()
@@ -75,6 +83,7 @@ void CabinetConfig::readCabinetConfig()
 {
     if(!QFile(CONF_CABINET).exists())
     {
+        firstUse = true;
         return;
     }
 
@@ -83,16 +92,18 @@ void CabinetConfig::readCabinetConfig()
     int i = 0;
     int j = 0;
 
+    cabId = settings.value("CabinetId").toString();
+
     for(i=0; i<cabNum; i++)
     {
         Cabinet* cab = new Cabinet();
         int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-        cab->CabinetInit(i, pos, VICE_CAB_CASE_NUM,(i==0));qDebug()<<cab;
+        cab->CabinetInit(i, pos, VICE_CAB_CASE_NUM,(i==0));
         list_cabinet<<cab;
     }
 
     settings.beginReadArray("Cabinet0");
-    for(j=0; j<Main_CAB_CASE_NUM; j++)
+    for(j=0; j<CAB_CASE_1_NUM-1; j++)
     {
         settings.setArrayIndex(j);
         CabinetInfo* info = new CabinetInfo;
@@ -105,7 +116,7 @@ void CabinetConfig::readCabinetConfig()
     for(i=1; i<cabNum; i++)
     {
         settings.beginReadArray(QString("Cabinet%1").arg(i));
-        for(j=0; j<VICE_CAB_CASE_NUM; j++)
+        for(j=0; j<CAB_CASE_0_NUM; j++)
         {
             settings.setArrayIndex(j);
             CabinetInfo* info = new CabinetInfo;
@@ -126,6 +137,7 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
 
     settings.setValue("CabNum",qba.size());
+    settings.setValue("CabinetId",QString());
     for(i=0; i<qba.size(); i++)//保存柜子位置编号
     {
         settings.setValue(QString("Cab%1PosNum").arg(i),QVariant(qba[i]));

@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,8">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="2,8">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -30,7 +30,44 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="ctrl_layout"/>
+    <layout class="QHBoxLayout" name="ctrl_layout">
+     <item>
+      <widget class="QFrame" name="frame">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QPushButton" name="store">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>30</y>
+          <width>80</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>存放</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="fetch">
+        <property name="geometry">
+         <rect>
+          <x>150</x>
+          <y>30</y>
+          <width>80</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>取用</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="cabinet_layout"/>
