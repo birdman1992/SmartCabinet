@@ -588,7 +588,8 @@ void MainWidget::init_huangpo()
     connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
     connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
-    connect(cabServer, SIGNAL(loginRst(bool)), win_cabinet, SLOT(recvUserCheckRst(bool)));
+    connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
+    connect(cabServer, SIGNAL(loginRst(UserInfo)), win_cabinet, SLOT(recvUserCheckRst(UserInfo)));
 
     //待机界面
     win_standby = new StandbyWidget(this);

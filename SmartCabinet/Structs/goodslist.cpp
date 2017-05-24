@@ -9,26 +9,26 @@ GoodsList::~GoodsList()
 {
     qDeleteAll(list_goods.begin(), list_goods.end());
     list_goods.clear();
+    map_goods.clear();
 }
 
-void GoodsList::addGoods(QString goodsId, QString goodsName, int goodsNum)
+void GoodsList::addGoods(Goods *_goods)
 {
-    Goods* goods = new Goods(goodsId, goodsName, goodsNum);
-    list_goods<<goods;
-    map_goods.insert(goodsId, goods);
+    list_goods<<_goods;
+    map_goods.insert(_goods->goodsId, _goods);
 }
 
-void GoodsList::goodsIn(QString goodsId)
+void GoodsList::goodsIn(QString goodsId, int num)
 {
     Goods *goods = map_goods.value(goodsId);
-    goods->curNum++;
+    goods->curNum+=num;
     goods->finish = (goods->curNum == goods->totalNum);
 }
 
-void GoodsList::goodsOut(QString goodsId)
+void GoodsList::goodsOut(QString goodsId, int num)
 {
     Goods *goods = map_goods.value(goodsId);
-    goods->curNum--;
+    goods->curNum-=num;
     goods->finish = (goods->curNum == goods->totalNum);
 }
 
@@ -46,11 +46,16 @@ bool GoodsList::listCheck()
 
 
 
-Goods::Goods(QString goodsId ,QString goodsName, int goodsNum)
+Goods::Goods()
+{
+
+}
+
+Goods::Goods(QString _goodsId , QString goodsName, int goodsNum)
 {
     totalNum = goodsNum;
     name = goodsName;
     finish = false;
     curNum = 0;
-    Id = goodsId;
+    goodsId = _goodsId;
 }

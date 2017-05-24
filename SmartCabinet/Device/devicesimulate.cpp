@@ -12,13 +12,15 @@ DeviceSimulate::DeviceSimulate(QWidget *parent) :
     this->setWindowTitle("模拟控制台");
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
 
-    ui->listWidget->addItems(QStringList()<<"读卡器"<<"扫码枪"<<"锁控");
-    ui->listWidget->item(0)->setSizeHint(QSize(210, 70));
+    ui->listWidget->addItems(QStringList()<<"读卡器"<<"送货单"<<"扫码枪"<<"锁控");
+    ui->listWidget->item(0)->setSizeHint(QSize(160, 70));
     ui->listWidget->item(0)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-    ui->listWidget->item(1)->setSizeHint(QSize(210, 70));
+    ui->listWidget->item(1)->setSizeHint(QSize(160, 70));
     ui->listWidget->item(1)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-    ui->listWidget->item(2)->setSizeHint(QSize(210, 70));
+    ui->listWidget->item(2)->setSizeHint(QSize(160, 70));
     ui->listWidget->item(2)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    ui->listWidget->item(3)->setSizeHint(QSize(160, 70));
+    ui->listWidget->item(3)->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 
     initGroup();//初始化按钮组
 
@@ -79,4 +81,11 @@ void DeviceSimulate::initGroup()
     group_drug.addButton(ui->pushButton_23,18);
     group_drug.addButton(ui->pushButton_24,19);
     connect(&group_drug, SIGNAL(buttonClicked(int)), this, SLOT(group_drug_clicked(int)));
+}
+
+
+void DeviceSimulate::on_listCode_clicked()
+{
+    QString str = ui->listCode->text();
+    emit sendCodeScanData(str.toUtf8());
 }

@@ -4,6 +4,7 @@
 #include "defines.h"
 
 //提示信息
+#define MSG_SCAN_LIST "请扫描送货单条码"
 #define MSG_STORE "请扫描待存放物品条形码 并放入存放柜 存放完毕请点击此处并关闭柜门"
 #define MSG_STORE_SELECT "请选择存放位置 柜门打开后请重新扫描条形码"
 #define MSG_STORE_SELECT_REPEAT "选择的位置被占用 请重新选择"
@@ -20,9 +21,12 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     clickLock = true;
     waitForCodeScan = false;
     waitForGoodsListCode = false;
+    waitForCardReader = true;
     waitForInit = true;
     msgBox = NULL;
-    optUser = QString();
+//    optUser = QString();
+    ui->store->hide();
+    ui->fetch->hide();
 }
 
 CabinetWidget::~CabinetWidget()
@@ -122,6 +126,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
         qDebug()<<"[CabinetWidget]"<<"scan data not need";
         return;
     }
+    emit requireGoodsListCheck(QString(qba));
+
     bool newStore = false;
     if((scanInfo != QString(qba)) && (config->state != STATE_FETCH))
     {
@@ -231,8 +237,11 @@ void CabinetWidget::caseUnlock()
 
 void CabinetWidget::on_store_clicked()
 {
-    waitForCardReader = true;
+    waitForCardReader = false;
     config->state = STATE_STORE;
+    config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
+    waitForCodeScan = true;
+
 //    if(msgBox != NULL)
 //    {
 //        msgBox->close();
@@ -243,8 +252,8 @@ void CabinetWidget::on_store_clicked()
 //           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
 //    msgBox->setModal(false);
 //    msgBox->show();
-    msgShow("身份验证", "请刷卡验证身份",false);
-    QTimer::singleShot(10000,this, SLOT(wait_timeout()));
+//    msgShow("身份验证", "请刷卡验证身份",false);
+//    QTimer::singleShot(10000,this, SLOT(wait_timeout()));
 }
 
 void CabinetWidget::on_fetch_clicked()
@@ -320,18 +329,40 @@ void CabinetWidget::msgShow(QString title, QString msg, bool setmodal)
     }
 }
 
+void CabinetWidget::setPowerState(int power)
+{
+    switch(power)
+    {
+    case 0:
+        ui->store->show();
+        ui->fetch->show();break;
+
+    case 1:
+        ui->store->show();
+        ui->fetch->hide();break;
+
+    case 2:
+        ui->store->hide();
+        ui->fetch->show();break;
+
+    case 3:
+        ui->store->hide();
+        ui->fetch->show();break;
+    }
+}
+
 void CabinetWidget::recvUserInfo(QByteArray qba)
 {
     if(!waitForCardReader)
     {
-        qDebug()<<"[StandbyWidget]"<<"recvUserInfo not need.";
+        qDebug()<<"[CabinetWidget]"<<"recvUserInfo not need.";
         msgClear();
         return;
     }
 //    waitForCardReader = false;
-    optUser = QString(qba);
+//    optUser = QString(qba);
     msgShow("身份验证", "身份验证中...",false);
-    emit requireUserCheck(optUser);
+    emit requireUserCheck(QString(qba));
 //    if(msgBox != NULL)
 //    {
 //        msgBox->close();
@@ -344,21 +375,10 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 //    msgBox->show();
 }
 
-void CabinetWidget::recvUserCheckRst(bool pass)
+void CabinetWidget::recvUserCheckRst(UserInfo info)
 {
-//    msgClear();
-
-    if(pass)
-    {
-        msgShow("身份验证", "身份验证通过，请扫描送货单条码",true);
-//        warningMsgBox("身份验证", "身份验证通过，请扫描送货单条码");
-        waitForCodeScan = true;
-        waitForGoodsListCode = true;
-        waitForCardReader = false;
-    }
-    else
-    {
-        warningMsgBox("身份验证", "身份验证失败");
-    }
-    qDebug("rst");
+    msgClear();
+    optUser = info;
+    qDebug()<<optUser.cardId;
+    setPowerState(info.power);
 }

@@ -33,6 +33,7 @@ public slots:
 private slots:
     void group_card_clicked(int);
     void group_drug_clicked(int);
+    void on_listCode_clicked();
 };
 
 #endif // DEVICESIMULATE_H

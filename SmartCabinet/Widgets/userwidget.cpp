@@ -48,7 +48,7 @@ void UserWidget::listUpdate()
 
     for(i=0; i<config->list_user.count(); i++)//将用户信息显示到表格
     {
-        ui->tableWidget->setItem(i,0, new QTableWidgetItem(config->list_user.at(i)->userId));
+        ui->tableWidget->setItem(i,0, new QTableWidgetItem(config->list_user.at(i)->cardId));
     }
 }
 
@@ -89,7 +89,7 @@ void UserWidget::recvUserInfo(QByteArray qba)
 
     waitForCardReader = false;
     UserInfo* info = new UserInfo();
-    info->userId = QString(qba);
+    info->cardId = QString(qba);
     config->addUser(info);
     listUpdate();
     msgBox->close();

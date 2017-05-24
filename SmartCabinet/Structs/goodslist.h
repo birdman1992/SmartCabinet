@@ -7,9 +7,18 @@
 class Goods
 {
 public:
-    Goods(QString goodsId, QString goodsName, int goodsNum);
+    Goods();
+    Goods(QString _goodsId, QString goodsName, int goodsNum);
     QString name;
-    QString Id;
+    QString goodsId;
+    QString size;
+    QString unit;
+    QString packageBarcode;
+    QString roomName;
+    double batchNumber;
+    int takeCount;
+    int singlePrice;
+    int inStorageId;
     int totalNum;
     int curNum;
     bool finish;
@@ -20,13 +29,13 @@ class GoodsList
 public:
     GoodsList();
     ~GoodsList();
-    void addGoods(QString goodsId, QString goodsName, int goodsNum);
-    void goodsIn(QString goodsId);
-    void goodsOut(QString goodsId);
+    void addGoods(Goods* _goods);
+    void goodsIn(QString goodsId,int num);
+    void goodsOut(QString goodsId, int num);
     bool listCheck();
 
     QMap<QString, Goods*> map_goods;
-    QString listId;
+    QString barcode;
     QList<Goods*> list_goods;
 };
 

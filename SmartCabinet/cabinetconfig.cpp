@@ -49,7 +49,7 @@ int CabinetConfig::checkUser(QString userId)
 
     for(i=0; i<list_user.count(); i++)
     {
-        if(list_user.at(i)->userId == userId)
+        if(list_user.at(i)->cardId == userId)
             return i;
     }
     return -1;
@@ -72,7 +72,7 @@ void CabinetConfig::readUserConfig()
     {
         UserInfo* info = new UserInfo;
 
-        info->userId = settings.value(QString("user%1/id").arg(i)).toString();
+        info->cardId = settings.value(QString("user%1/cardId").arg(i)).toString();
 
         list_user<<info;
     }
@@ -205,7 +205,7 @@ void CabinetConfig::addNewUser(UserInfo *info)
 
     QSettings settings(CONF_USER,QSettings::IniFormat);
     settings.beginGroup(QString("user%1").arg(list_user.count()));
-    settings.setValue("id",QVariant(info->userId));
+    settings.setValue("cardId",QVariant(info->cardId));
     settings.endGroup();
     list_user<<info;
     settings.setValue("userNum", QVariant(list_user.count()));

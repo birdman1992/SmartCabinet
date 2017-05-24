@@ -5,7 +5,7 @@
 #define CONF_CABINET "config/cabinet.ini"
 
 /*模拟无服务器状态*/
-#define NO_SERVER
+//#define NO_SERVER
 
 #define INDEX_STANDBY 2
 #define INDEX_USER_MANAGE 3

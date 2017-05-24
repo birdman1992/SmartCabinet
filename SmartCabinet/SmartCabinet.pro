@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     Structs/caseaddress.cpp \
     cabinetserver.cpp \
     Json/cJSON.c \
-    Structs/goodslist.cpp
+    Structs/goodslist.cpp \
+    Widgets/cabinetaccess.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwidget.h \
     beautifului.h \
     cabinetserver.h \
     Json/cJSON.h \
-    Structs/goodslist.h
+    Structs/goodslist.h \
+    Widgets/cabinetaccess.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -81,7 +83,8 @@ FORMS    += mainwidget.ui \
     ShowInf/showinf.ui \
     PrimaryUser/primaryuser.ui \
     Cabinet/cabinet.ui \
-    Cabinet/cabinetwidget.ui
+    Cabinet/cabinetwidget.ui \
+    Widgets/cabinetaccess.ui
 
 RESOURCES += \
     image.qrc

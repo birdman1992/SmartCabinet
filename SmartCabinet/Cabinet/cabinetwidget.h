@@ -32,7 +32,7 @@ public slots:
     void recvScanData(QByteArray);
     void logoClicked();//logo被点击
     void cabinetInit();
-    void recvUserCheckRst(bool);//接收用户校验结果
+    void recvUserCheckRst(UserInfo);//接收用户校验结果
     void recvUserInfo(QByteArray qba);
 signals:
     void winSwitch(int);
@@ -57,7 +57,7 @@ private:
     bool waitForCodeScan;
     bool waitForInit;
     QString scanInfo;
-    QString optUser;//操作者id
+    UserInfo optUser;//操作者id
     CaseAddress casePos;
     QMessageBox* msgBox;
 
@@ -65,6 +65,7 @@ private:
     void warningMsgBox(QString title, QString msg);
     void msgClear();
     void msgShow(QString title, QString msg, bool setmodal);
+    void setPowerState(int power);//设置权限状态
 };
 
 #endif // CABINETWIDGET_H
