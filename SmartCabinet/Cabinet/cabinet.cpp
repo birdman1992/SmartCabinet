@@ -250,3 +250,11 @@ void Cabinet::resizeEvent(QResizeEvent*)
 {
     caseDraw(cabType);
 }
+
+void Cabinet::paintEvent(QPaintEvent*)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}

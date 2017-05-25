@@ -6,7 +6,7 @@
 #include <QtGlobal>
 #include "defines.h"
 
-#define SERVER_ADDR "http://113.247.171.145"
+#define SERVER_ADDR "http://120.77.159.8:8080"
 #define API_REG "/spd/mapper/Depart/saveOrUpdate/"   //注册接口
 #define API_LOGIN "/spd/mapper/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/spd/work/OutStorage/query/goods/" //送货单检查接口
@@ -169,6 +169,7 @@ void CabinetServer::recvListCheck()
             info->singlePrice = cJSON_GetObjectItem(json_info,"singlePrice")->valueint;
             info->size = QString::fromUtf8(cJSON_GetObjectItem(json_info,"size")->valuestring);
             info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
+            info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
             qDebug()<<"[goods]"<<info->name<<info->batchNumber<<info->takeCount<<info->unit;
             list->addGoods(info);

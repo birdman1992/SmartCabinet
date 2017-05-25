@@ -2,6 +2,8 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
+#include <QPaintEvent>
+#include <QPainter>
 #include "Cabinet/cabinetpanel.h"
 #include <QPushButton>
 #include <QSettings>
@@ -117,6 +119,7 @@ private:
 
     void init_xiangang();
     void init_huangpo();
+    void paintEvent(QPaintEvent *);
 };
 
 #endif // MAINWIDGET_H

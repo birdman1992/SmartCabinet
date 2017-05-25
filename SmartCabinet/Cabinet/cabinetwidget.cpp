@@ -23,15 +23,26 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForGoodsListCode = false;
     waitForCardReader = true;
     waitForInit = true;
+    curStoreList = NULL;
     msgBox = NULL;
 //    optUser = QString();
     ui->store->hide();
     ui->fetch->hide();
+    ui->msk1->hide();
+    ui->msk2->hide();
 }
 
 CabinetWidget::~CabinetWidget()
 {
     delete ui;
+}
+
+void CabinetWidget::paintEvent(QPaintEvent*)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
 //初始化药柜界面
@@ -126,7 +137,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
         qDebug()<<"[CabinetWidget]"<<"scan data not need";
         return;
     }
-    emit requireGoodsListCheck(QString(qba));
+    if(curStoreList == NULL)
+        emit requireGoodsListCheck(QString(qba));
 
     bool newStore = false;
     if((scanInfo != QString(qba)) && (config->state != STATE_FETCH))
@@ -372,7 +384,12 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 //    msgBox = new QMessageBox(QMessageBox::NoIcon, "身份验证", "身份验证中...",QMessageBox::Ok,NULL,
 //           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
 //    msgBox->setModal(false);
-//    msgBox->show();
+    //    msgBox->show();
+}
+
+void CabinetWidget::recvListInfo(GoodsList *l)
+{
+    curStoreList = l;
 }
 
 void CabinetWidget::recvUserCheckRst(UserInfo info)

@@ -2,5 +2,17 @@
     <qresource prefix="/image">
         <file>image/black.css</file>
         <file>image/black1.css</file>
+        <file>image/icon_user.png</file>
+        <file>image/icon_tip.png</file>
+        <file>image/icon_keyboard_del.png</file>
+        <file>image/btn_service_sel.png</file>
+        <file>image/btn_service_normal.png</file>
+        <file>image/btn_quit.png</file>
+        <file>image/btn_out_sel.png</file>
+        <file>image/btn_out_normal.png</file>
+        <file>image/btn_in_sel.png</file>
+        <file>image/btn_in_normal.png</file>
+        <file>image/bg_main.png</file>
+        <file>image/bg_input_normal.png</file>
     </qresource>
 </RCC>

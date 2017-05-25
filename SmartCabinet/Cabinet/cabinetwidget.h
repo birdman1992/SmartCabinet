@@ -5,6 +5,8 @@
 #include <QEvent>
 #include <QMessageBox>
 #include <QTimer>
+#include <QPaintEvent>
+#include <QPainter>
 #include "Cabinet/cabinet.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
@@ -33,7 +35,8 @@ public slots:
     void logoClicked();//logo被点击
     void cabinetInit();
     void recvUserCheckRst(UserInfo);//接收用户校验结果
-    void recvUserInfo(QByteArray qba);
+    void recvUserInfo(QByteArray qba);//接收用户信息
+    void recvListInfo(GoodsList*);
 signals:
     void winSwitch(int);
     void requireUserCheck(QString);//请求身份验证
@@ -60,12 +63,14 @@ private:
     UserInfo optUser;//操作者id
     CaseAddress casePos;
     QMessageBox* msgBox;
+    GoodsList* curStoreList;
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);
     void msgClear();
     void msgShow(QString title, QString msg, bool setmodal);
     void setPowerState(int power);//设置权限状态
+    void paintEvent(QPaintEvent *);
 };
 
 #endif // CABINETWIDGET_H

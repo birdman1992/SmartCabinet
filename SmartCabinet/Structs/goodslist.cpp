@@ -32,6 +32,11 @@ void GoodsList::goodsOut(QString goodsId, int num)
     goods->finish = (goods->curNum == goods->totalNum);
 }
 
+Goods *GoodsList::getGoodsById(QString goodsId)
+{
+    return map_goods.value(goodsId);
+}
+
 bool GoodsList::listCheck()
 {
     int i = 0;

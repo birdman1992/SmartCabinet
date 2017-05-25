@@ -31,6 +31,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="2,4">
    <property name="spacing">
     <number>0</number>
@@ -67,7 +70,7 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
      </property>
      <property name="text">
       <string/>
@@ -92,7 +95,16 @@
       <enum>Qt::NoFocus</enum>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QTableWidget{
+    color:green;    /*前景色：文字颜色*/
+    selection-color:rgb(13, 96, 150);    /*鼠标选中时前景色：文字颜色*/
+    selection-background-color:lightgray;   /*鼠标选中时背景色*/
+    border:0px solid gray;  /*边框线的宽度、颜色*/
+}
+QTableWidget::item{
+	margin: 5px ;
+    background:rgb(36, 221, 149);
+}</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -112,8 +124,14 @@
      <property name="selectionMode">
       <enum>QAbstractItemView::NoSelection</enum>
      </property>
+     <property name="showGrid">
+      <bool>false</bool>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::SolidLine</enum>
+     </property>
      <property name="rowCount">
-      <number>1</number>
+      <number>5</number>
      </property>
      <property name="columnCount">
       <number>1</number>
@@ -131,7 +149,16 @@
       <number>100</number>
      </attribute>
      <row/>
+     <row/>
+     <row/>
+     <row/>
+     <row/>
      <column/>
+     <item row="0" column="0">
+      <property name="text">
+       <string>123</string>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>

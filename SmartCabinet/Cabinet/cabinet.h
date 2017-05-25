@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QList>
 #include <QLabel>
+#include <QPainter>
+#include <QPaintEvent>
 #include "Structs/cabinetinfo.h"
 
 namespace Ui {
@@ -56,6 +58,7 @@ private:
     void setCaseState(int index, int numState);//设置柜格状态,0:没有库存，1:库存紧张,2:库存充足
     bool eventFilter(QObject *obj, QEvent *event);
     void resizeEvent(QResizeEvent* event);
+    void paintEvent(QPaintEvent *);
 };
 
 #endif // CABINET_H

@@ -32,6 +32,7 @@ public:
     void addGoods(Goods* _goods);
     void goodsIn(QString goodsId,int num);
     void goodsOut(QString goodsId, int num);
+    Goods* getGoodsById(QString goodsId);
     bool listCheck();
 
     QMap<QString, Goods*> map_goods;

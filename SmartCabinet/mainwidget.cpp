@@ -590,6 +590,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
     connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
     connect(cabServer, SIGNAL(loginRst(UserInfo)), win_cabinet, SLOT(recvUserCheckRst(UserInfo)));
+    connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -636,4 +637,12 @@ MainWidget::~MainWidget()
     delete ui;
     //--写入配置信息
     writeSettings();
+}
+
+void MainWidget::paintEvent(QPaintEvent*)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
