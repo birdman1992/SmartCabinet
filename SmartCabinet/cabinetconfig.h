@@ -25,6 +25,7 @@ public:
     CabinetConfig();
     ~CabinetConfig();
     void setCabinetId(QString id);
+    QString getCabinetId();
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
     int checkUser(QString userId);//检查用户是否存在，管理员用户返回0,其他用户大于0,不存在小于0
@@ -35,12 +36,13 @@ public:
     QList<UserInfo*> list_user;
     QList<Cabinet*> list_cabinet;
     CabState state;
-    QString cabId;
+
 //    QList<>
 
 private:
     bool firstUse;//第一次使用
     int userNum;//用户数量
+    QString cabId;
 
     void readUserConfig();//读取用户配置
     void readCabinetConfig();//读取柜子配置

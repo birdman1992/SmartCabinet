@@ -43,7 +43,6 @@ void Cabinet::CabinetInit(int seq, int pos, int num, bool mainCab)
         logo->installEventFilter(this);
         ui->logo->hide();
         ui->tableWidget->setCellWidget(1,0,logo);
-
     }
 }
 
@@ -67,17 +66,22 @@ void Cabinet::addCase(CabinetInfo *info)
 
     int index = list_case.count();
     list_case<<info;
-    ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name));
-
     if(info->name.isEmpty())
-        setCaseState(index,3);
+    {
+        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name));
+    }
     else
     {
+        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name+QString("×%1").arg(info->num)));
+    }
+
+//    if(info->name.isEmpty())
+//        setCaseState(index,3);
+//    else
+//    {
         if(info->num == 0)
             setCaseState(index,2);
-        else
-            setCaseState(index,0);
-    }
+//    }
 }
 
 int Cabinet::getIndexByName(QString findName)
@@ -93,7 +97,7 @@ int Cabinet::getIndexByName(QString findName)
     return -1;
 }
 
-void Cabinet::consumableIn(int index)
+void Cabinet::consumableIn(int index, int num)
 {
     if(index >= list_case.count())
         return;
@@ -101,7 +105,9 @@ void Cabinet::consumableIn(int index)
     if(list_case.at(index)->num == 0)
         setCaseState(index, 0);
 
-    list_case.at(index)->num++;
+    list_case.at(index)->num+=num;
+
+    ui->tableWidget->item(index,0)->setText(list_case.at(index)->name+QString("×%1").arg(list_case.at(index)->num));
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginWriteArray(QString("Cabinet%1").arg(seqNum));
@@ -110,7 +116,7 @@ void Cabinet::consumableIn(int index)
     settings.endArray();
 }
 
-void Cabinet::consumableOut(int index)
+void Cabinet::consumableOut(int index,int num)
 {
     if(index >= list_case.count())
         return;
@@ -118,7 +124,9 @@ void Cabinet::consumableOut(int index)
     if(list_case.at(index)->num == 0)
         return;
 
-    list_case.at(index)->num--;
+    list_case.at(index)->num = ((list_case.at(index)->num-num)<0)?0:list_case.at(index)->num-num;
+
+    ui->tableWidget->item(index,0)->setText(list_case.at(index)->name+QString("×%1").arg(list_case.at(index)->num));
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginWriteArray(QString("Cabinet%1").arg(seqNum));
@@ -148,16 +156,19 @@ void Cabinet::showMsg(QString msg, bool showBigCharacter)
         logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 9pt \"Sans Serif\";");
 }
 
-void Cabinet::setCaseName(QString name, int index)
+void Cabinet::setCaseName(CabinetInfo info, int index)
 {
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginWriteArray(QString("Cabinet%1").arg(seqNum));
     settings.setArrayIndex(index);
-    settings.setValue("name",name);
-    settings.endArray();
+    settings.setValue("name",info.name);
+    settings.setValue("id",info.id);
+    settings.setValue("unit",info.unit);
 
-    list_case.at(index)->name = name;
-    ui->tableWidget->item(index,0)->setText(name);
+    list_case.at(index)->name = info.name;
+    list_case.at(index)->id = info.id;
+    list_case.at(index)->unit = info.unit;
+    ui->tableWidget->item(index,0)->setText(info.name+QString("×%1").arg(list_case.at(index)->num));
     ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
 }
 
@@ -218,9 +229,9 @@ void Cabinet::setCaseState(int index, int numState)
     {
         ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 170, 0));
     }
-    else if(numState == 2)//库存耗尽
+    else if(numState == 2)
     {
-        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 0, 0));
+        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(238, 128, 61));
     }
     else if(numState == 3)//空柜格
     {

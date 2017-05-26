@@ -43,48 +43,6 @@ background-color: rgb(255, 255, 255);
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLineEdit" name="info">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>120</y>
-     <width>441</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-image: url(:/image/image/bg_input_normal.png);
-padding-left:10px;
-font: 20px &quot;微软雅黑&quot;;</string>
-   </property>
-   <property name="inputMask">
-    <string/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="maxLength">
-    <number>50</number>
-   </property>
-   <property name="frame">
-    <bool>true</bool>
-   </property>
-   <property name="cursorPosition">
-    <number>0</number>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="clearButtonEnabled">
-    <bool>false</bool>
-   </property>
-  </widget>
   <widget class="QLabel" name="tip">
    <property name="geometry">
     <rect>
@@ -173,6 +131,21 @@ color: rgb(215,26,33);</string>
    </property>
    <property name="text">
     <string>一键存入</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="info">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>120</y>
+     <width>441</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/image/image/bg_input_normal.png);
+padding-left:10px;
+font: 20px &quot;微软雅黑&quot;;</string>
    </property>
   </widget>
  </widget>

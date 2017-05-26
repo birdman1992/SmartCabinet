@@ -53,11 +53,14 @@ bool GoodsList::listCheck()
 
 Goods::Goods()
 {
-
+    storeNum = 0;
+    curNum = 0;
+    finish = false;
 }
 
 Goods::Goods(QString _goodsId , QString goodsName, int goodsNum)
 {
+    storeNum = 0;
     totalNum = goodsNum;
     name = goodsName;
     finish = false;

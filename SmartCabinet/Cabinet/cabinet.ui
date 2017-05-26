@@ -96,7 +96,7 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QTableWidget{
-    color:green;    /*前景色：文字颜色*/
+    color: rgb(255, 255, 255);    /*前景色：文字颜色*/
     selection-color:rgb(13, 96, 150);    /*鼠标选中时前景色：文字颜色*/
     selection-background-color:lightgray;   /*鼠标选中时背景色*/
     border:0px solid gray;  /*边框线的宽度、颜色*/
@@ -156,7 +156,7 @@ QTableWidget::item{
      <column/>
      <item row="0" column="0">
       <property name="text">
-       <string>123</string>
+       <string/>
       </property>
      </item>
     </widget>

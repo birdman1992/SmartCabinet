@@ -25,7 +25,7 @@ bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
     if(globalConfig == NULL)
         return false;
     config = globalConfig;
-    if(config->cabId.isEmpty())
+    if(config->getCabinetId().isEmpty())
         cabRegister();
     return true;
 }
@@ -82,6 +82,7 @@ void CabinetServer::recvCabRegister()
     {
         qDebug()<<"[Cabinet register]:success"<<regId;
         config->setCabinetId(regId);
+        qDebug()<<"reg"<<config->getCabinetId();
     }
     else
     {
@@ -131,13 +132,73 @@ void CabinetServer::recvUserLogin()
     cJSON_Delete(json);
 }
 
+QByteArray test = QByteArray("{\
+                             \"callTime\": 0,\
+                             \"success\": true,\
+                             \"errorCode\": \"5000\",\
+                             \"msg\": \"\",\
+                             \"data\": {\
+                               \"goods\": [     \
+                                 {\
+                                   \"name\": \"3M高强度外壳胶带（丝绸布胶带）\",\
+                                   \"goodsId\": \"A0201002349\",\
+                                   \"size\": \"1538-0\",\
+                                   \"unit\": \"卷\",\
+                                   \"takeCount\": 20,\
+                                   \"singlePrice\": 10.00,\
+                                   \"packageBarcode\": \"A0201002349\",\
+                                   \"packageType\": 1,\
+                                   \"batchNumber\": 20170523,\
+                                   \"inStorageId\": 42,\
+                                   \"lifeTime\": null,\
+                                   \"roomName\": \"丝绸\",\
+                                   \"producerName\": null\
+                                 },\
+                                {\
+                                \"name\": \"BD真空测试包\",\
+                                \"goodsId\": \"EO501002219\",\
+                                \"size\": \"1538-0\",\
+                                \"unit\": \"个\",\
+                                \"takeCount\": 20,\
+                                \"singlePrice\": 10.00,\
+                                \"packageBarcode\": \"EO501002219\",\
+                                \"packageType\": 1,\
+                                \"batchNumber\": 20170523,\
+                                \"inStorageId\": 42,\
+                                \"lifeTime\": null,\
+                                \"roomName\": \"丝绸\",\
+                                \"producerName\": null\
+                                }\
+                               ],\
+                               \"store\": {\
+                                 \"id\": 0,\
+                                 \"barcode\": \"T220170523094959259\",\
+                                 \"carId\": 3,\
+                                 \"totalPrice\": 200.00,\
+                                 \"hosId\": 0,\
+                                 \"departId\": 0,\
+                                 \"warehouseId\": 0,\
+                                 \"deliveryMan\": \"yyx\",\
+                                 \"state\": 0,\
+                                 \"remark\": null,\
+                                 \"optUser\": null,\
+                                 \"optTime\": null,\
+                                 \"hosName\": \"安化县人民医院\",\
+                                 \"departName\": \"内科(智能柜)\",\
+                                 \"warehouseName\": \"安化一人民医院中心库\",\
+                                 \"nowTime\": \"2017-05-23 09:53:03\",\
+                                 \"goods\": null\
+                               }\
+                             }\
+                           }");
+
 void CabinetServer::recvListCheck()
 {
-    QByteArray qba = QByteArray::fromBase64(reply_list_check->readAll());
+    QByteArray qba = test;//QByteArray::fromBase64(reply_list_check->readAll());
     reply_list_check->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<cJSON_Print(json);
+//    qDebug()<<cJSON_Print(json);
 
     if(!json)
         return;
@@ -148,6 +209,12 @@ void CabinetServer::recvListCheck()
         Goods* info;
         GoodsList* list = new GoodsList;
         cJSON* json_data = cJSON_GetObjectItem(json,"data");
+        if(json_data->type == cJSON_NULL)
+        {
+            emit listRst(list);
+            return;
+        }
+
         cJSON* json_goods = cJSON_GetObjectItem(json_data,"goods");
         int listCount = cJSON_GetArraySize(json_goods);
         if(listCount <= 0)
@@ -160,7 +227,7 @@ void CabinetServer::recvListCheck()
         {
             info = new Goods;
             cJSON* json_info = cJSON_GetArrayItem(json_goods,i);
-            info->batchNumber = cJSON_GetObjectItem(json_info,"batchNumber")->valuedouble;
+            info->batchNumber = cJSON_GetObjectItem(json_info,"batchNumber")->valueint;
             info->goodsId = QString::fromUtf8(cJSON_GetObjectItem(json_info,"goodsId")->valuestring);
             info->inStorageId = cJSON_GetObjectItem(json_info,"inStorageId")->valueint;
             info->name = QString::fromUtf8(cJSON_GetObjectItem(json_info,"name")->valuestring);
@@ -171,7 +238,7 @@ void CabinetServer::recvListCheck()
             info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
-            qDebug()<<"[goods]"<<info->name<<info->batchNumber<<info->takeCount<<info->unit;
+            qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
             list->addGoods(info);
         }
         cJSON* json_list_info = cJSON_GetObjectItem(json_data,"store");

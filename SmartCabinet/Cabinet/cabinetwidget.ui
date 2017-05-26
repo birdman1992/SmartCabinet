@@ -133,7 +133,7 @@ background-image: url(:/image/image/bg_main.png);
                  <string/>
                 </property>
                </widget>
-               <widget class="QLabel" name="label_6">
+               <widget class="QLabel" name="userInfo">
                 <property name="geometry">
                  <rect>
                   <x>60</x>
@@ -147,7 +147,7 @@ background-image: url(:/image/image/bg_main.png);
 color: rgb(255, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>您好！0188002</string>
+                 <string>请刷卡使用</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -156,7 +156,7 @@ color: rgb(255, 255, 255);</string>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_4">
+              <widget class="QLabel" name="cabId">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                  <horstretch>0</horstretch>
@@ -175,7 +175,7 @@ font: 75 20px &quot;微软雅黑&quot;;
 color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
-                <string>设备终端NO:108111</string>
+                <string>设备终端NO:</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>

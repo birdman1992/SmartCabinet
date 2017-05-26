@@ -8,6 +8,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include "Cabinet/cabinet.h"
+#include "Widgets/cabinetaccess.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
@@ -44,10 +45,14 @@ signals:
 
 private slots:
     void on_store_clicked();
-
     void on_fetch_clicked();
-
     void wait_timeout();
+    void saveStore(Goods* goods, int num);
+    void saveFetch(QString name, int num);
+    void on_fetch_toggled(bool checked);
+
+    void on_store_toggled(bool checked);
+
 private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;
@@ -64,6 +69,8 @@ private:
     CaseAddress casePos;
     QMessageBox* msgBox;
     GoodsList* curStoreList;
+    Goods* curGoods;
+    CabinetAccess* win_access;
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);
@@ -71,6 +78,7 @@ private:
     void msgShow(QString title, QString msg, bool setmodal);
     void setPowerState(int power);//设置权限状态
     void paintEvent(QPaintEvent *);
+    void cabLock();
 };
 
 #endif // CABINETWIDGET_H

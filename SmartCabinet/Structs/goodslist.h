@@ -15,12 +15,13 @@ public:
     QString unit;
     QString packageBarcode;
     QString roomName;
-    double batchNumber;
+    int batchNumber;
     int takeCount;
     int singlePrice;
     int inStorageId;
     int totalNum;
-    int curNum;
+    int curNum;//未写入柜子信息的已存入数量
+    int storeNum;//写入柜子信息的已存入数量
     bool finish;
 };
 
