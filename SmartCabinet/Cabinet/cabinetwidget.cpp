@@ -26,14 +26,16 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForInit = true;
     curStoreList = NULL;
     msgBox = NULL;
+    selectCase = -1;
+    selectCab = -1;
     win_access = new CabinetAccess();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
 //    optUser = QString();
     ui->store->hide();
     ui->fetch->hide();
-//    ui->msk1->hide();
-//    ui->msk2->hide();
+    ui->msk1->hide();
+    ui->msk2->hide();
 }
 
 CabinetWidget::~CabinetWidget()
@@ -149,7 +151,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
             return;
         }
         //打开对应柜门
-        qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
+        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
+        emit requireOpenCase(cabSeqNum, caseIndex);
         waitForCodeScan = true;
         clickLock = true;
         scanInfo = QString();
@@ -201,6 +204,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         {
             //打开对应柜门
             qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
+            emit requireOpenCase(casePos.cabinetSeqNUM, casePos.caseIndex);
             win_access->scanOpen(curGoods->goodsId);
 //            storeNum++;
 //            config->list_cabinet[0]->showMsg(MSG_STORE+

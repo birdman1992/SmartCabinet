@@ -51,7 +51,7 @@ void CabinetServer::userLogin(QString userId)
 #endif
     QByteArray qba = QString("{\"cardId\":\"%1\"}").arg(userId).toUtf8();
     QString nUrl = QString(SERVER_ADDR)+QString(API_LOGIN)+'?'+qba.toBase64();
-//    qDebug()<<"[login]"<<nUrl;
+    qDebug()<<"[login]"<<nUrl;
     reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
 }
@@ -194,7 +194,7 @@ QByteArray test = QByteArray("{\
 
 void CabinetServer::recvListCheck()
 {
-    QByteArray qba = test;//QByteArray::fromBase64(reply_list_check->readAll());
+    QByteArray qba = QByteArray::fromBase64(reply_list_check->readAll());
     reply_list_check->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());

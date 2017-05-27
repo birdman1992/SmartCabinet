@@ -8,7 +8,7 @@
 #include "Device/Qextserial/qextserialport.h"
 #include "Device/devicesimulate.h"
 
-#define SIMULATE_ON  //打开仿真
+//#define SIMULATE_ON  //打开仿真
 
 class ControlDevice : public QObject
 {
@@ -27,6 +27,7 @@ private:
     void ctrlCmdInit();//协议初始化
 
     void comLockCtrlInit(int baudRate, int dataBits, int Parity, int stopBits);
+    void lockCtrl(int ioNum);
 
 
 signals:
@@ -36,9 +37,10 @@ signals:
     void codeScanData(QByteArray);//当前可用
 
 public slots:
+    void openLock(int seqNum, int index);
 
 private slots:
-    void readLockCtrlData(QByteArray);
+    void readLockCtrlData();
     void readCardReaderData(QByteArray);
     void readCodeScanData(QByteArray);
 };

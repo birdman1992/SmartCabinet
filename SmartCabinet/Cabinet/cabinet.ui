@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>200</width>
-    <height>600</height>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -96,6 +96,7 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QTableWidget{
+font-size: 20px;
     color: rgb(255, 255, 255);    /*前景色：文字颜色*/
     selection-color:rgb(13, 96, 150);    /*鼠标选中时前景色：文字颜色*/
     selection-background-color:lightgray;   /*鼠标选中时背景色*/

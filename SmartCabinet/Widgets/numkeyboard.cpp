@@ -7,7 +7,6 @@ NumKeyboard::NumKeyboard(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
-
     group_key.addButton(ui->key_0, 0);
     group_key.addButton(ui->key_1, 1);
     group_key.addButton(ui->key_2, 2);
@@ -20,8 +19,7 @@ NumKeyboard::NumKeyboard(QWidget *parent) :
     group_key.addButton(ui->key_9, 9);
     group_key.addButton(ui->key_back, 10);
     group_key.addButton(ui->key_clear, 11);
-
-    connect(&group_key, SIGNAL(buttonClicked(int)), this,SLOT(on_keys_clicked(int)));
+    connect(&group_key, SIGNAL(buttonClicked(int)), this,SLOT(onKeysClicked(int)));
 }
 
 NumKeyboard::~NumKeyboard()
@@ -37,7 +35,7 @@ void NumKeyboard::paintEvent(QPaintEvent*)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-void NumKeyboard::on_keys_clicked(int val)
+void NumKeyboard::onKeysClicked(int val)
 {
     if(val<10)
         emit key(val);

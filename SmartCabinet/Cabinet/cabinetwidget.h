@@ -42,6 +42,7 @@ signals:
     void winSwitch(int);
     void requireUserCheck(QString);//请求身份验证
     void requireGoodsListCheck(QString);//请求送货单验证
+    void requireOpenCase(int seqNum, int index);
 
 private slots:
     void on_store_clicked();

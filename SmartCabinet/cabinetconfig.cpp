@@ -65,7 +65,7 @@ void CabinetConfig::readUserConfig()
 {
     if(!QFile(CONF_USER).exists())
     {
-        firstUse = true;
+//        firstUse = true;
         return;
     }
     QSettings settings(CONF_USER,QSettings::IniFormat);

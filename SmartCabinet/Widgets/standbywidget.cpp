@@ -63,7 +63,7 @@ void StandbyWidget::recvUserInfo(QByteArray qba)
     {
         if(config->state == STATE_STORE)
             emit winSwitch(INDEX_CAB_SHOW);
-        else if(config->state = STATE_FETCH)
+        else if(config->state == STATE_FETCH)
             emit winSwitch(INDEX_CAB_SHOW);
     }
 

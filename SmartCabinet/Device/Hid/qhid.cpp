@@ -9,6 +9,7 @@
 #include <time.h>
 #include <sys/ioctl.h>
 #include <linux/hiddev.h>
+#include <QDebug>
 extern "C"
 {
     #include "hid.h"
@@ -43,15 +44,17 @@ void QHid::run()
         {
             if(ev[i].hid && (ev[i].hid)!=0x280000)
             {
-
-                id[j++] = tab[((ev[i].hid)>>16)];
-
+                if(((ev[i].hid)>>16)<41)
+                    id[j++] = tab[((ev[i].hid)>>16)];
+                else
+                    id[j++] = ((ev[i].hid)>>16);
             }
             else if((ev[i].hid)==0x280000)
             {
                 QByteArray qba(id, strlen(id));
                 printf("READ ID:%s\n",id);
                 emit hidRead(qba);
+                memset(id, 0, 24);
                 j=0;
             }
         }

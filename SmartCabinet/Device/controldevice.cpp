@@ -1,8 +1,8 @@
 #include "controldevice.h"
 #include <QDebug>
-#define DEV_LOCK_CTRL "/dev/ttymxc3"
-#define DEV_CARD_READER "/dev/hidraw0"
-#define DEV_CODE_SCAN "/dev/hidraw1"
+#define DEV_LOCK_CTRL "/dev/ttymxc2"
+#define DEV_CARD_READER "/dev/hidraw1"
+#define DEV_CODE_SCAN "/dev/hidraw0"
 
 ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 {
@@ -17,8 +17,8 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 void ControlDevice::deviceInit()
 {
     //初始化锁控:波特率,数据位,奇偶校验,停止位
-    comLockCtrlInit(9600, 8, 0, 1);
-    connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData(QByteArray)));
+    comLockCtrlInit(38400, 8, 0, 1);
+//    connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
 
     //初始化读卡器
     hid_card_reader = new QHid(this);
@@ -97,9 +97,24 @@ void ControlDevice::comLockCtrlInit(int baudRate, int dataBits, int Parity, int 
 
 }
 
-void ControlDevice::readLockCtrlData(QByteArray qba)
+void ControlDevice::lockCtrl(int ioNum)
 {
-    qDebug()<<"[readLockCtrlData]"<<qba;
+    QByteArray qba = QByteArray::fromHex("FA0100FF");
+    qba[2] = ioNum;
+    qDebug()<<"[lockCtrl]"<<qba.toHex();
+    com_lock_ctrl->write(qba);
+}
+
+void ControlDevice::openLock(int seqNum, int index)
+{
+    int ctrlNum = (seqNum <= 0)?index:(5+(seqNum-1)*8+index);
+    lockCtrl(ctrlNum);
+}
+
+void ControlDevice::readLockCtrlData()
+{
+    QByteArray qba = com_lock_ctrl->readAll();
+    qDebug()<<"[readLockCtrlData]"<<qba.toHex();
     emit lockCtrlData(qba);
 }
 

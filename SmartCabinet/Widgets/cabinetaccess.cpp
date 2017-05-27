@@ -84,7 +84,7 @@ void CabinetAccess::scanOpen(QString goodsId)
     curGoods = storeGoods;
     if(storeGoods->curNum >= storeGoods->totalNum)
     {
-        storeGoods->curNum == storeGoods->totalNum;
+        storeGoods->curNum = storeGoods->totalNum;
         ui->tip->setText("提示：已全部存入");
     }
     else

@@ -287,7 +287,7 @@ color: rgb(255, 255, 255);</string>
          </spacer>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="100,100,467">
           <property name="spacing">
            <number>10</number>
           </property>
@@ -297,7 +297,7 @@ color: rgb(255, 255, 255);</string>
           <item>
            <widget class="QPushButton" name="fetch">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -330,7 +330,7 @@ color: rgb(255, 255, 255);</string>
           <item>
            <widget class="QPushButton" name="store">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -453,7 +453,7 @@ color: rgb(255, 255, 255);</string>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="12,8">
+     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="12,0">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -484,6 +484,12 @@ color: rgb(255, 255, 255);</string>
       </item>
       <item>
        <widget class="QLabel" name="msk2">
+        <property name="minimumSize">
+         <size>
+          <width>600</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: rgb(70, 197, 255);</string>
         </property>

@@ -29,7 +29,7 @@ private:
     QButtonGroup group_key;
 
 private slots:
-    void on_keys_clicked(int);
+    void onKeysClicked(int);
 };
 
 #endif // NUMKEYBOARD_H

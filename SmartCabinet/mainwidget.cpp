@@ -586,6 +586,7 @@ void MainWidget::init_huangpo()
     win_cabinet->installGlobalConfig(cabinetConf);
     connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
     connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+    connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
     connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
@@ -618,10 +619,10 @@ void MainWidget::init_huangpo()
 
     if(cabinetConf->isFirstUse())
     {
-        if(cabinetConf->list_user.count())
+//        if(cabinetConf->list_user.count())
             ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
-        else
-            ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
+//        else
+//            ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
     }
     else
     {

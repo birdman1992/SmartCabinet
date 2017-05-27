@@ -19,7 +19,7 @@ Cabinet::~Cabinet()
     delete ui;
 }
 
-void Cabinet::CabinetInit(int seq, int pos, int num, bool mainCab)
+void Cabinet::CabinetInit(int seq, int pos, int, bool mainCab)
 {
     seqNum = seq;
     posNum = pos;
