@@ -56,7 +56,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="cardReader">
       <widget class="QPushButton" name="pushButton">
@@ -72,7 +72,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>8888</string>
+        <string>006b4e18ec</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_2">
@@ -135,7 +135,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>T220170526100430998</string>
+        <string>T220170531004755513</string>
        </property>
       </widget>
       <widget class="QPushButton" name="listCode_2">
@@ -148,7 +148,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>T220170523092905583</string>
+        <string>T220170531110708467</string>
        </property>
       </widget>
      </widget>

@@ -40,7 +40,7 @@ void Cabinet::CabinetInit(int seq, int pos, int, bool mainCab)
         caseNum = CAB_CASE_1_NUM;
         ui->tableWidget->setRowCount(caseNum);
         logo = new QLabel(this);
-        logo->installEventFilter(this);
+//        logo->installEventFilter(this);
         ui->logo->hide();
         ui->tableWidget->setCellWidget(1,0,logo);
     }

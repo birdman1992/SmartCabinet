@@ -5,15 +5,15 @@
 
 CabinetConfig::CabinetConfig()
 {
-    state = STATE_NO;//qDebug("a");
+    state = STATE_NO;
     cabId = QString();
     list_user.clear();
-    list_cabinet.clear();//qDebug("b");
+    list_cabinet.clear();
 //    qDebug()<<list_cabinet.count();
-    if(!QDir("config").exists())
+    if(!QDir("/home/config").exists())
     {
         QDir dir;
-        dir.mkdir("config");
+        dir.mkdir("/home/config");
     }
 
     readUserConfig();

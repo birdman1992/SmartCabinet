@@ -43,6 +43,7 @@ signals:
     void requireUserCheck(QString);//请求身份验证
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
+//    void requireCaseBind(QString cabinetId, qstrin );
 
 private slots:
     void on_store_clicked();
@@ -80,6 +81,7 @@ private:
     void setPowerState(int power);//设置权限状态
     void paintEvent(QPaintEvent *);
     void cabLock();
+    void cabInfoBind(int seq, int index, CabinetInfo info);
 };
 
 #endif // CABINETWIDGET_H

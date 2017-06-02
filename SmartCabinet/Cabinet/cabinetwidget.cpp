@@ -34,8 +34,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 //    optUser = QString();
     ui->store->hide();
     ui->fetch->hide();
-    ui->msk1->hide();
-    ui->msk2->hide();
+//    ui->msk1->hide();
+//    ui->msk2->hide();
 }
 
 CabinetWidget::~CabinetWidget()
@@ -66,6 +66,11 @@ void CabinetWidget::cabLock()
     ui->store->hide();
     ui->fetch->hide();
     curStoreList = NULL;
+}
+
+void CabinetWidget::cabInfoBind(int seq, int index, CabinetInfo info)
+{
+    config->list_cabinet[seq]->setCaseName(info, index);
 }
 
 //初始化药柜界面
@@ -136,7 +141,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         info.name = curGoods->name;
         info.id = curGoods->goodsId;
         info.unit = curGoods->unit;
-        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
+        cabInfoBind(selectCab, selectCase, info);
+//        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
 //        config->list_cabinet[0]->showMsg(MSG_STORE, false);
         win_access->clickOpen(curGoods->goodsId);
@@ -151,7 +157,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
             return;
         }
         //打开对应柜门
-        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
+//        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
         emit requireOpenCase(cabSeqNum, caseIndex);
         waitForCodeScan = true;
         clickLock = true;

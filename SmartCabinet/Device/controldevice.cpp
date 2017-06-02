@@ -101,14 +101,17 @@ void ControlDevice::lockCtrl(int ioNum)
 {
     QByteArray qba = QByteArray::fromHex("FA0100FF");
     qba[2] = ioNum;
-    qDebug()<<"[lockCtrl]"<<qba.toHex();
+//    qDebug()<<"[lockCtrl]"<<qba.toHex();
     com_lock_ctrl->write(qba);
 }
 
 void ControlDevice::openLock(int seqNum, int index)
 {
+    qDebug()<<"[openLock]"<<seqNum<<index;
+#ifndef SIMULATE_ON
     int ctrlNum = (seqNum <= 0)?index:(5+(seqNum-1)*8+index);
     lockCtrl(ctrlNum);
+#endif
 }
 
 void ControlDevice::readLockCtrlData()

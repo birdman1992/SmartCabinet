@@ -7,10 +7,10 @@
 #include "defines.h"
 
 #define SERVER_ADDR "http://120.77.159.8:8080"
-#define API_REG "/spd/mapper/Depart/saveOrUpdate/"   //注册接口
+#define API_REG "spd/mapper/SmartCheset/saveOrUpdate/"   //注册接口
 #define API_LOGIN "/spd/mapper/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/spd/work/OutStorage/query/goods/" //送货单检查接口
-#define API_GOODS_CHECK "/spd/mapper/Goods/query/"  //货物查询
+//#define API_GOODS_CHECK "/spd/mapper/Goods/query/"  //货物查询
 #define API_LIST_STORE "/spd/mapper/OutStorage/query/"      //存入完毕销单接口
 
 
@@ -198,7 +198,7 @@ void CabinetServer::recvListCheck()
     reply_list_check->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());
-//    qDebug()<<cJSON_Print(json);
+    qDebug()<<cJSON_Print(json);
 
     if(!json)
         return;
@@ -235,7 +235,7 @@ void CabinetServer::recvListCheck()
             info->roomName = QString::fromUtf8(cJSON_GetObjectItem(json_info,"roomName")->valuestring);
             info->singlePrice = cJSON_GetObjectItem(json_info,"singlePrice")->valueint;
             info->size = QString::fromUtf8(cJSON_GetObjectItem(json_info,"size")->valuestring);
-            info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
+            info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
