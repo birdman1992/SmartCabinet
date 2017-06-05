@@ -40,10 +40,11 @@ public slots:
     void recvListInfo(GoodsList*);
 signals:
     void winSwitch(int);
+    void goodsAccess(CaseAddress, QString, int, bool);//柜格坐标，货物名，数量，是否存
     void requireUserCheck(QString);//请求身份验证
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
-//    void requireCaseBind(QString cabinetId, qstrin );
+    void requireCaseBind(int  seqNum, int index, QString goodsId);
 
 private slots:
     void on_store_clicked();

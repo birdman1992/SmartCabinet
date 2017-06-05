@@ -34,8 +34,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 //    optUser = QString();
     ui->store->hide();
     ui->fetch->hide();
-//    ui->msk1->hide();
-//    ui->msk2->hide();
+    ui->msk1->hide();
+    ui->msk2->hide();
 }
 
 CabinetWidget::~CabinetWidget()
@@ -70,7 +70,9 @@ void CabinetWidget::cabLock()
 
 void CabinetWidget::cabInfoBind(int seq, int index, CabinetInfo info)
 {
+//    qDebug()<<"bind"<<info.id;
     config->list_cabinet[seq]->setCaseName(info, index);
+    emit requireCaseBind(seq, index, info.id);
 }
 
 //初始化药柜界面
@@ -109,6 +111,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
 
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
+    qDebug()<<config->getCabinetId();
     if(clickLock)//锁定状态下点击无效
     {
         if((caseIndex==selectCase) && (cabSeqNum == selectCab))
@@ -267,7 +270,8 @@ void CabinetWidget::cabinetInit()
 
 void CabinetWidget::showEvent(QShowEvent *)
 {
-//    qDebug()<<"[CabinetWidget]"<<"showEvent";
+    ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
+
     if(config->state == STATE_STORE)
     {
         waitForCodeScan = true;
@@ -394,6 +398,7 @@ void CabinetWidget::saveStore(Goods *goods, int num)
 {
     CaseAddress addr = config->checkCabinetByName(goods->name);
     config->list_cabinet[addr.cabinetSeqNUM]->consumableIn(addr.caseIndex,num);
+    emit goodsAccess(addr, goods->name, num, true);
 }
 
 void CabinetWidget::saveFetch(QString name, int num)
@@ -401,6 +406,7 @@ void CabinetWidget::saveFetch(QString name, int num)
     CaseAddress addr = config->checkCabinetByName(name);
     config->list_cabinet[addr.cabinetSeqNUM]->consumableOut(addr.caseIndex,num);
     clickLock = false;
+    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->id, num, false);
 }
 
 void CabinetWidget::warningMsgBox(QString title, QString msg)
@@ -514,7 +520,6 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
     optUser = info;
     qDebug()<<optUser.cardId;
     ui->userInfo->setText(QString("您好！%1").arg(optUser.name));
-    ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
     setPowerState(info.power);
 }
 

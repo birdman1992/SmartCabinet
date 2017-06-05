@@ -24,7 +24,10 @@ private:
     QNetworkReply* reply_register;
     QNetworkReply* reply_login;
     QNetworkReply* reply_list_check;
+    QNetworkReply* reply_cabinet_bind;
+    QNetworkReply* reply_goods_access;
     QString regId;
+    QString barCode;
 
     void cabRegister();
 
@@ -35,10 +38,15 @@ signals:
 public slots:
     void userLogin(QString);
     void listCheck(QString);//送货单信息校验
+    void cabinetBind(int, int, QString);
+    void goodsAccess(CaseAddress, QString, int, bool);
+
 private slots:
     void recvCabRegister();
     void recvUserLogin();
     void recvListCheck();
+    void recvCabBind();
+    void recvGoodsAccess();
 };
 
 #endif // CABINETSERVER_H

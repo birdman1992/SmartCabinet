@@ -8,7 +8,7 @@
 #include "Device/Qextserial/qextserialport.h"
 #include "Device/devicesimulate.h"
 
-#define SIMULATE_ON  //打开仿真
+//#define SIMULATE_ON  //打开仿真
 
 class ControlDevice : public QObject
 {

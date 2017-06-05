@@ -101,6 +101,7 @@ bool StandbyWidget::installGlobalConfig(CabinetConfig *globalConfig)
     if(globalConfig == NULL)
         return false;
     config = globalConfig;
+
     return true;
 }
 

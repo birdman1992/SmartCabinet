@@ -32,6 +32,7 @@ public:
     void creatCabinetConfig(QByteArray);//创建智能柜配置文件
 //    void writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo* info);
     CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置，如未搜索到，返回坐标为-1
+    int getLockId(int seq, int index);
 
     QList<UserInfo*> list_user;
     QList<Cabinet*> list_cabinet;
@@ -42,7 +43,8 @@ public:
 private:
     bool firstUse;//第一次使用
     int userNum;//用户数量
-    QString cabId;
+//    QString cabId;
+    QString cabinetId;
 
     void readUserConfig();//读取用户配置
     void readCabinetConfig();//读取柜子配置

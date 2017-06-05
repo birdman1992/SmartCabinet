@@ -6,7 +6,8 @@
 CabinetConfig::CabinetConfig()
 {
     state = STATE_NO;
-    cabId = QString();
+//    cabId.clear();
+    cabinetId.clear();
     list_user.clear();
     list_cabinet.clear();
 //    qDebug()<<list_cabinet.count();
@@ -31,12 +32,14 @@ void CabinetConfig::setCabinetId(QString id)
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("CabinetId",QVariant(id));
     settings.sync();
-    cabId = QString(id);
+    cabinetId = id;
+//    qDebug()<<"[setCabinetId]"<<cabId<<&cabId<<&id;
 }
 
 QString CabinetConfig::getCabinetId()
 {
-    return cabId;
+    qDebug()<<"[getCabinetId]"<<cabinetId<<&cabinetId;
+    return cabinetId;
 }
 
 bool CabinetConfig::isFirstUse()
@@ -98,7 +101,7 @@ void CabinetConfig::readCabinetConfig()
     int i = 0;
     int j = 0;
 
-    cabId = settings.value("CabinetId").toString();
+    cabinetId = settings.value("CabinetId").toString();
 
     for(i=0; i<cabNum; i++)
     {
@@ -147,7 +150,7 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
 
     settings.setValue("CabNum",qba.size());
-    settings.setValue("CabinetId",QString());
+    settings.setValue("CabinetId",cabinetId);
     for(i=0; i<qba.size(); i++)//保存柜子位置编号
     {
         settings.setValue(QString("Cab%1PosNum").arg(i),QVariant(qba[i]));
@@ -207,6 +210,11 @@ CaseAddress CabinetConfig::checkCabinetByName(QString name)
     }
 
     return ret;
+}
+
+int CabinetConfig::getLockId(int seq, int index)
+{
+    return (seq <= 0)?index:(5+(seq-1)*8+index);
 }
 
 //添加新用户

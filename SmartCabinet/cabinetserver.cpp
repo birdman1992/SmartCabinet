@@ -7,11 +7,13 @@
 #include "defines.h"
 
 #define SERVER_ADDR "http://120.77.159.8:8080"
-#define API_REG "spd/mapper/SmartCheset/saveOrUpdate/"   //注册接口
+#define API_REG "/spd/mapper/SmartCheset/saveOrUpdate/"   //注册接口
 #define API_LOGIN "/spd/mapper/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/spd/work/OutStorage/query/goods/" //送货单检查接口
 //#define API_GOODS_CHECK "/spd/mapper/Goods/query/"  //货物查询
 #define API_LIST_STORE "/spd/mapper/OutStorage/query/"      //存入完毕销单接口
+#define API_CAB_BIND "/spd/work/Cheset/register/"     //柜格物品绑定接口
+#define API_GOODS_ACCESS  "/spd/work/Cheset/doGoods/"
 
 
 
@@ -27,6 +29,7 @@ bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
     config = globalConfig;
     if(config->getCabinetId().isEmpty())
         cabRegister();
+
     return true;
 }
 
@@ -40,6 +43,7 @@ void CabinetServer::cabRegister()
     regId = QString::number(qrand()%1000000);
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(regId).toUtf8();
     QString nUrl = QString(SERVER_ADDR)+QString(API_REG)+'?'+qba.toBase64();
+    qDebug()<<"[cabRegister]"<<nUrl;
     reply_register = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
 }
@@ -60,9 +64,41 @@ void CabinetServer::listCheck(QString code)
 {
     QByteArray qba = QString("{\"barcode\":\"%1\"}").arg(code).toUtf8();
     QString nUrl = QString(SERVER_ADDR)+QString(API_LIST_CHECK)+'?'+qba.toBase64();
-    qDebug()<<"[listCheck]"<<nUrl;
+    barCode = code;
+//    qDebug()<<"[listCheck]"<<nUrl;
     reply_list_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_list_check, SIGNAL(finished()), this, SLOT(recvListCheck()));
+}
+
+void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
+{
+    QString caseId = QString::number(config->getLockId(seqNum, index));
+    QString cabinetId = config->getCabinetId();
+    QByteArray qba = QString("{\"goodId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
+    QString nUrl = QString(SERVER_ADDR)+QString(API_CAB_BIND)+"?"+qba.toBase64();
+    qDebug()<<"[cabinetBind]"<<nUrl<<"\n"<<qba;
+    reply_cabinet_bind = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_cabinet_bind, SIGNAL(finished()), this, SLOT(recvCabBind()));
+}
+
+void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, bool isStore)
+{
+    QString caseId = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex));
+    QString cabinetId = config->getCabinetId();
+    QByteArray qba;
+
+    if(isStore)
+        qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5,\"barcode\":\"%6\"}")
+             .arg(id).arg(cabinetId).arg(caseId).arg(1).arg(num).arg(barCode).toUtf8();
+    else
+        qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}")
+             .arg(id).arg(cabinetId).arg(caseId).arg(2).arg(num).toUtf8();
+
+    QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+    qDebug()<<"[goodsAccess]"<<nUrl;
+    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvGoodsAccess()));
+
 }
 
 void CabinetServer::recvCabRegister()
@@ -198,7 +234,7 @@ void CabinetServer::recvListCheck()
     reply_list_check->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<cJSON_Print(json);
+//    qDebug()<<cJSON_Print(json);
 
     if(!json)
         return;
@@ -247,3 +283,42 @@ void CabinetServer::recvListCheck()
         emit listRst(list);
     }
 }
+
+void CabinetServer::recvCabBind()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_cabinet_bind->readAll());
+    reply_cabinet_bind->deleteLater();
+
+    cJSON* json = cJSON_Parse(qba.data());
+//    qDebug()<<cJSON_Print(json);
+
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        qDebug()<<"bind success";
+    }
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvGoodsAccess()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_goods_access->readAll());
+    reply_goods_access->deleteLater();
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<cJSON_Print(json);
+
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        qDebug()<<"ACCESS success";
+    }
+    cJSON_Delete(json);
+}
+
