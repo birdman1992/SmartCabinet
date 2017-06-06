@@ -17,6 +17,9 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 void ControlDevice::deviceInit()
 {
     //初始化锁控:波特率,数据位,奇偶校验,停止位
+//    com_lock_ctrler = new QSerialPort(DEV_LOCK_CTRL);
+//    com_lock_ctrler->com_init(38400,0,8,'N',1);
+
     comLockCtrlInit(38400, 8, 0, 1);
 //    connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
 
@@ -101,7 +104,8 @@ void ControlDevice::lockCtrl(int ioNum)
 {
     QByteArray qba = QByteArray::fromHex("FA0100FF");
     qba[2] = ioNum;
-//    qDebug()<<"[lockCtrl]"<<qba.toHex();
+    qDebug()<<"[lockCtrl]"<<qba.toHex();
+//    com_lock_ctrler->com_write(qba);
     com_lock_ctrl->write(qba);
 }
 

@@ -7,6 +7,7 @@
 #include "Device/Hid/qhid.h"
 #include "Device/Qextserial/qextserialport.h"
 #include "Device/devicesimulate.h"
+//#include "Device/SerialPort/qserialport.h"
 
 //#define SIMULATE_ON  //打开仿真
 
@@ -19,6 +20,7 @@ private:
     QHid* hid_card_reader;//读卡器设备
     QHid* hid_code_scan;//扫码设备
     QextSerialPort* com_lock_ctrl;//柜门锁控制器
+//    QSerialPort* com_lock_ctrler;
     DeviceSimulate* dev_simulate;//设备仿真器
     QList<QByteArray> lockCtrlCmd;//控制协议
 

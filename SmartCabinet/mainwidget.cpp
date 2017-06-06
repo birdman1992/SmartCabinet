@@ -571,6 +571,7 @@ void MainWidget::cabinet_cleck_four(int num)
 
 void MainWidget::init_huangpo()
 {
+    qDebug("init_huangpo<<server");
     //智能柜配置
     cabinetConf = new CabinetConfig();
 

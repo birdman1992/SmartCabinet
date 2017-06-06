@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     Json/cJSON.c \
     Structs/goodslist.cpp \
     Widgets/cabinetaccess.cpp \
-    Widgets/numkeyboard.cpp
+    Widgets/numkeyboard.cpp \
+    Device/SerialPort/qserialport.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -72,7 +73,8 @@ HEADERS  += mainwidget.h \
     Json/cJSON.h \
     Structs/goodslist.h \
     Widgets/cabinetaccess.h \
-    Widgets/numkeyboard.h
+    Widgets/numkeyboard.h \
+    Device/SerialPort/qserialport.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
