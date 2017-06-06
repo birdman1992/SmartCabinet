@@ -9,7 +9,7 @@
 #include "Device/devicesimulate.h"
 //#include "Device/SerialPort/qserialport.h"
 
-//#define SIMULATE_ON  //打开仿真
+#define SIMULATE_ON  //打开仿真
 
 class ControlDevice : public QObject
 {

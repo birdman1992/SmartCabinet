@@ -111,9 +111,9 @@ void ControlDevice::lockCtrl(int ioNum)
 
 void ControlDevice::openLock(int seqNum, int index)
 {
-    qDebug()<<"[openLock]"<<seqNum<<index;
+    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
+    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
 #ifndef SIMULATE_ON
-    int ctrlNum = (seqNum <= 0)?index:(5+(seqNum-1)*8+index);
     lockCtrl(ctrlNum);
 #endif
 }

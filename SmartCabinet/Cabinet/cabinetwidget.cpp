@@ -34,8 +34,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 //    optUser = QString();
     ui->store->hide();
     ui->fetch->hide();
-    ui->msk1->hide();
-    ui->msk2->hide();
+//    ui->msk1->hide();
+//    ui->msk2->hide();
 }
 
 CabinetWidget::~CabinetWidget()
@@ -112,6 +112,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
     qDebug()<<config->getCabinetId();
+    emit requireOpenCase(cabSeqNum, caseIndex);
     if(clickLock)//锁定状态下点击无效
     {
         if((caseIndex==selectCase) && (cabSeqNum == selectCab))
@@ -161,7 +162,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         }
         //打开对应柜门
 //        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
-        emit requireOpenCase(cabSeqNum, caseIndex);
+
         waitForCodeScan = true;
         clickLock = true;
         scanInfo = QString();
@@ -398,7 +399,7 @@ void CabinetWidget::saveStore(Goods *goods, int num)
 {
     CaseAddress addr = config->checkCabinetByName(goods->name);
     config->list_cabinet[addr.cabinetSeqNUM]->consumableIn(addr.caseIndex,num);
-    emit goodsAccess(addr, goods->name, num, true);
+    emit goodsAccess(addr, goods->goodsId, num, true);
 }
 
 void CabinetWidget::saveFetch(QString name, int num)
@@ -406,6 +407,7 @@ void CabinetWidget::saveFetch(QString name, int num)
     CaseAddress addr = config->checkCabinetByName(name);
     config->list_cabinet[addr.cabinetSeqNUM]->consumableOut(addr.caseIndex,num);
     clickLock = false;
+    emit requireOpenCase(addr.cabinetSeqNUM, addr.caseIndex);
     emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->id, num, false);
 }
 

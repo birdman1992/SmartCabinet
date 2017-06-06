@@ -96,6 +96,7 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, bool isSt
 
     QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
     qDebug()<<"[goodsAccess]"<<nUrl;
+    qDebug()<<qba;
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvGoodsAccess()));
 
@@ -290,7 +291,7 @@ void CabinetServer::recvCabBind()
     reply_cabinet_bind->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());
-//    qDebug()<<cJSON_Print(json);
+    qDebug()<<cJSON_Print(json);
 
     if(!json)
         return;

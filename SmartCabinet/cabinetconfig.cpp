@@ -214,7 +214,7 @@ CaseAddress CabinetConfig::checkCabinetByName(QString name)
 
 int CabinetConfig::getLockId(int seq, int index)
 {
-    return (seq <= 0)?index:(5+(seq-1)*8+index);
+    return (seq <= 0)?index:(6+(seq-1)*8+index);
 }
 
 //添加新用户

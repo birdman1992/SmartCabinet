@@ -89,3 +89,9 @@ void DeviceSimulate::on_listCode_clicked()
     QString str = ui->listCode->text();
     emit sendCodeScanData(str.toUtf8());
 }
+
+void DeviceSimulate::on_listCode_2_clicked()
+{
+    QString str = ui->listCode_2->text();
+    emit sendCodeScanData(str.toUtf8());
+}
