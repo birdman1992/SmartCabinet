@@ -38,6 +38,8 @@ public slots:
     void recvUserCheckRst(UserInfo);//接收用户校验结果
     void recvUserInfo(QByteArray qba);//接收用户信息
     void recvListInfo(GoodsList*);
+    void recvBindRst(bool);
+
 signals:
     void winSwitch(int);
     void goodsAccess(CaseAddress, QString, int, bool);//柜格坐标，货物名，数量，是否存
@@ -83,6 +85,7 @@ private:
     void paintEvent(QPaintEvent *);
     void cabLock();
     void cabInfoBind(int seq, int index, CabinetInfo info);
+    void initAccessState();
 };
 
 #endif // CABINETWIDGET_H

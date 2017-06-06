@@ -164,10 +164,12 @@ void Cabinet::setCaseName(CabinetInfo info, int index)
     settings.setValue("name",info.name);
     settings.setValue("id",info.id);
     settings.setValue("unit",info.unit);
+    settings.setValue("packageId",info.packageId);
 
     list_case.at(index)->name = info.name;
     list_case.at(index)->id = info.id;
     list_case.at(index)->unit = info.unit;
+    list_case.at(index)->packageId = info.packageId;
     ui->tableWidget->item(index,0)->setText(info.name+QString("×%1").arg(list_case.at(index)->num));
     ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
 }

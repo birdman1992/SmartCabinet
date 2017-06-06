@@ -27,7 +27,7 @@ void QHid::run()
     struct hiddev_event ev[64];
     unsigned int i,j=0;
     int rd = 0;
-    char id[24] = {0};
+    char id[50] = {0};
     setbuf(stdout,NULL);
 
     while (1)
@@ -54,7 +54,7 @@ void QHid::run()
                 QByteArray qba(id, strlen(id));
                 printf("READ ID:%s\n",id);
                 emit hidRead(qba);
-                memset(id, 0, 24);
+                memset(id, 0, 50);
                 j=0;
             }
         }

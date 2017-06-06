@@ -120,6 +120,7 @@ void CabinetConfig::readCabinetConfig()
         info->num = settings.value("num").toInt();
         info->id = settings.value("id").toString();
         info->unit = settings.value("unit").toString();
+        info->packageId = settings.value("packageId").toString();
 //        qDebug()<<"[addCase]"<<0<<info->name<<info->num;
         list_cabinet[0]->addCase(info);
     }
@@ -135,6 +136,7 @@ void CabinetConfig::readCabinetConfig()
             info->num = settings.value("num").toInt();
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
+            info->packageId = settings.value("packageId").toString();
 //            qDebug()<<"[addCase]"<<i<<info->name<<info->num;
             list_cabinet[i]->addCase(info);
         }
@@ -164,6 +166,7 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
         settings.setValue("num", QVariant(0));
         settings.setValue("unit",QVariant(QString()));
         settings.setValue("id",QVariant(QString()));
+        settings.setValue("packageId",QVariant(QString()));
     }
     settings.endArray();
 
@@ -177,6 +180,7 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
             settings.setValue("num", QVariant(0));
             settings.setValue("unit",QVariant(QString()));
             settings.setValue("id",QVariant(QString()));
+            settings.setValue("packageId",QVariant(QString()));
         }
         settings.endArray();
     }

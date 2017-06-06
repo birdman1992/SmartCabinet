@@ -1,4 +1,5 @@
 #include "goodslist.h"
+#include <QDebug>
 
 GoodsList::GoodsList()
 {
@@ -15,7 +16,8 @@ GoodsList::~GoodsList()
 void GoodsList::addGoods(Goods *_goods)
 {
     list_goods<<_goods;
-    map_goods.insert(_goods->goodsId, _goods);
+    map_goods.insert(_goods->packageBarcode, _goods);
+//       map_goods.insert(_goods->goodsId, _goods);
 }
 
 void GoodsList::goodsIn(QString goodsId, int num)
@@ -33,7 +35,7 @@ void GoodsList::goodsOut(QString goodsId, int num)
 }
 
 Goods *GoodsList::getGoodsById(QString goodsId)
-{
+{qDebug()<<"check"<<goodsId;
     return map_goods.value(goodsId);
 }
 

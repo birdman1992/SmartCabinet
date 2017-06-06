@@ -8,6 +8,7 @@ public:
     CabinetInfo();
     QString name;//耗材名
     QString id;//耗材id
+    QString packageId;
     QString unit;//计数单位
     int num;//耗材数量
 };

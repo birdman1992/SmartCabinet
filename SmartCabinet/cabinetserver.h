@@ -34,6 +34,7 @@ private:
 signals:
     void loginRst(UserInfo);
     void listRst(GoodsList*);
+    void bindRst(bool);
 
 public slots:
     void userLogin(QString);

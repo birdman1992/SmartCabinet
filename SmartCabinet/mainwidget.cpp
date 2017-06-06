@@ -595,6 +595,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,bool)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,bool)));
     connect(cabServer, SIGNAL(loginRst(UserInfo)), win_cabinet, SLOT(recvUserCheckRst(UserInfo)));
     connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
+    connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
 
     //待机界面
     win_standby = new StandbyWidget(this);

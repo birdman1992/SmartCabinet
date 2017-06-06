@@ -133,8 +133,10 @@ void ControlDevice::readCardReaderData(QByteArray qba)
 
 void ControlDevice::readCodeScanData(QByteArray qba)
 {
-    int index = qba.indexOf("-");
-    qba = (index==-1)?qba:qba.left(index);
+//    int index = qba.indexOf("-");
+//    qba = (index==-1)?qba:qba.left(index);
+//    qDebug()<<"[readCodeScanData]"<<qba;
+//    emit codeScanData(qba);
     qDebug()<<"[readCodeScanData]"<<qba;
     emit codeScanData(qba);
 }
