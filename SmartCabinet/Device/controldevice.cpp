@@ -1,8 +1,8 @@
 #include "controldevice.h"
 #include <QDebug>
 #define DEV_LOCK_CTRL "/dev/ttymxc2"
-#define DEV_CARD_READER "/dev/hidraw1"
-#define DEV_CODE_SCAN "/dev/hidraw0"
+#define DEV_CARD_READER "/dev/hidraw0"
+#define DEV_CODE_SCAN "/dev/hidraw1"
 
 ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 {
@@ -133,6 +133,8 @@ void ControlDevice::readCardReaderData(QByteArray qba)
 
 void ControlDevice::readCodeScanData(QByteArray qba)
 {
+    int index = qba.indexOf("-");
+    qba = (index==-1)?qba:qba.left(index);
     qDebug()<<"[readCodeScanData]"<<qba;
     emit codeScanData(qba);
 }
