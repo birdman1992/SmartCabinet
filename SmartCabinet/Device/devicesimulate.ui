@@ -72,7 +72,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>006B4D6A43</string>
+        <string>006B4CF1CA</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_2">
@@ -135,7 +135,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>T220170607000929828</string>
+        <string>T220170607090310061</string>
        </property>
       </widget>
       <widget class="QPushButton" name="listCode_2">
@@ -166,7 +166,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>EO501002219-100</string>
+        <string>B0214000016</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_6">

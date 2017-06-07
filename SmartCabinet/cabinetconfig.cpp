@@ -1,16 +1,18 @@
 #include "cabinetconfig.h"
 #include <QVariant>
 #include <QDebug>
+#include <QTextCodec>
+#include <qobject.h>
 #include "defines.h"
 
 CabinetConfig::CabinetConfig()
 {
     state = STATE_NO;
-//    cabId.clear();
+    //    cabId.clear();
     cabinetId.clear();
     list_user.clear();
     list_cabinet.clear();
-//    qDebug()<<list_cabinet.count();
+    //    qDebug()<<list_cabinet.count();
     if(!QDir("/home/config").exists())
     {
         QDir dir;
@@ -33,7 +35,7 @@ void CabinetConfig::setCabinetId(QString id)
     settings.setValue("CabinetId",QVariant(id));
     settings.sync();
     cabinetId = id;
-//    qDebug()<<"[setCabinetId]"<<cabId<<&cabId<<&id;
+    //    qDebug()<<"[setCabinetId]"<<cabId<<&cabId<<&id;
 }
 
 QString CabinetConfig::getCabinetId()
@@ -68,7 +70,7 @@ void CabinetConfig::readUserConfig()
 {
     if(!QFile(CONF_USER).exists())
     {
-//        firstUse = true;
+        //        firstUse = true;
         return;
     }
     QSettings settings(CONF_USER,QSettings::IniFormat);
@@ -117,11 +119,12 @@ void CabinetConfig::readCabinetConfig()
         settings.setArrayIndex(j);
         CabinetInfo* info = new CabinetInfo;
         info->name = settings.value("name").toString();
+//        qDebug()<<"[PY]"<<getChineseSpell(info->name)<<info->name;
         info->num = settings.value("num").toInt();
         info->id = settings.value("id").toString();
         info->unit = settings.value("unit").toString();
         info->packageId = settings.value("packageId").toString();
-//        qDebug()<<"[addCase]"<<0<<info->name<<info->num;
+        //        qDebug()<<"[addCase]"<<0<<info->name<<info->num;
         list_cabinet[0]->addCase(info);
     }
     settings.endArray();
@@ -137,7 +140,8 @@ void CabinetConfig::readCabinetConfig()
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
-//            qDebug()<<"[addCase]"<<i<<info->name<<info->num;
+//            qDebug()<<"[PY]"<<getChineseSpell(info->name)<<info->name;
+            //            qDebug()<<"[addCase]"<<i<<info->name<<info->num;
             list_cabinet[i]->addCase(info);
         }
         settings.endArray();
@@ -236,4 +240,41 @@ void CabinetConfig::addNewUser(UserInfo *info)
     list_user<<info;
     settings.setValue("userNum", QVariant(list_user.count()));
     firstUse = false;
+}
+
+QChar CabinetConfig::getPyCh(QString str)
+{
+    QChar ret;
+    QTextCodec* pCodec = QTextCodec::codecForName("gb2312");
+    if(!pCodec) return QChar(' ');
+    QByteArray qba = pCodec->fromUnicode(str);
+
+    int tmp = ((qba[0]&0xff)<<8)|(qba[1]&0xff);
+
+    if(tmp >= 45217 && tmp <= 45252) ret = 'A';
+    else if(tmp >= 45253 && tmp <= 45760) ret = 'B';
+    else if(tmp >= 45761 && tmp <= 46317) ret = 'C';
+    else if(tmp >= 46318 && tmp <= 46825) ret = 'D';
+    else if(tmp >= 46826 && tmp <= 47009) ret = 'E';
+    else if(tmp >= 47010 && tmp <= 47296) ret = 'F';
+    else if(tmp >= 47297 && tmp <= 47613) ret = 'G';
+    else if(tmp >= 47614 && tmp <= 48118) ret = 'H';
+    else if(tmp >= 48119 && tmp <= 49061) ret = 'J';
+    else if(tmp >= 49062 && tmp <= 49323) ret = 'K';
+    else if(tmp >= 49324 && tmp <= 49895) ret = 'L';
+    else if(tmp >= 49896 && tmp <= 50370) ret = 'M';
+    else if(tmp >= 50371 && tmp <= 50613) ret = 'N';
+    else if(tmp >= 50614 && tmp <= 50621) ret = 'O';
+    else if(tmp >= 50622 && tmp <= 50905) ret = 'P';
+    else if(tmp >= 50906 && tmp <= 51386) ret = 'Q';
+    else if(tmp >= 51387 && tmp <= 51445) ret = 'R';
+    else if(tmp >= 51446 && tmp <= 52217) ret = 'S';
+    else if(tmp >= 52218 && tmp <= 52697) ret = 'T';
+    else if(tmp >= 52698 && tmp <= 52979) ret = 'W';
+    else if(tmp >= 52980 && tmp <= 53640) ret = 'X';
+    else if(tmp >= 53689 && tmp <= 54480) ret = 'Y';
+    else if(tmp >= 54481 && tmp <= 55289) ret = 'Z';
+    else ret = str.at(0);
+
+    return ret;
 }

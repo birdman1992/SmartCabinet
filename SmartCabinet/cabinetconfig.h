@@ -49,6 +49,7 @@ private:
     void readUserConfig();//读取用户配置
     void readCabinetConfig();//读取柜子配置
     void addNewUser(UserInfo* info);
+    QChar getPyCh(QString str);
 
 public slots:
 

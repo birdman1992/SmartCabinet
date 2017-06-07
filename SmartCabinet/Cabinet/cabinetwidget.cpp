@@ -119,7 +119,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
     qDebug()<<config->getCabinetId();
-    emit requireOpenCase(cabSeqNum, caseIndex);
+//    emit requireOpenCase(cabSeqNum, caseIndex);
     if(clickLock)//锁定状态下点击无效
     {
         if((caseIndex==selectCase) && (cabSeqNum == selectCab))
@@ -415,6 +415,9 @@ void CabinetWidget::saveStore(Goods *goods, int num)
 
 void CabinetWidget::saveFetch(QString name, int num)
 {
+    if(num<=0)
+        return;
+
     CaseAddress addr = config->checkCabinetByName(name);
     config->list_cabinet[addr.cabinetSeqNUM]->consumableOut(addr.caseIndex,num);
     clickLock = false;
@@ -529,10 +532,11 @@ void CabinetWidget::recvListInfo(GoodsList *l)
 }
 
 void CabinetWidget::recvBindRst(bool rst)
-{qDebug("1");
+{
     if(rst)
-    {qDebug("2");
-        win_access->clickOpen(curGoods->packageBarcode);qDebug("3");
+    {
+        win_access->clickOpen(curGoods->packageBarcode);
+        emit requireOpenCase(selectCab, selectCase);
     }
     else
     {
