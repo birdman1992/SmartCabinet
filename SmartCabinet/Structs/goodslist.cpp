@@ -3,7 +3,7 @@
 
 GoodsList::GoodsList()
 {
-
+    map_goods.clear();
 }
 
 GoodsList::~GoodsList()
@@ -17,6 +17,7 @@ void GoodsList::addGoods(Goods *_goods)
 {
     list_goods<<_goods;
     map_goods.insert(_goods->packageBarcode, _goods);
+    qDebug()<<"[addtoMap]"<<_goods->packageBarcode;
 //       map_goods.insert(_goods->goodsId, _goods);
 }
 
@@ -40,6 +41,8 @@ void GoodsList::goodsOut(QString goodsId, int num)
 
 Goods *GoodsList::getGoodsById(QString goodsId)
 {qDebug()<<"check"<<goodsId;
+    if(map_goods.isEmpty())
+        return NULL;
     return map_goods.value(goodsId, NULL);
 }
 

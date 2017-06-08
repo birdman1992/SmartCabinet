@@ -63,7 +63,7 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
         keyBoard->show();
         curCab = info;
         ui->name->setText(curCab->name);
-        ui->tip->setText(QString("提示：剩余%1%2,请扫描取出或者输入取出数量").arg(curCab->num).arg(curCab->unit));
+        ui->tip->setText(QString("提示：剩余%1%2,请输入取出数量").arg(curCab->num).arg(curCab->unit));
         ui->onekey->hide();
         if(this->isHidden())
             this->show();

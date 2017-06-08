@@ -171,7 +171,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         //打开对应柜门
 //        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
 
-        waitForCodeScan = true;
+//        waitForCodeScan = true;
         clickLock = true;
         scanInfo = QString();
         CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
@@ -359,6 +359,7 @@ void CabinetWidget::on_fetch_toggled(bool checked)
         clickLock = false;
         config->state = STATE_FETCH;
         win_access->setAccessModel(false);
+        waitForCodeScan = false;
     }
     else
     {
