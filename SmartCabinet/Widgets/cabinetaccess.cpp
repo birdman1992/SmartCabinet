@@ -76,7 +76,7 @@ void CabinetAccess::scanOpen(QString goodsId)
     {
         if(curGoods->goodsId != goodsId)//扫描了另一样物品的条码
         {
-            save();
+            save();//把当前已经扫描的货物存了
         }
     }
 

@@ -21,7 +21,7 @@ void ControlDevice::deviceInit()
 //    com_lock_ctrler->com_init(38400,0,8,'N',1);
 
     comLockCtrlInit(38400, 8, 0, 1);
-//    connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
+    connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
 
     //初始化读卡器
     hid_card_reader = new QHid(this);
@@ -106,16 +106,29 @@ void ControlDevice::lockCtrl(int ioNum)
     qba[2] = ioNum;
     qDebug()<<"[lockCtrl]"<<qba.toHex();
 //    com_lock_ctrler->com_write(qba);
+
+#ifndef SIMULATE_ON
     com_lock_ctrl->write(qba);
+#endif
+}
+
+void ControlDevice::lockCtrl(int seqNum, int ioNum)
+{
+    QByteArray qba = QByteArray::fromHex("fa000100ff");
+    qba[1] = seqNum;
+    qba[3] = ioNum;
+    qDebug()<<"[lockCtrl]"<<qba.toHex();
+
+#ifndef SIMULATE_ON
+    com_lock_ctrl->write(qba);
+#endif
 }
 
 void ControlDevice::openLock(int seqNum, int index)
 {
     int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
     qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
-#ifndef SIMULATE_ON
     lockCtrl(ctrlNum);
-#endif
 }
 
 void ControlDevice::readLockCtrlData()

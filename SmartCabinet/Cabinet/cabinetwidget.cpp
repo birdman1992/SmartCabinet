@@ -194,19 +194,20 @@ void CabinetWidget::recvScanData(QByteArray qba)
         return;
     }
 
-//    bool newStore = false;
-//    if((scanInfo != QString(qba)) && (config->state != STATE_FETCH))
-//    {
-//        newStore = true;
-//        storeNum = 0;
-//    }
+    bool newStore = false;
+    if(scanInfo != QString(qba))
+    {
+        newStore = true;
+    }
     scanInfo = QString(qba);
-    curGoods = curStoreList->getGoodsById(scanInfo);
+    curGoods = curStoreList->getGoodsById(scanInfo);qDebug("<<<<<<<<<");
     if(curGoods == NULL)
     {
         qDebug()<<"[recvScanData]"<<"scan goods id not find";
         return;
     }
+    else
+        qDebug()<<"[recvScanData]"<<"scan goods id find";
     casePos = config->checkCabinetByName(curGoods->name);
 
     if(casePos.cabinetSeqNUM == -1)//没有搜索到药品对应的柜格
@@ -222,7 +223,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
         {
             //打开对应柜门
             qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
-            emit requireOpenCase(casePos.cabinetSeqNUM, casePos.caseIndex);
+            if(newStore)
+                emit requireOpenCase(casePos.cabinetSeqNUM, casePos.caseIndex);
             win_access->scanOpen(curGoods->packageBarcode);
 //            storeNum++;
 //            config->list_cabinet[0]->showMsg(MSG_STORE+
@@ -410,6 +412,7 @@ void CabinetWidget::saveStore(Goods *goods, int num)
     CaseAddress addr = config->checkCabinetByName(goods->name);
     config->list_cabinet[addr.cabinetSeqNUM]->consumableIn(addr.caseIndex,num);
     emit goodsAccess(addr, goods->packageBarcode, num, true);
+    scanInfo.clear();
 //    initAccessState();
 }
 

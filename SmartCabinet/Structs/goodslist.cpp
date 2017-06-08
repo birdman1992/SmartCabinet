@@ -22,21 +22,25 @@ void GoodsList::addGoods(Goods *_goods)
 
 void GoodsList::goodsIn(QString goodsId, int num)
 {
-    Goods *goods = map_goods.value(goodsId);
+    Goods *goods = map_goods.value(goodsId, NULL);
+    if(goods == NULL)
+        return;
     goods->curNum+=num;
     goods->finish = (goods->curNum == goods->totalNum);
 }
 
 void GoodsList::goodsOut(QString goodsId, int num)
 {
-    Goods *goods = map_goods.value(goodsId);
+    Goods *goods = map_goods.value(goodsId, NULL);
+    if(goods == NULL)
+        return;
     goods->curNum-=num;
     goods->finish = (goods->curNum == goods->totalNum);
 }
 
 Goods *GoodsList::getGoodsById(QString goodsId)
 {qDebug()<<"check"<<goodsId;
-    return map_goods.value(goodsId);
+    return map_goods.value(goodsId, NULL);
 }
 
 bool GoodsList::listCheck()

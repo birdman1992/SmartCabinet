@@ -30,6 +30,7 @@ private:
 
     void comLockCtrlInit(int baudRate, int dataBits, int Parity, int stopBits);
     void lockCtrl(int ioNum);
+    void lockCtrl(int seqNum, int ioNum);//锁控板编号,控制口编号
 
 
 signals:
