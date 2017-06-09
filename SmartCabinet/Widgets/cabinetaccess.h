@@ -42,6 +42,7 @@ signals:
 private:
     Ui::CabinetAccess *ui;
     bool isStore;
+    bool defaultValue;
     GoodsList* storeList;
     Goods* curGoods;
     CabinetInfo* curCab;

@@ -59,7 +59,9 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
 {
     if(!isStore)
     {
-        ui->info->clear();
+        defaultValue = true;
+        ui->info->setText("1");
+//        ui->info->clear();
         keyBoard->show();
         curCab = info;
         ui->name->setText(curCab->name);
@@ -159,6 +161,10 @@ void CabinetAccess::on_ok_clicked()
 
 void CabinetAccess::input(int val)
 {
+    if(defaultValue)
+    {
+        ui->info->setText("1");
+    }
     strInput = ui->info->text();
     strInput += QString::number(val);
     int numInput = strInput.toInt();

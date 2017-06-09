@@ -9,7 +9,13 @@
 #include "Device/devicesimulate.h"
 //#include "Device/SerialPort/qserialport.h"
 
-#define SIMULATE_ON  //打开仿真
+//#define SIMULATE_ON  //打开仿真
+
+
+typedef struct ui{
+    long vid;
+    long pid;
+}USBINFO;
 
 class ControlDevice : public QObject
 {
@@ -33,6 +39,8 @@ private:
     void lockCtrl(int seqNum, int ioNum);//锁控板编号,控制口编号
 
 
+    int get_dev_info(char *dev_name, USBINFO *uInfo);
+    int get_path();
 signals:
     void cardReaderTimeout();//读卡超时
     void lockCtrlData(QByteArray);//暂无
