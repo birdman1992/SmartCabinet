@@ -34,8 +34,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 //    optUser = QString();
     ui->store->hide();
     ui->fetch->hide();
-    ui->msk1->hide();
-    ui->msk2->hide();
+//    ui->msk1->hide();
+//    ui->msk2->hide();
 }
 
 CabinetWidget::~CabinetWidget()

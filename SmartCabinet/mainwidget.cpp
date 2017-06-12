@@ -582,6 +582,10 @@ void MainWidget::init_huangpo()
     //仿真控制台
     ctrlUi = new ControlDevice;
 
+    //扫码输入面板
+    win_coder_keyboard = new coderKeyboard();
+    connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));
+
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
     win_cabinet->installGlobalConfig(cabinetConf);

@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <errno.h>
 #include <dirent.h>
+#include <unistd.h>
 #define DEV_LOCK_CTRL "/dev/ttymxc2"
 //#define DEV_LOCK_CTRL "/dev/ttymxc0"
 #define DEV_CARD_READER "/dev/hidraw0"

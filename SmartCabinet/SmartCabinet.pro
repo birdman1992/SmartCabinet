@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     Structs/goodslist.cpp \
     Widgets/cabinetaccess.cpp \
     Widgets/numkeyboard.cpp \
-    Device/SerialPort/qserialport.cpp
+    Device/SerialPort/qserialport.cpp \
+    Widgets/coderkeyboard.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -74,7 +75,8 @@ HEADERS  += mainwidget.h \
     Structs/goodslist.h \
     Widgets/cabinetaccess.h \
     Widgets/numkeyboard.h \
-    Device/SerialPort/qserialport.h
+    Device/SerialPort/qserialport.h \
+    Widgets/coderkeyboard.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -89,7 +91,8 @@ FORMS    += mainwidget.ui \
     Cabinet/cabinet.ui \
     Cabinet/cabinetwidget.ui \
     Widgets/cabinetaccess.ui \
-    Widgets/numkeyboard.ui
+    Widgets/numkeyboard.ui \
+    Widgets/coderkeyboard.ui
 
 RESOURCES += \
     image.qrc

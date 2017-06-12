@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
 //    beautiful::SetUTF8Code();//--显示中文 utf-8
 //    beautiful::SetStyle("image/black");//黑色风格
-    qInstallMsgHandler(customMessageHandler);
+//    qInstallMsgHandler(customMessageHandler);
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForCStrings(codec);

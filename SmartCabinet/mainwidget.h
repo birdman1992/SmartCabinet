@@ -20,6 +20,7 @@
 #include "Widgets/standbywidget.h"
 #include "Widgets/userwidget.h"
 #include "Widgets/cabinetset.h"
+#include "Widgets/coderkeyboard.h"
 #include "Cabinet/cabinetwidget.h"
 
 #include "Menu/setmenu.h"
@@ -93,6 +94,7 @@ private:
     StandbyWidget* win_standby;//待机窗口
     CabinetSet* win_cabinet_set;//智能柜组合设置窗口
     CabinetWidget* win_cabinet;//智能柜窗口
+    coderKeyboard* win_coder_keyboard;//条码输入窗口
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框
