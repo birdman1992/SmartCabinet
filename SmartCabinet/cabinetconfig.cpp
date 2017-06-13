@@ -102,6 +102,7 @@ void CabinetConfig::readCabinetConfig()
     int cabNum = settings.value("CabNum").toInt();
     int i = 0;
     int j = 0;
+    int k = 0;
 
     cabinetId = settings.value("CabinetId").toString();
 
@@ -113,38 +114,49 @@ void CabinetConfig::readCabinetConfig()
         list_cabinet<<cab;
     }
 
-    settings.beginReadArray("Cabinet0");
+    settings.beginGroup("Cabinet0");
+//    settings.beginReadArray("Cabinet0");
     for(j=0; j<CAB_CASE_1_NUM-1; j++)
     {
-        settings.setArrayIndex(j);
-        CabinetInfo* info = new CabinetInfo;
-        info->name = settings.value("name").toString();
-//        qDebug()<<"[PY]"<<getChineseSpell(info->name)<<info->name;
-        info->num = settings.value("num").toInt();
-        info->id = settings.value("id").toString();
-        info->unit = settings.value("unit").toString();
-        info->packageId = settings.value("packageId").toString();
-        //        qDebug()<<"[addCase]"<<0<<info->name<<info->num;
-        list_cabinet[0]->addCase(info);
-    }
-    settings.endArray();
-    for(i=1; i<cabNum; i++)
-    {
-        settings.beginReadArray(QString("Cabinet%1").arg(i));
-        for(j=0; j<CAB_CASE_0_NUM; j++)
+        int arr_size = settings.beginReadArray(QString("case%1").arg(j));
+
+        for(k=0; k<arr_size; k++)
         {
-            settings.setArrayIndex(j);
-            CabinetInfo* info = new CabinetInfo;
+            settings.setArrayIndex(k);
+            GoodsInfo* info = new GoodsInfo;
             info->name = settings.value("name").toString();
             info->num = settings.value("num").toInt();
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
-//            qDebug()<<"[PY]"<<getChineseSpell(info->name)<<info->name;
-            //            qDebug()<<"[addCase]"<<i<<info->name<<info->num;
-            list_cabinet[i]->addCase(info);
+            list_cabinet[0]->addCase(info);
         }
         settings.endArray();
+    }
+    settings.endGroup();
+//    settings.endArray();
+    for(i=1; i<cabNum; i++)
+    {
+        settings.beginGroup(QString("Cabinet%1").arg(i));
+//        settings.beginReadArray(QString("Cabinet%1").arg(i));
+        for(j=0; j<CAB_CASE_0_NUM; j++)
+        {
+            int arr_size = settings.beginReadArray(QString("case%1").arg(j));
+            for(k=0; k<arr_size; k++)
+            {
+                settings.setArrayIndex(k);
+                GoodsInfo* info = new GoodsInfo;
+                info->name = settings.value("name").toString();
+                info->num = settings.value("num").toInt();
+                info->id = settings.value("id").toString();
+                info->unit = settings.value("unit").toString();
+                info->packageId = settings.value("packageId").toString();
+                list_cabinet[i]->addCase(info);
+            }
+            settings.endArray();
+        }
+//        settings.endArray();
+        settings.endGroup();
     }
 }
 
@@ -162,31 +174,39 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
         settings.setValue(QString("Cab%1PosNum").arg(i),QVariant(qba[i]));
     }
 
-    settings.beginWriteArray(QString("Cabinet0"));
+    settings.beginGroup("Cabinet0");
+//    settings.beginWriteArray(QString("Cabinet0"));
     for(j=0; j<Main_CAB_CASE_NUM; j++)
     {
-        settings.setArrayIndex(j);
+        settings.beginWriteArray("case0");
+        settings.setArrayIndex(0);
         settings.setValue("name",QVariant(QString()));
         settings.setValue("num", QVariant(0));
         settings.setValue("unit",QVariant(QString()));
         settings.setValue("id",QVariant(QString()));
         settings.setValue("packageId",QVariant(QString()));
+        settings.endArray();
     }
-    settings.endArray();
+    settings.endGroup();
+//    settings.endArray();
 
     for(i=1; i<qba.size(); i++)
     {
-        settings.beginWriteArray(QString("Cabinet%1").arg(i));
+        settings.beginGroup(QString("Cabinet%1").arg(i));
+//        settings.beginWriteArray(QString("Cabinet%1").arg(i));
         for(j=0; j<VICE_CAB_CASE_NUM; j++)
         {
-            settings.setArrayIndex(j);
+            settings.beginWriteArray(QString("case%1").arg(j));
+            settings.setArrayIndex(0);
             settings.setValue("name",QVariant(QString()));
             settings.setValue("num", QVariant(0));
             settings.setValue("unit",QVariant(QString()));
             settings.setValue("id",QVariant(QString()));
             settings.setValue("packageId",QVariant(QString()));
+            settings.endArray();
         }
-        settings.endArray();
+        settings.endGroup();
+//        settings.endArray();
     }
     settings.sync();
 
@@ -208,7 +228,7 @@ CaseAddress CabinetConfig::checkCabinetByName(QString name)
     {
         for(j=0; j<list_cabinet.at(i)->list_case.count(); j++)
         {
-            if(list_cabinet.at(i)->list_case.at(j)->name == name)
+            if(list_cabinet.at(i)->list_case.at(j)->caseSearch(name))
             {
                 ret.cabinetSeqNUM = i;
                 ret.caseIndex = j;

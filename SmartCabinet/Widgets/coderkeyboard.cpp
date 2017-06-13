@@ -29,8 +29,8 @@ void coderKeyboard::onKeysClicked(int val)
     {
         str += QString::number(val);
     }
-    else if(val == 10)
-        emit backspace();
-    else if(val == 11)
-        emit clearAll();
+//    else if(val == 10)
+//        emit backspace();
+//    else if(val == 11)
+//        emit clearAll();
 }

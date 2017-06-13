@@ -56,7 +56,7 @@ void Cabinet::setCabType(int _type)
     cabType = _type;
 }
 
-void Cabinet::addCase(CabinetInfo *info)
+void Cabinet::addCase(GoodsInfo *info)
 {
     if(list_case.count()>=caseNum)
     {
@@ -64,23 +64,28 @@ void Cabinet::addCase(CabinetInfo *info)
         return;
     }
 
+    CabinetInfo* cabInfo = new CabinetInfo();
+    cabInfo->list_goods<<info;
+
     int index = list_case.count();
-    list_case<<info;
-    if(info->name.isEmpty())
-    {
-        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name));
-    }
-    else
-    {
-        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name+QString("×%1").arg(info->num)));
-    }
+    list_case<<cabInfo;
+
+    ui->tableWidget->setItem(index,0,new QTableWidgetItem(cabInfo->caseShowStr()));
+//    if(info->name.isEmpty())
+//    {
+//        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name));
+//    }
+//    else
+//    {
+//        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name+QString("×%1").arg(info->num)));
+//    }
 
 //    if(info->name.isEmpty())
 //        setCaseState(index,3);
 //    else
 //    {
-        if(info->num == 0)
-            setCaseState(index,2);
+//        if(info->num == 0)
+//            setCaseState(index,2);
 //    }
 }
 
@@ -90,7 +95,8 @@ int Cabinet::getIndexByName(QString findName)
 
     for(i=0; i<list_case.count(); i++)
     {
-        if(findName == list_case.at(i)->name)
+//        if(findName == list_case.at(i)->name)
+        if(list_case.at(i)->caseSearch(findName))
             return i;
     }
 
@@ -102,7 +108,8 @@ void Cabinet::consumableIn(int index, int num)
     if(index >= list_case.count())
         return;
 
-    if(list_case.at(index)->num == 0)
+//    if(list_case.at(index)->num == 0)
+    if(list_case.at(i)->caseSearch(findName))
         setCaseState(index, 0);
 
     list_case.at(index)->num+=num;

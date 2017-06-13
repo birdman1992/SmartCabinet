@@ -29,7 +29,11 @@ bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     if(config->getCabinetId().isEmpty())
-        cabRegister();
+//        cabRegister();
+    {
+        regId = "896443";
+        config->setCabinetId(regId);
+    }
 
     return true;
 }
