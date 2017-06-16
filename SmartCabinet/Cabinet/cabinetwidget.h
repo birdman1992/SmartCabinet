@@ -84,7 +84,7 @@ private:
     void setPowerState(int power);//设置权限状态
     void paintEvent(QPaintEvent *);
     void cabLock();
-    void cabInfoBind(int seq, int index, CabinetInfo info);
+    void cabInfoBind(int seq, int index, GoodsInfo info);
     void initAccessState();
 };
 

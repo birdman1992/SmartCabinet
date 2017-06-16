@@ -5,7 +5,7 @@ CabinetInfo::CabinetInfo()
 
 }
 
-bool CabinetInfo::caseSearch(QString name)
+int CabinetInfo::caseSearch(QString name)
 {
     int i = 0;
 
@@ -13,11 +13,26 @@ bool CabinetInfo::caseSearch(QString name)
     {
         if(list_goods.at(i)->name == name)
         {
-            return true;
+            return i;
         }
     }
 
-    return false;
+    return -1;
+}
+
+int CabinetInfo::goodsSearch(QString id)
+{
+    int i = 0;
+
+    for(i=0; i<list_goods.count(); i++)
+    {
+        if(list_goods.at(i)->id == id)
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 QString CabinetInfo::caseShowStr()
@@ -35,4 +50,18 @@ QString CabinetInfo::caseShowStr()
         }
     }
     return ret;
+}
+
+GoodsInfo::GoodsInfo()
+{
+
+}
+
+GoodsInfo::GoodsInfo(GoodsInfo &info)
+{
+    name = info.name;
+    id = info.id;
+    num = info.num;
+    packageId = info.packageId;
+    unit = info.unit;
 }

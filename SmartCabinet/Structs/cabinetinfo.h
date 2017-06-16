@@ -6,6 +6,8 @@
 class GoodsInfo
 {
 public:
+    GoodsInfo();
+    GoodsInfo(GoodsInfo &info);
     QString name;//耗材名
     QString id;//耗材id
     QString packageId;
@@ -17,7 +19,8 @@ class CabinetInfo//单个柜格的耗材信息
 {
 public:
     CabinetInfo();
-    bool caseSearch(QString name);
+    int caseSearch(QString name);
+    int goodsSearch(QString id);
     QString caseShowStr();
     QList<GoodsInfo*> list_goods;
 };

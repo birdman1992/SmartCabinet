@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include "Structs/cabinetinfo.h"
+#include "Structs/caseaddress.h"
 
 namespace Ui {
 class Cabinet;
@@ -26,12 +27,12 @@ public:
     void addCase(GoodsInfo *info);//用于读取配置信息添加到信息列表尾部
 
     int getIndexByName(QString findName);//根据药品名检索柜格下标
-    void consumableIn(int index, int num=1);//药品存放
-    void consumableOut(int index,int num=1);//药品取出
+    void consumableIn(CaseAddress addr, int num=1);//药品存放
+    void consumableOut(CaseAddress addr, int num=1);//药品取出
     int cabinetPosNum();//获取位置编号
     void clearSelectState(int row);//清除选中状态
     void showMsg(QString msg, bool showBigCharacter);
-    void setCaseName(CabinetInfo info, int index);//设置柜格存放物品名
+    void setCaseName(GoodsInfo info, int index);//设置柜格存放物品名
     bool isInLeft();//true:柜子在主柜左边 false:柜子在主柜右边
 
     QList<CabinetInfo*> list_case;//柜格列表

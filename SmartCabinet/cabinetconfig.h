@@ -31,7 +31,8 @@ public:
     int checkUser(QString userId);//检查用户是否存在，管理员用户返回0,其他用户大于0,不存在小于0
     void creatCabinetConfig(QByteArray);//创建智能柜配置文件
 //    void writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo* info);
-    CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置，如未搜索到，返回坐标为-1
+    CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置,如未搜索到，返回坐标为-1
+    CaseAddress checkCabinetById(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
 
     QList<UserInfo*> list_user;
@@ -39,6 +40,7 @@ public:
     CabState state;
 
 //    QList<>
+
 
 private:
     bool firstUse;//第一次使用

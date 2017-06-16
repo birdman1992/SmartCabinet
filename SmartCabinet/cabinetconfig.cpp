@@ -222,16 +222,44 @@ CaseAddress CabinetConfig::checkCabinetByName(QString name)
 {
     int i = 0;
     int j = 0;
+    int goodsIndex = 0;
     CaseAddress ret;
 
     for(i=0; i<list_cabinet.count(); i++)
     {
         for(j=0; j<list_cabinet.at(i)->list_case.count(); j++)
         {
-            if(list_cabinet.at(i)->list_case.at(j)->caseSearch(name))
+            goodsIndex = list_cabinet.at(i)->list_case.at(j)->caseSearch(name);
+            if(goodsIndex != -1)
             {
                 ret.cabinetSeqNUM = i;
                 ret.caseIndex = j;
+                ret.goodsIndex = goodsIndex;
+                return ret;
+            }
+        }
+    }
+
+    return ret;
+}
+
+CaseAddress CabinetConfig::checkCabinetById(QString id)
+{
+    int i = 0;
+    int j = 0;
+    int goodsIndex = 0;
+    CaseAddress ret;
+
+    for(i=0; i<list_cabinet.count(); i++)
+    {
+        for(j=0; j<list_cabinet.at(i)->list_case.count(); j++)
+        {
+            goodsIndex = list_cabinet.at(i)->list_case.at(j)->goodsSearch(id);
+            if(goodsIndex != -1)
+            {
+                ret.cabinetSeqNUM = i;
+                ret.caseIndex = j;
+                ret.goodsIndex = goodsIndex;
                 return ret;
             }
         }

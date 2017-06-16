@@ -96,52 +96,55 @@ int Cabinet::getIndexByName(QString findName)
     for(i=0; i<list_case.count(); i++)
     {
 //        if(findName == list_case.at(i)->name)
-        if(list_case.at(i)->caseSearch(findName))
+        if(list_case.at(i)->caseSearch(findName) != -1)
             return i;
     }
 
     return -1;
 }
 
-void Cabinet::consumableIn(int index, int num)
+void Cabinet::consumableIn(CaseAddress addr, int num)
 {
-    if(index >= list_case.count())
+    if((addr.caseIndex >= list_case.count()) || (addr.cabinetSeqNUM!=seqNum) || (addr.goodsIndex>=list_case.at(addr.caseIndex)->list_goods.count()))
         return;
 
 //    if(list_case.at(index)->num == 0)
-    if(list_case.at(i)->caseSearch(findName))
-        setCaseState(index, 0);
+//    if(list_case.at(i)->caseSearch(findName) != -1)
+//        setCaseState(index, 0);
 
-    list_case.at(index)->num+=num;
+    list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num+=num;
 
-    ui->tableWidget->item(index,0)->setText(list_case.at(index)->name+QString("×%1").arg(list_case.at(index)->num));
+    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
-    settings.beginWriteArray(QString("Cabinet%1").arg(seqNum));
-    settings.setArrayIndex(index);
-    settings.setValue("num",list_case.at(index)->num);
+    settings.beginGroup(QString("Cabinet%1").arg(seqNum));
+    settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
+    settings.setArrayIndex(addr.goodsIndex);
+    settings.setValue("num",list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num);
     settings.endArray();
+    settings.endGroup();
 }
 
-void Cabinet::consumableOut(int index,int num)
+void Cabinet::consumableOut(CaseAddress addr,int num)
 {
-    if(index >= list_case.count())
+    if((addr.caseIndex >= list_case.count()) || (addr.cabinetSeqNUM!=seqNum) || (addr.goodsIndex>=list_case.at(addr.caseIndex)->list_goods.count()))
         return;
 
-    if(list_case.at(index)->num == 0)
+    if(list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num == 0)
         return;
 
-    list_case.at(index)->num = ((list_case.at(index)->num-num)<0)?0:list_case.at(index)->num-num;
-
-    ui->tableWidget->item(index,0)->setText(list_case.at(index)->name+QString("×%1").arg(list_case.at(index)->num));
+    list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = ((list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num)<0)?0:list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num;
+    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
-    settings.beginWriteArray(QString("Cabinet%1").arg(seqNum));
-    settings.setArrayIndex(index);
-    settings.setValue("num",list_case.at(index)->num);
+    settings.beginGroup(QString("Cabinet%1").arg(seqNum));
+    settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
+    settings.setArrayIndex(addr.caseIndex);
+    settings.setValue("num",list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num);
     settings.endArray();
-    if(list_case.at(index)->num == 0)
-        setCaseState(index, 2);
+    settings.endGroup();
+//    if(list_case.at(addr.caseIndex)->num == 0)
+//        setCaseState(addr.caseIndex, 2);
 }
 
 int Cabinet::cabinetPosNum()
@@ -163,22 +166,37 @@ void Cabinet::showMsg(QString msg, bool showBigCharacter)
         logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 9pt \"Sans Serif\";");
 }
 
-void Cabinet::setCaseName(CabinetInfo info, int index)
+void Cabinet::setCaseName(GoodsInfo info, int index)
 {
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
-    settings.beginWriteArray(QString("Cabinet%1").arg(seqNum));
-    settings.setArrayIndex(index);
+    settings.beginGroup(QString("Cabinet%1").arg(seqNum));
+    int arr_size = settings.beginReadArray(QString("case%1").arg(index));
+    settings.setArrayIndex(0);
+    bool isEmpty = settings.value("name").toString().isEmpty();
+    settings.endArray();
+    settings.beginWriteArray(QString("case%1").arg(index));
+
+    if(isEmpty)
+        settings.setArrayIndex(0);
+    else
+        settings.setArrayIndex(arr_size);
+
     settings.setValue("name",info.name);
     settings.setValue("id",info.id);
     settings.setValue("unit",info.unit);
     settings.setValue("packageId",info.packageId);
+    settings.endArray();
+    settings.endGroup();
 
-    list_case.at(index)->name = info.name;
-    list_case.at(index)->id = info.id;
-    list_case.at(index)->unit = info.unit;
-    list_case.at(index)->packageId = info.packageId;
-    ui->tableWidget->item(index,0)->setText(info.name+QString("×%1").arg(list_case.at(index)->num));
-    ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
+    GoodsInfo* gInfo = new GoodsInfo(info);
+    list_case.at(index)->list_goods<<gInfo;
+    ui->tableWidget->item(index,0)->setText(list_case.at(index)->caseShowStr());
+//    list_case.at(index)->name = info.name;
+//    list_case.at(index)->id = info.id;
+//    list_case.at(index)->unit = info.unit;
+//    list_case.at(index)->packageId = info.packageId;
+//    ui->tableWidget->item(index,0)->setText(info.name+QString("×%1").arg(list_case.at(index)->num));
+//    ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
 }
 
 bool Cabinet::isInLeft()

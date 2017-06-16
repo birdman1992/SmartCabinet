@@ -59,14 +59,16 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
 {
     if(!isStore)
     {
+        ui->cancel->hide();
+        ui->onekey->hide();
         defaultValue = true;
-        ui->info->setText("1");
-//        ui->info->clear();
-        keyBoard->show();
+//        ui->info->setText("1");
+        ui->info->clear();
+//        keyBoard->show();
         curCab = info;
         ui->name->setText(curCab->name);
-        ui->tip->setText(QString("提示：剩余%1%2,请输入取出数量").arg(curCab->num).arg(curCab->unit));
-        ui->onekey->hide();
+        ui->tip->setText(QString("提示：剩余%1%2,请扫码取出").arg(curCab->num).arg(curCab->unit));
+
         if(this->isHidden())
             this->show();
     }
