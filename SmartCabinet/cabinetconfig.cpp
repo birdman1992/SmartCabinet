@@ -110,7 +110,7 @@ void CabinetConfig::readCabinetConfig()
     {
         Cabinet* cab = new Cabinet();
         int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-        cab->CabinetInit(i, pos, VICE_CAB_CASE_NUM,(i==0));
+        cab->CabinetInit(i, pos, CAB_CASE_0_NUM,(i==0));
         list_cabinet<<cab;
     }
 
@@ -129,7 +129,7 @@ void CabinetConfig::readCabinetConfig()
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
-            list_cabinet[0]->addCase(info);
+            list_cabinet[0]->addCase(info,j);
         }
         settings.endArray();
     }
@@ -142,6 +142,7 @@ void CabinetConfig::readCabinetConfig()
         for(j=0; j<CAB_CASE_0_NUM; j++)
         {
             int arr_size = settings.beginReadArray(QString("case%1").arg(j));
+
             for(k=0; k<arr_size; k++)
             {
                 settings.setArrayIndex(k);
@@ -151,11 +152,10 @@ void CabinetConfig::readCabinetConfig()
                 info->id = settings.value("id").toString();
                 info->unit = settings.value("unit").toString();
                 info->packageId = settings.value("packageId").toString();
-                list_cabinet[i]->addCase(info);
+                list_cabinet[i]->addCase(info,j);
             }
             settings.endArray();
         }
-//        settings.endArray();
         settings.endGroup();
     }
 }
@@ -176,9 +176,9 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
 
     settings.beginGroup("Cabinet0");
 //    settings.beginWriteArray(QString("Cabinet0"));
-    for(j=0; j<Main_CAB_CASE_NUM; j++)
+    for(j=0; j<CAB_CASE_1_NUM; j++)
     {
-        settings.beginWriteArray("case0");
+        settings.beginWriteArray(QString("case%1").arg(j));
         settings.setArrayIndex(0);
         settings.setValue("name",QVariant(QString()));
         settings.setValue("num", QVariant(0));
@@ -194,7 +194,7 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
     {
         settings.beginGroup(QString("Cabinet%1").arg(i));
 //        settings.beginWriteArray(QString("Cabinet%1").arg(i));
-        for(j=0; j<VICE_CAB_CASE_NUM; j++)
+        for(j=0; j<CAB_CASE_0_NUM; j++)
         {
             settings.beginWriteArray(QString("case%1").arg(j));
             settings.setArrayIndex(0);
@@ -235,6 +235,7 @@ CaseAddress CabinetConfig::checkCabinetByName(QString name)
                 ret.cabinetSeqNUM = i;
                 ret.caseIndex = j;
                 ret.goodsIndex = goodsIndex;
+                qDebug()<<"[checkCabinetByName]"<<ret.cabinetSeqNUM<<ret.caseIndex<<ret.goodsIndex;
                 return ret;
             }
         }

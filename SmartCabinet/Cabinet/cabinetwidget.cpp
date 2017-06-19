@@ -4,6 +4,7 @@
 #include "defines.h"
 
 //提示信息
+#define MSG_EMPTY ""
 #define MSG_SCAN_LIST "请扫描送货单条码"
 #define MSG_LIST_ERROR "无效的送货单"
 #define MSG_STORE "请扫描待存放物品条形码"
@@ -70,7 +71,7 @@ void CabinetWidget::cabLock()
 
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
-//    qDebug()<<"bind"<<info.id;
+    qDebug()<<"bind"<<info.id;
     config->list_cabinet[seq]->setCaseName(info, index);
     emit requireCaseBind(seq, index, info.id);
 }
@@ -153,6 +154,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         info.id = curGoods->goodsId;
         info.packageId = curGoods->packageBarcode;
         info.unit = curGoods->unit;
+        info.num = 0;
         cabInfoBind(selectCab, selectCase, info);
 //        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
@@ -161,13 +163,13 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     }
     else if(config->state == STATE_FETCH)
     {
-        if(!clickRepeat)//如果该柜格没有存放药品
-        {qDebug()<<"empty";
-            selectCab = -1;
-            selectCase = -1;
-            clickLock = false;
-            return;
-        }
+//        if(!clickRepeat)//如果该柜格没有存放药品
+//        {qDebug()<<"empty";
+//            selectCab = -1;
+//            selectCase = -1;
+//            clickLock = false;
+//            return;
+//        }
         //打开对应柜门
 //        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
         emit requireOpenCase(cabSeqNum, caseIndex);
@@ -238,6 +240,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
     else if(config->state == STATE_FETCH)
     {
         CaseAddress addr = config->checkCabinetById(scanInfo);
+        win_access->scanOpen(scanInfo);
         emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, 1, false);
 //            if(config->list_cabinet[selectCab]->list_case[selectCase]->num == 0)
 //            {
@@ -308,6 +311,7 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
     if(globalConfig == NULL)
         return false;
     config = globalConfig;
+    win_access->installGlobalConfig(config);
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
     return true;
 }
@@ -420,6 +424,12 @@ void CabinetWidget::saveStore(Goods *goods, int num)
     config->list_cabinet[addr.cabinetSeqNUM]->consumableIn(addr,num);
     emit goodsAccess(addr, goods->packageBarcode, num, true);
     scanInfo.clear();
+    curStoreList->goodsIn(goods->goodsId, num);
+
+    if(curStoreList->isFinished())
+        config->list_cabinet[0]->showMsg(MSG_EMPTY, false);
+    else
+        config->list_cabinet[0]->showMsg(MSG_STORE, false);
 //    initAccessState();
 }
 

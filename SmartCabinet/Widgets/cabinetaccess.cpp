@@ -27,6 +27,14 @@ CabinetAccess::~CabinetAccess()
     delete ui;
 }
 
+bool CabinetAccess::installGlobalConfig(CabinetConfig *globalConfig)
+{
+    if(globalConfig == NULL)
+        return false;
+    config = globalConfig;
+    return true;
+}
+
 void CabinetAccess::setAccessModel(bool store)
 {
     isStore = store;
@@ -66,8 +74,10 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
         ui->info->clear();
 //        keyBoard->show();
         curCab = info;
-        ui->name->setText(curCab->name);
-        ui->tip->setText(QString("提示：剩余%1%2,请扫码取出").arg(curCab->num).arg(curCab->unit));
+//        ui->name->setText(curCab->name);
+//        ui->tip->setText(QString("提示：剩余%1%2,请扫码取出").arg(curCab->num).arg(curCab->unit));
+        ui->name->setText(QString());
+        ui->tip->setText("请取货并扫描条形码");
 
         if(this->isHidden())
             this->show();
@@ -76,32 +86,47 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
 
 void CabinetAccess::scanOpen(QString goodsId)
 {
-    if(curGoods != NULL)
+    if(isStore)
     {
-        if(curGoods->goodsId != goodsId)//扫描了另一样物品的条码
+        if(curGoods != NULL)
         {
-            save();//把当前已经扫描的货物存了
+            if(curGoods->goodsId != goodsId)//扫描了另一样物品的条码
+            {
+                save();//把当前已经扫描的货物存了
+            }
         }
-    }
 
-    Goods* storeGoods = storeList->getGoodsById(goodsId);
-    curGoods = storeGoods;
-    if(storeGoods->curNum >= storeGoods->totalNum)
-    {
-        storeGoods->curNum = storeGoods->totalNum;
-        ui->tip->setText("提示：已全部存入");
+        Goods* storeGoods = storeList->getGoodsById(goodsId);
+        curGoods = storeGoods;
+        if(storeGoods->curNum >= storeGoods->totalNum)
+        {
+            storeGoods->curNum = storeGoods->totalNum;
+            ui->tip->setText("提示：已全部存入");
+        }
+        else
+        {
+            storeGoods->curNum++;
+            ui->tip->setText("提示：请继续扫描或者点清数量一键存入");
+        }
+        QString info = QString("已存入%1%2   共需存入存入%3%4").arg(storeGoods->curNum).arg(storeGoods->unit).arg(storeGoods->totalNum).arg(storeGoods->unit);
+        ui->name->setText(storeGoods->name);
+        ui->info->setText(info);
+        ui->onekey->show();
+        if(this->isHidden())
+            this->show();
     }
     else
     {
-        storeGoods->curNum++;
-        ui->tip->setText("提示：请继续扫描或者点清数量一键存入");
+        CaseAddress addr = config->checkCabinetById(goodsId);
+        config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
+        ui->name->setText(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->name);
+        int outNum = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+        int num = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num;
+        QString unit = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
+        config->list_cabinet[addr.cabinetSeqNUM]->consumableOut(addr,1);
+        ui->info->setText(QString("已取出%1%2，剩余%3%4").arg(outNum).arg(unit).arg(num).arg(unit));
+
     }
-    QString info = QString("已存入%1%2   共需存入存入%3%4").arg(storeGoods->curNum).arg(storeGoods->unit).arg(storeGoods->totalNum).arg(storeGoods->unit);
-    ui->name->setText(storeGoods->name);
-    ui->info->setText(info);
-    ui->onekey->show();
-    if(this->isHidden())
-        this->show();
 }
 
 void CabinetAccess::save()
@@ -120,7 +145,7 @@ void CabinetAccess::save()
         if(curCab == NULL)
             return;
 
-        emit saveFetch(curCab->name,ui->info->text().toInt());
+//        emit saveFetch(curCab->name,ui->info->text().toInt());
     }
 }
 
@@ -173,7 +198,7 @@ void CabinetAccess::input(int val)
 
     if(curCab != NULL)
     {
-        numInput = (numInput>curCab->num)?curCab->num:numInput;
+//        numInput = (numInput>curCab->num)?curCab->num:numInput;
     }
 
     ui->info->setText(QString::number(numInput));

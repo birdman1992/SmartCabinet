@@ -26,8 +26,9 @@ void GoodsList::goodsIn(QString goodsId, int num)
     Goods *goods = map_goods.value(goodsId, NULL);
     if(goods == NULL)
         return;
-    goods->curNum+=num;
-    goods->finish = (goods->curNum == goods->totalNum);
+
+    goods->finish = (goods->curNum >= goods->totalNum);
+    qDebug()<<goods->finish<<goods->curNum<<goods->totalNum;
 }
 
 void GoodsList::goodsOut(QString goodsId, int num)
@@ -44,6 +45,11 @@ Goods *GoodsList::getGoodsById(QString goodsId)
     if(map_goods.isEmpty())
         return NULL;
     return map_goods.value(goodsId, NULL);
+}
+
+bool GoodsList::isFinished()
+{
+    return listCheck();
 }
 
 bool GoodsList::listCheck()

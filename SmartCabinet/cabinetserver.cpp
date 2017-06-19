@@ -237,7 +237,8 @@ QByteArray test = QByteArray("{\
 
 void CabinetServer::recvListCheck()
 {
-    QByteArray qba = QByteArray::fromBase64(reply_list_check->readAll());
+//    QByteArray qba = QByteArray::fromBase64(reply_list_check->readAll());
+    QByteArray qba = test;
     reply_list_check->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());
@@ -278,7 +279,8 @@ void CabinetServer::recvListCheck()
             info->roomName = QString::fromUtf8(cJSON_GetObjectItem(json_info,"roomName")->valuestring);
             info->singlePrice = cJSON_GetObjectItem(json_info,"singlePrice")->valueint;
             info->size = QString::fromUtf8(cJSON_GetObjectItem(json_info,"size")->valuestring);
-            info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
+            info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
+//            info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;

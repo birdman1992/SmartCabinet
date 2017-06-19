@@ -96,7 +96,7 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QTableWidget{
-font-size: 20px;
+font-size: 15px;
     color: rgb(255, 255, 255);    /*前景色：文字颜色*/
     selection-color:rgb(13, 96, 150);    /*鼠标选中时前景色：文字颜色*/
     selection-background-color:lightgray;   /*鼠标选中时背景色*/

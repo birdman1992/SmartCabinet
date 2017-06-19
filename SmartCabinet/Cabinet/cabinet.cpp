@@ -56,7 +56,7 @@ void Cabinet::setCabType(int _type)
     cabType = _type;
 }
 
-void Cabinet::addCase(GoodsInfo *info)
+void Cabinet::addCase(GoodsInfo *info, int caseIndex)
 {
     if(list_case.count()>=caseNum)
     {
@@ -64,29 +64,23 @@ void Cabinet::addCase(GoodsInfo *info)
         return;
     }
 
-    CabinetInfo* cabInfo = new CabinetInfo();
-    cabInfo->list_goods<<info;
+    info->outNum = 0;
 
-    int index = list_case.count();
-    list_case<<cabInfo;
+    if(caseIndex<list_case.count())
+    {
+        list_case.at(caseIndex)->list_goods<<info;
+        ui->tableWidget->item(caseIndex,0)->setText(list_case.at(caseIndex)->caseShowStr());
+    }
+    else
+    {
+        CabinetInfo* cabInfo = new CabinetInfo();
+        if(!info->name.isEmpty())
+            cabInfo->list_goods<<info;
+        list_case<<cabInfo;
+        ui->tableWidget->setItem(caseIndex,0,new QTableWidgetItem(cabInfo->caseShowStr()));
+    }
 
-    ui->tableWidget->setItem(index,0,new QTableWidgetItem(cabInfo->caseShowStr()));
-//    if(info->name.isEmpty())
-//    {
-//        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name));
-//    }
-//    else
-//    {
-//        ui->tableWidget->setItem(index,0,new QTableWidgetItem(info->name+QString("×%1").arg(info->num)));
-//    }
 
-//    if(info->name.isEmpty())
-//        setCaseState(index,3);
-//    else
-//    {
-//        if(info->num == 0)
-//            setCaseState(index,2);
-//    }
 }
 
 int Cabinet::getIndexByName(QString findName)
@@ -119,7 +113,7 @@ void Cabinet::consumableIn(CaseAddress addr, int num)
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
     settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
-    settings.setArrayIndex(addr.goodsIndex);
+    settings.setArrayIndex(addr.goodsIndex);qDebug()<<"[123]"<<addr.goodsIndex;
     settings.setValue("num",list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num);
     settings.endArray();
     settings.endGroup();
@@ -175,7 +169,7 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     bool isEmpty = settings.value("name").toString().isEmpty();
     settings.endArray();
     settings.beginWriteArray(QString("case%1").arg(index));
-
+//    qDebug()<<isEmpty<<arr_size;
     if(isEmpty)
         settings.setArrayIndex(0);
     else
@@ -187,6 +181,7 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     settings.setValue("packageId",info.packageId);
     settings.endArray();
     settings.endGroup();
+    settings.sync();
 
     GoodsInfo* gInfo = new GoodsInfo(info);
     list_case.at(index)->list_goods<<gInfo;

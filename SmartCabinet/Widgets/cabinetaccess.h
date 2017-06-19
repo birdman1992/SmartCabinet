@@ -6,6 +6,8 @@
 #include <QPaintEvent>
 #include "Structs/goodslist.h"
 #include "Structs/cabinetinfo.h"
+#include "Structs/caseaddress.h"
+#include "cabinetconfig.h"
 #include <Widgets/numkeyboard.h>
 
 namespace Ui {
@@ -27,6 +29,7 @@ public:
     void scanOpen(QString goodsId);
     void save();
 
+    bool installGlobalConfig(CabinetConfig *globalConfig);
 private slots:
     void on_onekey_clicked();
     void on_cancel_clicked();
@@ -43,6 +46,7 @@ private:
     Ui::CabinetAccess *ui;
     bool isStore;
     bool defaultValue;
+    CabinetConfig* config;
     GoodsList* storeList;
     Goods* curGoods;
     CabinetInfo* curCab;

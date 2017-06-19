@@ -13,6 +13,7 @@ public:
     QString packageId;
     QString unit;//计数单位
     int num;//耗材数量
+    int outNum;//取出数量
 };
 
 class CabinetInfo//单个柜格的耗材信息

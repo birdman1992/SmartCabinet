@@ -24,7 +24,7 @@ public:
     void CabinetInit(int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
     void setCabPos(int pos);
     void setCabType(int _type);
-    void addCase(GoodsInfo *info);//用于读取配置信息添加到信息列表尾部
+    void addCase(GoodsInfo *info, int caseIndex);//用于读取配置信息添加到信息列表尾部
 
     int getIndexByName(QString findName);//根据药品名检索柜格下标
     void consumableIn(CaseAddress addr, int num=1);//药品存放

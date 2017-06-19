@@ -1,4 +1,5 @@
 #include "cabinetinfo.h"
+#include <QDebug>
 
 CabinetInfo::CabinetInfo()
 {
@@ -10,7 +11,7 @@ int CabinetInfo::caseSearch(QString name)
     int i = 0;
 
     for(i=0; i<list_goods.count(); i++)
-    {
+    {qDebug()<<"[caseSearch]"<<i<<list_goods.count()<<list_goods.at(i)->name<<name;
         if(list_goods.at(i)->name == name)
         {
             return i;
@@ -45,10 +46,12 @@ QString CabinetInfo::caseShowStr()
         QString str = list_goods.at(i)->name;
         if(!str.isEmpty())
         {
-            str += str+QString("×%1").arg(list_goods.at(i)->num);
+            str += QString("×%1").arg(list_goods.at(i)->num);
             str += "\n";
+            ret += str;
         }
     }
+
     return ret;
 }
 
