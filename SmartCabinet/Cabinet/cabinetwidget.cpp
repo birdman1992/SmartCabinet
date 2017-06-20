@@ -31,6 +31,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     selectCase = -1;
     selectCab = -1;
     win_access = new CabinetAccess();
+    initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
     connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
@@ -80,6 +81,37 @@ void CabinetWidget::initAccessState()
 {
     ui->store->setChecked(false);
     config->state = STATE_NO;
+}
+
+void CabinetWidget::initSearchBtns()
+{
+    groupBtn.addButton(ui->btn_0, 0);
+    groupBtn.addButton(ui->btn_1, 1);
+    groupBtn.addButton(ui->btn_2, 2);
+    groupBtn.addButton(ui->btn_3, 3);
+    groupBtn.addButton(ui->btn_4, 4);
+    groupBtn.addButton(ui->btn_5, 5);
+    groupBtn.addButton(ui->btn_6, 6);
+    groupBtn.addButton(ui->btn_7, 7);
+    groupBtn.addButton(ui->btn_8, 8);
+    groupBtn.addButton(ui->btn_9, 9);
+    groupBtn.addButton(ui->btn_10, 10);
+    groupBtn.addButton(ui->btn_11, 11);
+    groupBtn.addButton(ui->btn_12, 12);
+    groupBtn.addButton(ui->btn_13, 13);
+    groupBtn.addButton(ui->btn_14, 14);
+    groupBtn.addButton(ui->btn_15, 15);
+    groupBtn.addButton(ui->btn_16, 16);
+    groupBtn.addButton(ui->btn_17, 17);
+    groupBtn.addButton(ui->btn_18, 18);
+    groupBtn.addButton(ui->btn_19, 19);
+    groupBtn.addButton(ui->btn_20, 20);
+    groupBtn.addButton(ui->btn_21, 21);
+    groupBtn.addButton(ui->btn_22, 22);
+    groupBtn.addButton(ui->btn_23, 23);
+    groupBtn.addButton(ui->btn_24, 24);
+
+    connect(&groupBtn, SIGNAL(buttonClicked(int)), this, SLOT(pinyinSearch(int)));
 }
 
 bool CabinetWidget::needWaitForServer()
@@ -166,6 +198,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         info.packageId = curGoods->packageBarcode;
         info.unit = curGoods->unit;
         info.num = 0;
+        info.Py = config->getPyCh(info.name);
+        qDebug()<<"[pinyin]"<<info.Py;
         cabInfoBind(selectCab, selectCase, info);
 //        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
@@ -404,6 +438,19 @@ void CabinetWidget::on_store_toggled(bool checked)
         cabLock();
         initAccessState();
     }
+}
+
+void CabinetWidget::pinyinSearch(int id)
+{
+    int i = 0;
+    qDebug()<<groupBtn.button(id)->text();
+
+    for(i=0; i<25; i++)
+    {
+        if(i != id)
+            groupBtn.button(i)->setChecked(false);
+    }
+    config->searchByPinyin(groupBtn.button(id)->text().at(0));
 }
 
 

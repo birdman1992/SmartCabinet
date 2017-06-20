@@ -129,6 +129,8 @@ void CabinetConfig::readCabinetConfig()
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
+            info->Py = getPyCh(info->name);
+            qDebug()<<"[read PY]"<<info->name<<info->Py;
             list_cabinet[0]->addCase(info,j);
         }
         settings.endArray();
@@ -152,6 +154,7 @@ void CabinetConfig::readCabinetConfig()
                 info->id = settings.value("id").toString();
                 info->unit = settings.value("unit").toString();
                 info->packageId = settings.value("packageId").toString();
+                info->Py = getPyCh(info->name);
                 list_cabinet[i]->addCase(info,j);
             }
             settings.endArray();
@@ -301,6 +304,16 @@ int CabinetConfig::getLockId(int seq, int index)
     return (seq <= 0)?index:(6+(seq-1)*8+index);
 }
 
+void CabinetConfig::searchByPinyin(QChar ch)
+{
+    int i;
+
+    for(i=0; i<list_cabinet.count(); i++)
+    {
+        list_cabinet[i]->searchByPinyin(ch);
+    }
+}
+
 //添加新用户
 void CabinetConfig::addNewUser(UserInfo *info)
 {
@@ -354,3 +367,5 @@ QChar CabinetConfig::getPyCh(QString str)
 
     return ret;
 }
+
+

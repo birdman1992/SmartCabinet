@@ -216,6 +216,32 @@ bool Cabinet::isInLeft()
     return posNum%2;
 }
 
+void Cabinet::searchByPinyin(QChar ch)
+{
+    int i = 0;
+    int j = 0;
+
+    for(i=0; i<list_case.count(); i++)
+    {
+        CabinetInfo* info = list_case[i];
+
+        for(j=0; j<info->list_goods.count(); j++)
+        {
+            if(info->list_goods[j]->Py == ch)
+            {
+                ui->tableWidget->item(i,0)->setBackground(QBrush(QColor(255,0,0)));
+//                ui->tableWidget->item(i,0)->setBackgroundColor(QColor(255,0,0));qDebug("yes");
+                break;
+            }
+            if(j == (info->list_goods.count()-1))
+            {
+                ui->tableWidget->item(i,0)->setBackground(QBrush(QColor(0,255,0)));
+//                ui->tableWidget->item(i,0)->setBackgroundColor(QColor(0,255,0));qDebug("no");
+            }
+        }
+    }
+}
+
 void Cabinet::on_tableWidget_cellClicked(int row, int)
 {
     emit caseSelect(row, seqNum);

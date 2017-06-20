@@ -25,6 +25,7 @@ public:
     CabinetConfig();
     ~CabinetConfig();
     void setCabinetId(QString id);
+    QChar getPyCh(QString str);
     QString getCabinetId();
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
@@ -35,6 +36,7 @@ public:
     CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
+    void searchByPinyin(QChar ch);
 
     QList<UserInfo*> list_user;
     QList<Cabinet*> list_cabinet;
@@ -52,7 +54,6 @@ private:
     void readUserConfig();//读取用户配置
     void readCabinetConfig();//读取柜子配置
     void addNewUser(UserInfo* info);
-    QChar getPyCh(QString str);
 
 public slots:
 

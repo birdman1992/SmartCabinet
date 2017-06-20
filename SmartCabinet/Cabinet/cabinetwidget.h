@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QButtonGroup>
 #include "Cabinet/cabinet.h"
 #include "Widgets/cabinetaccess.h"
 #include "cabinetconfig.h"
@@ -58,10 +59,12 @@ private slots:
     void saveFetch(QString name, int num);
     void on_fetch_toggled(bool checked);
     void on_store_toggled(bool checked);
+    void pinyinSearch(int);
 
 private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;
+    QButtonGroup groupBtn;
     bool waitForCardReader;
     bool waitForGoodsListCode;
     bool clickLock;//点击锁,如果为true，点击无效
@@ -88,6 +91,7 @@ private:
     void cabLock();
     void cabInfoBind(int seq, int index, GoodsInfo info);
     void initAccessState();
+    void initSearchBtns();
     bool needWaitForServer();
 };
 
