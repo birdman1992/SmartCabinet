@@ -35,6 +35,7 @@ signals:
     void loginRst(UserInfo);
     void listRst(GoodsList*);
     void bindRst(bool);
+    void goodsNumChanged(QString goodsId, int goodsNum);
 
 public slots:
     void userLogin(QString);

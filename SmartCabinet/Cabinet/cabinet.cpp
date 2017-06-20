@@ -120,7 +120,7 @@ void Cabinet::consumableIn(CaseAddress addr, int num)
 }
 
 void Cabinet::consumableOut(CaseAddress addr,int num)
-{
+{qDebug("[consumableOut]");
     if((addr.caseIndex >= list_case.count()) || (addr.cabinetSeqNUM!=seqNum) || (addr.goodsIndex>=list_case.at(addr.caseIndex)->list_goods.count()))
         return;
 
@@ -138,7 +138,24 @@ void Cabinet::consumableOut(CaseAddress addr,int num)
     settings.endArray();
     settings.endGroup();
 //    if(list_case.at(addr.caseIndex)->num == 0)
-//        setCaseState(addr.caseIndex, 2);
+    //        setCaseState(addr.caseIndex, 2);
+}
+
+void Cabinet::updateGoodsNum(CaseAddress addr, int num)
+{
+    if((addr.cabinetSeqNUM == -1) || num<0)
+        return;
+
+    list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
+    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
+
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    settings.beginGroup(QString("Cabinet%1").arg(seqNum));
+    settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
+    settings.setArrayIndex(addr.caseIndex);
+    settings.setValue("num",num);
+    settings.endArray();
+    settings.endGroup();
 }
 
 int Cabinet::cabinetPosNum()

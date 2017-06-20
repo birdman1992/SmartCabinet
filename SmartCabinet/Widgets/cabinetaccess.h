@@ -38,6 +38,9 @@ private slots:
     void backspace();
     void clearAll();
 
+public slots:
+    void recvOptGoodsNum(int num);//接收操作物品数量
+
 signals:
     void saveStore(Goods* goods,int num);
     void saveFetch(QString,int);
@@ -52,6 +55,7 @@ private:
     CabinetInfo* curCab;
     NumKeyboard* keyBoard;
     QString strInput;
+    CaseAddress addr;
     void paintEvent(QPaintEvent *);
     void showEvent(QShowEvent*);
 };

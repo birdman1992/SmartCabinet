@@ -1,6 +1,7 @@
 #include "cabinetaccess.h"
 #include "ui_cabinetaccess.h"
 #include <QDesktopWidget>
+#include <QDebug>
 
 CabinetAccess::CabinetAccess(QWidget *parent) :
     QWidget(parent),
@@ -117,15 +118,10 @@ void CabinetAccess::scanOpen(QString goodsId)
     }
     else
     {
-        CaseAddress addr = config->checkCabinetById(goodsId);
+        addr = config->checkCabinetByBarCode(goodsId);
         config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
         ui->name->setText(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->name);
-        int outNum = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
-        int num = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num;
-        QString unit = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
-        config->list_cabinet[addr.cabinetSeqNUM]->consumableOut(addr,1);
-        ui->info->setText(QString("已取出%1%2，剩余%3%4").arg(outNum).arg(unit).arg(num).arg(unit));
-
+        ui->tip->setText("正在取出");
     }
 }
 
@@ -142,9 +138,10 @@ void CabinetAccess::save()
     }
     else
     {
-        if(curCab == NULL)
-            return;
-
+        curCab->clearFetchNum();
+        curCab = NULL;
+//        if(curCab == NULL)
+//            return;
 //        emit saveFetch(curCab->name,ui->info->text().toInt());
     }
 }
@@ -182,8 +179,15 @@ void CabinetAccess::on_cancel_clicked()
 void CabinetAccess::on_ok_clicked()
 {
     save();
-    this->hide();
-    keyBoard->hide();
+    if(!isStore)
+    {
+        this->hide();
+        keyBoard->hide();
+    }
+    else
+    {
+        ui->tip->setText("正在存入");
+    }
 }
 
 void CabinetAccess::input(int val)
@@ -214,4 +218,20 @@ void CabinetAccess::backspace()
 void CabinetAccess::clearAll()
 {
     ui->info->clear();
+}
+
+void CabinetAccess::recvOptGoodsNum(int num)
+{
+    if(isStore)
+    {
+        ui->tip->setText("存入成功");
+        this->hide();
+    }
+    else
+    {
+        int outNum = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+        QString unit = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
+        ui->info->setText(QString("已取出%1%2，剩余%3%4").arg(outNum).arg(unit).arg(num).arg(unit));
+        ui->tip->setText("取出成功");
+    }
 }

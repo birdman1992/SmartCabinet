@@ -21,7 +21,21 @@ int CabinetInfo::caseSearch(QString name)
     return -1;
 }
 
-int CabinetInfo::goodsSearch(QString id)
+int CabinetInfo::barcodeSearch(QString id)
+{
+    int i = 0;
+
+    for(i=0; i<list_goods.count(); i++)
+    {
+        if(list_goods.at(i)->packageId == id)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int CabinetInfo::goodsIdSearch(QString id)
 {
     int i = 0;
 
@@ -32,8 +46,17 @@ int CabinetInfo::goodsSearch(QString id)
             return i;
         }
     }
-
     return -1;
+}
+
+void CabinetInfo::clearFetchNum()
+{
+    int i = 0;
+
+    for(i=0; i<list_goods.count(); i++)
+    {
+        list_goods.at(i)->outNum = 0;
+    }
 }
 
 QString CabinetInfo::caseShowStr()

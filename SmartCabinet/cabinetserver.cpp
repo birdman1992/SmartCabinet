@@ -88,7 +88,7 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
 }
 
 void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, bool isStore)
-{
+{qDebug()<<addr.cabinetSeqNUM<<id<<num<<isStore;
     QString caseId = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex));
     QString cabinetId = config->getCabinetId();
     QByteArray qba;
@@ -187,7 +187,7 @@ QByteArray test = QByteArray("{\
                                    \"goodsId\": \"A0201002349\",\
                                    \"size\": \"1538-0\",\
                                    \"unit\": \"卷\",\
-                                   \"takeCount\": 20,\
+                                   \"packageCount\": 20,\
                                    \"singlePrice\": 10.00,\
                                    \"packageBarcode\": \"A0201002349\",\
                                    \"packageType\": 1,\
@@ -202,7 +202,7 @@ QByteArray test = QByteArray("{\
                                 \"goodsId\": \"EO501002219\",\
                                 \"size\": \"1538-0\",\
                                 \"unit\": \"个\",\
-                                \"takeCount\": 20,\
+                                \"packageCount\": 20,\
                                 \"singlePrice\": 10.00,\
                                 \"packageBarcode\": \"EO501002219\",\
                                 \"packageType\": 1,\
@@ -237,8 +237,8 @@ QByteArray test = QByteArray("{\
 
 void CabinetServer::recvListCheck()
 {
-//    QByteArray qba = QByteArray::fromBase64(reply_list_check->readAll());
-    QByteArray qba = test;
+    QByteArray qba = QByteArray::fromBase64(reply_list_check->readAll());
+//    QByteArray qba = test;
     reply_list_check->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());
@@ -279,8 +279,8 @@ void CabinetServer::recvListCheck()
             info->roomName = QString::fromUtf8(cJSON_GetObjectItem(json_info,"roomName")->valuestring);
             info->singlePrice = cJSON_GetObjectItem(json_info,"singlePrice")->valueint;
             info->size = QString::fromUtf8(cJSON_GetObjectItem(json_info,"size")->valuestring);
-            info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
-//            info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
+//            info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
+            info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
@@ -288,8 +288,16 @@ void CabinetServer::recvListCheck()
         }
         cJSON* json_list_info = cJSON_GetObjectItem(json_data,"store");
         list->barcode = QString::fromUtf8(cJSON_GetObjectItem(json_list_info, "barcode")->valuestring);
-
-        emit listRst(list);
+        if(config->getCabinetId() == QString::fromUtf8(cJSON_GetObjectItem(json_list_info, "departName")->valuestring))
+        {
+            emit listRst(list);
+        }
+        else
+        {
+            delete list;
+            list = new GoodsList;
+            emit listRst(list);
+        }
     }
 }
 
@@ -332,6 +340,10 @@ void CabinetServer::recvGoodsAccess()
     if(json_rst->type == cJSON_True)
     {
         qDebug()<<"ACCESS success";
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(data,"goodsId")->valuestring);
+        int goodsNum = cJSON_GetObjectItem(data, "goodsCount")->valueint;
+        emit goodsNumChanged(goodsId, goodsNum);
     }
     cJSON_Delete(json);
 }

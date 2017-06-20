@@ -32,7 +32,8 @@ public:
     void creatCabinetConfig(QByteArray);//创建智能柜配置文件
 //    void writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo* info);
     CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置,如未搜索到，返回坐标为-1
-    CaseAddress checkCabinetById(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
+    CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
+    CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
 
     QList<UserInfo*> list_user;

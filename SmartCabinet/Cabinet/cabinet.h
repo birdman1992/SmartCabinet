@@ -29,6 +29,7 @@ public:
     int getIndexByName(QString findName);//根据药品名检索柜格下标
     void consumableIn(CaseAddress addr, int num=1);//药品存放
     void consumableOut(CaseAddress addr, int num=1);//药品取出
+    void updateGoodsNum(CaseAddress addr, int num);//更新物品数量
     int cabinetPosNum();//获取位置编号
     void clearSelectState(int row);//清除选中状态
     void showMsg(QString msg, bool showBigCharacter);

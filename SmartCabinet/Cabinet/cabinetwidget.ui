@@ -287,46 +287,13 @@ color: rgb(255, 255, 255);</string>
          </spacer>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="100,100,467">
+         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="100,467">
           <property name="spacing">
            <number>10</number>
           </property>
           <property name="topMargin">
            <number>20</number>
           </property>
-          <item>
-           <widget class="QPushButton" name="fetch">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">#fetch{
-	border-image: url(:/image/image/btn_out_normal.png);
-}
-#fetch:checked{
-	border-image: url(:/image/image/btn_out_sel.png);
-}</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
           <item>
            <widget class="QPushButton" name="store">
             <property name="sizePolicy">

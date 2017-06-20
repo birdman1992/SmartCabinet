@@ -28,7 +28,7 @@ void GoodsList::goodsIn(QString goodsId, int num)
         return;
 
     goods->finish = (goods->curNum >= goods->totalNum);
-    qDebug()<<goods->finish<<goods->curNum<<goods->totalNum;
+    qDebug()<<"[goodsIn]"<<goods->finish<<goods->curNum<<goods->totalNum;
 }
 
 void GoodsList::goodsOut(QString goodsId, int num)

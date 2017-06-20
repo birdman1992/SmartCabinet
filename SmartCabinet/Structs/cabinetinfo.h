@@ -21,7 +21,9 @@ class CabinetInfo//单个柜格的耗材信息
 public:
     CabinetInfo();
     int caseSearch(QString name);
-    int goodsSearch(QString id);
+    int barcodeSearch(QString id);
+    int goodsIdSearch(QString id);
+    void clearFetchNum();
     QString caseShowStr();
     QList<GoodsInfo*> list_goods;
 };

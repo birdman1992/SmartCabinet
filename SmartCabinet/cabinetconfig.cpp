@@ -244,7 +244,7 @@ CaseAddress CabinetConfig::checkCabinetByName(QString name)
     return ret;
 }
 
-CaseAddress CabinetConfig::checkCabinetById(QString id)
+CaseAddress CabinetConfig::checkCabinetByBarCode(QString id)
 {
     int i = 0;
     int j = 0;
@@ -254,13 +254,40 @@ CaseAddress CabinetConfig::checkCabinetById(QString id)
     for(i=0; i<list_cabinet.count(); i++)
     {
         for(j=0; j<list_cabinet.at(i)->list_case.count(); j++)
-        {
-            goodsIndex = list_cabinet.at(i)->list_case.at(j)->goodsSearch(id);
+        {//qDebug()<<i<<j;
+            goodsIndex = list_cabinet.at(i)->list_case.at(j)->barcodeSearch(id);
             if(goodsIndex != -1)
             {
                 ret.cabinetSeqNUM = i;
                 ret.caseIndex = j;
                 ret.goodsIndex = goodsIndex;
+                qDebug()<<ret.cabinetSeqNUM<<ret.caseIndex<<ret.goodsIndex;
+                return ret;
+            }
+        }
+    }
+
+    return ret;
+}
+
+CaseAddress CabinetConfig::checkCabinetByGoodsId(QString id)
+{
+    int i = 0;
+    int j = 0;
+    int goodsIndex = 0;
+    CaseAddress ret;
+
+    for(i=0; i<list_cabinet.count(); i++)
+    {
+        for(j=0; j<list_cabinet.at(i)->list_case.count(); j++)
+        {//qDebug()<<i<<j;
+            goodsIndex = list_cabinet.at(i)->list_case.at(j)->goodsIdSearch(id);
+            if(goodsIndex != -1)
+            {
+                ret.cabinetSeqNUM = i;
+                ret.caseIndex = j;
+                ret.goodsIndex = goodsIndex;
+                qDebug()<<ret.cabinetSeqNUM<<ret.caseIndex<<ret.goodsIndex;
                 return ret;
             }
         }

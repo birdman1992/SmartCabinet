@@ -39,6 +39,7 @@ public slots:
     void recvUserInfo(QByteArray qba);//接收用户信息
     void recvListInfo(GoodsList*);
     void recvBindRst(bool);
+    void recvGoodsNumInfo(QString goodsId, int num);
 
 signals:
     void winSwitch(int);
@@ -47,6 +48,7 @@ signals:
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
     void requireCaseBind(int  seqNum, int index, QString goodsId);
+    void goodsNumChanged(int);//报告物品数量的变化
 
 private slots:
     void on_store_clicked();
@@ -55,7 +57,6 @@ private slots:
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
     void on_fetch_toggled(bool checked);
-
     void on_store_toggled(bool checked);
 
 private:
@@ -69,6 +70,7 @@ private:
     int storeNum;
     bool waitForCodeScan;
     bool waitForInit;
+    bool waitForServer;
     QString scanInfo;
     UserInfo optUser;//操作者id
     CaseAddress casePos;
@@ -86,6 +88,7 @@ private:
     void cabLock();
     void cabInfoBind(int seq, int index, GoodsInfo info);
     void initAccessState();
+    bool needWaitForServer();
 };
 
 #endif // CABINETWIDGET_H
