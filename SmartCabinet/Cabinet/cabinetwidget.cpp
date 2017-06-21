@@ -110,6 +110,7 @@ void CabinetWidget::initSearchBtns()
     groupBtn.addButton(ui->btn_22, 22);
     groupBtn.addButton(ui->btn_23, 23);
     groupBtn.addButton(ui->btn_24, 24);
+    groupBtn.setExclusive(false);
 
     connect(&groupBtn, SIGNAL(buttonClicked(int)), this, SLOT(pinyinSearch(int)));
 }
@@ -443,7 +444,14 @@ void CabinetWidget::on_store_toggled(bool checked)
 void CabinetWidget::pinyinSearch(int id)
 {
     int i = 0;
-    qDebug()<<groupBtn.button(id)->text();
+    qDebug()<<groupBtn.button(id)->text()<<groupBtn.button(id)->isChecked();
+
+    if(!groupBtn.button(id)->isChecked())
+    {
+        groupBtn.button(id)->setChecked(false);
+        config->clearSearch();
+        return;
+    }
 
     for(i=0; i<25; i++)
     {
@@ -452,7 +460,6 @@ void CabinetWidget::pinyinSearch(int id)
     }
     config->searchByPinyin(groupBtn.button(id)->text().at(0));
 }
-
 
 void CabinetWidget::wait_timeout()
 {

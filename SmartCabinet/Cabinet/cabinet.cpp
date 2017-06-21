@@ -11,7 +11,15 @@ Cabinet::Cabinet(QWidget *parent) :
     ui(new Ui::Cabinet)
 {
     ui->setupUi(this);
-
+//    ui->tableWidget->setStyleSheet("QTableWidget{\
+                                   font-size: 15px;\
+                                       color: rgb(255, 255, 255);    /*前景色：文字颜色*/\
+                                       border:0px solid gray;  /*边框线的宽度、颜色*/\
+                                   }\
+                                   QTableWidget::item{\
+                                       margin: 5px ;\
+                                        background:rgb(36, 221, 149);\
+                                   }");
 }
 
 Cabinet::~Cabinet()
@@ -40,7 +48,7 @@ void Cabinet::CabinetInit(int seq, int pos, int, bool mainCab)
         caseNum = CAB_CASE_1_NUM;
         ui->tableWidget->setRowCount(caseNum);
         logo = new QLabel(this);
-//        logo->installEventFilter(this);
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
         ui->logo->hide();
         ui->tableWidget->setCellWidget(1,0,logo);
     }
@@ -77,10 +85,11 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         if(!info->name.isEmpty())
             cabInfo->list_goods<<info;
         list_case<<cabInfo;
-        ui->tableWidget->setItem(caseIndex,0,new QTableWidgetItem(cabInfo->caseShowStr()));
+        ui->tableWidget->setCellWidget(caseIndex, 0, new QLabel(cabInfo->caseShowStr()));
+        setCaseState(caseIndex, 0);
+//        ui->tableWidget->setItem(caseIndex,0,new QTableWidgetItem(cabInfo->caseShowStr()));
+//        ui->tableWidget->item(caseIndex,0)->setBackground(QBrush(QColor(36, 0, 149)));
     }
-
-
 }
 
 int Cabinet::getIndexByName(QString findName)
@@ -229,16 +238,26 @@ void Cabinet::searchByPinyin(QChar ch)
         {
             if(info->list_goods[j]->Py == ch)
             {
-                ui->tableWidget->item(i,0)->setBackground(QBrush(QColor(255,0,0)));
-//                ui->tableWidget->item(i,0)->setBackgroundColor(QColor(255,0,0));qDebug("yes");
+                setCaseState(i, 1);
                 break;
             }
             if(j == (info->list_goods.count()-1))
             {
-                ui->tableWidget->item(i,0)->setBackground(QBrush(QColor(0,255,0)));
-//                ui->tableWidget->item(i,0)->setBackgroundColor(QColor(0,255,0));qDebug("no");
+                setCaseState(i, 0);
             }
         }
+    }
+}
+
+void Cabinet::clearSearch()
+{
+    int i = 0;
+
+    for(i=0; i<list_case.count(); i++)
+    {
+        if((i==1)&&isMainCabinet)
+            continue;
+        setCaseState(i,0);
     }
 }
 
@@ -286,22 +305,24 @@ void Cabinet::setCaseState(int index, int numState)
     if(index > list_case.count())
         return;
 
-    if(numState == 0)//库存充足
+    if(numState == 0)//正常状态
     {
-        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(0, 170, 127));
+        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
+        lab->setStyleSheet(cellStyle(QColor(36, 221, 149)));
     }
-    else if(numState == 1)//库存不足
+    else if(numState == 1)//被搜索状态
     {
-        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 170, 0));
+        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
+        lab->setStyleSheet(cellStyle(QColor(6, 161, 101)));
     }
-    else if(numState == 2)
-    {
-        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(238, 128, 61));
-    }
-    else if(numState == 3)//空柜格
-    {
-        ui->tableWidget->item(index,0)->setBackgroundColor(QColor(255, 255, 255));
-    }
+}
+
+QString Cabinet::cellStyle(QColor rgb)
+{
+    QString ret = QString("background-color: rgb(%1, %2, %3);\
+            margin-top:5px;\
+            margin-bottom:5px;").arg(rgb.red()).arg(rgb.green()).arg(rgb.blue());
+    return ret;
 }
 
 bool Cabinet::eventFilter(QObject *obj, QEvent *event)

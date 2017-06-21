@@ -116,8 +116,10 @@ void CabinetConfig::readCabinetConfig()
 
     settings.beginGroup("Cabinet0");
 //    settings.beginReadArray("Cabinet0");
-    for(j=0; j<CAB_CASE_1_NUM-1; j++)
+    for(j=0; j<CAB_CASE_1_NUM; j++)
     {
+        if(j == 1)
+            continue;
         int arr_size = settings.beginReadArray(QString("case%1").arg(j));
 
         for(k=0; k<arr_size; k++)
@@ -130,8 +132,7 @@ void CabinetConfig::readCabinetConfig()
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
             info->Py = getPyCh(info->name);
-            qDebug()<<"[read PY]"<<info->name<<info->Py;
-            list_cabinet[0]->addCase(info,j);
+            list_cabinet[0]->addCase(info,j);qDebug()<<j;
         }
         settings.endArray();
     }
@@ -311,6 +312,16 @@ void CabinetConfig::searchByPinyin(QChar ch)
     for(i=0; i<list_cabinet.count(); i++)
     {
         list_cabinet[i]->searchByPinyin(ch);
+    }
+}
+
+void CabinetConfig::clearSearch()
+{
+    int i;
+
+    for(i=0; i<list_cabinet.count(); i++)
+    {
+        list_cabinet[i]->clearSearch();
     }
 }
 

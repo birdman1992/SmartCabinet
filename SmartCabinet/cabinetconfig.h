@@ -37,6 +37,7 @@ public:
     CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
     void searchByPinyin(QChar ch);
+    void clearSearch();
 
     QList<UserInfo*> list_user;
     QList<Cabinet*> list_cabinet;

@@ -94,18 +94,15 @@
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
      </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">QTableWidget{
-font-size: 15px;
-    color: rgb(255, 255, 255);    /*前景色：文字颜色*/
-    selection-color:rgb(13, 96, 150);    /*鼠标选中时前景色：文字颜色*/
-    selection-background-color:lightgray;   /*鼠标选中时背景色*/
-    border:0px solid gray;  /*边框线的宽度、颜色*/
-}
-QTableWidget::item{
-	margin: 5px ;
-    background:rgb(36, 221, 149);
-}</string>
+                                   font-size: 15px;
+                                       color: rgb(255, 255, 255);    /*前景色：文字颜色*/
+                                       border:0px solid gray;  /*边框线的宽度、颜色*/
+                                   }</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>

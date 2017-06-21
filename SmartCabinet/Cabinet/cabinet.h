@@ -36,6 +36,7 @@ public:
     void setCaseName(GoodsInfo info, int index);//设置柜格存放物品名
     bool isInLeft();//true:柜子在主柜左边 false:柜子在主柜右边
     void searchByPinyin(QChar ch);
+    void clearSearch();
 
     QList<CabinetInfo*> list_case;//柜格列表
 
@@ -58,7 +59,8 @@ private:
 
     void caseDraw(int _type);
     void setCase(CabinetInfo* info);
-    void setCaseState(int index, int numState);//设置柜格状态,0:没有库存，1:库存紧张,2:库存充足
+    void setCaseState(int index, int numState);//设置柜格状态,0:正常状态,1:被搜索状态
+    QString cellStyle(QColor rgb);
     bool eventFilter(QObject *obj, QEvent *event);
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent *);
