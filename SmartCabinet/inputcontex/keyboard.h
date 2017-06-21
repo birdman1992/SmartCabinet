@@ -23,10 +23,13 @@ signals:
 
 private slots:
     void onKeysClicked(int val);
+    void saveFocusWidget(QWidget *, QWidget *newFocus);
 private:
     Ui::KeyBoard *ui;
+    QWidget *lastFocusedWidget;
     void paintEvent(QPaintEvent *);
     QButtonGroup group_key;
+    bool event(QEvent *e);
 };
 
 #endif // KEYBOARD_H
