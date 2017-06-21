@@ -11,6 +11,7 @@
 #define INDEX_USER_MANAGE 3
 #define INDEX_CAB_SET 4
 #define INDEX_CAB_SHOW 5
+#define INDEX_CAB_SERVICE 6
 
 //#define VICE_CAB_CASE_NUM 6 //副柜格子数
 //#define Main_CAB_CASE_NUM (VICE_CAB_CASE_NUM-2) //主柜格子数

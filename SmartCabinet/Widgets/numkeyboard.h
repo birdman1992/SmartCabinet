@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QButtonGroup>
+#include "inputcontex/keyboard.h"
 
 namespace Ui {
 class NumKeyboard;

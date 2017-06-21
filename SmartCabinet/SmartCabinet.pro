@@ -42,7 +42,11 @@ SOURCES += main.cpp\
     Widgets/cabinetaccess.cpp \
     Widgets/numkeyboard.cpp \
     Device/SerialPort/qserialport.cpp \
-    Widgets/coderkeyboard.cpp
+    Widgets/coderkeyboard.cpp \
+    Widgets/cabinetservice.cpp \
+    Device/Network/qnetinterface.cpp \
+    inputcontex/myinputpanelcontext.cpp \
+    inputcontex/keyboard.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -76,7 +80,11 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetaccess.h \
     Widgets/numkeyboard.h \
     Device/SerialPort/qserialport.h \
-    Widgets/coderkeyboard.h
+    Widgets/coderkeyboard.h \
+    Widgets/cabinetservice.h \
+    Device/Network/qnetinterface.h \
+    inputcontex/myinputpanelcontext.h \
+    inputcontex/keyboard.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -92,7 +100,9 @@ FORMS    += mainwidget.ui \
     Cabinet/cabinetwidget.ui \
     Widgets/cabinetaccess.ui \
     Widgets/numkeyboard.ui \
-    Widgets/coderkeyboard.ui
+    Widgets/coderkeyboard.ui \
+    Widgets/cabinetservice.ui \
+    inputcontex/keyboard.ui
 
 RESOURCES += \
     image.qrc

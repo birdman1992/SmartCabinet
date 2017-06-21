@@ -37,6 +37,9 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
 //    optUser = QString();
     ui->store->hide();
+    ui->refund->hide();
+    ui->service->hide();
+    ui->quit->hide();
 //    ui->msk1->hide();
 //    ui->msk2->hide();
 }
@@ -423,23 +426,35 @@ void CabinetWidget::on_fetch_toggled(bool checked)
     }
 }
 
-void CabinetWidget::on_store_toggled(bool checked)
+void CabinetWidget::on_service_toggled(bool checked)
 {
     if(checked)
     {
-        waitForCardReader = false;
-        config->state = STATE_STORE;
-        config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
-        waitForCodeScan = true;
-        waitForGoodsListCode = true;
-        win_access->setAccessModel(true);
+        emit winSwitch(INDEX_CAB_SERVICE);
     }
     else
     {
         cabLock();
-        initAccessState();
     }
 }
+
+//void CabinetWidget::on_store_toggled(bool checked)
+//{
+//    if(checked)
+//    {
+//        waitForCardReader = false;
+//        config->state = STATE_STORE;
+//        config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
+//        waitForCodeScan = true;
+//        waitForGoodsListCode = true;
+//        win_access->setAccessModel(true);
+//    }
+//    else
+//    {
+//        cabLock();
+//        initAccessState();
+//    }
+//}
 
 void CabinetWidget::pinyinSearch(int id)
 {
@@ -550,36 +565,40 @@ void CabinetWidget::msgShow(QString title, QString msg, bool setmodal)
         msgBox->show();
     }
 }
-
+/*
+|补货|退货|服务|退出|
+*/
 void CabinetWidget::setPowerState(int power)
 {
+    clickLock = false;
+    config->state = STATE_FETCH;
+    win_access->setAccessModel(false);
+    waitForCodeScan = false;
+
+    ui->store->hide();
+    ui->refund->hide();
+    ui->service->hide();
+    ui->quit->hide();
+
     switch(power)
     {
-    case 0:
-        clickLock = false;
-        config->state = STATE_FETCH;
-        win_access->setAccessModel(false);
-        waitForCodeScan = false;
-        ui->store->show();break;
+    case 0://超级管理员:|补货|退货|服务|退出|
+        ui->store->show();
+        ui->refund->show();
+        ui->service->show();break;
 
-    case 1:
-        ui->store->show();break;
+    case 1://仓库员工:|补货|退货|退出|
+        ui->store->show();
+        ui->refund->show();break;
 
-    case 2:
-        clickLock = false;
-        config->state = STATE_FETCH;
-        win_access->setAccessModel(false);
-        waitForCodeScan = false;
+    case 2://医院管理:|补货|退货|服务|退出|
+        ui->store->show();
+        ui->refund->show();
+        ui->service->show();break;
 
-        ui->store->hide();break;
-
-    case 3:
-        clickLock = false;
-        config->state = STATE_FETCH;
-        win_access->setAccessModel(false);
-        waitForCodeScan = false;
-
-        ui->store->hide();break;
+    case 3://医院员工:|退货|服务|退出|
+        ui->refund->show();
+        ui->service->show();break;
     }
 }
 
@@ -658,4 +677,3 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
     ui->userInfo->setText(QString("您好！%1").arg(optUser.name));
     setPowerState(info.power);
 }
-

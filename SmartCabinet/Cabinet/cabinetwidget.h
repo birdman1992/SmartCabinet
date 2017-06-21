@@ -58,8 +58,10 @@ private slots:
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
     void on_fetch_toggled(bool checked);
-    void on_store_toggled(bool checked);
+//    void on_store_toggled(bool checked);
     void pinyinSearch(int);
+
+    void on_service_toggled(bool checked);
 
 private:
     Ui::CabinetWidget *ui;

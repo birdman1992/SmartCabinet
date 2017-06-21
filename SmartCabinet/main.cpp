@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QTextCodec>
 #include <QFont>
-
+#include "inputcontex/myinputpanelcontext.h"
 #include "beautifului.h"
 
 void customMessageHandler(QtMsgType type, const char *msg)
@@ -37,6 +37,8 @@ void customMessageHandler(QtMsgType type, const char *msg)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    MyInputPanelContext* inputContext = new MyInputPanelContext;
+    a.setInputContext(inputContext);
 
 //    beautiful::SetUTF8Code();//--显示中文 utf-8
 //    beautiful::SetStyle("image/black");//黑色风格

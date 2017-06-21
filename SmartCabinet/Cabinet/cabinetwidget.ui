@@ -277,7 +277,7 @@ color: rgb(255, 255, 255);</string>
          <layout class="QHBoxLayout" name="main_button_layout" stretch="8">
           <item>
            <widget class="QFrame" name="button_frame">
-            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="10,1">
+            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="10,10,10,10,1">
              <property name="spacing">
               <number>10</number>
              </property>
@@ -307,6 +307,9 @@ color: rgb(255, 255, 255);</string>
                  <height>100</height>
                 </size>
                </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="styleSheet">
                 <string notr="true">#store{
 	border-image: url(:/image/image/btn_in_normal.png);
@@ -323,6 +326,111 @@ color: rgb(255, 255, 255);</string>
                </property>
                <property name="checked">
                 <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="refund">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#refund{
+border-image: url(:/image/image/btn_out_normal.png);
+}
+#refund:checked{
+border-image: url(:/image/image/btn_out_sel.png);
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="service">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#service{
+	border-image: url(:/image/image/btn_service_normal.png);
+}
+#service:pressed{
+	border-image: url(:/image/image/btn_service_sel.png);
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="quit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>250</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#quit{
+	border-image: url(:/image/image/btn_quit.png);
+}
+#quit:pressed{
+	border-image: url(:/image/image/btn_quit_sel.png);
+}</string>
+               </property>
+               <property name="text">
+                <string/>
                </property>
               </widget>
              </item>
