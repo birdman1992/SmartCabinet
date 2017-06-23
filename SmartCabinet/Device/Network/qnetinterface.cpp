@@ -6,22 +6,46 @@ QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
 
     if(!interface.isValid())
         qDebug()<<"[QNetInterface]"<<name<<"open failed";
-    getNetworkInfo();
+    else
+        getNetworkInfo();
 }
 
 QString QNetInterface::ip()
 {
-    return netEntry.ip().toString();
+    if(interface.isValid())
+    {
+        getNetworkInfo();
+        return netEntry.ip().toString();
+    }
+    else
+        return QString();
 }
 
 QString QNetInterface::netmask()
 {
-    return netEntry.netmask().toString();
+    if(interface.isValid())
+    {
+        getNetworkInfo();
+        return netEntry.netmask().toString();
+    }
+    else
+        return QString();
 }
 
 QString QNetInterface::broadcast()
 {
-    return netEntry.broadcast().toString();
+    if(interface.isValid())
+    {
+        getNetworkInfo();
+        return netEntry.broadcast().toString();
+    }
+    else
+        return QString();
+}
+
+bool QNetInterface::isValid()
+{
+    return interface.isValid();
 }
 
 QNetworkInterface QNetInterface::getNetworkInterface(QString name)

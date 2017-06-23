@@ -14,6 +14,9 @@ public:
     QString ip();
     QString netmask();
     QString broadcast();
+    void setIp(QString);
+
+    bool isValid();
 
 private:
     QNetworkInterface interface;

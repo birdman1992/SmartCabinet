@@ -15,6 +15,8 @@ CabinetService::CabinetService(QWidget *parent) :
 #else
     dev_network = new QNetInterface("eth1");
 #endif
+
+    ui->addr->installEventFilter(this);
 }
 
 CabinetService::~CabinetService()
@@ -30,4 +32,34 @@ void CabinetService::on_back_clicked()
 void CabinetService::showEvent(QShowEvent *)
 {
     ui->addr->setText(dev_network->ip());
+}
+
+bool CabinetService::eventFilter(QObject *w, QEvent *e)
+{
+    if(w == ui->addr && e->type() == QEvent::FocusIn)
+    {
+        ui->addr->clear();
+    }
+    return QWidget::eventFilter(w,e);
+}
+
+
+void CabinetService::on_addr_returnPressed()
+{
+    this->setFocus();
+}
+
+void CabinetService::on_addr_textEdited(const QString &arg1)
+{
+    qDebug()<<arg1;
+}
+
+void CabinetService::on_ok_clicked()
+{
+
+}
+
+void CabinetService::on_cancel_clicked()
+{
+
 }

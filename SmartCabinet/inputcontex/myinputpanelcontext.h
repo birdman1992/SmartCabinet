@@ -67,7 +67,9 @@ public:
     void reset();
 
 private slots:
-    void sendCharacter(ushort character);
+    void sendCharacter(uint character);
+    void sendPressed(uint character);
+    void sendReleased(uint character);
 
 private:
     void updatePosition();

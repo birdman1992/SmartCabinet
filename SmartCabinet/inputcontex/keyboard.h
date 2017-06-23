@@ -5,6 +5,7 @@
 #include <QPaintEvent>
 #include <QButtonGroup>
 #include <QPainter>
+#include <QTimer>
 
 namespace Ui {
 class KeyBoard;
@@ -19,14 +20,23 @@ public:
     ~KeyBoard();
 
 signals:
-    void key(ushort);
+    void key(uint);
+    void keyPress(uint);
+    void keyRelease(uint);
 
 private slots:
     void onKeysClicked(int val);
     void saveFocusWidget(QWidget *, QWidget *newFocus);
+    void onKeysPressed(int val);
+    void onKeysReleased(int val);
+    void on_key_back_pressed();
+    void on_key_back_released();
+    void backspace_timeout();
+
 private:
     Ui::KeyBoard *ui;
     QWidget *lastFocusedWidget;
+    QTimer* timer_backspace;
     void paintEvent(QPaintEvent *);
     QButtonGroup group_key;
     bool event(QEvent *e);

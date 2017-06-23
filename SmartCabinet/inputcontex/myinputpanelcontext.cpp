@@ -48,7 +48,9 @@
 MyInputPanelContext::MyInputPanelContext()
 {
     inputPanel = new KeyBoard;
-    connect(inputPanel, SIGNAL(key(ushort)), SLOT(sendCharacter(ushort)));
+    connect(inputPanel, SIGNAL(key(uint)), SLOT(sendCharacter(uint)));
+//    connect(inputPanel, SIGNAL(keyPress(uint)),SLOT(sendPressed(uint)));
+//    connect(inputPanel, SIGNAL(keyRelease(uint)),SLOT(sendReleased(uint)));
 }
 
 //! [0]
@@ -96,21 +98,42 @@ QString MyInputPanelContext::language()
 
 //! [2]
 
-void MyInputPanelContext::sendCharacter(ushort keyVal)
+void MyInputPanelContext::sendCharacter(uint character)
 {
     QPointer<QWidget> w = focusWidget();
-    qDebug("sendCharacter");
+
+    if (!w)
+        return;
+
+    QKeyEvent keyPress(QEvent::KeyPress, character, Qt::NoModifier, QString(QChar(character)));
+    QApplication::sendEvent(w, &keyPress);
+
+    if (!w)
+        return;
+
+    QKeyEvent keyRelease(QEvent::KeyRelease, character, Qt::NoModifier, QString());
+    QApplication::sendEvent(w, &keyRelease);
+}
+
+void MyInputPanelContext::sendPressed(uint character)
+{qDebug("123");
+    QPointer<QWidget> w = focusWidget();
     qDebug()<<w;
     if (!w)
         return;
-
-    QKeyEvent keyPress(QEvent::KeyPress, keyVal, Qt::NoModifier, QString(QChar(keyVal)));
+    qDebug()<<"sendPressed"<<character;
+    QKeyEvent keyPress(QEvent::KeyPress, character, Qt::NoModifier, QString(QChar(character)));
     QApplication::sendEvent(w, &keyPress);
-    qDebug()<<QChar(keyVal);
+}
+
+void MyInputPanelContext::sendReleased(uint character)
+{
+    QPointer<QWidget> w = focusWidget();
+    qDebug()<<w;
     if (!w)
         return;
-
-    QKeyEvent keyRelease(QEvent::KeyPress, keyVal, Qt::NoModifier, QString());
+    qDebug()<<"sendReleased"<<character;
+    QKeyEvent keyRelease(QEvent::KeyRelease, character, Qt::NoModifier, QString());
     QApplication::sendEvent(w, &keyRelease);
 }
 
