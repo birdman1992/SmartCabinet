@@ -31,16 +31,27 @@ void CabinetService::on_back_clicked()
 
 void CabinetService::showEvent(QShowEvent *)
 {
-    ui->addr->setText(dev_network->ip());
+    updateNetInfo();
 }
 
 bool CabinetService::eventFilter(QObject *w, QEvent *e)
 {
     if(w == ui->addr && e->type() == QEvent::FocusIn)
     {
-        ui->addr->clear();
+//        ui->addr->clear();
     }
     return QWidget::eventFilter(w,e);
+}
+
+void CabinetService::updateNetInfo()
+{
+    dev_ip = dev_network->ip();
+    dev_gateway = dev_network->gateway();
+    dev_netmask = dev_network->netmask();
+
+    ui->addr->setText(dev_ip);
+    ui->netmask->setText(dev_netmask);
+    ui->gateway->setText(dev_gateway);
 }
 
 
@@ -49,14 +60,53 @@ void CabinetService::on_addr_returnPressed()
     this->setFocus();
 }
 
-void CabinetService::on_addr_textEdited(const QString &arg1)
-{
-    qDebug()<<arg1;
-}
+//void CabinetService::on_addr_textEdited(const QString &arg1)
+//{
+//    qDebug()<<arg1;
+//}
 
 void CabinetService::on_ok_clicked()
 {
-
+    if(ui->addr->text() != dev_ip)
+    {
+        if(dev_network->numPointCheck(ui->addr->text()))
+        {
+            dev_ip = ui->addr->text();
+            dev_network->setIp(dev_ip);
+            ui->warning->clear();
+        }
+        else
+        {
+            ui->warning->setText("地址格式错误");
+        }
+    }
+    if(ui->netmask->text() != dev_netmask)
+    {
+        if(dev_network->numPointCheck(dev_netmask))
+        {
+            dev_netmask = ui->netmask->text();
+            dev_network->setNetmask(dev_netmask);
+            ui->warning->clear();
+        }
+        else
+        {
+            ui->warning->setText("地址格式错误");
+        }
+    }
+    if(ui->gateway->text() != dev_gateway)
+    {
+        if(dev_network->numPointCheck(dev_gateway))
+        {
+            dev_gateway = ui->gateway->text();
+            dev_network->setGateway(dev_gateway);
+            ui->warning->clear();
+        }
+        else
+        {
+            ui->warning->setText("地址格式错误");
+        }
+    }
+    updateNetInfo();
 }
 
 void CabinetService::on_cancel_clicked()

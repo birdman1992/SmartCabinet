@@ -53,11 +53,11 @@ signals:
 
 private slots:
     void on_store_clicked();
-    void on_fetch_clicked();
+//    void on_fetch_clicked();
     void wait_timeout();
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
-    void on_fetch_toggled(bool checked);
+//    void on_fetch_toggled(bool checked);
 //    void on_store_toggled(bool checked);
     void pinyinSearch(int);
 

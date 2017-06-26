@@ -641,6 +641,7 @@ void MainWidget::init_huangpo()
     else
     {
         ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
+//        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SERVICE);
         win_cabinet->panel_init(cabinetConf->list_cabinet);
     }
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();

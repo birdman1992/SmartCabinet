@@ -397,8 +397,8 @@ void CabinetWidget::on_store_clicked()
 //    QTimer::singleShot(10000,this, SLOT(wait_timeout()));
 }
 
-void CabinetWidget::on_fetch_clicked()
-{
+//void CabinetWidget::on_fetch_clicked()
+//{
 //    waitForCardReader = true;
 //    config->state = STATE_FETCH;
 //    msgShow("身份验证", "请刷卡验证身份",false);
@@ -408,23 +408,23 @@ void CabinetWidget::on_fetch_clicked()
 //    msgBox->setModal(false);
 //    msgBox->show();
 //    QTimer::singleShot(10000,this, SLOT(wait_timeout()));
-}
+//}
 
-void CabinetWidget::on_fetch_toggled(bool checked)
-{
-    if(checked)
-    {qDebug("fetch");
-        clickLock = false;
-        config->state = STATE_FETCH;
-        win_access->setAccessModel(false);
-        waitForCodeScan = false;
-    }
-    else
-    {
-        cabLock();
-        initAccessState();
-    }
-}
+//void CabinetWidget::on_fetch_toggled(bool checked)
+//{
+//    if(checked)
+//    {qDebug("fetch");
+//        clickLock = false;
+//        config->state = STATE_FETCH;
+//        win_access->setAccessModel(false);
+//        waitForCodeScan = false;
+//    }
+//    else
+//    {
+//        cabLock();
+//        initAccessState();
+//    }
+//}
 
 void CabinetWidget::on_service_toggled(bool checked)
 {

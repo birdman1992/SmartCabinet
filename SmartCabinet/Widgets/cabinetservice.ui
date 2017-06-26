@@ -34,7 +34,7 @@
     <rect>
      <x>300</x>
      <y>150</y>
-     <width>291</width>
+     <width>290</width>
      <height>331</height>
     </rect>
    </property>
@@ -80,7 +80,7 @@ font:20px&quot;微软雅黑&quot;;
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>40</height>
+        <height>70</height>
        </size>
       </property>
       <property name="frameShape">
@@ -89,7 +89,10 @@ font:20px&quot;微软雅黑&quot;;
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="1,20">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -103,30 +106,44 @@ font:20px&quot;微软雅黑&quot;;
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="ok">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+        <widget class="QLabel" name="warning">
          <property name="text">
-          <string>确定</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cancel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>6</number>
          </property>
-         <property name="text">
-          <string>取消</string>
-         </property>
-        </widget>
+         <item>
+          <widget class="QPushButton" name="ok">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>确定</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="cancel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>取消</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -146,14 +163,14 @@ font:20px&quot;微软雅黑&quot;;
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="addr_3">
+     <widget class="QLineEdit" name="gateway">
       <property name="text">
        <string/>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="addr_2">
+     <widget class="QLineEdit" name="netmask">
       <property name="text">
        <string/>
       </property>
