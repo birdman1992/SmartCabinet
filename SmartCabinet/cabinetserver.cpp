@@ -15,6 +15,7 @@
 #define API_LIST_STORE "/spd/mapper/OutStorage/query/"      //存入完毕销单接口
 #define API_CAB_BIND "/spd/work/Cheset/register/"     //柜格物品绑定接口
 #define API_GOODS_ACCESS  "/spd/work/Cheset/doGoods/"
+#define API_GOODS_BACK  "ASDASD"     //退货接口
 
 
 
@@ -87,18 +88,21 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
     connect(reply_cabinet_bind, SIGNAL(finished()), this, SLOT(recvCabBind()));
 }
 
-void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, bool isStore)
-{qDebug()<<addr.cabinetSeqNUM<<id<<num<<isStore;
+void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optType)
+{qDebug()<<addr.cabinetSeqNUM<<id<<num<<optType;
     QString caseId = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex));
     QString cabinetId = config->getCabinetId();
     QByteArray qba;
 
-    if(isStore)
+    if(optType == 2)
         qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5,\"barcode\":\"%6\"}")
              .arg(id).arg(cabinetId).arg(caseId).arg(2).arg(num).arg(barCode).toUtf8();
-    else
+    else if(optType == 1)
         qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}")
              .arg(id).arg(cabinetId).arg(caseId).arg(1).arg(num).toUtf8();
+    else if(optType == 3)
+        qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}")
+             .arg(id).arg(cabinetId).arg(caseId).arg(3).arg(num).toUtf8();
 
     QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
     qDebug()<<"[goodsAccess]"<<nUrl;
@@ -106,6 +110,16 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, bool isSt
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvGoodsAccess()));
 
+}
+
+void CabinetServer::goodsBack(QString goodsId)
+{
+    QByteArray qba = QString("{\"barcode\":\"%1\"}").arg(goodsId).toUtf8();
+    QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_BACK)+'?'+qba.toBase64();
+    qDebug()<<"[listCheck]"<<nUrl;
+    return;
+    reply_goods_back = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_back, SIGNAL(finished()), this, SLOT(recvGoodsBack()));
 }
 
 void CabinetServer::recvCabRegister()
@@ -346,5 +360,10 @@ void CabinetServer::recvGoodsAccess()
         emit goodsNumChanged(goodsId, goodsNum);
     }
     cJSON_Delete(json);
+}
+
+void CabinetServer::recvGoodsBack()
+{
+
 }
 

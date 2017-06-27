@@ -71,6 +71,7 @@ void CabinetWidget::cabLock()
     msgBox = NULL;
     ui->store->hide();
     curStoreList = NULL;
+    config->state = STATE_FETCH;
 }
 
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
@@ -288,7 +289,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         }
     }
     else if(config->state == STATE_FETCH)
-    {qDebug("fetch");
+    {/*qDebug("fetch");*/
         CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
         if(addr.cabinetSeqNUM == -1)
         {
@@ -300,7 +301,24 @@ void CabinetWidget::recvScanData(QByteArray qba)
             if(!needWaitForServer())
             {
                 win_access->scanOpen(scanInfo);
-                emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->packageId, 1, false);
+                emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->packageId, 1, 1);
+            }
+        }
+    }
+    else if(config->state == STATE_REFUN)
+    {
+        CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
+        if(addr.cabinetSeqNUM == -1)
+        {
+            qDebug()<<"[refun]"<<"scan data not find";
+            return;
+        }
+        if(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
+        {
+            if(!needWaitForServer())
+            {
+                win_access->scanOpen(scanInfo);
+                emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->packageId, 1, 3);
             }
         }
     }
@@ -438,23 +456,35 @@ void CabinetWidget::on_service_toggled(bool checked)
     }
 }
 
-//void CabinetWidget::on_store_toggled(bool checked)
-//{
-//    if(checked)
-//    {
-//        waitForCardReader = false;
-//        config->state = STATE_STORE;
-//        config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
-//        waitForCodeScan = true;
-//        waitForGoodsListCode = true;
-//        win_access->setAccessModel(true);
-//    }
-//    else
-//    {
-//        cabLock();
-//        initAccessState();
-//    }
-//}
+void CabinetWidget::on_refund_toggled(bool checked)//退货模式
+{
+    if(checked)
+    {
+        config->state = STATE_REFUN;
+    }
+    else
+    {
+        cabLock();
+    }
+}
+
+void CabinetWidget::on_store_toggled(bool checked)
+{
+    if(checked)
+    {
+        waitForCardReader = false;
+        config->state = STATE_STORE;
+        config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
+        waitForCodeScan = true;
+        waitForGoodsListCode = true;
+        win_access->setAccessModel(true);
+    }
+    else
+    {
+        cabLock();
+        initAccessState();
+    }
+}
 
 void CabinetWidget::pinyinSearch(int id)
 {
@@ -502,7 +532,7 @@ void CabinetWidget::saveStore(Goods *goods, int num)
 {qDebug("[saveStore]");
     CaseAddress addr = config->checkCabinetByName(goods->name);
 //    config->list_cabinet[addr.cabinetSeqNUM]->consumableIn(addr,num);
-    emit goodsAccess(addr, goods->packageBarcode, num, true);
+    emit goodsAccess(addr, goods->packageBarcode, num, 2);
     scanInfo.clear();
     curStoreList->goodsIn(goods->packageBarcode, num);
 
@@ -522,7 +552,7 @@ void CabinetWidget::saveFetch(QString name, int num)
 //    config->list_cabinet[addr.cabinetSeqNUM]->consumableOut(addr,num);
     clickLock = false;
     emit requireOpenCase(addr.cabinetSeqNUM, addr.caseIndex);
-    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, false);
+    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, 1);
 //    initAccessState();
 }
 
@@ -585,7 +615,8 @@ void CabinetWidget::setPowerState(int power)
     case 0://超级管理员:|补货|退货|服务|退出|
         ui->store->show();
         ui->refund->show();
-        ui->service->show();break;
+//        ui->service->show();
+        break;
 
     case 1://仓库员工:|补货|退货|退出|
         ui->store->show();
@@ -594,11 +625,13 @@ void CabinetWidget::setPowerState(int power)
     case 2://医院管理:|补货|退货|服务|退出|
         ui->store->show();
         ui->refund->show();
-        ui->service->show();break;
+//        ui->service->show();
+        break;
 
     case 3://医院员工:|退货|服务|退出|
         ui->refund->show();
-        ui->service->show();break;
+//        ui->service->show();
+        break;
     }
 }
 
@@ -677,3 +710,5 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
     ui->userInfo->setText(QString("您好！%1").arg(optUser.name));
     setPowerState(info.power);
 }
+
+

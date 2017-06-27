@@ -26,6 +26,7 @@ private:
     QNetworkReply* reply_list_check;
     QNetworkReply* reply_cabinet_bind;
     QNetworkReply* reply_goods_access;
+    QNetworkReply* reply_goods_back;
     QString regId;
     QString barCode;
 
@@ -41,7 +42,8 @@ public slots:
     void userLogin(QString);
     void listCheck(QString);//送货单信息校验
     void cabinetBind(int, int, QString);
-    void goodsAccess(CaseAddress, QString, int, bool);
+    void goodsAccess(CaseAddress, QString, int, int optType);
+    void goodsBack(QString);//退货
 
 private slots:
     void recvCabRegister();
@@ -49,6 +51,7 @@ private slots:
     void recvListCheck();
     void recvCabBind();
     void recvGoodsAccess();
+    void recvGoodsBack();
 };
 
 #endif // CABINETSERVER_H

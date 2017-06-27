@@ -157,7 +157,6 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
     ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
-
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
     settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));

@@ -44,7 +44,7 @@ public slots:
 
 signals:
     void winSwitch(int);
-    void goodsAccess(CaseAddress, QString, int, bool);//柜格坐标，货物名，数量，是否存
+    void goodsAccess(CaseAddress, QString, int, int);//柜格坐标，货物名，数量，操作码(1取货2存货3退货)
     void requireUserCheck(QString);//请求身份验证
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
@@ -58,10 +58,12 @@ private slots:
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
 //    void on_fetch_toggled(bool checked);
-//    void on_store_toggled(bool checked);
+    void on_store_toggled(bool checked);
     void pinyinSearch(int);
 
     void on_service_toggled(bool checked);
+
+    void on_refund_toggled(bool checked);
 
 private:
     Ui::CabinetWidget *ui;
