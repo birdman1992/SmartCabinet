@@ -10,6 +10,7 @@
 #include "Structs/cabinetinfo.h"
 #include "Structs/caseaddress.h"
 #include "Cabinet/cabinet.h"
+#include "Device/voiceplayer.h"
 #include "medinf.h"
 
 enum CabState
@@ -43,6 +44,7 @@ public:
     QList<UserInfo*> list_user;
     QList<Cabinet*> list_cabinet;
     CabState state;
+    VoicePlayer cabVoice;
 
 //    QList<>
 

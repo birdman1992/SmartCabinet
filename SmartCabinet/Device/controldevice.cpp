@@ -46,6 +46,15 @@ void ControlDevice::deviceInit()
     connect(hid_code_scan, SIGNAL(hidRead(QByteArray)), this, SLOT(readCodeScanData(QByteArray)));
 }
 
+bool ControlDevice::installGlobalConfig(CabinetConfig *globalConfig)
+{
+    if(globalConfig == NULL)
+        return false;
+    config = globalConfig;
+
+    return true;
+}
+
 void ControlDevice::simulateInit()
 {
     dev_simulate = new DeviceSimulate();
@@ -138,9 +147,42 @@ void ControlDevice::lockCtrl(int seqNum, int ioNum)
 
 void ControlDevice::openLock(int seqNum, int index)
 {
-    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
-    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
-    lockCtrl(ctrlNum);
+//    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
+//    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
+//    lockCtrl(ctrlNum);
+    lockCtrl(seqNum, index);
+}
+
+void ControlDevice::getLockState()
+{
+    QByteArray qba = QByteArray::fromHex("fa000200ff");
+    int i = 0;
+
+#ifndef SIMULATE_ON
+    disconnect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
+#endif
+
+    for(i=0; i<config->list_cabinet.count(); i++)
+    {
+        qba[1] = i;
+#ifndef SIMULATE_ON
+    com_lock_ctrl->write(qba.data(), qba.size());
+    if(com_lock_ctrl->waitForReadyRead(200))
+    {
+        QByteArray bak = com_lock_ctrl->readAll();
+        if(bak[2]|bak[3]|bak[4])//有锁未关
+        {
+            config->cabVoice.voicePlay(VOICE_CLOSE_DOOR);
+            break;
+        }
+    }
+#endif
+        qDebug()<<"[getLockState]"<<qba.toHex();
+        config->cabVoice.voicePlay(VOICE_CLOSE_DOOR);
+    }
+#ifndef SIMULATE_ON
+    connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
+#endif
 }
 
 void ControlDevice::readLockCtrlData()

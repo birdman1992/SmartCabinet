@@ -51,6 +51,7 @@ private:
     bool defaultValue;
     CabinetConfig* config;
     GoodsList* storeList;
+    Goods* storeGoods;
     Goods* curGoods;
     CabinetInfo* curCab;
     NumKeyboard* keyBoard;

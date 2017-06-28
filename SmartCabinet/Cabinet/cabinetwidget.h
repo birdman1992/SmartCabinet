@@ -44,12 +44,13 @@ public slots:
 
 signals:
     void winSwitch(int);
-    void goodsAccess(CaseAddress, QString, int, int);//柜格坐标，货物名，数量，操作码(1取货2存货3退货)
+    void goodsAccess(CaseAddress, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)
     void requireUserCheck(QString);//请求身份验证
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
     void requireCaseBind(int  seqNum, int index, QString goodsId);
     void goodsNumChanged(int);//报告物品数量的变化
+    void checkLockState();//检查锁状态
 
 private slots:
     void on_store_clicked();
@@ -79,6 +80,7 @@ private:
     bool waitForInit;
     bool waitForServer;
     QString scanInfo;
+    QString fullScanInfo;
     UserInfo optUser;//操作者id
     CaseAddress casePos;
     QMessageBox* msgBox;
@@ -97,6 +99,7 @@ private:
     void initAccessState();
     void initSearchBtns();
     bool needWaitForServer();
+    QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 
 #endif // CABINETWIDGET_H

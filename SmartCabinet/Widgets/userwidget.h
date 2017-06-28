@@ -41,6 +41,9 @@ signals:
 private slots:
     void on_addUser_clicked();
     void on_addOk_clicked();
+    void on_addUser_2_clicked();
+    void on_addUser_3_clicked();
+    void on_addUser_4_clicked();
 };
 
 #endif // USERWIDGET_H

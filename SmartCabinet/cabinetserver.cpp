@@ -6,8 +6,8 @@
 #include <QtGlobal>
 #include "defines.h"
 
-//#define SERVER_ADDR "http://175.11.98.137"
-#define SERVER_ADDR "http://120.77.159.8:8080"
+#define SERVER_ADDR "http://175.10.26.15"
+//#define SERVER_ADDR "http://120.77.159.8:8080"
 #define API_REG "/spd/mapper/SmartCheset/saveOrUpdate/"   //注册接口
 #define API_LOGIN "/spd/mapper/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/spd/work/OutStorage/query/goods/" //送货单检查接口
@@ -30,11 +30,11 @@ bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     if(config->getCabinetId().isEmpty())
-//        cabRegister();
-    {
-        regId = "896443";
-        config->setCabinetId(regId);
-    }
+        cabRegister();
+//    {
+//        regId = "896443";
+//        config->setCabinetId(regId);
+//    }
 
     return true;
 }

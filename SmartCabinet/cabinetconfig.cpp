@@ -97,6 +97,7 @@ void CabinetConfig::readCabinetConfig()
         firstUse = true;
         return;
     }
+    firstUse = false;
 
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     int cabNum = settings.value("CabNum").toInt();

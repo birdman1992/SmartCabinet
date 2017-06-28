@@ -581,6 +581,7 @@ void MainWidget::init_huangpo()
 
     //仿真控制台
     ctrlUi = new ControlDevice;
+    ctrlUi->installGlobalConfig(cabinetConf);
 
     //扫码输入面板
     win_coder_keyboard = new coderKeyboard();
@@ -595,6 +596,7 @@ void MainWidget::init_huangpo()
     win_cabinet->installGlobalConfig(cabinetConf);
     connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
     connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+    connect(win_cabinet, SIGNAL(checkLockState()), ctrlUi, SLOT(getLockState()));
     connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
@@ -640,9 +642,11 @@ void MainWidget::init_huangpo()
     }
     else
     {
+//        ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
         ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
 //        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SERVICE);
         win_cabinet->panel_init(cabinetConf->list_cabinet);
+        cabinetConf->cabVoice.voicePlay(VOICE_WELCOME);
     }
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
     qDebug()<<cabinetConf->list_cabinet.count();

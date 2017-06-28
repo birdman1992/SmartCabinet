@@ -66,7 +66,7 @@ void CabinetAccess::clickOpen(QString goodsId)
 
 void CabinetAccess::clickOpen(CabinetInfo *info)
 {
-    if(!isStore)
+    if(config->state == STATE_FETCH)
     {
         ui->cancel->hide();
         ui->onekey->hide();
@@ -76,6 +76,20 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
         curCab = info;
         ui->name->setText(QString());
         ui->tip->setText("请取货并扫描条形码");
+
+        if(this->isHidden())
+            this->show();
+    }
+    else if(config->state == STATE_REFUN)
+    {
+        ui->cancel->hide();
+        ui->onekey->hide();
+        defaultValue = true;
+        ui->info->clear();
+
+        curCab = info;
+        ui->name->setText(QString());
+        ui->tip->setText("请扫描条码退货");
 
         if(this->isHidden())
             this->show();
@@ -134,6 +148,8 @@ void CabinetAccess::scanOpen(QString goodsId)
             }
         }
 
+        ui->cancel->hide();
+        ui->onekey->hide();
         Goods* storeGoods = storeList->getGoodsById(goodsId);
         curGoods = storeGoods;
         if(storeGoods->curNum >= storeGoods->totalNum)
@@ -144,12 +160,11 @@ void CabinetAccess::scanOpen(QString goodsId)
         else
         {
             storeGoods->curNum++;
-            ui->tip->setText("提示：请继续扫描或者点清数量一键存入");
+            ui->tip->setText("正在存入");
         }
-        QString info = QString("已存入%1%2   共需存入存入%3%4").arg(storeGoods->curNum).arg(storeGoods->unit).arg(storeGoods->totalNum).arg(storeGoods->unit);
         ui->name->setText(storeGoods->name);
-        ui->info->setText(info);
-        ui->onekey->show();
+
+//        ui->onekey->show();
         if(this->isHidden())
             this->show();
     }
@@ -176,9 +191,9 @@ void CabinetAccess::save()
     {
         if(curGoods == NULL)
             return;
-        int storeNum = curGoods->curNum-curGoods->storeNum;
+//        int storeNum = curGoods->curNum-curGoods->storeNum;
         curGoods->storeNum = curGoods->curNum;
-        emit saveStore(curGoods, storeNum);
+//        emit saveStore(curGoods, storeNum);
         curGoods = NULL;
     }
     else
@@ -224,15 +239,15 @@ void CabinetAccess::on_cancel_clicked()
 void CabinetAccess::on_ok_clicked()
 {
     save();
-    if(!isStore)
-    {
-        this->hide();
-        keyBoard->hide();
-    }
-    else
-    {
-        ui->tip->setText("正在存入");
-    }
+//    if(!isStore)
+//    {
+    this->hide();
+    keyBoard->hide();
+//    }
+//    else
+//    {
+//        ui->tip->setText("正在存入");
+//    }
 }
 
 void CabinetAccess::input(int val)
@@ -271,7 +286,9 @@ void CabinetAccess::recvOptGoodsNum(int num)
     if(config->state == STATE_STORE)
     {
         ui->tip->setText("存入成功");
-        this->hide();
+        QString info = QString("已存入%1%2   共需存入存入%3%4").arg(curGoods->curNum).arg(curGoods->unit).arg(curGoods->totalNum).arg(curGoods->unit);
+        ui->info->setText(info);
+//        this->hide();
     }
     else if(config->state == STATE_FETCH)
     {

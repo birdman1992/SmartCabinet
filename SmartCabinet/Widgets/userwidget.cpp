@@ -66,18 +66,18 @@ bool UserWidget::configCheck()
 
 void UserWidget::showEvent(QShowEvent*)
 {
-    if(!configCheck())
-        return;
+//    if(!configCheck())
+//        return;
 
-    if(config->isFirstUse())
-    {
-        firstUse = true;
-        waitForCardReader = true;
-        msgBox = new QMessageBox(QMessageBox::NoIcon, "添加管理员用户", "请刷卡添加管理员用户",QMessageBox::Ok,NULL,
-               Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
-        msgBox->setModal(false);
-        msgBox->show();
-    }
+//    if(config->isFirstUse())
+//    {
+//        firstUse = true;
+//        waitForCardReader = true;
+//        msgBox = new QMessageBox(QMessageBox::NoIcon, "添加管理员用户", "请刷卡添加管理员用户",QMessageBox::Ok,NULL,
+//               Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
+//        msgBox->setModal(false);
+//        msgBox->show();
+//    }
 }
 
 void UserWidget::recvUserInfo(QByteArray qba)
@@ -112,4 +112,19 @@ void UserWidget::on_addOk_clicked()
         emit winSwitch(INDEX_CAB_SET);
     else
         emit winSwitch(INDEX_STANDBY);
+}
+
+void UserWidget::on_addUser_2_clicked()
+{
+    config->cabVoice.voicePlay(VOICE_WELCOME);
+}
+
+void UserWidget::on_addUser_3_clicked()
+{
+    config->cabVoice.voicePlay(VOICE_SCAN);
+}
+
+void UserWidget::on_addUser_4_clicked()
+{
+    config->cabVoice.voicePlay(VOICE_CLOSE_DOOR);
 }

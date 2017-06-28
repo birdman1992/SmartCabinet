@@ -92,4 +92,5 @@ void CabinetSet::on_save_clicked()
 //    emit setCabinet(cabinet_pos);
     emit cabinetCreated();
     emit winSwitch(INDEX_CAB_SHOW);
+    config->cabVoice.voicePlay(VOICE_WELCOME);
 }

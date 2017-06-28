@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     Widgets/cabinetservice.cpp \
     Device/Network/qnetinterface.cpp \
     inputcontex/myinputpanelcontext.cpp \
-    inputcontex/keyboard.cpp
+    inputcontex/keyboard.cpp \
+    Device/voiceplayer.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -84,7 +85,8 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetservice.h \
     Device/Network/qnetinterface.h \
     inputcontex/myinputpanelcontext.h \
-    inputcontex/keyboard.h
+    inputcontex/keyboard.h \
+    Device/voiceplayer.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

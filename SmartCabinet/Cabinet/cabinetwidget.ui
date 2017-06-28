@@ -358,10 +358,14 @@ border-image: url(:/image/image/btn_out_normal.png);
 }
 #refund:checked{
 border-image: url(:/image/image/btn_out_sel.png);
-}</string>
+}
+</string>
                </property>
                <property name="text">
                 <string/>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
                </property>
               </widget>
              </item>

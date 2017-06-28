@@ -77,7 +77,9 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
     if(caseIndex<list_case.count())
     {
         list_case.at(caseIndex)->list_goods<<info;
-        ui->tableWidget->item(caseIndex,0)->setText(list_case.at(caseIndex)->caseShowStr());
+        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(caseIndex,0);
+        lab->setText(list_case.at(caseIndex)->caseShowStr());
+//        ui->tableWidget->item(caseIndex,0)->setText(list_case.at(caseIndex)->caseShowStr());
     }
     else
     {
@@ -116,8 +118,9 @@ void Cabinet::consumableIn(CaseAddress addr, int num)
 //        setCaseState(index, 0);
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num+=num;
-
-    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
+    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+    lab->setText(list_case.at(addr.caseIndex)->caseShowStr());
+//    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
@@ -137,7 +140,9 @@ void Cabinet::consumableOut(CaseAddress addr,int num)
         return;
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = ((list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num)<0)?0:list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num;
-    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
+    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+    lab->setText(list_case.at(addr.caseIndex)->caseShowStr());
+    //    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
@@ -156,7 +161,9 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
         return;
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
-    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
+    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+    lab->setText(list_case.at(addr.caseIndex)->caseShowStr());
+//    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
     settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
@@ -210,7 +217,9 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
 
     GoodsInfo* gInfo = new GoodsInfo(info);
     list_case.at(index)->list_goods<<gInfo;
-    ui->tableWidget->item(index,0)->setText(list_case.at(index)->caseShowStr());
+    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
+    lab->setText(list_case.at(index)->caseShowStr());
+//    ui->tableWidget->item(index,0)->setText(list_case.at(index)->caseShowStr());
 //    list_case.at(index)->name = info.name;
 //    list_case.at(index)->id = info.id;
 //    list_case.at(index)->unit = info.unit;
