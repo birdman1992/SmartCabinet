@@ -32,6 +32,8 @@ void ControlDevice::deviceInit()
 //    com_lock_ctrler = new QSerialPort(DEV_LOCK_CTRL);
 //    com_lock_ctrler->com_init(38400,0,8,'N',1);
     get_path();
+    qDebug()<<"[get dev path1]"<<dev_path[0];
+    qDebug()<<"[get dev path2]"<<dev_path[1];
     comLockCtrlInit(38400, 8, 0, 1);
     connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
 
@@ -147,10 +149,10 @@ void ControlDevice::lockCtrl(int seqNum, int ioNum)
 
 void ControlDevice::openLock(int seqNum, int index)
 {
-//    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
-//    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
-//    lockCtrl(ctrlNum);
-    lockCtrl(seqNum, index);
+    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
+    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
+    lockCtrl(ctrlNum);
+//    lockCtrl(seqNum, index);
 }
 
 void ControlDevice::getLockState()
@@ -285,7 +287,7 @@ int ControlDevice::get_path(void)
                     }
                     else if((usb_info->vid==2303) && (usb_info->pid==9))	// RFID
                         snprintf(dev_path[0],20,"%s",path);
-                    else if(usb_info->vid==-30584 && usb_info->pid==2330)	// scan
+                    else //if(usb_info->vid==-30584 && usb_info->pid==2330)	// scan
                         snprintf(dev_path[1],20,"%s",path);
                     count++;
                     //	printf("vid: %lu\t,pid: %lu\n",usb_info->vid,usb_info->pid);

@@ -71,7 +71,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         qDebug()<<"[addCase]"<<"case is full"<<seqNum<<caseNum;
         return;
     }
-
+//    qDebug()<<"[addCase]"<<info->name<<info->num;
     info->outNum = 0;
 
     if(caseIndex<list_case.count())

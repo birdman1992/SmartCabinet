@@ -56,9 +56,9 @@ void CabinetAccess::clickOpen(QString goodsId)
         storeGoods->curNum++;
         QString info = QString("已存入%1%2   共需存入存入%3%4").arg(storeGoods->curNum).arg(storeGoods->unit).arg(storeGoods->totalNum).arg(storeGoods->unit);
         ui->name->setText(storeGoods->name);
-        ui->tip->setText("提示：请继续扫描或者点清数量一键存入");
+        ui->tip->setText("请扫码存入");
         ui->info->setText(info);
-        ui->onekey->show();
+//        ui->onekey->show();
         if(this->isHidden())
             this->show();
     }

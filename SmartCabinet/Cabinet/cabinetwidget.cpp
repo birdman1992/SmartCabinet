@@ -40,8 +40,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->refund->hide();
     ui->service->hide();
     ui->quit->hide();
-//    ui->msk1->hide();
-//    ui->msk2->hide();
+    ui->msk1->hide();
+    ui->msk2->hide();
 }
 
 CabinetWidget::~CabinetWidget()
@@ -180,7 +180,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
 
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
-    qDebug()<<config->getCabinetId();
+//    qDebug()<<config->getCabinetId();
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if(clickLock)//锁定状态下点击无效
     {
@@ -234,18 +234,18 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //            return;
 //        }
         //打开对应柜门
-//        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
+        qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
         emit requireOpenCase(cabSeqNum, caseIndex);
 
         waitForCodeScan = true;
-        clickLock = true;
+        clickLock = false;
         scanInfo = QString();
         CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
         win_access->setAccessModel(false);
         win_access->clickOpen(info);
 //        config->list_cabinet[0]->showMsg(MSG_FETCH_SCAN, false);
     }
-    else if(config->state = STATE_REFUN)
+    else if(config->state == STATE_REFUN)
     {
         emit requireOpenCase(cabSeqNum, caseIndex);
 
@@ -308,11 +308,10 @@ void CabinetWidget::recvScanData(QByteArray qba)
                 emit requireOpenCase(casePos.cabinetSeqNUM, casePos.caseIndex);
 
 
-            if(curGoods->curNum < curGoods->totalNum)
+            if(curGoods->curNum < curGoods->totalNum && (!needWaitForServer()))
             {
                 win_access->scanOpen(curGoods->packageBarcode);
                 CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
-                qDebug("[store!!!!!!!!!!!!!!]");
                 emit goodsAccess(addr,fullScanInfo, 1, 2);
             }
 //            storeNum++;

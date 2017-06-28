@@ -11,7 +11,7 @@ int CabinetInfo::caseSearch(QString name)
     int i = 0;
 
     for(i=0; i<list_goods.count(); i++)
-    {qDebug()<<"[caseSearch]"<<i<<list_goods.count()<<list_goods.at(i)->name<<name;
+    {//qDebug()<<"[caseSearch]"<<i<<list_goods.count()<<list_goods.at(i)->name<<name;
         if(list_goods.at(i)->name == name)
         {
             return i;

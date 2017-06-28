@@ -10,7 +10,7 @@
 #include "cabinetconfig.h"
 //#include "Device/SerialPort/qserialport.h"
 
-#define SIMULATE_ON  //打开仿真
+//#define SIMULATE_ON  //打开仿真
 
 
 typedef struct ui{
