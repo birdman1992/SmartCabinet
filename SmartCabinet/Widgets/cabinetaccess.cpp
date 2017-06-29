@@ -53,12 +53,12 @@ void CabinetAccess::clickOpen(QString goodsId)
     {
         Goods* storeGoods = storeList->getGoodsById(goodsId);
         curGoods = storeGoods;
-        storeGoods->curNum++;
+//        storeGoods->curNum++;
         QString info = QString("已存入%1%2   共需存入存入%3%4").arg(storeGoods->curNum).arg(storeGoods->unit).arg(storeGoods->totalNum).arg(storeGoods->unit);
         ui->name->setText(storeGoods->name);
         ui->tip->setText("请扫码存入");
         ui->info->setText(info);
-//        ui->onekey->show();
+        ui->onekey->hide();
         if(this->isHidden())
             this->show();
     }

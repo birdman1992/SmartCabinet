@@ -2,6 +2,7 @@
 #include "ui_cabinetwidget.h"
 #include <QDebug>
 #include "defines.h"
+#include "Device/controldevice.h"
 
 //提示信息
 #define MSG_EMPTY ""
@@ -40,8 +41,11 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->refund->hide();
     ui->service->hide();
     ui->quit->hide();
+
+#ifndef SIMULATE_ON
     ui->msk1->hide();
     ui->msk2->hide();
+#endif
 }
 
 CabinetWidget::~CabinetWidget()
@@ -137,7 +141,7 @@ bool CabinetWidget::needWaitForServer()
 
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
 {
-    int index = code.indexOf("&");
+    int index = code.indexOf("-");
     if(index == -1)
         return code;
 
@@ -273,6 +277,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
 
     bool newStore = false;
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码
+    qDebug()<<code;
     if(scanInfo != QString(code))
     {
         newStore = true;

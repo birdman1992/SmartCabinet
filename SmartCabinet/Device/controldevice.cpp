@@ -18,6 +18,7 @@ char dev_path[2][24] = {0};
 
 ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 {
+
 #ifdef SIMULATE_ON
     simulateInit();
 #else
@@ -28,6 +29,7 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 //设备初始化
 void ControlDevice::deviceInit()
 {
+    qDebug("deviceInit");
     //初始化锁控:波特率,数据位,奇偶校验,停止位
 //    com_lock_ctrler = new QSerialPort(DEV_LOCK_CTRL);
 //    com_lock_ctrler->com_init(38400,0,8,'N',1);
@@ -59,6 +61,7 @@ bool ControlDevice::installGlobalConfig(CabinetConfig *globalConfig)
 
 void ControlDevice::simulateInit()
 {
+    qDebug("simulateInit");
     dev_simulate = new DeviceSimulate();
     dev_simulate->show();
     connect(dev_simulate, SIGNAL(sendCardReaderData(QByteArray)), this, SLOT(readCardReaderData(QByteArray)));

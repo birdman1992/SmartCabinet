@@ -167,7 +167,7 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
     settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
-    settings.setArrayIndex(addr.caseIndex);
+    settings.setArrayIndex(addr.goodsIndex);
     settings.setValue("num",num);
     settings.endArray();
     settings.endGroup();
@@ -211,6 +211,7 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     settings.setValue("id",info.id);
     settings.setValue("unit",info.unit);
     settings.setValue("packageId",info.packageId);
+    settings.setValue("num", info.num);
     settings.endArray();
     settings.endGroup();
     settings.sync();
