@@ -198,10 +198,10 @@ void CabinetAccess::save()
     }
     else
     {
+        if(curCab == NULL)
+            return;
         curCab->clearFetchNum();
         curCab = NULL;
-//        if(curCab == NULL)
-//            return;
 //        emit saveFetch(curCab->name,ui->info->text().toInt());
     }
 }

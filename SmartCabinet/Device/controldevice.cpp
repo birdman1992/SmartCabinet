@@ -9,8 +9,8 @@
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
-#define DEV_LOCK_CTRL "/dev/ttymxc2"
-//#define DEV_LOCK_CTRL "/dev/ttymxc0"
+#define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
+//#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
 
@@ -192,6 +192,7 @@ void ControlDevice::getLockState()
 
 void ControlDevice::readLockCtrlData()
 {
+    qDebug("readstart");
     QByteArray qba = com_lock_ctrl->readAll();
     qDebug()<<"[readLockCtrlData]"<<qba.toHex();
     emit lockCtrlData(qba);

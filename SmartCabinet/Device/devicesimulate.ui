@@ -135,7 +135,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>T220170629113957206</string>
+        <string>T220170630114948520</string>
        </property>
       </widget>
       <widget class="QPushButton" name="listCode_2">
@@ -182,7 +182,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>170629113601&amp;EO501002219</string>
+        <string>170629113601-EO501002219</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_7">

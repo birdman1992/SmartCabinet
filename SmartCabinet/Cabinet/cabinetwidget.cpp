@@ -184,6 +184,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
 
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
+    qDebug()<<caseIndex<<cabSeqNum;
 //    qDebug()<<config->getCabinetId();
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if(clickLock)//锁定状态下点击无效
@@ -204,7 +205,6 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     clickLock = true;
     selectCab = cabSeqNum;
     selectCase = caseIndex;
-    qDebug()<<caseIndex<<cabSeqNum;
 
     if(config->state == STATE_STORE)
     {
@@ -277,7 +277,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
 
     bool newStore = false;
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码
-    qDebug()<<code;
+//    qDebug()<<code;
     if(scanInfo != QString(code))
     {
         newStore = true;
@@ -350,7 +350,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
             qDebug()<<"[refun]"<<"scan data not find";
             return;
         }
-        if(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
+//        if(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
         {
             if(!needWaitForServer())
             {
