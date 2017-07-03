@@ -152,10 +152,10 @@ void ControlDevice::lockCtrl(int seqNum, int ioNum)
 
 void ControlDevice::openLock(int seqNum, int index)
 {
-    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
-    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
-    lockCtrl(ctrlNum);
-//    lockCtrl(seqNum, index);
+//    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
+//    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
+//    lockCtrl(ctrlNum);
+    lockCtrl(seqNum, index);
 }
 
 void ControlDevice::getLockState()

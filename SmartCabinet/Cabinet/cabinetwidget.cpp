@@ -214,6 +214,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //            clickLock = false;
 //            return;
 //        }
+        if(curGoods == NULL)
+            return;
         GoodsInfo info;
         info.name = curGoods->name;
         info.id = curGoods->goodsId;
@@ -510,6 +512,7 @@ void CabinetWidget::on_store_toggled(bool checked)
     if(checked)
     {
         waitForCardReader = false;
+        clickLock = true;
         config->state = STATE_STORE;
         config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
         waitForCodeScan = true;
@@ -652,7 +655,7 @@ void CabinetWidget::setPowerState(int power)
     case 0://超级管理员:|补货|退货|服务|退出|
         ui->store->show();
         ui->refund->show();
-//        ui->service->show();
+        ui->service->show();
         break;
 
     case 1://仓库员工:|补货|退货|退出|

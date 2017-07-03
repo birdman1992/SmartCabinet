@@ -396,7 +396,7 @@ border-image: url(:/image/image/btn_out_sel.png);
                 <string notr="true">#service{
 	border-image: url(:/image/image/btn_service_normal.png);
 }
-#service:pressed{
+#service:checked{
 	border-image: url(:/image/image/btn_service_sel.png);
 }</string>
                </property>
@@ -405,6 +405,9 @@ border-image: url(:/image/image/btn_out_sel.png);
                </property>
                <property name="checkable">
                 <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
                </property>
               </widget>
              </item>

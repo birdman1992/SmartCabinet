@@ -3,6 +3,11 @@
 #include "defines.h"
 #include <QDebug>
 #include <arpa/inet.h>
+#include <QPainter>
+#include <QListWidgetItem>
+#include <QElapsedTimer>
+#include <unistd.h>
+#include <QDebug>
 #include "Device/controldevice.h"
 
 CabinetService::CabinetService(QWidget *parent) :
@@ -15,13 +20,26 @@ CabinetService::CabinetService(QWidget *parent) :
 #else
     dev_network = new QNetInterface("eth1");
 #endif
-
     ui->addr->installEventFilter(this);
+    initStack();
+    initGroup();
+    updateNetInfo();
+
+    setAttribute(Qt::WA_TranslucentBackground, true);
 }
 
 CabinetService::~CabinetService()
 {
     delete ui;
+}
+
+void CabinetService::paintEvent(QPaintEvent*)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    p.fillRect(this->rect(), QColor(255, 255, 255, 80));  //QColor最后一个参数80代表背景的透明度
 }
 
 void CabinetService::on_back_clicked()
@@ -48,10 +66,57 @@ void CabinetService::updateNetInfo()
     dev_ip = dev_network->ip();
     dev_gateway = dev_network->gateway();
     dev_netmask = dev_network->netmask();
-
+    qDebug()<<dev_ip<<dev_gateway<<dev_netmask;
     ui->addr->setText(dev_ip);
     ui->netmask->setText(dev_netmask);
     ui->gateway->setText(dev_gateway);
+}
+
+void CabinetService::initStack()
+{
+//    QListWidgetItem* item = new QListWidgetItem("网络配置");
+//    item->setSizeHint();
+
+    ui->listWidget->addItem(new QListWidgetItem("网络配置"));
+    ui->listWidget->addItem(new QListWidgetItem("锁控测试"));
+
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->listWidget->setCurrentRow(0);
+
+    connect(ui->listWidget, SIGNAL(currentRowChanged(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+}
+
+void CabinetService::initGroup()
+{
+    l_board_num<<ui->checkBox<<ui->checkBox_2<<ui->checkBox_3<<ui->checkBox_4<<ui->checkBox_5<<ui->checkBox_6;
+
+    l_lock_num.addButton(ui->btn_0, 0);
+    l_lock_num.addButton(ui->btn_1, 1);
+    l_lock_num.addButton(ui->btn_2, 2);
+    l_lock_num.addButton(ui->btn_3, 3);
+    l_lock_num.addButton(ui->btn_4, 4);
+    l_lock_num.addButton(ui->btn_5, 5);
+    l_lock_num.addButton(ui->btn_6, 6);
+    l_lock_num.addButton(ui->btn_7, 7);
+    l_lock_num.addButton(ui->btn_8, 8);
+    l_lock_num.addButton(ui->btn_9, 8);
+    l_lock_num.addButton(ui->btn_10, 10);
+    l_lock_num.addButton(ui->btn_11, 11);
+    l_lock_num.addButton(ui->btn_12, 12);
+    l_lock_num.addButton(ui->btn_13, 13);
+    l_lock_num.addButton(ui->btn_14, 14);
+    l_lock_num.addButton(ui->btn_15, 15);
+    l_lock_num.addButton(ui->btn_16, 16);
+    l_lock_num.addButton(ui->btn_17, 17);
+    l_lock_num.addButton(ui->btn_18, 18);
+    l_lock_num.addButton(ui->btn_19, 19);
+    l_lock_num.addButton(ui->btn_20, 20);
+    l_lock_num.addButton(ui->btn_21, 21);
+    l_lock_num.addButton(ui->btn_22, 22);
+    l_lock_num.addButton(ui->btn_23, 23);
+
+    connect(&l_lock_num, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_lock(int)));
+    connect(ui->boardcast, SIGNAL(clicked(bool)), this, SLOT(ctrl_boardcast()));
 }
 
 
@@ -112,4 +177,49 @@ void CabinetService::on_ok_clicked()
 void CabinetService::on_cancel_clicked()
 {
 
+}
+
+void CabinetService::ctrl_lock(int id)
+{
+    int i = 0;
+    QCheckBox* box;
+    qDebug()<<id;
+    foreach(box, l_board_num)
+    {
+        QElapsedTimer t;
+        t.start();
+        while(t.elapsed() < 50)
+        {
+            QCoreApplication::processEvents();
+            ::usleep(10000);//sleep和usleep都已经obsolete，Linux下也可以使用nanosleep代替
+        }
+        if(box->isChecked())
+        {
+            emit requireOpenLock(i, id);
+            qDebug()<<"ctrl_lock"<<i<<id;
+        }
+
+        i++;
+    }
+}
+
+void CabinetService::ctrl_boardcast()
+{
+    int i = 0;
+    int j = 0;
+
+    for(j=0; j<5; j++)
+    {
+        for(i=0; i<24; i++)
+        {
+            QElapsedTimer t;
+            t.start();
+            while(t.elapsed() < 50)
+            {
+                QCoreApplication::processEvents();
+                ::usleep(10000);//sleep和usleep都已经obsolete，Linux下也可以使用nanosleep代替
+            }
+            emit requireOpenLock(j, i);
+        }
+    }
 }

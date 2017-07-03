@@ -588,8 +588,9 @@ void MainWidget::init_huangpo()
     connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));
 
     //服务界面
-//    win_cab_service = new CabinetService();
-//    connect(win_cab_service, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    win_cab_service = new CabinetService();
+    connect(win_cab_service, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(win_cab_service, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
 
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
@@ -631,7 +632,7 @@ void MainWidget::init_huangpo()
     ui->stackedWidget->addWidget(win_user_manage);
     ui->stackedWidget->addWidget(win_cabinet_set);
     ui->stackedWidget->addWidget(win_cabinet);
-//    ui->stackedWidget->addWidget(win_cab_service);
+    ui->stackedWidget->addWidget(win_cab_service);
 
     if(cabinetConf->isFirstUse())
     {
