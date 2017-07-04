@@ -145,7 +145,13 @@ QByteArray CabinetWidget::scanDataTrans(QByteArray code)
     if(index == -1)
         return code;
 
-    return code.right(code.size()-index-1);
+    code = code.right(code.size()-index-1);
+
+    index = code.lastIndexOf("-");
+    if(index == -1)
+        return code;
+
+    return code.left(index);
 }
 
 //初始化药柜界面

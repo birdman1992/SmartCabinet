@@ -99,6 +99,7 @@ private:
     void initAccessState();
     void initSearchBtns();
     bool needWaitForServer();
+    void showCurrentTime(QString curTime);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

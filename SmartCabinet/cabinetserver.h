@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QDateTime>
+#include <QProcess>
 
 #include "cabinetconfig.h"
 #include "Structs/userinfo.h"
@@ -27,10 +29,13 @@ private:
     QNetworkReply* reply_cabinet_bind;
     QNetworkReply* reply_goods_access;
     QNetworkReply* reply_goods_back;
+    QNetworkReply* reply_datetime;
     QString regId;
     QString barCode;
 
     void cabRegister();
+    void checkTime();
+    void checkSysTime(QDateTime _time);
 
 signals:
     void loginRst(UserInfo);
@@ -52,6 +57,7 @@ private slots:
     void recvCabBind();
     void recvGoodsAccess();
     void recvGoodsBack();
+    void recvDateTime();
 };
 
 #endif // CABINETSERVER_H
