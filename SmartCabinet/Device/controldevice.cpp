@@ -193,6 +193,7 @@ void ControlDevice::getLockState()
 void ControlDevice::readLockCtrlData()
 {
     qDebug("readstart");
+    ::usleep(20000);
     QByteArray qba = com_lock_ctrl->readAll();
     qDebug()<<"[readLockCtrlData]"<<qba.toHex();
 //    emit lockCtrlData(qba);

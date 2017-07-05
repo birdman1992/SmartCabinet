@@ -431,7 +431,6 @@ void CabinetServer::recvDateTime()
 
 void CabinetServer::sysTimeout()
 {
-    qDebug("timeout");
     if(timeIsChecked)
         emit timeUpdate();
     else
