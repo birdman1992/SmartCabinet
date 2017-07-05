@@ -41,6 +41,7 @@ public slots:
     void recvListInfo(GoodsList*);
     void recvBindRst(bool);
     void recvGoodsNumInfo(QString goodsId, int num);
+    void updateTime();
 
 signals:
     void winSwitch(int);

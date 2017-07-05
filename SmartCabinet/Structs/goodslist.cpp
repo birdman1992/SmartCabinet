@@ -21,7 +21,7 @@ void GoodsList::addGoods(Goods *_goods)
 //       map_goods.insert(_goods->goodsId, _goods);
 }
 
-void GoodsList::goodsIn(QString goodsId, int num)
+void GoodsList::goodsIn(QString goodsId, int)
 {
     Goods *goods = map_goods.value(goodsId, NULL);
     if(goods == NULL)

@@ -1,6 +1,7 @@
 #include "cabinetwidget.h"
 #include "ui_cabinetwidget.h"
 #include <QDebug>
+#include <QDateTime>
 #include "defines.h"
 #include "Device/controldevice.h"
 
@@ -139,6 +140,11 @@ bool CabinetWidget::needWaitForServer()
     }
 }
 
+void CabinetWidget::showCurrentTime(QString curTime)
+{
+    ui->time->setText(curTime);
+}
+
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
 {
     int index = code.indexOf("-");
@@ -202,9 +208,9 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         return;
     }
 
-    bool clickRepeat = false;
-    if((caseIndex==selectCase) && (cabSeqNum == selectCab))
-        clickRepeat = true;//标记为重复点击
+//    bool clickRepeat = false;
+//    if((caseIndex==selectCase) && (cabSeqNum == selectCab))
+//        clickRepeat = true;//标记为重复点击
 //    if(!config->list_cabinet[cabSeqNum]->list_case[caseIndex]->name.isEmpty())
 //        clickRepeat = true;
 
@@ -745,6 +751,11 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
         config->list_cabinet[addr.cabinetSeqNUM]->updateGoodsNum(addr, num);
         emit goodsNumChanged(num);
     }
+}
+
+void CabinetWidget::updateTime()
+{
+    showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
 }
 
 void CabinetWidget::recvUserCheckRst(UserInfo info)
