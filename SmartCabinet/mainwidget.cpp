@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QTextStream>
 #include "defines.h"
+//#include "test/setdebugnew.h"
 
 #define LatticeNum 7  //定义药柜格子数
 
