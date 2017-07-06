@@ -22,6 +22,8 @@
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
+    reply_datetime = NULL;
+    checkTime();
 }
 
 bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
@@ -52,6 +54,36 @@ void CabinetServer::cabRegister()
     qDebug()<<"[cabRegister]"<<nUrl;
     reply_register = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
+}
+
+void CabinetServer::checkTime()
+{
+    timeIsChecked = false;
+
+    if(reply_datetime != NULL)
+    {
+        disconnect(reply_datetime, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
+        reply_datetime->deleteLater();
+        reply_datetime = NULL;
+    }
+    qDebug()<<"checktime";
+    reply_datetime = manager->get(QNetworkRequest(QUrl("http://api.k780.com:88/?app=life.time&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json")));
+    connect(reply_datetime, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
+
+    sysClock.start(60000);
+    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+}
+
+void CabinetServer::checkSysTime(QDateTime _time)
+{
+    QProcess pro;
+    QString cmd = QString("date -s \"%1\"").arg(_time.toString("yyyy-MM-dd hh:mm:ss"));
+    qDebug()<<"[checkSysTime]"<<cmd;
+    pro.start(cmd);
+    pro.waitForFinished(1000);
+    emit timeUpdate();
+//    pro.start("clock -w");
+//    pro.waitForFinished(1000);
 }
 
 void CabinetServer::userLogin(QString userId)
@@ -365,5 +397,43 @@ void CabinetServer::recvGoodsAccess()
 void CabinetServer::recvGoodsBack()
 {
 
+}
+
+void CabinetServer::recvDateTime()
+{
+    QByteArray qba = reply_datetime->readAll();
+    reply_datetime->deleteLater();
+    reply_datetime = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<cJSON_Print(json);
+
+    if(!json)
+        return;
+
+    cJSON* rst = cJSON_GetObjectItem(json, "success");
+
+    if(QString(rst->valuestring) != "1")
+    {
+        qDebug("[check time] failed");
+        return;
+    }
+    timeIsChecked = true;
+
+    rst = cJSON_GetObjectItem(json, "result");
+
+    cJSON* jsTime = cJSON_GetObjectItem(rst, "datetime_1");
+    QString str(jsTime->valuestring);
+//    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    checkSysTime(QDateTime::fromString(str,"yyyy-MM-dd hh:mm:ss"));
+    //    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+}
+
+void CabinetServer::sysTimeout()
+{
+    if(timeIsChecked)
+        emit timeUpdate();
+    else
+        checkTime();
 }
 

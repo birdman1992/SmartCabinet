@@ -41,6 +41,7 @@ public slots:
     void recvListInfo(GoodsList*);
     void recvBindRst(bool);
     void recvGoodsNumInfo(QString goodsId, int num);
+    void updateTime();
 
 signals:
     void winSwitch(int);
@@ -99,6 +100,7 @@ private:
     void initAccessState();
     void initSearchBtns();
     bool needWaitForServer();
+    void showCurrentTime(QString curTime);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

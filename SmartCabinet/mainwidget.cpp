@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QTextStream>
 #include "defines.h"
+//#include "test/setdebugnew.h"
 
 #define LatticeNum 7  //定义药柜格子数
 
@@ -608,6 +609,7 @@ void MainWidget::init_huangpo()
     connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
     connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
     connect(cabServer, SIGNAL(goodsNumChanged(QString,int)), win_cabinet, SLOT(recvGoodsNumInfo(QString,int)));
+    connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
 
     //待机界面
     win_standby = new StandbyWidget(this);

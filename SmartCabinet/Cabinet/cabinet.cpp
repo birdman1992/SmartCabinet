@@ -11,15 +11,6 @@ Cabinet::Cabinet(QWidget *parent) :
     ui(new Ui::Cabinet)
 {
     ui->setupUi(this);
-//    ui->tableWidget->setStyleSheet("QTableWidget{\
-                                   font-size: 15px;\
-                                       color: rgb(255, 255, 255);    /*前景色：文字颜色*/\
-                                       border:0px solid gray;  /*边框线的宽度、颜色*/\
-                                   }\
-                                   QTableWidget::item{\
-                                       margin: 5px ;\
-                                        background:rgb(36, 221, 149);\
-                                   }");
 }
 
 Cabinet::~Cabinet()
@@ -78,6 +69,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
     {
         list_case.at(caseIndex)->list_goods<<info;
         QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(caseIndex,0);
+        lab->setWordWrap(true);
         lab->setText(list_case.at(caseIndex)->caseShowStr());
 //        ui->tableWidget->item(caseIndex,0)->setText(list_case.at(caseIndex)->caseShowStr());
     }
@@ -87,7 +79,9 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         if(!info->name.isEmpty())
             cabInfo->list_goods<<info;
         list_case<<cabInfo;
-        ui->tableWidget->setCellWidget(caseIndex, 0, new QLabel(cabInfo->caseShowStr()));
+        QLabel* lab = new QLabel(cabInfo->caseShowStr());
+        lab->setWordWrap(true);
+        ui->tableWidget->setCellWidget(caseIndex, 0, lab);
         setCaseState(caseIndex, 0);
 //        ui->tableWidget->setItem(caseIndex,0,new QTableWidgetItem(cabInfo->caseShowStr()));
 //        ui->tableWidget->item(caseIndex,0)->setBackground(QBrush(QColor(36, 0, 149)));
