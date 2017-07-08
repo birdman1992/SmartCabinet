@@ -7,6 +7,7 @@
 #include <qlist.h>
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
+#include <QTimer>
 #include "Device/Network/qnetinterface.h"
 
 namespace Ui {
@@ -33,6 +34,7 @@ private slots:
     void on_cancel_clicked();
     void ctrl_lock(int);
     void ctrl_boardcast();//广播控制
+    void initNetwork();
 
 private:
     Ui::CabinetService *ui;

@@ -15,15 +15,12 @@ CabinetService::CabinetService(QWidget *parent) :
     ui(new Ui::CabinetService)
 {
     ui->setupUi(this);
-#ifdef SIMULATE_ON
-    dev_network = new QNetInterface("eth0");
-#else
-    dev_network = new QNetInterface("eth1");
-#endif
     ui->addr->installEventFilter(this);
+    dev_network = NULL;
     initStack();
     initGroup();
-    updateNetInfo();
+//    QTimer::singleShot(1000, this, SLOT(initNetwork()));
+//    initNetwork();
 
     setAttribute(Qt::WA_TranslucentBackground, true);
 }
@@ -49,7 +46,7 @@ void CabinetService::on_back_clicked()
 
 void CabinetService::showEvent(QShowEvent *)
 {
-    updateNetInfo();
+    initNetwork();
 }
 
 bool CabinetService::eventFilter(QObject *w, QEvent *e)
@@ -117,6 +114,24 @@ void CabinetService::initGroup()
 
     connect(&l_lock_num, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_lock(int)));
     connect(ui->boardcast, SIGNAL(clicked(bool)), this, SLOT(ctrl_boardcast()));
+}
+
+void CabinetService::initNetwork()
+{
+    qDebug("[QNetInterface1]");
+//    QNetworkInterface::interfaceFromName("eth0");
+//    qDebug()<<QNetworkInterface::interfaceFromName("eth1").flags();
+//    return;
+
+    if(dev_network != NULL)
+        delete dev_network;
+#ifdef SIMULATE_ON
+    dev_network = new QNetInterface("eth0");
+#else
+    dev_network = new QNetInterface("eth1");
+#endif
+    qDebug("[QNetInterface2]");
+    updateNetInfo();
 }
 
 

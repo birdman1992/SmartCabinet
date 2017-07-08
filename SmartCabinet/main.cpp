@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QTextCodec>
 #include <QFont>
+#include <QWSServer>
 #include "inputcontex/myinputpanelcontext.h"
 #include "beautifului.h"
 
@@ -37,12 +38,21 @@ void customMessageHandler(QtMsgType type, const char *msg)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+#ifndef SIMULATE_ON
+    QWSServer::setCursorVisible(false);
+#endif
     MyInputPanelContext* inputContext = new MyInputPanelContext;
+    QFile outFile("/home/debuglog.txt");
+    outFile.open(QIODevice::WriteOnly);
+    outFile.close();
+
     a.setInputContext(inputContext);
 
 //    beautiful::SetUTF8Code();//--显示中文 utf-8
 //    beautiful::SetStyle("image/black");//黑色风格
-//    qInstallMsgHandler(customMessageHandler);
+#ifdef LOG_ON
+    qInstallMsgHandler(customMessageHandler);
+#endif
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForCStrings(codec);
