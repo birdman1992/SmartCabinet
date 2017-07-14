@@ -15,6 +15,7 @@ public:
     QString unit;
     QString packageBarcode;
     QString roomName;
+    int packageType;
     int batchNumber;
     int takeCount;
     int singlePrice;

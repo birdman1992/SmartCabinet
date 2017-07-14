@@ -257,7 +257,7 @@ color: rgb(255, 255, 255);</string>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_6" stretch="5,5">
+       <layout class="QVBoxLayout" name="verticalLayout_6" stretch="5,3">
         <property name="spacing">
          <number>0</number>
         </property>
@@ -285,7 +285,7 @@ color: rgb(255, 255, 255);</string>
               <number>41</number>
              </property>
              <property name="topMargin">
-              <number>10</number>
+              <number>0</number>
              </property>
              <property name="rightMargin">
               <number>41</number>
@@ -303,8 +303,8 @@ color: rgb(255, 255, 255);</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>250</width>
-                 <height>100</height>
+                 <width>230</width>
+                 <height>87</height>
                 </size>
                </property>
                <property name="focusPolicy">
@@ -345,8 +345,8 @@ color: rgb(255, 255, 255);</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>250</width>
-                 <height>100</height>
+                 <width>230</width>
+                 <height>87</height>
                 </size>
                </property>
                <property name="focusPolicy">
@@ -385,8 +385,8 @@ border-image: url(:/image/image/btn_out_sel.png);
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>250</width>
-                 <height>100</height>
+                 <width>230</width>
+                 <height>87</height>
                 </size>
                </property>
                <property name="focusPolicy">
@@ -412,7 +412,7 @@ border-image: url(:/image/image/btn_out_sel.png);
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="quit">
+              <widget class="QPushButton" name="cut">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -421,19 +421,20 @@ border-image: url(:/image/image/btn_out_sel.png);
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>250</width>
-                 <height>100</height>
+                 <width>230</width>
+                 <height>87</height>
                 </size>
                </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
                </property>
                <property name="styleSheet">
-                <string notr="true">#quit{
-	border-image: url(:/image/image/btn_quit.png);
+                <string notr="true">#cut{
+	
+	border-image: url(:/image/image/btn_qh_normal.png);
 }
-#quit:pressed{
-	border-image: url(:/image/image/btn_quit_sel.png);
+#cut:pressed{
+	border-image: url(:/image/image/btn_qh_sel.png);
 }</string>
                </property>
                <property name="text">
@@ -449,7 +450,7 @@ border-image: url(:/image/image/btn_out_sel.png);
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>20</width>
-                 <height>40</height>
+                 <height>10</height>
                 </size>
                </property>
               </spacer>

@@ -41,7 +41,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->store->hide();
     ui->refund->hide();
     ui->service->hide();
-    ui->quit->hide();
+    ui->cut->hide();
 
 #ifndef SIMULATE_ON
     ui->msk1->hide();
@@ -77,7 +77,7 @@ void CabinetWidget::cabLock()
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     ui->store->hide();
     ui->service->hide();
-    ui->quit->hide();
+    ui->cut->hide();
     ui->refund->hide();
     curStoreList = NULL;
     config->state = STATE_FETCH;
@@ -291,7 +291,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
 
     bool newStore = false;
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码
-//    qDebug()<<code;
+
     if(scanInfo != QString(code))
     {
         newStore = true;
@@ -660,7 +660,7 @@ void CabinetWidget::setPowerState(int power)
     ui->store->hide();
     ui->refund->hide();
     ui->service->hide();
-    ui->quit->hide();
+    ui->cut->hide();
 
     switch(power)
     {
@@ -668,20 +668,25 @@ void CabinetWidget::setPowerState(int power)
         ui->store->show();
         ui->refund->show();
         ui->service->show();
+        ui->cut->show();
         break;
 
     case 1://仓库员工:|补货|退货|退出|
         ui->store->show();
-        ui->refund->show();break;
+        ui->refund->show();
+        ui->cut->show();
+        break;
 
     case 2://医院管理:|补货|退货|服务|退出|
         ui->store->show();
         ui->refund->show();
+        ui->cut->show();
 //        ui->service->show();
         break;
 
     case 3://医院员工:|退货|服务|退出|
         ui->refund->show();
+        ui->cut->show();
 //        ui->service->show();
         break;
     }

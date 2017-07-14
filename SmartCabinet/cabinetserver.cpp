@@ -322,6 +322,7 @@ void CabinetServer::recvListCheck()
             info->inStorageId = cJSON_GetObjectItem(json_info,"inStorageId")->valueint;
             info->name = QString::fromUtf8(cJSON_GetObjectItem(json_info,"name")->valuestring);
             info->packageBarcode = QString::fromUtf8(cJSON_GetObjectItem(json_info,"packageBarcode")->valuestring);
+            info->packageType = cJSON_GetObjectItem(json_info, "packageType")->valueint;
             info->roomName = QString::fromUtf8(cJSON_GetObjectItem(json_info,"roomName")->valuestring);
             info->singlePrice = cJSON_GetObjectItem(json_info,"singlePrice")->valueint;
             info->size = QString::fromUtf8(cJSON_GetObjectItem(json_info,"size")->valuestring);

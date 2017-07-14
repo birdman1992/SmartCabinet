@@ -16,5 +16,7 @@
         <file>image/bg_input_normal.png</file>
         <file>image/btn_quit_normal.png</file>
         <file>image/btn_quit_sel.png</file>
+        <file>image/btn_qh_normal.png</file>
+        <file>image/btn_qh_sel.png</file>
     </qresource>
 </RCC>

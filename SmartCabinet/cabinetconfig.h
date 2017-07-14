@@ -27,7 +27,7 @@ public:
     CabinetConfig();
     ~CabinetConfig();
     void setCabinetId(QString id);
-    QChar getPyCh(QString str);
+    QString getPyCh(QString str);
     QString getCabinetId();
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
@@ -40,6 +40,7 @@ public:
     int getLockId(int seq, int index);
     void searchByPinyin(QChar ch);
     void clearSearch();
+    QChar str2py(QChar ch);
 
     QList<UserInfo*> list_user;
     QList<Cabinet*> list_cabinet;

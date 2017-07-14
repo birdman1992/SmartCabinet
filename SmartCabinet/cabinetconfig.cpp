@@ -132,8 +132,8 @@ void CabinetConfig::readCabinetConfig()
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
-            info->Py = getPyCh(info->name);
-            list_cabinet[0]->addCase(info,j);qDebug()<<j;
+            info->Py = getPyCh(info->name);qDebug()<<"[PY]"<<info->Py;
+            list_cabinet[0]->addCase(info,j);/*qDebug()<<j;*/
         }
         settings.endArray();
     }
@@ -156,7 +156,7 @@ void CabinetConfig::readCabinetConfig()
                 info->id = settings.value("id").toString();
                 info->unit = settings.value("unit").toString();
                 info->packageId = settings.value("packageId").toString();
-                info->Py = getPyCh(info->name);
+                info->Py = getPyCh(info->name);qDebug()<<"[PY]"<<info->Py;
                 list_cabinet[i]->addCase(info,j);
             }
             settings.endArray();
@@ -343,12 +343,25 @@ void CabinetConfig::addNewUser(UserInfo *info)
     firstUse = false;
 }
 
-QChar CabinetConfig::getPyCh(QString str)
+QString CabinetConfig::getPyCh(QString str)
+{
+    QString ret = QString();
+    int i = 0;
+
+    for(i=0; i<str.length(); i++)
+    {
+        ret.append(str2py(str.at(i)));
+    }
+    return ret;
+}
+
+QChar CabinetConfig::str2py(QChar ch)
 {
     QChar ret;
     QTextCodec* pCodec = QTextCodec::codecForName("gb2312");
     if(!pCodec) return QChar(' ');
-    QByteArray qba = pCodec->fromUnicode(str);
+    QByteArray qba = pCodec->fromUnicode(QString(ch));
+//    qDebug()<<qba.size();
 
     int tmp = ((qba[0]&0xff)<<8)|(qba[1]&0xff);
 
@@ -375,9 +388,7 @@ QChar CabinetConfig::getPyCh(QString str)
     else if(tmp >= 52980 && tmp <= 53640) ret = 'X';
     else if(tmp >= 53689 && tmp <= 54480) ret = 'Y';
     else if(tmp >= 54481 && tmp <= 55289) ret = 'Z';
-    else ret = str.at(0);
+    else ret = ch;
 
     return ret;
 }
-
-
