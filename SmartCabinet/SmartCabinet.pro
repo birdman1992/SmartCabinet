@@ -47,7 +47,9 @@ SOURCES += main.cpp\
     Device/Network/qnetinterface.cpp \
     inputcontex/myinputpanelcontext.cpp \
     inputcontex/keyboard.cpp \
-    Device/voiceplayer.cpp
+    Device/voiceplayer.cpp \
+    Widgets/cabinetlistview.cpp \
+    Widgets/cabinetlistitem.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -86,7 +88,9 @@ HEADERS  += mainwidget.h \
     Device/Network/qnetinterface.h \
     inputcontex/myinputpanelcontext.h \
     inputcontex/keyboard.h \
-    Device/voiceplayer.h
+    Device/voiceplayer.h \
+    Widgets/cabinetlistview.h \
+    Widgets/cabinetlistitem.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -104,7 +108,9 @@ FORMS    += mainwidget.ui \
     Widgets/numkeyboard.ui \
     Widgets/coderkeyboard.ui \
     Widgets/cabinetservice.ui \
-    inputcontex/keyboard.ui
+    inputcontex/keyboard.ui \
+    Widgets/cabinetlistview.ui \
+    Widgets/cabinetlistitem.ui
 
 RESOURCES += \
     image.qrc

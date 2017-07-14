@@ -430,7 +430,6 @@ border-image: url(:/image/image/btn_out_sel.png);
                </property>
                <property name="styleSheet">
                 <string notr="true">#cut{
-	
 	border-image: url(:/image/image/btn_qh_normal.png);
 }
 #cut:pressed{

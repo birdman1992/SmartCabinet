@@ -10,6 +10,7 @@
 #include <QButtonGroup>
 #include "Cabinet/cabinet.h"
 #include "Widgets/cabinetaccess.h"
+#include "Widgets/cabinetlistview.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
@@ -67,6 +68,8 @@ private slots:
 
     void on_refund_toggled(bool checked);
 
+    void on_cut_clicked();
+
 private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;
@@ -87,7 +90,8 @@ private:
     QMessageBox* msgBox;
     GoodsList* curStoreList;
     Goods* curGoods;
-    CabinetAccess* win_access;
+    CabinetAccess* win_access;//存取窗口
+    CabinetListView* win_cab_list_view;//柜子列表视图窗口
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);

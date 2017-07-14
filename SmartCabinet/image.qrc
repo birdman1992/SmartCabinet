@@ -18,5 +18,6 @@
         <file>image/btn_quit_sel.png</file>
         <file>image/btn_qh_normal.png</file>
         <file>image/btn_qh_sel.png</file>
+        <file>image/icon_ar_left.png</file>
     </qresource>
 </RCC>

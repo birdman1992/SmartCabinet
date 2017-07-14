@@ -132,7 +132,7 @@ void CabinetConfig::readCabinetConfig()
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
-            info->Py = getPyCh(info->name);qDebug()<<"[PY]"<<info->Py;
+            info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             list_cabinet[0]->addCase(info,j);/*qDebug()<<j;*/
         }
         settings.endArray();
@@ -156,7 +156,7 @@ void CabinetConfig::readCabinetConfig()
                 info->id = settings.value("id").toString();
                 info->unit = settings.value("unit").toString();
                 info->packageId = settings.value("packageId").toString();
-                info->Py = getPyCh(info->name);qDebug()<<"[PY]"<<info->Py;
+                info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
                 list_cabinet[i]->addCase(info,j);
             }
             settings.endArray();

@@ -33,6 +33,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     selectCase = -1;
     selectCab = -1;
     win_access = new CabinetAccess();
+    win_cab_list_view = new CabinetListView();
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
@@ -192,6 +193,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     {
         connect(cabinets.at(index), SIGNAL(caseSelect(int,int)), this, SLOT(caseClicked(int,int)));
     }
+    win_cab_list_view->setCabView(ui->frame_6);
 }
 
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
@@ -237,6 +239,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         info.Py = config->getPyCh(info.name);
         qDebug()<<"[pinyin]"<<info.Py;
         cabInfoBind(selectCab, selectCase, info);
+        config->list_cabinet[0]->showMsg(MSG_EMPTY,0);
 //        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
 //        config->list_cabinet[0]->showMsg(MSG_STORE, false);
@@ -429,6 +432,7 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     win_access->installGlobalConfig(config);
+    win_cab_list_view->installGlobalConfig(config);
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
     return true;
 }
@@ -774,4 +778,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
     config->cabVoice.voicePlay(VOICE_WELCOME_USE);
 }
 
-
+void CabinetWidget::on_cut_clicked()
+{
+    win_cab_list_view->show();
+}
