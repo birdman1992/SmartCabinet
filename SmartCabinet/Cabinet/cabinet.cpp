@@ -39,6 +39,7 @@ void Cabinet::CabinetInit(int seq, int pos, int, bool mainCab)
         caseNum = CAB_CASE_1_NUM;
         ui->tableWidget->setRowCount(caseNum);
         logo = new QLabel(this);
+        logo->setWordWrap(true);
         logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
         ui->logo->hide();
         ui->tableWidget->setCellWidget(1,0,logo);
@@ -239,7 +240,7 @@ void Cabinet::searchByPinyin(QChar ch)
 
         for(j=0; j<info->list_goods.count(); j++)
         {
-            if(info->list_goods[j]->Py == ch)
+            if(info->list_goods[j]->Py.at(0) == ch)
             {
                 setCaseState(i, 1);
                 break;

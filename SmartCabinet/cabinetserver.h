@@ -45,6 +45,7 @@ signals:
     void listRst(GoodsList*);
     void bindRst(bool);
     void goodsNumChanged(QString goodsId, int goodsNum);
+    void accessFailed(QString msg);
     void timeUpdate();
 
 public slots:

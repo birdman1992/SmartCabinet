@@ -52,11 +52,14 @@ int CabinetInfo::goodsIdSearch(QString id)
 void CabinetInfo::clearFetchNum()
 {
     int i = 0;
-
+//    if(list_goods.isEmpty())
+//        return;
+    qDebug()<<"<<<<<<<<<<<<<<"<<list_goods.isEmpty();
     for(i=0; i<list_goods.count(); i++)
     {
         list_goods.at(i)->outNum = 0;
     }
+
 }
 
 QString CabinetInfo::caseShowStr()

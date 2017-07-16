@@ -119,8 +119,8 @@ void CabinetConfig::readCabinetConfig()
 //    settings.beginReadArray("Cabinet0");
     for(j=0; j<CAB_CASE_1_NUM; j++)
     {
-        if(j == 1)
-            continue;
+//        if(j == 1)
+//            continue;
         int arr_size = settings.beginReadArray(QString("case%1").arg(j));
 
         for(k=0; k<arr_size; k++)
@@ -133,7 +133,7 @@ void CabinetConfig::readCabinetConfig()
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();
             info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-            list_cabinet[0]->addCase(info,j);/*qDebug()<<j;*/
+            list_cabinet[0]->addCase(info,j);qDebug()<<"[read conf]"<<j;
         }
         settings.endArray();
     }

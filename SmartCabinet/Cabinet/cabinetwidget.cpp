@@ -708,7 +708,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 //    optUser = QString(qba);
     if(!needWaitForServer())
     {
-        waitForServer = true;
+        waitForServer = false;
         msgShow("身份验证", "身份验证中...",false);
         emit requireUserCheck(QString(qba));
     }
@@ -760,6 +760,12 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
         config->list_cabinet[addr.cabinetSeqNUM]->updateGoodsNum(addr, num);
         emit goodsNumChanged(num);
     }
+}
+
+void CabinetWidget::accessFailedMsg(QString msg)
+{
+    waitForServer = false;
+    qDebug()<<msg;
 }
 
 void CabinetWidget::updateTime()

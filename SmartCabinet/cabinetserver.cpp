@@ -6,8 +6,8 @@
 #include <QtGlobal>
 #include "defines.h"
 
-//#define SERVER_ADDR "http://175.10.26.15"
-#define SERVER_ADDR "http://120.77.159.8:8080"
+#define SERVER_ADDR "http://175.11.187.132"
+//#define SERVER_ADDR "http://120.77.159.8:8080"
 #define API_REG "/spd/mapper/SmartCheset/saveOrUpdate/"   //注册接口
 #define API_LOGIN "/spd/mapper/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/spd/work/OutStorage/query/goods/" //送货单检查接口
@@ -23,6 +23,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
     reply_datetime = NULL;
+    reply_login = NULL;
     checkTime();
 }
 
@@ -95,6 +96,12 @@ void CabinetServer::userLogin(QString userId)
     QString nUrl = QString(SERVER_ADDR)+QString(API_LOGIN)+'?'+qba.toBase64();
     qDebug()<<"[login]"<<nUrl;
     qDebug()<<qba;
+
+    if(reply_login != NULL)
+    {
+        disconnect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
+        reply_login->deleteLater();
+    }
     reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
 }
@@ -127,13 +134,13 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
     QByteArray qba;
 
     if(optType == 2)
-        qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5,\"barcode\":\"%6\"}")
+        qba = QString("{\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5,\"barcode\":\"%6\"}]}")
              .arg(id).arg(cabinetId).arg(caseId).arg(2).arg(num).arg(barCode).toUtf8();
     else if(optType == 1)
-        qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}")
+        qba = QString("{\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}]}")
              .arg(id).arg(cabinetId).arg(caseId).arg(1).arg(num).toUtf8();
     else if(optType == 3)
-        qba = QString("{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}")
+        qba = QString("{\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}]}")
              .arg(id).arg(cabinetId).arg(caseId).arg(3).arg(num).toUtf8();
 
     QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
@@ -184,7 +191,9 @@ void CabinetServer::recvUserLogin()
 {
     QByteArray qba = QByteArray::fromBase64(reply_login->readAll());
     reply_login->deleteLater();
+    reply_login = NULL;
 
+    disconnect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<cJSON_Print(json);
 
@@ -391,6 +400,10 @@ void CabinetServer::recvGoodsAccess()
         QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(data,"goodsId")->valuestring);
         int goodsNum = cJSON_GetObjectItem(data, "goodsCount")->valueint;
         emit goodsNumChanged(goodsId, goodsNum);
+    }
+    else
+    {
+        emit accessFailed(QString(cJSON_GetObjectItem(json,"msg")->valuestring));
     }
     cJSON_Delete(json);
 }

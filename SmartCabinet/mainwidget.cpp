@@ -53,7 +53,7 @@ void MainWidget::config_ui_set()
     win_user_manage->installGlobalConfig(cabinetConf);
 
     connect(win_user_manage, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
-    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
+//    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
 
     //智能柜组合设置界面
     win_cabinet_set = new CabinetSet(this);
@@ -609,19 +609,20 @@ void MainWidget::init_huangpo()
     connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
     connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
     connect(cabServer, SIGNAL(goodsNumChanged(QString,int)), win_cabinet, SLOT(recvGoodsNumInfo(QString,int)));
+    connect(cabServer, SIGNAL(accessFailed(QString)), win_cabinet, SLOT(accessFailedMsg(QString)));
     connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
 
     //待机界面
     win_standby = new StandbyWidget(this);
     win_standby->installGlobalConfig(cabinetConf);
-    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_standby, SLOT(recvUserInfo(QByteArray)));
+//    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_standby, SLOT(recvUserInfo(QByteArray)));
     connect(win_standby, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
     //用户管理界面
     win_user_manage = new UserWidget(this);
     win_user_manage->installGlobalConfig(cabinetConf);
     connect(win_user_manage, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
-    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
+//    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_user_manage, SLOT(recvUserInfo(QByteArray)));
 
     //智能柜组合设置界面
     win_cabinet_set = new CabinetSet(this);
