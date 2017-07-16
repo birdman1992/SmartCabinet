@@ -53,7 +53,6 @@ void CabinetListView::paintEvent(QPaintEvent*)
 void CabinetListView::showEvent(QShowEvent *)
 {
     clearList();
-    showCabView();
     getCabList();
     updateCabList();
 }
@@ -94,8 +93,6 @@ void CabinetListView::getCabList()
             }
         }
     }
-
-
 }
 
 void CabinetListView::updateCabList(QChar filter)
@@ -128,6 +125,8 @@ void CabinetListView::updateCabList(QChar filter)
     {
         ui->list_goods->setItem(i, 0, new QTableWidgetItem(QIcon(":/image/image/icon_ar_left.png"), list_filted[i]->name));
     }
+    config->searchByPinyin(filter);
+    showCabView();
 }
 
 void CabinetListView::on_back_clicked()
