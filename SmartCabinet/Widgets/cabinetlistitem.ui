@@ -7,16 +7,24 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>37</height>
+    <height>38</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">QWidget{
+	font: 15px &quot;微软雅黑&quot;;
+}
+#CabinetListItem{
+background-color: rgb(255, 255, 255);
+}</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="15,2,1,1">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="15,1,1,1">
+   <property name="spacing">
+    <number>10</number>
+   </property>
    <property name="leftMargin">
     <number>5</number>
    </property>
@@ -39,7 +47,7 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>数量</string>
+      <string>数量:</string>
      </property>
     </widget>
    </item>
@@ -51,12 +59,18 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="delete_2">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#pushButton{
+background-color: rgb(230, 0, 18);
+	color: rgb(255, 255, 255);
+}</string>
      </property>
      <property name="text">
       <string>删除</string>

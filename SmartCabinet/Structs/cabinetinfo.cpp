@@ -93,4 +93,5 @@ GoodsInfo::GoodsInfo(GoodsInfo &info)
     num = info.num;
     packageId = info.packageId;
     unit = info.unit;
+    Py = info.Py;
 }

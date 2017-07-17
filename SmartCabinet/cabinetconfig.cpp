@@ -119,8 +119,8 @@ void CabinetConfig::readCabinetConfig()
 //    settings.beginReadArray("Cabinet0");
     for(j=0; j<CAB_CASE_1_NUM; j++)
     {
-//        if(j == 1)
-//            continue;
+        if(j == 1)
+            continue;
         int arr_size = settings.beginReadArray(QString("case%1").arg(j));
 
         for(k=0; k<arr_size; k++)
@@ -391,4 +391,19 @@ QChar CabinetConfig::str2py(QChar ch)
     else ret = ch;
 
     return ret;
+}
+
+QString CabinetConfig::scanDataTrans(QString code)
+{
+    int index = code.indexOf("-");
+    if(index == -1)
+        return code;
+
+    code = code.right(code.size()-index-1);
+
+    index = code.lastIndexOf("-");
+    if(index == -1)
+        return code;
+
+    return code.left(index);
 }

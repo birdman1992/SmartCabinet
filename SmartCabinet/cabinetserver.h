@@ -53,6 +53,7 @@ public slots:
     void listCheck(QString);//送货单信息校验
     void cabinetBind(int, int, QString);
     void goodsAccess(CaseAddress, QString, int, int optType);
+    void listAccess(QStringList list, int optType);
     void goodsBack(QString);//退货
 
 private slots:
@@ -61,6 +62,7 @@ private slots:
     void recvListCheck();
     void recvCabBind();
     void recvGoodsAccess();
+    void recvListAccess();
     void recvGoodsBack();
     void recvDateTime();
     void sysTimeout();

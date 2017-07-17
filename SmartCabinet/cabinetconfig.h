@@ -19,6 +19,7 @@ enum CabState
     STATE_STORE = 1,//存状态
     STATE_FETCH = 2,//取状态
     STATE_REFUN = 3,//退货状态
+    STATE_LIST = 4,//列表取货状态
 };
 
 class CabinetConfig
@@ -46,10 +47,9 @@ public:
     QList<Cabinet*> list_cabinet;
     CabState state;
     VoicePlayer cabVoice;
-
 //    QList<>
 
-
+    QString scanDataTrans(QString code);
 private:
     bool firstUse;//第一次使用
     int userNum;//用户数量

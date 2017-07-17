@@ -34,10 +34,15 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     selectCab = -1;
     win_access = new CabinetAccess();
     win_cab_list_view = new CabinetListView();
+
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
     connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
+
+    connect(win_cab_list_view, SIGNAL(requireAccessList(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
+    connect(win_cab_list_view, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+
 //    optUser = QString();
     ui->store->hide();
     ui->refund->hide();
@@ -301,6 +306,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     scanInfo = QString(code);
     fullScanInfo = QString(qba);
+    qDebug()<<scanInfo<<fullScanInfo;
 
     if(config->state == STATE_STORE)
     {
@@ -375,6 +381,10 @@ void CabinetWidget::recvScanData(QByteArray qba)
                 emit goodsAccess(addr, fullScanInfo,1, 3);
             }
         }
+    }
+    else if(config->state = STATE_LIST)
+    {
+        win_cab_list_view->recvScanData(qba);
     }
 
 }
@@ -540,6 +550,12 @@ void CabinetWidget::on_store_toggled(bool checked)
         cabLock();
         initAccessState();
     }
+}
+
+void CabinetWidget::on_cut_clicked()
+{
+    waitForCodeScan = true;
+    win_cab_list_view->show();
 }
 
 void CabinetWidget::pinyinSearch(int id)
@@ -759,12 +775,18 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
     {
         config->list_cabinet[addr.cabinetSeqNUM]->updateGoodsNum(addr, num);
         emit goodsNumChanged(num);
+        if(config->state == STATE_LIST)
+            win_cab_list_view->fetchSuccess();
     }
 }
 
 void CabinetWidget::accessFailedMsg(QString msg)
 {
     waitForServer = false;
+    if(config->state == STATE_LIST)
+    {
+        win_cab_list_view->fetchFailed(msg);
+    }
     qDebug()<<msg;
 }
 
@@ -782,9 +804,4 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
     ui->userInfo->setText(QString("您好！%1").arg(optUser.name));
     setPowerState(info.power);
     config->cabVoice.voicePlay(VOICE_WELCOME_USE);
-}
-
-void CabinetWidget::on_cut_clicked()
-{
-    win_cab_list_view->show();
 }

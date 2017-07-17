@@ -54,6 +54,9 @@ signals:
     void requireCaseBind(int  seqNum, int index, QString goodsId);
     void goodsNumChanged(int);//报告物品数量的变化
     void checkLockState();//检查锁状态
+    void scanData(QByteArray qba);
+    void requireFetchList();
+    void requireAccessList(QStringList list, int optType);
 
 private slots:
     void on_store_clicked();

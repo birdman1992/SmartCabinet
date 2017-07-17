@@ -6,15 +6,15 @@
 #include <QtGlobal>
 #include "defines.h"
 
-#define SERVER_ADDR "http://175.11.187.132"
-//#define SERVER_ADDR "http://120.77.159.8:8080"
-#define API_REG "/spd/mapper/SmartCheset/saveOrUpdate/"   //注册接口
-#define API_LOGIN "/spd/mapper/UserInfo/query/"  //登录接口
-#define API_LIST_CHECK "/spd/work/OutStorage/query/goods/" //送货单检查接口
-//#define API_GOODS_CHECK "/spd/mapper/Goods/query/"  //货物查询
-#define API_LIST_STORE "/spd/mapper/OutStorage/query/"      //存入完毕销单接口
-#define API_CAB_BIND "/spd/work/Cheset/register/"     //柜格物品绑定接口
-#define API_GOODS_ACCESS  "/spd/work/Cheset/doGoods/"
+//#define SERVER_ADDR "http://175.11.97.8"
+#define SERVER_ADDR "http://120.77.159.8:8080"
+#define API_REG "/spd-web/mapper/SmartCheset/saveOrUpdate/"   //注册接口
+#define API_LOGIN "/spd-web/mapper/UserInfo/query/"  //登录接口
+#define API_LIST_CHECK "/spd-web/work/OutStorage/query/goods/" //送货单检查接口
+//#define API_GOODS_CHECK "/spd-web/mapper/Goods/query/"  //货物查询
+#define API_LIST_STORE "/spd-web/mapper/OutStorage/query/"      //存入完毕销单接口
+#define API_CAB_BIND "/spd-web/work/Cheset/register/"     //柜格物品绑定接口
+#define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
 #define API_GOODS_BACK  "ASDASD"     //退货接口
 
 
@@ -147,8 +147,46 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
     qDebug()<<"[goodsAccess]"<<nUrl;
     qDebug()<<qba;
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
-    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvGoodsAccess()));
+    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
 
+}
+
+void CabinetServer::listAccess(QStringList list, int optType)
+{
+    cJSON* json = cJSON_CreateObject();
+    cJSON* jlist = cJSON_CreateArray();
+
+    QString pack_bar;
+    int i = 0;
+
+    for(i=0; i<list.count(); i++)
+    {
+        pack_bar = list.at(i);
+        QString pack_id = config->scanDataTrans(pack_bar);
+        QByteArray packageBarcode = pack_bar.toLocal8Bit();
+        QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
+        CaseAddress addr = config->checkCabinetByBarCode(pack_id);
+        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
+        cJSON* obj = cJSON_CreateObject();
+        cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
+        cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));
+        cJSON_AddItemToObject(obj, "optType", cJSON_CreateNumber(optType));
+        cJSON_AddItemToObject(obj, "goodsCode", cJSON_CreateString(goodsCode.data()));
+        cJSON_AddItemToObject(obj, "optCount", cJSON_CreateNumber(1));
+        cJSON_AddItemToArray(jlist, obj);
+    }
+    cJSON_AddItemToObject(json, "li",jlist);
+    char* buff = cJSON_Print(json);
+    cJSON_Delete(json);
+    QByteArray qba = QByteArray(buff);
+
+    QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+    qDebug()<<"[goodsAccess]"<<nUrl;
+    qDebug()<<qba;
+    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
+    free(buff);
+//    qDebug()<<"[list fetch]"<<cJSON_Print(json);
 }
 
 void CabinetServer::goodsBack(QString goodsId)
@@ -400,6 +438,44 @@ void CabinetServer::recvGoodsAccess()
         QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(data,"goodsId")->valuestring);
         int goodsNum = cJSON_GetObjectItem(data, "goodsCount")->valueint;
         emit goodsNumChanged(goodsId, goodsNum);
+    }
+    else
+    {
+        emit accessFailed(QString(cJSON_GetObjectItem(json,"msg")->valuestring));
+    }
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvListAccess()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_goods_access->readAll());
+    reply_goods_access->deleteLater();
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<cJSON_Print(json);
+
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        qDebug()<<"ACCESS success";
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        int listCount = cJSON_GetArraySize(data);
+        if(listCount <= 0)
+        {
+            cJSON_Delete(json);
+            return;
+        }
+        int i=0;
+        for(i=0; i<listCount; i++)
+        {
+            cJSON* item = cJSON_GetArrayItem(data, i);
+            QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(item,"goodsId")->valuestring);
+            int goodsNum = cJSON_GetObjectItem(item, "goodsCount")->valueint;
+            emit goodsNumChanged(goodsId, goodsNum);
+        }
     }
     else
     {
