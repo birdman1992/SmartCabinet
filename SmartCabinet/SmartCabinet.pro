@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     inputcontex/keyboard.cpp \
     Device/voiceplayer.cpp \
     Widgets/cabinetlistview.cpp \
-    Widgets/cabinetlistitem.cpp
+    Widgets/cabinetlistitem.cpp \
+    funcs/chineseletterhelper.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -90,7 +91,8 @@ HEADERS  += mainwidget.h \
     inputcontex/keyboard.h \
     Device/voiceplayer.h \
     Widgets/cabinetlistview.h \
-    Widgets/cabinetlistitem.h
+    Widgets/cabinetlistitem.h \
+    funcs/chineseletterhelper.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

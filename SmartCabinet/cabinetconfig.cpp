@@ -4,6 +4,7 @@
 #include <QTextCodec>
 #include <qobject.h>
 #include "defines.h"
+#include "funcs/chineseletterhelper.h"
 
 CabinetConfig::CabinetConfig()
 {
@@ -345,14 +346,15 @@ void CabinetConfig::addNewUser(UserInfo *info)
 
 QString CabinetConfig::getPyCh(QString str)
 {
-    QString ret = QString();
-    int i = 0;
+    return ChineseLetterHelper::GetFirstLettersAll(str);
+//    QString ret = QString();
+//    int i = 0;
 
-    for(i=0; i<str.length(); i++)
-    {
-        ret.append(str2py(str.at(i)));
-    }
-    return ret;
+//    for(i=0; i<str.length(); i++)
+//    {
+//        ret.append(str2py(str.at(i)));
+//    }
+//    return ret;
 }
 
 QChar CabinetConfig::str2py(QChar ch)
@@ -361,7 +363,7 @@ QChar CabinetConfig::str2py(QChar ch)
     QTextCodec* pCodec = QTextCodec::codecForName("gb2312");
     if(!pCodec) return QChar(' ');
     QByteArray qba = pCodec->fromUnicode(QString(ch));
-//    qDebug()<<qba.size();
+
 
     int tmp = ((qba[0]&0xff)<<8)|(qba[1]&0xff);
 
@@ -385,7 +387,7 @@ QChar CabinetConfig::str2py(QChar ch)
     else if(tmp >= 51446 && tmp <= 52217) ret = 'S';
     else if(tmp >= 52218 && tmp <= 52697) ret = 'T';
     else if(tmp >= 52698 && tmp <= 52979) ret = 'W';
-    else if(tmp >= 52980 && tmp <= 53640) ret = 'X';
+    else if(tmp >= 52980 && tmp <= 53688) ret = 'X';
     else if(tmp >= 53689 && tmp <= 54480) ret = 'Y';
     else if(tmp >= 54481 && tmp <= 55289) ret = 'Z';
     else ret = ch;
