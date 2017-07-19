@@ -787,6 +787,10 @@ void CabinetWidget::accessFailedMsg(QString msg)
     {
         win_cab_list_view->fetchFailed(msg);
     }
+    else if(config->state == STATE_STORE)
+    {
+        win_access->storeFailed(msg);
+    }
     qDebug()<<msg;
 }
 

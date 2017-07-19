@@ -135,7 +135,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>220170717161055502</string>
+        <string>220170719141423876</string>
        </property>
       </widget>
       <widget class="QPushButton" name="listCode_2">
@@ -166,7 +166,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>1111-A0214004778-10-128</string>
+        <string>2017-B0214000001-10-</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_6">
@@ -182,7 +182,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>2222-EO501002216-20-128</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_7">
@@ -198,7 +198,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>A0201002348</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_8">
@@ -214,7 +214,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>药品D</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_9">
@@ -230,7 +230,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>药品E</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_10">
@@ -246,26 +246,10 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>药品J</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_11">
-       <property name="geometry">
-        <rect>
-         <x>180</x>
-         <y>180</y>
-         <width>131</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>药品H</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_12">
        <property name="geometry">
         <rect>
          <x>180</x>
@@ -278,7 +262,23 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>药品I</string>
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_12">
+       <property name="geometry">
+        <rect>
+         <x>180</x>
+         <y>180</y>
+         <width>131</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_13">
@@ -294,7 +294,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>gfd3435345-B0206003742-05-123</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_14">
@@ -310,74 +310,10 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>qq7777-B0203000317-20-123</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_15">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>320</y>
-         <width>131</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>药品O</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_16">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>180</y>
-         <width>131</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>药品M</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_17">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>250</y>
-         <width>131</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>药品N</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_18">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>110</y>
-         <width>131</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>药品L</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_19">
        <property name="geometry">
         <rect>
          <x>320</x>
@@ -390,7 +326,71 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>170628095100&amp;A0201002353-05</string>
+        <string>2017-EO501002255-10-</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_16">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>110</y>
+         <width>131</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_17">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>180</y>
+         <width>131</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_18">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>250</y>
+         <width>131</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_19">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>320</y>
+         <width>131</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_20">
@@ -406,26 +406,10 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>药品T</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_21">
-       <property name="geometry">
-        <rect>
-         <x>460</x>
-         <y>180</y>
-         <width>131</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="text">
-        <string>药品R</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_22">
        <property name="geometry">
         <rect>
          <x>460</x>
@@ -438,7 +422,23 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>药品S</string>
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_22">
+       <property name="geometry">
+        <rect>
+         <x>460</x>
+         <y>180</y>
+         <width>131</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_23">
@@ -454,7 +454,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>EO501002219</string>
+        <string/>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_24">
@@ -470,7 +470,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>A0201002349</string>
+        <string/>
        </property>
       </widget>
      </widget>

@@ -28,6 +28,7 @@ public:
     void clickOpen(CabinetInfo* info);
     void scanOpen(QString goodsId);
     void save();
+    void storeFailed(QString msg);
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 private slots:

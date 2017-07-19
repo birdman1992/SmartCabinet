@@ -207,6 +207,12 @@ void CabinetAccess::save()
     }
 }
 
+void CabinetAccess::storeFailed(QString msg)
+{
+    curGoods->curNum--;
+    ui->tip->setText(msg);
+}
+
 void CabinetAccess::paintEvent(QPaintEvent*)
 {
     QStyleOption opt;

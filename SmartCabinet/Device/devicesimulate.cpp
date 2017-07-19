@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <QSize>
 #include <QDebug>
+#include <QPushButton>
 
 DeviceSimulate::DeviceSimulate(QWidget *parent) :
     QWidget(parent),
@@ -81,6 +82,28 @@ void DeviceSimulate::initGroup()
     group_drug.addButton(ui->pushButton_23,18);
     group_drug.addButton(ui->pushButton_24,19);
     connect(&group_drug, SIGNAL(buttonClicked(int)), this, SLOT(group_drug_clicked(int)));
+    initBtnText();
+}
+
+void DeviceSimulate::initBtnText()
+{
+    QPushButton* btn;
+    QString baseCode = ((QPushButton*)group_drug.button(0))->text();
+    int i=0;
+
+    for(i=0; i<10; i++)
+    {
+        btn = (QPushButton*)group_drug.button(i);
+        btn->setText(baseCode + QString::number(100+i));
+    }
+
+    baseCode = ((QPushButton*)group_drug.button(10))->text();
+    for(i=10; i<20; i++)
+    {
+        btn = (QPushButton*)group_drug.button(i);
+        btn->setText(baseCode + QString::number(100+i));
+    }
+
 }
 
 

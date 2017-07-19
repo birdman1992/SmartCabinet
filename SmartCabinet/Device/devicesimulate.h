@@ -22,6 +22,7 @@ private:
     QButtonGroup group_drug;
 
     void initGroup();
+    void initBtnText();
 
 signals:
     void sendCardReaderData(QByteArray);
