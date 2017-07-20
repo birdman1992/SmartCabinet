@@ -20,6 +20,7 @@ enum CabState
     STATE_FETCH = 2,//取状态
     STATE_REFUN = 3,//退货状态
     STATE_LIST = 4,//列表取货状态
+    STATE_CHECK = 5,//盘点状态
 };
 
 class CabinetConfig

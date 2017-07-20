@@ -19,5 +19,10 @@
         <file>image/btn_qh_normal.png</file>
         <file>image/btn_qh_sel.png</file>
         <file>image/icon_ar_left.png</file>
+        <file>image/btn_check_sel.png</file>
+        <file>image/btn_check_normal.png</file>
+        <file>image/btn_search_sel.png</file>
+        <file>image/btn_search_normal.png</file>
+        <file>image/icon_check.png</file>
     </qresource>
 </RCC>

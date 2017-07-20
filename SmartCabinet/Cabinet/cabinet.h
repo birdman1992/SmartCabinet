@@ -24,6 +24,7 @@ public:
     void CabinetInit(int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
     void setCabPos(int pos);
     void setCabType(int _type);
+    void checkCase(int index);
     void addCase(GoodsInfo *info, int caseIndex);//用于读取配置信息添加到信息列表尾部
 
     int getIndexByName(QString findName);//根据药品名检索柜格下标
@@ -49,18 +50,20 @@ signals:
 
 private:
     Ui::Cabinet *ui;
+    int state;
     bool isMainCabinet;//是否为主柜
     int seqNum;//顺序编号
     int posNum;//位置编号
     int caseNum;//柜格数
-    int state;//0:
     int cabType;//柜子型号:0：副柜，1：单列主柜，2：双列主柜
     QLabel* logo;
 
     void caseDraw(int _type);
     void setCase(CabinetInfo* info);
-    void setCaseState(int index, int numState);//设置柜格状态,0:正常状态,1:被搜索状态
+    void setCaseState(int index, int numState);//设置柜格状态
+    int getCaseState();
     QString cellStyle(QColor rgb);
+    QString checkStyle();
     bool eventFilter(QObject *obj, QEvent *event);
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent *);

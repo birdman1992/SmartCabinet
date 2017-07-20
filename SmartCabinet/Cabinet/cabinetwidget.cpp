@@ -34,6 +34,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     selectCab = -1;
     win_access = new CabinetAccess();
     win_cab_list_view = new CabinetListView();
+    win_check = new CabinetCheck();
 
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -43,11 +44,16 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(win_cab_list_view, SIGNAL(requireAccessList(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
     connect(win_cab_list_view, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
 
+    connect(win_check, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), this, SLOT(checkOneCase(QList<CabinetCheckItem*>,CaseAddress)));
+
 //    optUser = QString();
     ui->store->hide();
     ui->refund->hide();
     ui->service->hide();
     ui->cut->hide();
+    ui->check->hide();
+    ui->search->hide();
+    ui->menuWidget->setCurrentIndex(0);
 
 #ifndef SIMULATE_ON
     ui->msk1->hide();
@@ -85,6 +91,8 @@ void CabinetWidget::cabLock()
     ui->service->hide();
     ui->cut->hide();
     ui->refund->hide();
+    ui->check->hide();
+    ui->search->hide();
     curStoreList = NULL;
     config->state = STATE_FETCH;
 }
@@ -204,6 +212,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
     qDebug()<<caseIndex<<cabSeqNum;
+    qDebug()<<clickLock;
 //    qDebug()<<config->getCabinetId();
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if(clickLock)//锁定状态下点击无效
@@ -282,6 +291,14 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         win_access->setAccessModel(false);
         win_access->clickOpen(info);
     }
+    else if(config->state == STATE_CHECK)
+    {
+        casePos.cabinetSeqNUM = cabSeqNum;
+        casePos.caseIndex = caseIndex;
+        win_check->checkStart(casePos);
+        config->list_cabinet[cabSeqNum]->checkCase(caseIndex);
+        clickLock = false;
+    }
 }
 
 void CabinetWidget::recvScanData(QByteArray qba)
@@ -319,9 +336,9 @@ void CabinetWidget::recvScanData(QByteArray qba)
         else
             qDebug()<<"[recvScanData]"<<"scan goods id find";
         //根据物品名搜索柜格位置
-        casePos = config->checkCabinetByName(curGoods->name);
+        CaseAddress pos = config->checkCabinetByName(curGoods->name);
 
-        if(casePos.cabinetSeqNUM == -1)//没有搜索到药品对应的柜格
+        if(pos.cabinetSeqNUM == -1)//没有搜索到药品对应的柜格
         {
             clickLock = false;
             win_access->save();
@@ -331,9 +348,9 @@ void CabinetWidget::recvScanData(QByteArray qba)
         else
         {
             //打开对应柜门
-            qDebug()<<"[CabinetWidget]"<<"[open]"<<casePos.cabinetSeqNUM<<casePos.caseIndex;
+            qDebug()<<"[CabinetWidget]"<<"[open]"<<pos.cabinetSeqNUM<<pos.caseIndex;
             if(newStore)
-                emit requireOpenCase(casePos.cabinetSeqNUM, casePos.caseIndex);
+                emit requireOpenCase(pos.cabinetSeqNUM, pos.caseIndex);
 
 
             if(curGoods->curNum < curGoods->totalNum && (!needWaitForServer()))
@@ -382,7 +399,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
             }
         }
     }
-    else if(config->state = STATE_LIST)
+    else if(config->state == STATE_LIST)
     {
         win_cab_list_view->recvScanData(qba);
     }
@@ -443,6 +460,7 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
     config = globalConfig;
     win_access->installGlobalConfig(config);
     win_cab_list_view->installGlobalConfig(config);
+    win_check->installGlobalConfig(config);
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
     return true;
 }
@@ -556,6 +574,17 @@ void CabinetWidget::on_cut_clicked()
 {
     waitForCodeScan = true;
     win_cab_list_view->show();
+}
+
+void CabinetWidget::on_check_toggled(bool checked)
+{
+    if(checked)
+    {
+        config->state = STATE_CHECK;
+        clickLock = false;
+    }
+    else
+        cabLock();
 }
 
 void CabinetWidget::pinyinSearch(int id)
@@ -681,6 +710,8 @@ void CabinetWidget::setPowerState(int power)
     ui->refund->hide();
     ui->service->hide();
     ui->cut->hide();
+    ui->check->hide();
+    ui->search->show();
 
     switch(power)
     {
@@ -689,12 +720,14 @@ void CabinetWidget::setPowerState(int power)
         ui->refund->show();
         ui->service->show();
         ui->cut->show();
+        ui->check->show();
         break;
 
     case 1://仓库员工:|补货|退货|退出|
         ui->store->show();
         ui->refund->show();
         ui->cut->show();
+        ui->check->show();
         break;
 
     case 2://医院管理:|补货|退货|服务|退出|
@@ -765,6 +798,14 @@ void CabinetWidget::recvBindRst(bool rst)
     }
 }
 
+void CabinetWidget::recvGoodsCheckRst(QString msg)
+{
+    if(msg.isEmpty())
+        win_check->checkRst("盘点成功");
+    else
+        win_check->checkRst(msg);
+}
+
 void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
 {
     CaseAddress addr = config->checkCabinetByGoodsId(goodsId);
@@ -799,6 +840,18 @@ void CabinetWidget::updateTime()
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
 }
 
+void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)
+{
+    int i=0;
+
+    for(i=0; i<l.count(); i++)
+    {
+        addr.goodsIndex = i;
+        config->list_cabinet[addr.cabinetSeqNUM]->updateGoodsNum(addr, l[i]->itemNum());
+    }
+    emit checkCase(l, addr);
+}
+
 void CabinetWidget::recvUserCheckRst(UserInfo info)
 {
     waitForServer = false;
@@ -808,4 +861,14 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
     ui->userInfo->setText(QString("您好！%1").arg(optUser.name));
     setPowerState(info.power);
     config->cabVoice.voicePlay(VOICE_WELCOME_USE);
+}
+
+void CabinetWidget::on_search_clicked()
+{
+    ui->menuWidget->setCurrentIndex(1);
+}
+
+void CabinetWidget::on_search_back_clicked()
+{
+    ui->menuWidget->setCurrentIndex(0);
 }

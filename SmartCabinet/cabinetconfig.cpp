@@ -120,8 +120,8 @@ void CabinetConfig::readCabinetConfig()
 //    settings.beginReadArray("Cabinet0");
     for(j=0; j<CAB_CASE_1_NUM; j++)
     {
-        if(j == 1)
-            continue;
+//        if(j == 1)
+//            continue;
         int arr_size = settings.beginReadArray(QString("case%1").arg(j));
 
         for(k=0; k<arr_size; k++)

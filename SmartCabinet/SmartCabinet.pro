@@ -50,7 +50,9 @@ SOURCES += main.cpp\
     Device/voiceplayer.cpp \
     Widgets/cabinetlistview.cpp \
     Widgets/cabinetlistitem.cpp \
-    funcs/chineseletterhelper.cpp
+    funcs/chineseletterhelper.cpp \
+    Widgets/cabinetcheck.cpp \
+    Widgets/cabinetcheckitem.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -92,7 +94,9 @@ HEADERS  += mainwidget.h \
     Device/voiceplayer.h \
     Widgets/cabinetlistview.h \
     Widgets/cabinetlistitem.h \
-    funcs/chineseletterhelper.h
+    funcs/chineseletterhelper.h \
+    Widgets/cabinetcheck.h \
+    Widgets/cabinetcheckitem.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -112,7 +116,9 @@ FORMS    += mainwidget.ui \
     Widgets/cabinetservice.ui \
     inputcontex/keyboard.ui \
     Widgets/cabinetlistview.ui \
-    Widgets/cabinetlistitem.ui
+    Widgets/cabinetlistitem.ui \
+    Widgets/cabinetcheck.ui \
+    Widgets/cabinetcheckitem.ui
 
 RESOURCES += \
     image.qrc

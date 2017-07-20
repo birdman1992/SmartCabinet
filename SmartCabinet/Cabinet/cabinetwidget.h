@@ -11,6 +11,7 @@
 #include "Cabinet/cabinet.h"
 #include "Widgets/cabinetaccess.h"
 #include "Widgets/cabinetlistview.h"
+#include "Widgets/cabinetcheck.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
@@ -41,6 +42,7 @@ public slots:
     void recvUserInfo(QByteArray qba);//接收用户信息
     void recvListInfo(GoodsList*);
     void recvBindRst(bool);
+    void recvGoodsCheckRst(QString msg);
     void recvGoodsNumInfo(QString goodsId, int num);
     void accessFailedMsg(QString msg);
     void updateTime();
@@ -57,8 +59,10 @@ signals:
     void scanData(QByteArray qba);
     void requireFetchList();
     void requireAccessList(QStringList list, int optType);
+    void checkCase(QList<CabinetCheckItem*> l, CaseAddress addr);
 
 private slots:
+    void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
     void on_store_clicked();
 //    void on_fetch_clicked();
     void wait_timeout();
@@ -73,6 +77,12 @@ private slots:
     void on_refund_toggled(bool checked);
 
     void on_cut_clicked();
+
+    void on_check_toggled(bool checked);
+
+    void on_search_clicked();
+
+    void on_search_back_clicked();
 
 private:
     Ui::CabinetWidget *ui;
@@ -96,6 +106,7 @@ private:
     Goods* curGoods;
     CabinetAccess* win_access;//存取窗口
     CabinetListView* win_cab_list_view;//柜子列表视图窗口
+    CabinetCheck* win_check;//盘点窗口
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);

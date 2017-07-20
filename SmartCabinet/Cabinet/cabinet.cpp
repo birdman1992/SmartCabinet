@@ -56,6 +56,11 @@ void Cabinet::setCabType(int _type)
     cabType = _type;
 }
 
+void Cabinet::checkCase(int index)
+{
+    setCaseState(index, 2);
+}
+
 void Cabinet::addCase(GoodsInfo *info, int caseIndex)
 {
     if(list_case.count()>=caseNum)
@@ -80,6 +85,8 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         if(!info->name.isEmpty())
             cabInfo->list_goods<<info;
         list_case<<cabInfo;
+        if(isMainCabinet && (caseIndex == 1))
+            return;
         QLabel* lab = new QLabel(cabInfo->caseShowStr());
         lab->setWordWrap(true);
         ui->tableWidget->setCellWidget(caseIndex, 0, lab);
@@ -233,6 +240,7 @@ void Cabinet::searchByPinyin(QChar ch)
 {
     int i = 0;
     int j = 0;
+    qDebug()<<"searchByPinyin";
 
     for(i=0; i<list_case.count(); i++)
     {
@@ -308,6 +316,11 @@ void Cabinet::setCaseState(int index, int numState)
 {
     if(index > list_case.count())
         return;
+    qDebug()<<"setCaseState"<<index<<numState;
+    state = numState;
+
+//    if(isMainCabinet && index)
+//        index++;
 
     if(numState == 0)//正常状态
     {
@@ -319,6 +332,16 @@ void Cabinet::setCaseState(int index, int numState)
         QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
         lab->setStyleSheet(cellStyle(QColor(6, 161, 101)));
     }
+    else if(numState == 2)//盘点完毕状态
+    {
+        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
+        lab->setStyleSheet(cellStyle(QColor(36, 221, 149))+checkStyle());
+    }
+}
+
+int Cabinet::getCaseState()
+{
+    return state;
 }
 
 QString Cabinet::cellStyle(QColor rgb)
@@ -327,7 +350,13 @@ QString Cabinet::cellStyle(QColor rgb)
                           background-color: rgb(%1, %2, %3);\
             margin-top:5px;\
             margin-bottom:5px;").arg(rgb.red()).arg(rgb.green()).arg(rgb.blue());
-    return ret;
+            return ret;
+}
+
+QString Cabinet::checkStyle()
+{
+    return QString("image: url(:/image/image/icon_check.png);\
+            image-position:top right");
 }
 
 bool Cabinet::eventFilter(QObject *obj, QEvent *event)

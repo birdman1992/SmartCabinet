@@ -12,6 +12,7 @@
 #include "Structs/userinfo.h"
 #include "Json/cJSON.h"
 #include "Structs/goodslist.h"
+#include "Widgets/cabinetcheckitem.h"
 
 
 class CabinetServer : public QObject
@@ -30,6 +31,7 @@ private:
     QNetworkReply* reply_cabinet_bind;
     QNetworkReply* reply_goods_access;
     QNetworkReply* reply_goods_back;
+    QNetworkReply* reply_goods_check;
     QNetworkReply* reply_datetime;
     QString regId;
     QString barCode;
@@ -47,6 +49,7 @@ signals:
     void goodsNumChanged(QString goodsId, int goodsNum);
     void accessFailed(QString msg);
     void timeUpdate();
+    void goodsCheckRst(QString msg);
 
 public slots:
     void userLogin(QString);
@@ -55,6 +58,7 @@ public slots:
     void goodsAccess(CaseAddress, QString, int, int optType);
     void listAccess(QStringList list, int optType);
     void goodsBack(QString);//退货
+    void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
 
 private slots:
     void recvCabRegister();
@@ -63,6 +67,7 @@ private slots:
     void recvCabBind();
     void recvGoodsAccess();
     void recvListAccess();
+    void recvGoodsCheck();
     void recvGoodsBack();
     void recvDateTime();
     void sysTimeout();

@@ -606,13 +606,14 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireCaseBind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
     connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,int)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,int)));
     connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
+    connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
     connect(cabServer, SIGNAL(loginRst(UserInfo)), win_cabinet, SLOT(recvUserCheckRst(UserInfo)));
     connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
     connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
     connect(cabServer, SIGNAL(goodsNumChanged(QString,int)), win_cabinet, SLOT(recvGoodsNumInfo(QString,int)));
     connect(cabServer, SIGNAL(accessFailed(QString)), win_cabinet, SLOT(accessFailedMsg(QString)));
     connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
-
+    connect(cabServer, SIGNAL(goodsCheckRst(QString)), win_cabinet, SLOT(recvGoodsCheckRst(QString)));
 
     //待机界面
     win_standby = new StandbyWidget(this);
