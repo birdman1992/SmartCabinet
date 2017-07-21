@@ -159,6 +159,21 @@ void CabinetWidget::showCurrentTime(QString curTime)
     ui->time->setText(curTime);
 }
 
+void CabinetWidget::clearCheckState()
+{
+
+
+}
+
+void CabinetWidget::clearMenuState()
+{
+    ui->store->setChecked(false);
+    ui->search->setChecked(false);
+    ui->refund->setChecked(false);
+    ui->check->setChecked(false);
+    ui->service->setChecked(false);
+}
+
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
 {
     int index = code.indexOf("-");
@@ -584,7 +599,11 @@ void CabinetWidget::on_check_toggled(bool checked)
         clickLock = false;
     }
     else
+    {
+        qDebug("<>>>>>>>>>>>>>>");
+        config->clearSearch();//重置单元格状态
         cabLock();
+    }
 }
 
 void CabinetWidget::pinyinSearch(int id)

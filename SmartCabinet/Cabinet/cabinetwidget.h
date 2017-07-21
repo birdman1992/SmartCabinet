@@ -120,6 +120,8 @@ private:
     void initSearchBtns();
     bool needWaitForServer();
     void showCurrentTime(QString curTime);
+    void clearCheckState();
+    void clearMenuState();
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 
