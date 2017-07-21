@@ -13,6 +13,7 @@
 #include "Json/cJSON.h"
 #include "Structs/goodslist.h"
 #include "Widgets/cabinetcheckitem.h"
+#include "Widgets/cabinetstorelistitem.h"
 
 
 class CabinetServer : public QObject
@@ -59,6 +60,7 @@ public slots:
     void listAccess(QStringList list, int optType);
     void goodsBack(QString);//退货
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
+    void goodsListStore(QList<CabinetStoreListItem*> l);
 
 private slots:
     void recvCabRegister();

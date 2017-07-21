@@ -9,6 +9,7 @@ class Goods
 public:
     Goods();
     Goods(QString _goodsId, QString goodsName, int goodsNum);
+    Goods(Goods* goods);
     QString name;
     QString goodsId;
     QString size;

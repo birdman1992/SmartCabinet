@@ -82,3 +82,22 @@ Goods::Goods(QString _goodsId , QString goodsName, int goodsNum)
     curNum = 0;
     goodsId = _goodsId;
 }
+
+Goods::Goods(Goods *goods)
+{
+    name = goods->name;
+    goodsId = goods->goodsId;
+    size = goods->size;
+    unit = goods->unit;
+    packageBarcode = goods->packageBarcode;
+    roomName = goods->roomName;
+    packageType = goods->packageType;
+    batchNumber = goods->batchNumber;
+    takeCount = goods->takeCount;
+    singlePrice = goods->singlePrice;
+    inStorageId = goods->inStorageId;
+    totalNum = goods->totalNum;
+    curNum = goods->curNum;//未写入柜子信息的已存入数量
+    storeNum = goods->storeNum;//写入柜子信息的已存入数量
+    finish = goods->finish;
+}

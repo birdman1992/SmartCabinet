@@ -56,7 +56,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="cardReader">
       <widget class="QPushButton" name="pushButton">
@@ -135,7 +135,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>220170719141423876</string>
+        <string>220170721152845158</string>
        </property>
       </widget>
       <widget class="QPushButton" name="listCode_2">

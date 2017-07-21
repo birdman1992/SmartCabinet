@@ -10,7 +10,7 @@
 #define MSG_SCAN_LIST "请扫描送货单条码"
 #define MSG_LIST_ERROR "无效的送货单"
 #define MSG_STORE "请扫描待存放物品条形码"
-#define MSG_STORE_SELECT "请选择存放位置"
+#define MSG_STORE_SELECT "请选择绑定位置"
 #define MSG_STORE_SELECT_REPEAT "选择的位置被占用 请重新选择"
 #define MSG_FETCH "请选择要取出的物品 柜门打开后请扫描条形码取出"
 #define MSG_FETCH_SCAN "请扫描条形码取出物品 取用完毕请点击此处并关闭柜门"
@@ -35,6 +35,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_access = new CabinetAccess();
     win_cab_list_view = new CabinetListView();
     win_check = new CabinetCheck();
+    win_store_list = new CabinetStoreList();
 
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -45,6 +46,10 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(win_cab_list_view, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
 
     connect(win_check, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), this, SLOT(checkOneCase(QList<CabinetCheckItem*>,CaseAddress)));
+
+    connect(win_store_list, SIGNAL(requireBind(Goods*)), this, SLOT(cabinetBind(Goods*)));
+    connect(win_store_list, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+    connect(win_store_list, SIGNAL(storeList(QList<CabinetStoreListItem*>)), this, SIGNAL(storeList(QList<CabinetStoreListItem*>)));
 
 //    optUser = QString();
     ui->store->hide();
@@ -476,6 +481,7 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
     win_access->installGlobalConfig(config);
     win_cab_list_view->installGlobalConfig(config);
     win_check->installGlobalConfig(config);
+    win_store_list->installGlobalConfig(config);
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
     return true;
 }
@@ -795,6 +801,11 @@ void CabinetWidget::recvListInfo(GoodsList *l)
         delete curStoreList;
 
     curStoreList = l;
+
+    win_store_list->storeStart(l);
+    win_store_list->show();
+    return;
+
     win_access->setStoreList(l);
     config->list_cabinet[0]->showMsg(MSG_STORE, false);
     waitForCodeScan = true;
@@ -805,14 +816,19 @@ void CabinetWidget::recvBindRst(bool rst)
 {
     if(rst)
     {
-        win_access->clickOpen(curGoods->packageBarcode);
-        emit requireOpenCase(selectCab, selectCase);
+        CaseAddress addr;
+        addr.cabinetSeqNUM = selectCab;
+        addr.caseIndex = selectCase;
+        win_store_list->show();
+        win_store_list->bindRst(addr);
+//        win_access->clickOpen(curGoods->packageBarcode);
+//        emit requireOpenCase(selectCab, selectCase);
     }
     else
     {
         clickLock = false;
-        win_access->save();
-        win_access->hide();
+//        win_access->save();
+//        win_access->hide();
         config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);
     }
 }
@@ -837,6 +853,8 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
         emit goodsNumChanged(num);
         if(config->state == STATE_LIST)
             win_cab_list_view->fetchSuccess();
+        else if(config->state == STATE_STORE)
+            win_store_list->storeRst("存入成功",true);
     }
 }
 
@@ -849,7 +867,8 @@ void CabinetWidget::accessFailedMsg(QString msg)
     }
     else if(config->state == STATE_STORE)
     {
-        win_access->storeFailed(msg);
+//        win_access->storeFailed(msg);
+        win_store_list->storeRst(msg, false);
     }
     qDebug()<<msg;
 }
@@ -857,6 +876,14 @@ void CabinetWidget::accessFailedMsg(QString msg)
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+}
+
+void CabinetWidget::cabinetBind(Goods *goods)
+{
+    curGoods = goods;
+    clickLock = false;
+    win_store_list->hide();
+    config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);
 }
 
 void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)
