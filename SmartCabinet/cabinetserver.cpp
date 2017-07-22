@@ -63,7 +63,6 @@ void CabinetServer::checkTime()
 
     if(reply_datetime != NULL)
     {
-        disconnect(reply_datetime, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
         reply_datetime->deleteLater();
         reply_datetime = NULL;
     }
@@ -99,7 +98,6 @@ void CabinetServer::userLogin(QString userId)
 
     if(reply_login != NULL)
     {
-        disconnect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
         reply_login->deleteLater();
     }
     reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
@@ -268,7 +266,6 @@ void CabinetServer::recvUserLogin()
     reply_login->deleteLater();
     reply_login = NULL;
 
-    disconnect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<cJSON_Print(json);
 
