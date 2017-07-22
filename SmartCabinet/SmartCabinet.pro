@@ -52,7 +52,9 @@ SOURCES += main.cpp\
     Widgets/cabinetlistitem.cpp \
     funcs/chineseletterhelper.cpp \
     Widgets/cabinetcheck.cpp \
-    Widgets/cabinetcheckitem.cpp
+    Widgets/cabinetcheckitem.cpp \
+    Widgets/cabinetstorelist.cpp \
+    Widgets/cabinetstorelistitem.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -96,7 +98,9 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetlistitem.h \
     funcs/chineseletterhelper.h \
     Widgets/cabinetcheck.h \
-    Widgets/cabinetcheckitem.h
+    Widgets/cabinetcheckitem.h \
+    Widgets/cabinetstorelist.h \
+    Widgets/cabinetstorelistitem.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -118,7 +122,9 @@ FORMS    += mainwidget.ui \
     Widgets/cabinetlistview.ui \
     Widgets/cabinetlistitem.ui \
     Widgets/cabinetcheck.ui \
-    Widgets/cabinetcheckitem.ui
+    Widgets/cabinetcheckitem.ui \
+    Widgets/cabinetstorelist.ui \
+    Widgets/cabinetstorelistitem.ui
 
 RESOURCES += \
     image.qrc

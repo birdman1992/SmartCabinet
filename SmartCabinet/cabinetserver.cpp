@@ -224,6 +224,44 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     free(buff);
 }
 
+void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
+{
+    cJSON* json = cJSON_CreateObject();
+    cJSON* jlist = cJSON_CreateArray();
+
+    CabinetStoreListItem* goodsItem;
+    int i = 0;
+    int optType = 2;
+
+    for(i=0; i<l.count(); i++)
+    {
+        goodsItem = l.at(i);
+        QString pack_id = goodsItem->itemId();
+        QByteArray packageBarcode = goodsItem->itemId().toLocal8Bit();
+        QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
+        CaseAddress addr = config->checkCabinetByBarCode(pack_id);
+        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
+        cJSON* obj = cJSON_CreateObject();
+        cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
+        cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));
+        cJSON_AddItemToObject(obj, "optType", cJSON_CreateNumber(optType));
+        cJSON_AddItemToObject(obj, "goodsCode", cJSON_CreateString(goodsCode.data()));
+        cJSON_AddItemToObject(obj, "optCount", cJSON_CreateNumber(goodsItem->itemNum()));
+        cJSON_AddItemToArray(jlist, obj);
+    }
+    cJSON_AddItemToObject(json, "li",jlist);
+    char* buff = cJSON_Print(json);
+    cJSON_Delete(json);
+    QByteArray qba = QByteArray(buff);
+
+    QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+    qDebug()<<"[goodsAccess]"<<nUrl;
+    qDebug()<<qba;
+    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
+    free(buff);
+}
+
 void CabinetServer::goodsBack(QString)
 {
 //    QByteArray qba = QString("{\"barcode\":\"%1\"}").arg(goodsId).toUtf8();

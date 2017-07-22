@@ -12,6 +12,7 @@
 #include "Widgets/cabinetaccess.h"
 #include "Widgets/cabinetlistview.h"
 #include "Widgets/cabinetcheck.h"
+#include "Widgets/cabinetstorelist.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
@@ -60,8 +61,10 @@ signals:
     void requireFetchList();
     void requireAccessList(QStringList list, int optType);
     void checkCase(QList<CabinetCheckItem*> l, CaseAddress addr);
+    void storeList(QList<CabinetStoreListItem*>);
 
 private slots:
+    void cabinetBind(Goods* goods);
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
     void on_store_clicked();
 //    void on_fetch_clicked();
@@ -107,6 +110,7 @@ private:
     CabinetAccess* win_access;//存取窗口
     CabinetListView* win_cab_list_view;//柜子列表视图窗口
     CabinetCheck* win_check;//盘点窗口
+    CabinetStoreList* win_store_list;
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);
