@@ -16,6 +16,7 @@
 #define API_CAB_BIND "/spd-web/work/Cheset/register/"     //柜格物品绑定接口
 #define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
 #define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //退货接口
+#define API_CHECK_TIME "/spd-web/mapper/Time/query"
 
 
 
@@ -67,7 +68,9 @@ void CabinetServer::checkTime()
         reply_datetime = NULL;
     }
     qDebug()<<"checktime";
-    reply_datetime = manager->get(QNetworkRequest(QUrl("http://api.k780.com:88/?app=life.time&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json")));
+    QUrl url = QUrl(QString(SERVER_ADDR) + QString(API_CHECK_TIME));
+    reply_datetime = manager->get(QNetworkRequest(QUrl(url)));
+    qDebug()<<url;
     connect(reply_datetime, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
 
     sysClock.start(60000);
@@ -588,7 +591,7 @@ void CabinetServer::recvGoodsBack()
 
 void CabinetServer::recvDateTime()
 {
-    QByteArray qba = reply_datetime->readAll();
+    QByteArray qba = QByteArray::fromBase64(reply_datetime->readAll());
     reply_datetime->deleteLater();
     reply_datetime = NULL;
 
@@ -600,17 +603,17 @@ void CabinetServer::recvDateTime()
 
     cJSON* rst = cJSON_GetObjectItem(json, "success");
 
-    if(QString(rst->valuestring) != "1")
+    if(rst->type != cJSON_True)
     {
         qDebug("[check time] failed");
         return;
     }
     timeIsChecked = true;
 
-    rst = cJSON_GetObjectItem(json, "result");
+    rst = cJSON_GetObjectItem(json, "data");
 
-    cJSON* jsTime = cJSON_GetObjectItem(rst, "datetime_1");
-    QString str(jsTime->valuestring);
+//    cJSON* jsTime = cJSON_GetObjectItem(rst, "datetime_1");
+    QString str(rst->valuestring);
 //    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     checkSysTime(QDateTime::fromString(str,"yyyy-MM-dd hh:mm:ss"));
     //    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");

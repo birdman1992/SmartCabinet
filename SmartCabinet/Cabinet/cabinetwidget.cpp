@@ -850,7 +850,7 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
     else
     {
         config->list_cabinet[addr.cabinetSeqNUM]->updateGoodsNum(addr, num);
-        emit goodsNumChanged(num);
+//        emit goodsNumChanged(num);
         if(config->state == STATE_LIST)
             win_cab_list_view->fetchSuccess();
         else if(config->state == STATE_STORE)
