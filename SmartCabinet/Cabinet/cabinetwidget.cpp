@@ -850,11 +850,14 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
     else
     {
         config->list_cabinet[addr.cabinetSeqNUM]->updateGoodsNum(addr, num);
-//        emit goodsNumChanged(num);
         if(config->state == STATE_LIST)
             win_cab_list_view->fetchSuccess();
         else if(config->state == STATE_STORE)
             win_store_list->storeRst("存入成功",true);
+        else
+        {
+            emit goodsNumChanged(num);
+        }
     }
 }
 
@@ -870,12 +873,21 @@ void CabinetWidget::accessFailedMsg(QString msg)
 //        win_access->storeFailed(msg);
         win_store_list->storeRst(msg, false);
     }
+    else if(config->state == STATE_FETCH)
+    {
+        win_access->fetchFailed(msg);
+    }
     qDebug()<<msg;
 }
 
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+}
+
+void CabinetWidget::newGoodsList(QString listCode, QString rfidCode)
+{
+
 }
 
 void CabinetWidget::cabinetBind(Goods *goods)

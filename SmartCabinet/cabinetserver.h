@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QProcess>
 #include <QTimer>
+#include <QStringList>
 
 #include "cabinetconfig.h"
 #include "Structs/userinfo.h"
@@ -23,6 +24,7 @@ public:
     explicit CabinetServer(QObject *parent = 0);
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
+    void waitForListTimeout();//等待送货车超时
 private:
     QNetworkAccessManager* manager;
     CabinetConfig* config;
@@ -34,14 +36,17 @@ private:
     QNetworkReply* reply_goods_back;
     QNetworkReply* reply_goods_check;
     QNetworkReply* reply_datetime;
+    QNetworkReply* reply_list_state;
     QString regId;
     QString barCode;
     bool timeIsChecked;
     QTimer sysClock;
+    QStringList list_goodsList;
 
     void cabRegister();
     void checkTime();
     void checkSysTime(QDateTime _time);
+    void requireListState();//查询是否有送货单在途中
 
 signals:
     void loginRst(UserInfo);
@@ -51,6 +56,7 @@ signals:
     void accessFailed(QString msg);
     void timeUpdate();
     void goodsCheckRst(QString msg);
+    void newGoodsList(QString listCode, QString rfidCode);
 
 public slots:
     void userLogin(QString);
@@ -72,6 +78,7 @@ private slots:
     void recvGoodsCheck();
     void recvGoodsBack();
     void recvDateTime();
+    void recvListState();
     void sysTimeout();
 };
 

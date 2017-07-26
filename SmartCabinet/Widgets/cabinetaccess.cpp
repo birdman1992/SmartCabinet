@@ -213,6 +213,12 @@ void CabinetAccess::storeFailed(QString msg)
     ui->tip->setText(msg);
 }
 
+void CabinetAccess::fetchFailed(QString msg)
+{
+    config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum--;
+    ui->tip->setText(msg);
+}
+
 void CabinetAccess::paintEvent(QPaintEvent*)
 {
     QStyleOption opt;

@@ -47,6 +47,7 @@ public slots:
     void recvGoodsNumInfo(QString goodsId, int num);
     void accessFailedMsg(QString msg);
     void updateTime();
+    void newGoodsList(QString listCode, QString rfidCode);
 
 signals:
     void winSwitch(int);

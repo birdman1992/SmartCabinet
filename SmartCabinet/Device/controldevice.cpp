@@ -10,6 +10,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
+#define DEV_RFID_CTRL "/dev/ttymxc1"    //rfid网关串口
 //#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
@@ -36,8 +37,13 @@ void ControlDevice::deviceInit()
     get_path();
     qDebug()<<"[get dev path1]"<<dev_path[0];
     qDebug()<<"[get dev path2]"<<dev_path[1];
+    //控制串口初始化
     comLockCtrlInit(38400, 8, 0, 1);
     connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
+
+    //rfid网关串口初始化
+    comRfidInit(115200, 8, 0, 1);
+    connect(com_rfid_gateway, SIGNAL(readyRead()), this, SLOT(readRfidGatewayData()));
 
     //初始化读卡器
     hid_card_reader = new QHid(this);
@@ -126,6 +132,59 @@ void ControlDevice::comLockCtrlInit(int baudRate, int dataBits, int Parity, int 
 
 }
 
+void ControlDevice::comRfidInit(int baudRate, int dataBits, int Parity, int stopBits)
+{
+    com_rfid_gateway = new QextSerialPort(DEV_LOCK_CTRL);
+    //设置波特率
+    com_rfid_gateway->setBaudRate((BaudRateType)baudRate);
+//    qDebug() << (BaudRateType)baudRate;
+    //设置数据位
+    com_rfid_gateway->setDataBits((DataBitsType)dataBits);
+    //设置校验
+    switch(Parity){
+    case 0:
+        com_rfid_gateway->setParity(PAR_NONE);
+        break;
+    case 1:
+        com_rfid_gateway->setParity(PAR_ODD);
+        break;
+    case 2:
+        com_rfid_gateway->setParity(PAR_EVEN);
+        break;
+    default:
+        com_rfid_gateway->setParity(PAR_NONE);
+        qDebug("set to default : PAR_NONE");
+        break;
+    }
+    //设置停止位
+    switch(stopBits){
+    case 1:
+        com_rfid_gateway->setStopBits(STOP_1);
+        break;
+    case 0:
+        qDebug() << "linux system can't setStopBits : 1.5!";
+        break;
+    case 2:
+        com_rfid_gateway->setStopBits(STOP_2);
+        break;
+    default:
+        com_rfid_gateway->setStopBits(STOP_1);
+        qDebug("set to default : STOP_1");
+        break;
+    }
+    //设置数据流控制
+    com_rfid_gateway->setFlowControl(FLOW_OFF);
+//    com_rfid_gateway->setTimeout(5000);
+
+    if(com_rfid_gateway->open(QIODevice::ReadWrite)){
+        qDebug() <<DEV_RFID_CTRL<<"open success!";
+    }else{
+        qDebug() <<DEV_RFID_CTRL<< "未能打开串口"<<":该串口设备不存在或已被占用" <<  endl ;
+        return;
+    }
+
+}
+
 void ControlDevice::lockCtrl(int ioNum)
 {
     QByteArray qba = QByteArray::fromHex("FA0100FF");
@@ -147,6 +206,19 @@ void ControlDevice::lockCtrl(int seqNum, int ioNum)
 
 #ifndef SIMULATE_ON
     com_lock_ctrl->write(qba);
+#endif
+}
+
+void ControlDevice::rfidCtrl(QString id)
+{
+    QByteArray qba = QByteArray("fe07ff").insert(4, id.toLocal8Bit());
+
+    qba = QByteArray::fromHex(qba);
+    qba[1] = qba.size();
+    qDebug()<<"[rfidCtrl]"<<qba.toHex();
+
+#ifndef SIMULATE_ON
+    com_rfid_gateway->write(qba);
 #endif
 }
 
@@ -192,11 +264,17 @@ void ControlDevice::getLockState()
 
 void ControlDevice::readLockCtrlData()
 {
-    qDebug("readstart");
     ::usleep(20000);
     QByteArray qba = com_lock_ctrl->readAll();
     qDebug()<<"[readLockCtrlData]"<<qba.toHex();
 //    emit lockCtrlData(qba);
+}
+
+void ControlDevice::readRfidGatewayData()
+{
+    ::usleep(20000);
+    QByteArray qba = com_lock_ctrl->readAll();
+    qDebug()<<"[readRfidGatewayData]"<<qba.toHex();
 }
 
 void ControlDevice::readCardReaderData(QByteArray qba)

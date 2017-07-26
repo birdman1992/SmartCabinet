@@ -4,13 +4,14 @@
 #include <QObject>
 #include <QByteArray>
 #include <QList>
+#include <QTimer>
 #include "Device/Hid/qhid.h"
 #include "Device/Qextserial/qextserialport.h"
 #include "Device/devicesimulate.h"
 #include "cabinetconfig.h"
 //#include "Device/SerialPort/qserialport.h"
 
-//#define SIMULATE_ON  //打开仿真
+#define SIMULATE_ON  //打开仿真
 //#define LOG_ON //打开日志
 
 
@@ -34,6 +35,7 @@ private:
     DeviceSimulate* dev_simulate;//设备仿真器
     CabinetConfig* config;//全局配置
     QList<QByteArray> lockCtrlCmd;//控制协议
+    QTimer* timer_beat;
 
     void deviceInit();//设备初始化
     void simulateInit();//仿真器初始化
@@ -42,10 +44,11 @@ private:
     void comLockCtrlInit(int baudRate, int dataBits, int Parity, int stopBits);
     void lockCtrl(int ioNum);
     void lockCtrl(int seqNum, int ioNum);//锁控板编号,控制口编号
-
+    void rfidCtrl(QString id);
 
     int get_dev_info(char *dev_name, USBINFO *uInfo);
     int get_path();
+    void comRfidInit(int baudRate, int dataBits, int Parity, int stopBits);
 signals:
     void cardReaderTimeout();//读卡超时
     void lockCtrlData(QByteArray);//暂无
@@ -60,6 +63,7 @@ private slots:
     void readLockCtrlData();
     void readCardReaderData(QByteArray);
     void readCodeScanData(QByteArray);
+    void readRfidGatewayData();
 };
 
 #endif // CONTROLDEVICE_H

@@ -6,7 +6,7 @@
 #include <QtGlobal>
 #include "defines.h"
 
-//#define SERVER_ADDR "http://175.11.97.8"
+//#define SERVER_ADDR "http://175.11.185.181"
 #define SERVER_ADDR "http://120.77.159.8:8080"
 #define API_REG "/spd-web/mapper/SmartCheset/saveOrUpdate/"   //注册接口
 #define API_LOGIN "/spd-web/mapper/UserInfo/query/"  //登录接口
@@ -16,7 +16,8 @@
 #define API_CAB_BIND "/spd-web/work/Cheset/register/"     //柜格物品绑定接口
 #define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
 #define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //退货接口
-#define API_CHECK_TIME "/spd-web/mapper/Time/query"
+#define API_CHECK_TIME "/spd-web/mapper/Time/query/"
+#define API_REQ_LIST "/spd-web/mapper/Car/addOrUpdataCar/"      //查询待存送货单接口
 
 
 
@@ -35,12 +36,18 @@ bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
     config = globalConfig;
     if(config->getCabinetId().isEmpty())
         cabRegister();
+    requireListState();
 //    {
 //        regId = "896443";
 //        config->setCabinetId(regId);
 //    }
 
     return true;
+}
+
+void CabinetServer::waitForListTimeout()
+{
+
 }
 
 void CabinetServer::cabRegister()
@@ -67,10 +74,10 @@ void CabinetServer::checkTime()
         reply_datetime->deleteLater();
         reply_datetime = NULL;
     }
-    qDebug()<<"checktime";
-    QUrl url = QUrl(QString(SERVER_ADDR) + QString(API_CHECK_TIME));
+
+    QString url = QString(SERVER_ADDR) + QString(API_CHECK_TIME);
     reply_datetime = manager->get(QNetworkRequest(QUrl(url)));
-    qDebug()<<url;
+    qDebug()<<"[checkTime]"<<url;
     connect(reply_datetime, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
 
     sysClock.start(60000);
@@ -86,7 +93,20 @@ void CabinetServer::checkSysTime(QDateTime _time)
     pro.waitForFinished(1000);
     emit timeUpdate();
 //    pro.start("clock -w");
-//    pro.waitForFinished(1000);
+    //    pro.waitForFinished(1000);
+}
+
+void CabinetServer::requireListState()
+{
+    QByteArray qba = QString("{\"code\":\"%1\"}").arg(config->getCabinetId()).toUtf8();
+    QString url = QString(SERVER_ADDR) + QString(API_REQ_LIST) +'?'+ qba.toBase64();
+    reply_list_state = manager->get(QNetworkRequest(QUrl(url)));
+    qDebug()<<"[requireListState]"<<url;
+    qDebug()<<qba;
+    connect(reply_list_state, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
+
+    sysClock.start(60000);
+    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
 }
 
 void CabinetServer::userLogin(QString userId)
@@ -512,7 +532,7 @@ void CabinetServer::recvGoodsAccess()
         qDebug()<<"ACCESS success";
         cJSON* data = cJSON_GetObjectItem(json, "data");
         QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(data,"goodsId")->valuestring);
-        int goodsNum = cJSON_GetObjectItem(data, "goodsCount")->valueint;
+        int goodsNum = cJSON_GetObjectItem(data, "packageCount")->valueint;
         emit goodsNumChanged(goodsId, goodsNum);
     }
     else
@@ -549,7 +569,7 @@ void CabinetServer::recvListAccess()
         {
             cJSON* item = cJSON_GetArrayItem(data, i);
             QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(item,"goodsId")->valuestring);
-            int goodsNum = cJSON_GetObjectItem(item, "goodsCount")->valueint;
+            int goodsNum = cJSON_GetObjectItem(item, "packageCount")->valueint;
             emit goodsNumChanged(goodsId, goodsNum);
         }
     }
@@ -620,11 +640,40 @@ void CabinetServer::recvDateTime()
     cJSON_Delete(json);
 }
 
+void CabinetServer::recvListState()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_list_state->readAll());
+    reply_list_state->deleteLater();
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<cJSON_Print(json);
+
+    return;
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        Goods* info;
+        GoodsList* list = new GoodsList;
+        cJSON* json_data = cJSON_GetObjectItem(json,"data");
+        if(json_data->type == cJSON_NULL)
+        {
+            emit listRst(list);
+            return;
+        }
+
+
+}
+
 void CabinetServer::sysTimeout()
 {
     if(timeIsChecked)
         emit timeUpdate();
     else
         checkTime();
+
+    requireListState();
 }
 
