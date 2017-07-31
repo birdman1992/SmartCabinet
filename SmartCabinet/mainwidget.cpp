@@ -583,6 +583,7 @@ void MainWidget::init_huangpo()
     //仿真控制台
     ctrlUi = new ControlDevice;
     ctrlUi->installGlobalConfig(cabinetConf);
+    connect(cabServer, SIGNAL(newGoodsCar(GoodsCar)), ctrlUi, SLOT(readyForNewCar(GoodsCar)));
 
     //扫码输入面板
     win_coder_keyboard = new coderKeyboard();
@@ -598,6 +599,7 @@ void MainWidget::init_huangpo()
     win_cabinet->installGlobalConfig(cabinetConf);
     connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
     connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+    connect(ctrlUi, SIGNAL(readyListData(QString)), win_cabinet,SLOT(readyGoodsList(QString)));
     connect(win_cabinet, SIGNAL(checkLockState()), ctrlUi, SLOT(getLockState()));
     connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));

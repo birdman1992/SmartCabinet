@@ -11,6 +11,7 @@ CabinetStoreList::CabinetStoreList(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     bindItem = NULL;
+    loginState = false;
 }
 
 CabinetStoreList::~CabinetStoreList()
@@ -65,6 +66,20 @@ void CabinetStoreList::storeRst(QString msg, bool success)
     ui->msg->setText(msg);
 }
 
+void CabinetStoreList::setLoginState(bool login)
+{
+    loginState = login;
+    ui->ok->setVisible(login);
+    if(login)
+    {
+        ui->msg->clear();
+    }
+    else
+    {
+        ui->msg->setText("有待存送货单，请刷卡登录操作");
+    }
+}
+
 bool CabinetStoreList::installGlobalConfig(CabinetConfig *globalConfig)
 {
     if(globalConfig == NULL)
@@ -90,6 +105,7 @@ void CabinetStoreList::clearList()
     }
     list_store = NULL;
     ui->storeTable->clear();
+    ui->storeTable->setRowCount(0);
 }
 
 void CabinetStoreList::itemBind(Goods* goods, CabinetStoreListItem* item)

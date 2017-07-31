@@ -54,7 +54,8 @@ SOURCES += main.cpp\
     Widgets/cabinetcheck.cpp \
     Widgets/cabinetcheckitem.cpp \
     Widgets/cabinetstorelist.cpp \
-    Widgets/cabinetstorelistitem.cpp
+    Widgets/cabinetstorelistitem.cpp \
+    Structs/goodscar.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -100,7 +101,8 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetcheck.h \
     Widgets/cabinetcheckitem.h \
     Widgets/cabinetstorelist.h \
-    Widgets/cabinetstorelistitem.h
+    Widgets/cabinetstorelistitem.h \
+    Structs/goodscar.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

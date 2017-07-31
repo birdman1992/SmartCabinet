@@ -118,3 +118,11 @@ void DeviceSimulate::on_listCode_2_clicked()
     QString str = ui->listCode_2->text();
     emit sendCodeScanData(str.toUtf8());
 }
+
+void DeviceSimulate::on_car1_clicked()
+{
+    QByteArray qba = "fc0700000000ff";
+    qba.replace(4,8, ui->car1->text().toLocal8Bit());
+    qba = QByteArray::fromHex(qba);
+    emit sendRfidData(qba);
+}

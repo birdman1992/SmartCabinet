@@ -22,6 +22,7 @@ public:
     void storeFinish();
     void bindRst(CaseAddress addr);
     void storeRst(QString msg, bool success);
+    void setLoginState(bool login);
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 private:
@@ -29,6 +30,7 @@ private:
     void paintEvent(QPaintEvent *);
     void clearList();
 
+    bool loginState;
     CabinetConfig* config;
     GoodsList* list_store;
     CabinetStoreListItem* bindItem;

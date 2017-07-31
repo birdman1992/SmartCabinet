@@ -28,6 +28,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForServer = false;
     waitForCardReader = true;
     waitForInit = true;
+    loginState = false;
     curStoreList = NULL;
     msgBox = NULL;
     selectCase = -1;
@@ -85,6 +86,8 @@ void CabinetWidget::cabLock()
     optUser = UserInfo();
     ui->userInfo->setText("请刷卡使用");
     storeNum = 0;
+    loginState = false;
+    win_store_list->setLoginState(loginState);
     clickLock = true;
     waitForCodeScan = false;
     waitForGoodsListCode = false;
@@ -727,7 +730,8 @@ void CabinetWidget::msgShow(QString title, QString msg, bool setmodal)
 void CabinetWidget::setPowerState(int power)
 {
     clickLock = false;
-    config->state = STATE_FETCH;
+    if(win_store_list->isHidden())
+        config->state = STATE_FETCH;
     win_access->setAccessModel(false);
     waitForCodeScan = false;
 
@@ -802,6 +806,7 @@ void CabinetWidget::recvListInfo(GoodsList *l)
 
     curStoreList = l;
 
+    win_store_list->setLoginState(loginState);
     win_store_list->storeStart(l);
     win_store_list->show();
     return;
@@ -885,9 +890,15 @@ void CabinetWidget::updateTime()
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
 }
 
-void CabinetWidget::newGoodsList(QString listCode, QString rfidCode)
+void CabinetWidget::newGoodsList(QString, QString)
 {
 
+}
+
+void CabinetWidget::readyGoodsList(QString listCode)
+{
+    emit requireGoodsListCheck(listCode);
+    config->state = STATE_STORE;
 }
 
 void CabinetWidget::cabinetBind(Goods *goods)
@@ -918,6 +929,9 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
     qDebug()<<optUser.cardId;
     ui->userInfo->setText(QString("您好！%1").arg(optUser.name));
     setPowerState(info.power);
+    loginState = true;
+    win_store_list->setLoginState(loginState);
+
     config->cabVoice.voicePlay(VOICE_WELCOME_USE);
 }
 

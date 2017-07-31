@@ -17,7 +17,7 @@
 #define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
 #define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //退货接口
 #define API_CHECK_TIME "/spd-web/mapper/Time/query/"
-#define API_REQ_LIST "/spd-web/mapper/Car/addOrUpdataCar/"      //查询待存送货单接口
+#define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口
 
 
 
@@ -26,6 +26,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     manager = new QNetworkAccessManager(this);
     reply_datetime = NULL;
     reply_login = NULL;
+    needReqCar = true;
     checkTime();
 }
 
@@ -103,10 +104,10 @@ void CabinetServer::requireListState()
     reply_list_state = manager->get(QNetworkRequest(QUrl(url)));
     qDebug()<<"[requireListState]"<<url;
     qDebug()<<qba;
-    connect(reply_list_state, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
+    connect(reply_list_state, SIGNAL(readyRead()), this, SLOT(recvListState()));
 
-    sysClock.start(60000);
-    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+//    sysClock.start(60000);
+//    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
 }
 
 void CabinetServer::userLogin(QString userId)
@@ -186,12 +187,17 @@ void CabinetServer::listAccess(QStringList list, int optType)
         QString pack_id = config->scanDataTrans(pack_bar);
         QByteArray packageBarcode = pack_bar.toLocal8Bit();
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
+        QByteArray barcode = barCode.toLocal8Bit();
         CaseAddress addr = config->checkCabinetByBarCode(pack_id);
         QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
         cJSON* obj = cJSON_CreateObject();
         cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
         cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));
         cJSON_AddItemToObject(obj, "optType", cJSON_CreateNumber(optType));
+        if(optType == 2)
+        {
+            cJSON_AddItemToObject(obj, "barcode", cJSON_CreateString(barcode.data()));
+        }
         cJSON_AddItemToObject(obj, "goodsCode", cJSON_CreateString(goodsCode.data()));
         cJSON_AddItemToObject(obj, "optCount", cJSON_CreateNumber(1));
         cJSON_AddItemToArray(jlist, obj);
@@ -263,6 +269,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
         QByteArray packageBarcode = goodsItem->itemId().toLocal8Bit();
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
         CaseAddress addr = config->checkCabinetByBarCode(pack_id);
+        QByteArray barcode = barCode.toLocal8Bit();
         QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
         cJSON* obj = cJSON_CreateObject();
         cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
@@ -270,6 +277,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
         cJSON_AddItemToObject(obj, "optType", cJSON_CreateNumber(optType));
         cJSON_AddItemToObject(obj, "goodsCode", cJSON_CreateString(goodsCode.data()));
         cJSON_AddItemToObject(obj, "optCount", cJSON_CreateNumber(goodsItem->itemNum()));
+        cJSON_AddItemToObject(obj, "barcode", cJSON_CreateString(barcode.data()));
         cJSON_AddItemToArray(jlist, obj);
     }
     cJSON_AddItemToObject(json, "li",jlist);
@@ -283,6 +291,11 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
     free(buff);
+}
+
+void CabinetServer::goodsCarScan()
+{
+    needReqCar = true;//打开定时查询
 }
 
 void CabinetServer::goodsBack(QString)
@@ -556,6 +569,7 @@ void CabinetServer::recvListAccess()
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
+        goodsCarScan();
         qDebug()<<"ACCESS success";
         cJSON* data = cJSON_GetObjectItem(json, "data");
         int listCount = cJSON_GetArraySize(data);
@@ -646,25 +660,33 @@ void CabinetServer::recvListState()
     reply_list_state->deleteLater();
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<cJSON_Print(json);
+    qDebug()<<"[recvListState]"<<cJSON_Print(json);
 
-    return;
     if(!json)
         return;
 
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
-        Goods* info;
-        GoodsList* list = new GoodsList;
         cJSON* json_data = cJSON_GetObjectItem(json,"data");
         if(json_data->type == cJSON_NULL)
         {
-            emit listRst(list);
             return;
         }
+        int listSize = cJSON_GetArraySize(json_data);
+        int i = 0;
 
-
+        for(i=0; i<listSize; i++)
+        {
+            cJSON* item = cJSON_GetArrayItem(json_data, i);
+            GoodsCar car;
+            car.listId = QString(cJSON_GetObjectItem(item, "barcode")->valuestring);
+            car.rfid = QString(cJSON_GetObjectItem(item, "code")->valuestring);
+            qDebug()<<"[newGoodsCar]"<<car.rfid<<car.listId;
+            emit newGoodsCar(car);
+//            needReqCar = false;
+        }
+    }
 }
 
 void CabinetServer::sysTimeout()
@@ -673,7 +695,7 @@ void CabinetServer::sysTimeout()
         emit timeUpdate();
     else
         checkTime();
-
-    requireListState();
+    if(needReqCar)
+        requireListState();
 }
 

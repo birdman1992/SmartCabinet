@@ -13,6 +13,7 @@
 #include "Structs/userinfo.h"
 #include "Json/cJSON.h"
 #include "Structs/goodslist.h"
+#include "Structs/goodscar.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
 
@@ -25,6 +26,7 @@ public:
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
     void waitForListTimeout();//等待送货车超时
+
 private:
     QNetworkAccessManager* manager;
     CabinetConfig* config;
@@ -40,6 +42,7 @@ private:
     QString regId;
     QString barCode;
     bool timeIsChecked;
+    bool needReqCar;
     QTimer sysClock;
     QStringList list_goodsList;
 
@@ -57,6 +60,7 @@ signals:
     void timeUpdate();
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
+    void newGoodsCar(GoodsCar);
 
 public slots:
     void userLogin(QString);
@@ -67,6 +71,7 @@ public slots:
     void goodsBack(QString);//退货
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
     void goodsListStore(QList<CabinetStoreListItem*> l);
+    void goodsCarScan();
 
 private slots:
     void recvCabRegister();

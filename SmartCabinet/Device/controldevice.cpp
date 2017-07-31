@@ -10,7 +10,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
-#define DEV_RFID_CTRL "/dev/ttymxc1"    //rfid网关串口
+#define DEV_RFID_CTRL "/dev/ttymxc4"    //rfid网关串口
 //#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
@@ -42,8 +42,10 @@ void ControlDevice::deviceInit()
     connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
 
     //rfid网关串口初始化
-    comRfidInit(115200, 8, 0, 1);
+    comRfidInit(38400, 8, 0, 1);
     connect(com_rfid_gateway, SIGNAL(readyRead()), this, SLOT(readRfidGatewayData()));
+    int ret = com_rfid_gateway->write(QByteArray::fromHex("fe0700000005ff"));
+    qDebug()<<"[write to rfid]"<<DEV_RFID_CTRL<<ret<<QByteArray::fromHex("fe0700000005ff").toHex();
 
     //初始化读卡器
     hid_card_reader = new QHid(this);
@@ -72,6 +74,7 @@ void ControlDevice::simulateInit()
     dev_simulate->show();
     connect(dev_simulate, SIGNAL(sendCardReaderData(QByteArray)), this, SLOT(readCardReaderData(QByteArray)));
     connect(dev_simulate, SIGNAL(sendCodeScanData(QByteArray)), this, SLOT(readCodeScanData(QByteArray)));
+    connect(dev_simulate, SIGNAL(sendRfidData(QByteArray)), this, SLOT(readRfidData(QByteArray)));
 }
 
 void ControlDevice::ctrlCmdInit()
@@ -262,6 +265,13 @@ void ControlDevice::getLockState()
 #endif
 }
 
+void ControlDevice::readyForNewCar(GoodsCar car)
+{
+    curCar = car;
+    qDebug()<<"readyForNewCar"<<curCar.listId<<curCar.rfid;
+    rfidCtrl(car.rfid);
+}
+
 void ControlDevice::readLockCtrlData()
 {
     ::usleep(20000);
@@ -275,6 +285,8 @@ void ControlDevice::readRfidGatewayData()
     ::usleep(20000);
     QByteArray qba = com_lock_ctrl->readAll();
     qDebug()<<"[readRfidGatewayData]"<<qba.toHex();
+
+    readRfidData(qba);
 }
 
 void ControlDevice::readCardReaderData(QByteArray qba)
@@ -291,6 +303,20 @@ void ControlDevice::readCodeScanData(QByteArray qba)
 //    emit codeScanData(qba);
     qDebug()<<"[readCodeScanData]"<<qba;
     emit codeScanData(qba);
+}
+
+void ControlDevice::readRfidData(QByteArray qba)
+{
+    qDebug()<<"[readRfidData]"<<qba.toHex();
+    if(qba.at(1) != qba.size())
+        return;
+
+    if( (qba.at(0)==(char)0xfc) && (qba.at(qba.size()-1)==(char)0xff ) )
+    {
+        QString rfid = QString(qba.mid(2,4).toHex());
+        if(rfid == curCar.rfid)
+            emit readyListData(curCar.listId);
+    }
 }
 
 

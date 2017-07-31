@@ -27,6 +27,7 @@ private:
 signals:
     void sendCardReaderData(QByteArray);
     void sendCodeScanData(QByteArray);
+    void sendRfidData(QByteArray);
 
 public slots:
     void recvLockCtrlData(QByteArray);
@@ -36,6 +37,7 @@ private slots:
     void group_drug_clicked(int);
     void on_listCode_clicked();
     void on_listCode_2_clicked();
+    void on_car1_clicked();
 };
 
 #endif // DEVICESIMULATE_H

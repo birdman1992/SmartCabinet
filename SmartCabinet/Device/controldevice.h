@@ -10,8 +10,9 @@
 #include "Device/devicesimulate.h"
 #include "cabinetconfig.h"
 //#include "Device/SerialPort/qserialport.h"
+#include "Structs/goodscar.h"
 
-#define SIMULATE_ON  //打开仿真
+//#define SIMULATE_ON  //打开仿真
 //#define LOG_ON //打开日志
 
 
@@ -36,6 +37,7 @@ private:
     CabinetConfig* config;//全局配置
     QList<QByteArray> lockCtrlCmd;//控制协议
     QTimer* timer_beat;
+    GoodsCar curCar;
 
     void deviceInit();//设备初始化
     void simulateInit();//仿真器初始化
@@ -54,15 +56,18 @@ signals:
     void lockCtrlData(QByteArray);//暂无
     void cardReaderData(QByteArray);//当前可用
     void codeScanData(QByteArray);//当前可用
+    void readyListData(QString listCode);//预备存入单号
 
 public slots:
     void openLock(int seqNum, int index);
     void getLockState();
+    void readyForNewCar(GoodsCar car);
 
 private slots:
     void readLockCtrlData();
     void readCardReaderData(QByteArray);
     void readCodeScanData(QByteArray);
+    void readRfidData(QByteArray);
     void readRfidGatewayData();
 };
 

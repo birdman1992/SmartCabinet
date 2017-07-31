@@ -16,6 +16,7 @@
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
+#include "Structs/goodscar.h"
 
 namespace Ui {
 class CabinetWidget;
@@ -48,6 +49,7 @@ public slots:
     void accessFailedMsg(QString msg);
     void updateTime();
     void newGoodsList(QString listCode, QString rfidCode);
+    void readyGoodsList(QString listCode);
 
 signals:
     void winSwitch(int);
@@ -94,6 +96,7 @@ private:
     QButtonGroup groupBtn;
     bool waitForCardReader;
     bool waitForGoodsListCode;
+    bool loginState;
     bool clickLock;//点击锁,如果为true，点击无效
     int selectCab;//选中的柜子顺序编号
     int selectCase;//选中的柜格编号
