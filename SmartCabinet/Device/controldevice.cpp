@@ -10,7 +10,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
-#define DEV_RFID_CTRL "/dev/ttymxc4"    //rfid网关串口
+#define DEV_RFID_CTRL "/dev/ttymxc3"    //rfid网关串口
 //#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
@@ -44,8 +44,10 @@ void ControlDevice::deviceInit()
     //rfid网关串口初始化
     comRfidInit(38400, 8, 0, 1);
     connect(com_rfid_gateway, SIGNAL(readyRead()), this, SLOT(readRfidGatewayData()));
-    int ret = com_rfid_gateway->write(QByteArray::fromHex("fe0700000005ff"));
-    qDebug()<<"[write to rfid]"<<DEV_RFID_CTRL<<ret<<QByteArray::fromHex("fe0700000005ff").toHex();
+    com_rfid_gateway->write(QByteArray::fromHex("fe0700000005ff"));
+//    timer.start(1000);
+//    connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
+//    qDebug()<<"[write to rfid]"<<DEV_RFID_CTRL<<ret<<QByteArray::fromHex("fe0700000005ff").toHex();
 
     //初始化读卡器
     hid_card_reader = new QHid(this);
@@ -137,7 +139,7 @@ void ControlDevice::comLockCtrlInit(int baudRate, int dataBits, int Parity, int 
 
 void ControlDevice::comRfidInit(int baudRate, int dataBits, int Parity, int stopBits)
 {
-    com_rfid_gateway = new QextSerialPort(DEV_LOCK_CTRL);
+    com_rfid_gateway = new QextSerialPort(DEV_RFID_CTRL);
     //设置波特率
     com_rfid_gateway->setBaudRate((BaudRateType)baudRate);
 //    qDebug() << (BaudRateType)baudRate;
@@ -289,6 +291,11 @@ void ControlDevice::readRfidGatewayData()
     readRfidData(qba);
 }
 
+void ControlDevice::timeout()
+{
+    rfidCtrl("00000005");
+}
+
 void ControlDevice::readCardReaderData(QByteArray qba)
 {
     qDebug()<<"[readCardReaderData]"<<qba;
@@ -307,7 +314,7 @@ void ControlDevice::readCodeScanData(QByteArray qba)
 
 void ControlDevice::readRfidData(QByteArray qba)
 {
-    qDebug()<<"[readRfidData]"<<qba.toHex();
+//    qDebug()<<"[readRfidData]"<<qba.toHex();
     if(qba.at(1) != qba.size())
         return;
 

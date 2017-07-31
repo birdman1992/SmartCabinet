@@ -38,6 +38,7 @@ private:
     QList<QByteArray> lockCtrlCmd;//控制协议
     QTimer* timer_beat;
     GoodsCar curCar;
+    QTimer timer;
 
     void deviceInit();//设备初始化
     void simulateInit();//仿真器初始化
@@ -69,6 +70,7 @@ private slots:
     void readCodeScanData(QByteArray);
     void readRfidData(QByteArray);
     void readRfidGatewayData();
+    void timeout();
 };
 
 #endif // CONTROLDEVICE_H
