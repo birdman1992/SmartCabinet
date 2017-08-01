@@ -272,6 +272,11 @@ void CabinetListView::recvScanData(QByteArray qba)
     if(selectMap.isEmpty())
         return;
     CabinetListItem* item = selectMap.value(idCode, NULL);
+    if(item == NULL)
+    {
+        ui->msg->setText("添加失败");
+        return;
+    }
     if(item->addPackage(fullCode))
     {
         ui->msg->setText("添加成功");

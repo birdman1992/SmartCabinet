@@ -1,6 +1,7 @@
 #include "cabinetlistitem.h"
 #include "ui_cabinetlistitem.h"
 #include <qpainter.h>
+#include <QDebug>
 
 CabinetListItem::CabinetListItem(QString goodsName, QString goodsId, QWidget *parent) :
     QWidget(parent),
@@ -31,6 +32,9 @@ void CabinetListItem::paintEvent(QPaintEvent*)
 bool CabinetListItem::addPackage(QString bar)
 {
     QString subBar = scanDataTrans(bar);
+
+    if(code_bar.indexOf(bar) != -1)
+        return false;
 
     if(subBar == pack_id)
     {

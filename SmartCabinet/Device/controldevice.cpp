@@ -10,7 +10,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
-#define DEV_RFID_CTRL "/dev/ttymxc3"    //rfid网关串口
+#define DEV_RFID_CTRL "/dev/ttymxc4"    //rfid网关串口
 //#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
@@ -43,7 +43,7 @@ void ControlDevice::deviceInit()
     //rfid网关串口初始化
     comRfidInit(38400, 8, 0, 1);
     connect(com_rfid_gateway, SIGNAL(readyRead()), this, SLOT(readRfidGatewayData()));
-    com_rfid_gateway->write(QByteArray::fromHex("fe0700000005ff"));
+//    com_rfid_gateway->write(QByteArray::fromHex("fe0700000009ff"));
 //    timer.start(1000);
 //    connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
 //    qDebug()<<"[write to rfid]"<<DEV_RFID_CTRL<<ret<<QByteArray::fromHex("fe0700000005ff").toHex();
