@@ -126,3 +126,4 @@ void DeviceSimulate::on_car1_clicked()
     qba = QByteArray::fromHex(qba);
     emit sendRfidData(qba);
 }
+

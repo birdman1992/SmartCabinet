@@ -15,6 +15,8 @@
 #define MSG_FETCH "请选择要取出的物品 柜门打开后请扫描条形码取出"
 #define MSG_FETCH_SCAN "请扫描条形码取出物品 取用完毕请点击此处并关闭柜门"
 #define MSG_FETCH_EMPTY "没有库存了 请关好柜门 点击此处退出"
+#define MSG_CHECK  "请点击柜格开始盘点"
+#define MSG_REFUND  "点击柜格扫码退货"
 
 CabinetWidget::CabinetWidget(QWidget *parent) :
     QWidget(parent),
@@ -176,7 +178,6 @@ void CabinetWidget::clearCheckState()
 void CabinetWidget::clearMenuState()
 {
     ui->store->setChecked(false);
-    ui->search->setChecked(false);
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->service->setChecked(false);
@@ -238,6 +239,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     qDebug()<<clickLock;
 //    qDebug()<<config->getCabinetId();
 //    emit requireOpenCase(cabSeqNum, caseIndex);
+    if((cabSeqNum == 0) && (caseIndex == 1))
+        return;
     if(clickLock)//锁定状态下点击无效
     {
         if((caseIndex==selectCase) && (cabSeqNum == selectCab))
@@ -499,29 +502,6 @@ void CabinetWidget::caseUnlock()
     clickLock = false;
 }
 
-void CabinetWidget::on_store_clicked()
-{
-//    waitForCardReader = false;
-//    config->state = STATE_STORE;
-//    config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
-//    waitForCodeScan = true;
-//    waitForGoodsListCode = true;
-//    win_access->setAccessModel(true);
-
-//    if(msgBox != NULL)
-//    {
-//        msgBox->close();
-//        msgBox->deleteLater();
-//        msgBox = NULL;
-//    }
-//    msgBox = new QMessageBox(QMessageBox::NoIcon, "身份验证", "请刷卡验证身份",QMessageBox::Ok,NULL,
-//           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
-//    msgBox->setModal(false);
-//    msgBox->show();
-//    msgShow("身份验证", "请刷卡验证身份",false);
-//    QTimer::singleShot(10000,this, SLOT(wait_timeout()));
-}
-
 //void CabinetWidget::on_fetch_clicked()
 //{
 //    waitForCardReader = true;
@@ -551,11 +531,15 @@ void CabinetWidget::on_store_clicked()
 //    }
 //}
 
-void CabinetWidget::on_service_toggled(bool checked)
+void CabinetWidget::on_service_clicked(bool checked)
 {
     if(checked)
     {
         emit winSwitch(INDEX_CAB_SERVICE);
+        clearMenuState();
+        ui->service->setChecked(true);
+        config->state = STATE_FETCH;
+        config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     }
     else
     {
@@ -563,11 +547,14 @@ void CabinetWidget::on_service_toggled(bool checked)
     }
 }
 
-void CabinetWidget::on_refund_toggled(bool checked)//退货模式
+void CabinetWidget::on_refund_clicked(bool checked)//退货模式
 {
     if(checked)
     {
         config->state = STATE_REFUN;
+        config->list_cabinet[0]->showMsg(MSG_REFUND,false);
+        clearMenuState();
+        ui->refund->setChecked(true);
     }
     else
     {
@@ -575,7 +562,7 @@ void CabinetWidget::on_refund_toggled(bool checked)//退货模式
     }
 }
 
-void CabinetWidget::on_store_toggled(bool checked)
+void CabinetWidget::on_store_clicked(bool checked)
 {
     if(checked)
     {
@@ -586,6 +573,8 @@ void CabinetWidget::on_store_toggled(bool checked)
         waitForCodeScan = true;
         waitForGoodsListCode = true;
         win_access->setAccessModel(true);
+        clearMenuState();
+        ui->store->setChecked(true);
     }
     else
     {
@@ -596,16 +585,21 @@ void CabinetWidget::on_store_toggled(bool checked)
 
 void CabinetWidget::on_cut_clicked()
 {
+    config->state = STATE_FETCH;
+    config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     waitForCodeScan = true;
     win_cab_list_view->show();
 }
 
-void CabinetWidget::on_check_toggled(bool checked)
+void CabinetWidget::on_check_clicked(bool checked)
 {
     if(checked)
     {
         config->state = STATE_CHECK;
+        config->list_cabinet[0]->showMsg(MSG_CHECK,false);
         clickLock = false;
+        clearMenuState();
+        ui->check->setChecked(true);
     }
     else
     {
@@ -937,6 +931,8 @@ void CabinetWidget::recvUserCheckRst(UserInfo info)
 
 void CabinetWidget::on_search_clicked()
 {
+    config->state = STATE_FETCH;
+    config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     ui->menuWidget->setCurrentIndex(1);
 }
 

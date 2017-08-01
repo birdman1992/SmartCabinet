@@ -19,6 +19,8 @@ CabinetService::CabinetService(QWidget *parent) :
     dev_network = NULL;
     initStack();
     initGroup();
+    ui->listWidget->setCurrentRow(0);
+    ui->stackedWidget->setCurrentIndex(0);
 //    QTimer::singleShot(1000, this, SLOT(initNetwork()));
 //    initNetwork();
 

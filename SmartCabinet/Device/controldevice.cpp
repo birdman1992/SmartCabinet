@@ -19,7 +19,6 @@ char dev_path[2][24] = {0};
 
 ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 {
-
 #ifdef SIMULATE_ON
     simulateInit();
 #else
@@ -285,7 +284,7 @@ void ControlDevice::readLockCtrlData()
 void ControlDevice::readRfidGatewayData()
 {
     ::usleep(20000);
-    QByteArray qba = com_lock_ctrl->readAll();
+    QByteArray qba = com_rfid_gateway->readAll();
     qDebug()<<"[readRfidGatewayData]"<<qba.toHex();
 
     readRfidData(qba);

@@ -50,6 +50,7 @@ private:
     void checkTime();
     void checkSysTime(QDateTime _time);
     void requireListState();//查询是否有送货单在途中
+    void replyCheck(QNetworkReply* reply);
 
 signals:
     void loginRst(UserInfo);
@@ -72,6 +73,7 @@ public slots:
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
     void goodsListStore(QList<CabinetStoreListItem*> l);
     void goodsCarScan();
+    void sysTimeout();
 
 private slots:
     void recvCabRegister();
@@ -84,7 +86,6 @@ private slots:
     void recvGoodsBack();
     void recvDateTime();
     void recvListState();
-    void sysTimeout();
 };
 
 #endif // CABINETSERVER_H

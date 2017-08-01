@@ -191,7 +191,7 @@ void Cabinet::showMsg(QString msg, bool showBigCharacter)
     if(showBigCharacter)
         logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
     else
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 9pt \"Sans Serif\";");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 20px \"Sans Serif\";");
 }
 
 void Cabinet::setCaseName(GoodsInfo info, int index)

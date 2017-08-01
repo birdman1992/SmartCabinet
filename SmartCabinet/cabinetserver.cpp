@@ -24,8 +24,15 @@
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
-    reply_datetime = NULL;
+    reply_register = NULL;
     reply_login = NULL;
+    reply_list_check = NULL;
+    reply_cabinet_bind = NULL;
+    reply_goods_access = NULL;
+    reply_goods_back = NULL;
+    reply_goods_check = NULL;
+    reply_datetime = NULL;
+    reply_list_state = NULL;
     needReqCar = true;
     checkTime();
 }
@@ -62,6 +69,7 @@ void CabinetServer::cabRegister()
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(regId).toUtf8();
     QString nUrl = QString(SERVER_ADDR)+QString(API_REG)+'?'+qba.toBase64();
     qDebug()<<"[cabRegister]"<<nUrl;
+    replyCheck(reply_register);
     reply_register = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
 }
@@ -70,11 +78,7 @@ void CabinetServer::checkTime()
 {
     timeIsChecked = false;
 
-    if(reply_datetime != NULL)
-    {
-        reply_datetime->deleteLater();
-        reply_datetime = NULL;
-    }
+    replyCheck(reply_datetime);
 
     QString url = QString(SERVER_ADDR) + QString(API_CHECK_TIME);
     reply_datetime = manager->get(QNetworkRequest(QUrl(url)));
@@ -101,13 +105,21 @@ void CabinetServer::requireListState()
 {
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(config->getCabinetId()).toUtf8();
     QString url = QString(SERVER_ADDR) + QString(API_REQ_LIST) +'?'+ qba.toBase64();
+
+    replyCheck(reply_list_state);
     reply_list_state = manager->get(QNetworkRequest(QUrl(url)));
     qDebug()<<"[requireListState]"<<url;
     qDebug()<<qba;
     connect(reply_list_state, SIGNAL(readyRead()), this, SLOT(recvListState()));
 
 //    sysClock.start(60000);
-//    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+    //    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+}
+
+void CabinetServer::replyCheck(QNetworkReply *reply)
+{
+    if(reply != NULL)
+        reply->deleteLater();
 }
 
 void CabinetServer::userLogin(QString userId)
@@ -120,10 +132,7 @@ void CabinetServer::userLogin(QString userId)
     qDebug()<<"[login]"<<nUrl;
     qDebug()<<qba;
 
-    if(reply_login != NULL)
-    {
-        reply_login->deleteLater();
-    }
+    replyCheck(reply_login);
     reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
 }
@@ -134,6 +143,7 @@ void CabinetServer::listCheck(QString code)
     QString nUrl = QString(SERVER_ADDR)+QString(API_LIST_CHECK)+'?'+qba.toBase64();
     barCode = code;
     qDebug()<<"[listCheck]"<<nUrl;
+    replyCheck(reply_list_check);
     reply_list_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_list_check, SIGNAL(finished()), this, SLOT(recvListCheck()));
 }
@@ -145,6 +155,7 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
     QByteArray qba = QString("{\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
     QString nUrl = QString(SERVER_ADDR)+QString(API_CAB_BIND)+"?"+qba.toBase64();
     qDebug()<<"[cabinetBind]"<<nUrl<<"\n"<<qba;
+    replyCheck(reply_cabinet_bind);
     reply_cabinet_bind = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_bind, SIGNAL(finished()), this, SLOT(recvCabBind()));
 }
@@ -168,6 +179,7 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
     QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
     qDebug()<<"[goodsAccess]"<<nUrl;
     qDebug()<<qba;
+    replyCheck(reply_goods_access);
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
 
@@ -210,6 +222,7 @@ void CabinetServer::listAccess(QStringList list, int optType)
     QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
     qDebug()<<"[goodsAccess]"<<nUrl;
     qDebug()<<qba;
+    replyCheck(reply_goods_access);
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
     free(buff);
@@ -248,6 +261,7 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_CHECK)+"?"+qba.toBase64();
     qDebug()<<"[goodsCheck]"<<nUrl;
     qDebug()<<qba;
+    replyCheck(reply_goods_check);
     reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvGoodsCheck()));
     free(buff);
@@ -288,6 +302,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     QString nUrl = QString(SERVER_ADDR)+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
     qDebug()<<"[goodsAccess]"<<nUrl;
     qDebug()<<qba;
+    replyCheck(reply_goods_access);
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
     free(buff);
@@ -312,6 +327,7 @@ void CabinetServer::recvCabRegister()
 {
     QByteArray qba = QByteArray::fromBase64(reply_register->readAll());
     reply_register->deleteLater();
+    reply_register = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
 //    qDebug()<<cJSON_Print(json);
@@ -441,6 +457,7 @@ void CabinetServer::recvListCheck()
     QByteArray qba = QByteArray::fromBase64(reply_list_check->readAll());
 //    QByteArray qba = test;
     reply_list_check->deleteLater();
+    reply_list_check = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<cJSON_Print(json);
@@ -508,6 +525,7 @@ void CabinetServer::recvCabBind()
 {
     QByteArray qba = QByteArray::fromBase64(reply_cabinet_bind->readAll());
     reply_cabinet_bind->deleteLater();
+    reply_cabinet_bind = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<cJSON_Print(json);
@@ -532,6 +550,7 @@ void CabinetServer::recvGoodsAccess()
 {
     QByteArray qba = QByteArray::fromBase64(reply_goods_access->readAll());
     reply_goods_access->deleteLater();
+    reply_goods_access = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<cJSON_Print(json);
@@ -559,6 +578,7 @@ void CabinetServer::recvListAccess()
 {
     QByteArray qba = QByteArray::fromBase64(reply_goods_access->readAll());
     reply_goods_access->deleteLater();
+    reply_goods_access = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<cJSON_Print(json);
@@ -658,19 +678,24 @@ void CabinetServer::recvListState()
 {
     QByteArray qba = QByteArray::fromBase64(reply_list_state->readAll());
     reply_list_state->deleteLater();
+    reply_list_state = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<"[recvListState]"<<cJSON_Print(json);
 
     if(!json)
+    {
+        cJSON_Delete(json);
         return;
-
+    }
+qDebug("A");
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
-    {
+    {qDebug("b");
         cJSON* json_data = cJSON_GetObjectItem(json,"data");
         if(json_data->type == cJSON_NULL)
         {
+            cJSON_Delete(json);
             return;
         }
         int listSize = cJSON_GetArraySize(json_data);
@@ -687,6 +712,8 @@ void CabinetServer::recvListState()
 //            needReqCar = false;
         }
     }
+    qDebug("c");
+    cJSON_Delete(json);qDebug("d");
 }
 
 void CabinetServer::sysTimeout()

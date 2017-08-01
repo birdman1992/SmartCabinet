@@ -65,26 +65,26 @@ signals:
     void requireAccessList(QStringList list, int optType);
     void checkCase(QList<CabinetCheckItem*> l, CaseAddress addr);
     void storeList(QList<CabinetStoreListItem*>);
+    void requireTimeout();
 
 private slots:
     void cabinetBind(Goods* goods);
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
-    void on_store_clicked();
 //    void on_fetch_clicked();
     void wait_timeout();
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
 //    void on_fetch_toggled(bool checked);
-    void on_store_toggled(bool checked);
+    void on_store_clicked(bool checked);
     void pinyinSearch(int);
 
-    void on_service_toggled(bool checked);
+    void on_service_clicked(bool checked);
 
-    void on_refund_toggled(bool checked);
+    void on_refund_clicked(bool checked);
 
     void on_cut_clicked();
 
-    void on_check_toggled(bool checked);
+    void on_check_clicked(bool checked);
 
     void on_search_clicked();
 
@@ -104,6 +104,7 @@ private:
     bool waitForCodeScan;
     bool waitForInit;
     bool waitForServer;
+    bool checkMask;
     QString scanInfo;
     QString fullScanInfo;
     UserInfo optUser;//操作者id
