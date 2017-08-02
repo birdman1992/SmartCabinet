@@ -72,7 +72,12 @@ qDebug("3.1");
 void MainWidget::set_cabinet(QByteArray qb)
 {
     qb_cabinet_order = qb;
-        qDebug()<<"qb:"<<qb_cabinet_order.length();
+    qDebug()<<"qb:"<<qb_cabinet_order.length();
+}
+
+void MainWidget::cabinetClear()
+{
+    cabinetConf->clearConfig();
 }
 
 void MainWidget::win_swich_2(int)
@@ -593,6 +598,7 @@ void MainWidget::init_huangpo()
     win_cab_service = new CabinetService();
     connect(win_cab_service, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cab_service, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
+    connect(win_cab_service, SIGNAL(requireClear()), this, SLOT(cabinetClear()));
 
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
@@ -636,6 +642,7 @@ void MainWidget::init_huangpo()
     win_cabinet_set->installGlobalConfig(cabinetConf);
     connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
+    connect(win_cabinet_set,SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ui->stackedWidget->addWidget(win_standby);

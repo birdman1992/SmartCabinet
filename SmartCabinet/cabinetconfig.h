@@ -31,6 +31,10 @@ public:
     void setCabinetId(QString id);
     QString getPyCh(QString str);
     QString getCabinetId();
+    QString getServerAddress();
+    void setServerAddress(QString addr);
+    void clearConfig();
+    void clearCabinet();
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
     int checkUser(QString userId);//检查用户是否存在，管理员用户返回0,其他用户大于0,不存在小于0
@@ -56,10 +60,12 @@ private:
     int userNum;//用户数量
 //    QString cabId;
     QString cabinetId;
+    QString serverAddr;
 
     void readUserConfig();//读取用户配置
     void readCabinetConfig();//读取柜子配置
     void addNewUser(UserInfo* info);
+    void restart();//重启自身
 
 public slots:
 

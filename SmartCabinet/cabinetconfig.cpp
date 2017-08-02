@@ -3,8 +3,10 @@
 #include <QDebug>
 #include <QTextCodec>
 #include <qobject.h>
+#include <QApplication>
 #include "defines.h"
 #include "funcs/chineseletterhelper.h"
+#include "Device/controldevice.h"
 
 CabinetConfig::CabinetConfig()
 {
@@ -20,7 +22,7 @@ CabinetConfig::CabinetConfig()
         dir.mkdir("/home/config");
     }
 
-    readUserConfig();
+//    readUserConfig();
     readCabinetConfig();
 }
 
@@ -43,6 +45,38 @@ QString CabinetConfig::getCabinetId()
 {
     qDebug()<<"[getCabinetId]"<<cabinetId<<&cabinetId;
     return cabinetId;
+}
+
+QString CabinetConfig::getServerAddress()
+{
+    return serverAddr;
+}
+
+void CabinetConfig::setServerAddress(QString addr)
+{
+    serverAddr = addr;
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("SERVER", addr);
+    restart();
+}
+
+void CabinetConfig::clearConfig()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString ID = settings.value("CabinetId").toString();
+    settings.clear();
+    if(!ID.isEmpty())
+        settings.setValue("CabinetId", ID);
+    restart();
+}
+
+void CabinetConfig::clearCabinet()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString ID = settings.value("CabinetId").toString();
+    settings.clear();
+    if(!ID.isEmpty())
+        settings.setValue("CabinetId", ID);
 }
 
 bool CabinetConfig::isFirstUse()
@@ -101,12 +135,26 @@ void CabinetConfig::readCabinetConfig()
     firstUse = false;
 
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    int cabNum = settings.value("CabNum").toInt();
+
+    int cabNum = settings.value("CabNum",0).toInt();
+    if(cabNum == 0)
+    {
+        firstUse = true;
+        return;
+    }
+
+    serverAddr = settings.value("SERVER", QString()).toString();
+    if(serverAddr.isEmpty())
+    {
+        firstUse = true;
+        return;
+    }
+
     int i = 0;
     int j = 0;
     int k = 0;
 
-    cabinetId = settings.value("CabinetId").toString();
+    cabinetId = settings.value("CabinetId", QString()).toString();
 
     for(i=0; i<cabNum; i++)
     {
@@ -128,6 +176,7 @@ void CabinetConfig::readCabinetConfig()
         {
             settings.setArrayIndex(k);
             GoodsInfo* info = new GoodsInfo;
+            info->abbName = settings.value("abbName", QString()).toString();
             info->name = settings.value("name").toString();
             info->num = settings.value("num").toInt();
             info->id = settings.value("id").toString();
@@ -152,6 +201,7 @@ void CabinetConfig::readCabinetConfig()
             {
                 settings.setArrayIndex(k);
                 GoodsInfo* info = new GoodsInfo;
+                info->abbName = settings.value("abbName", QString()).toString();
                 info->name = settings.value("name").toString();
                 info->num = settings.value("num").toInt();
                 info->id = settings.value("id").toString();
@@ -342,6 +392,18 @@ void CabinetConfig::addNewUser(UserInfo *info)
     list_user<<info;
     settings.setValue("userNum", QVariant(list_user.count()));
     firstUse = false;
+}
+
+void CabinetConfig::restart()
+{
+    qApp->closeAllWindows();
+
+#ifdef SIMULATE_ON
+    QProcess::startDetached(qApp->applicationFilePath(), QStringList());
+#else
+    QProcess::startDetached("/home/qtdemo");
+#endif
+
 }
 
 QString CabinetConfig::getPyCh(QString str)

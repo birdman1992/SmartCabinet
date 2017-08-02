@@ -8,6 +8,7 @@ class GoodsInfo
 public:
     GoodsInfo();
     GoodsInfo(GoodsInfo &info);
+    QString abbName;//简称
     QString name;//耗材名
     QString id;//耗材id
     QString packageId;

@@ -78,6 +78,7 @@ void CabinetService::initStack()
 
     ui->listWidget->addItem(new QListWidgetItem("网络配置"));
     ui->listWidget->addItem(new QListWidgetItem("锁控测试"));
+    ui->listWidget->addItem(new QListWidgetItem("设置"));
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->listWidget->setCurrentRow(0);
@@ -239,4 +240,9 @@ void CabinetService::ctrl_boardcast()
             emit requireOpenLock(j, i);
         }
     }
+}
+
+void CabinetService::on_clear_clicked()
+{
+    emit requireClear();
 }

@@ -11,6 +11,7 @@ public:
     Goods(QString _goodsId, QString goodsName, int goodsNum);
     Goods(Goods* goods);
     QString name;
+    QString abbName;
     QString goodsId;
     QString size;
     QString unit;

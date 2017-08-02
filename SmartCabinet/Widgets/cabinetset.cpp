@@ -10,6 +10,7 @@ CabinetSet::CabinetSet(QWidget *parent) :
     ui->setupUi(this);
     cabinet_pos.clear();
     cabinet_pos[0] = 0;
+    ui->save->hide();
     list_cabinet<< ui->label_0 << ui->label_1<< ui->label_2 << ui->label_3 << ui->label_4;
 
     ui->label_1->hide();
@@ -90,7 +91,24 @@ void CabinetSet::on_save_clicked()
     config->creatCabinetConfig(cabinet_pos);
     qDebug()<<"creat over";
 //    emit setCabinet(cabinet_pos);
+    emit updateServerAddr(ui->serverAddr->text());
     emit cabinetCreated();
     emit winSwitch(INDEX_CAB_SHOW);
     config->cabVoice.voicePlay(VOICE_WELCOME);
+}
+
+void CabinetSet::on_serverAddr_editingFinished()
+{
+    if(!ui->serverAddr->text().isEmpty())
+        ui->save->show();
+
+    QString str = ui->serverAddr->text();
+
+    if(str.split('.').count() > 4)
+    {
+        int index = str.lastIndexOf('.');
+        str.replace(index,1,':');
+        ui->serverAddr->setText(str);
+    }
+    config->clearCabinet();
 }

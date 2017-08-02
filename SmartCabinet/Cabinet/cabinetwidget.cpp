@@ -271,6 +271,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(curGoods == NULL)
             return;
         GoodsInfo info;
+        info.abbName = curGoods->abbName;
         info.name = curGoods->name;
         info.id = curGoods->goodsId;
         info.packageId = curGoods->packageBarcode;
@@ -458,8 +459,6 @@ void CabinetWidget::cabinetInit()
 {
     panel_init(config->list_cabinet);
 }
-
-
 
 void CabinetWidget::showEvent(QShowEvent *)
 {

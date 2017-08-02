@@ -210,6 +210,7 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
         settings.setArrayIndex(arr_size);
 
     settings.setValue("name",info.name);
+    settings.setValue("abbName",info.abbName);
     settings.setValue("id",info.id);
     settings.setValue("unit",info.unit);
     settings.setValue("packageId",info.packageId);

@@ -38,6 +38,7 @@ void customMessageHandler(QtMsgType type, const char *msg)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
 #ifndef SIMULATE_ON
     QWSServer::setCursorVisible(false);
 #endif
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
     QFont font;
     font.setFamily(("msyh"));
     a.setFont(font);
+
     MainWidget w;
     w.show();
 

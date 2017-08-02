@@ -41,8 +41,10 @@ private:
     QNetworkReply* reply_list_state;
     QString regId;
     QString barCode;
+    QString ApiAddress;
     bool timeIsChecked;
     bool needReqCar;
+    bool needSaveAddress;
     QTimer sysClock;
     QStringList list_goodsList;
 
@@ -64,6 +66,7 @@ signals:
     void newGoodsCar(GoodsCar);
 
 public slots:
+    void getServerAddr(QString addr);
     void userLogin(QString);
     void listCheck(QString);//送货单信息校验
     void cabinetBind(int, int, QString);
@@ -85,6 +88,7 @@ private slots:
     void recvGoodsCheck();
     void recvGoodsBack();
     void recvDateTime();
+    void recvDateTimeError(QNetworkReply::NetworkError code);
     void recvListState();
 };
 

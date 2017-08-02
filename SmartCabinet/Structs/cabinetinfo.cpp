@@ -69,7 +69,7 @@ QString CabinetInfo::caseShowStr()
 
     for(i=0; i<list_goods.count(); i++)
     {
-        QString str = list_goods.at(i)->name;
+        QString str = list_goods.at(i)->abbName;
         if(!str.isEmpty())
         {
             str += QString("×%1").arg(list_goods.at(i)->num);

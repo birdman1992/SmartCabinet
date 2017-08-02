@@ -58,6 +58,7 @@ public slots:
     void cabinet_cleck_four(int);
     void win_swich_2(int);
     void set_cabinet(QByteArray);
+    void cabinetClear();
 
 protected:
     int readSettings();                //--读配置信息

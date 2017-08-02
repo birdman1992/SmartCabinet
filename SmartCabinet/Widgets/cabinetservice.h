@@ -25,6 +25,7 @@ public:
 signals:
     void winSwitch(int);
     void requireOpenLock(int seqNum, int lockId);
+    void requireClear();
 
 private slots:
     void on_back_clicked();
@@ -35,6 +36,8 @@ private slots:
     void ctrl_lock(int);
     void ctrl_boardcast();//广播控制
     void initNetwork();
+
+    void on_clear_clicked();
 
 private:
     Ui::CabinetService *ui;
