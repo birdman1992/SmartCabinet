@@ -55,7 +55,9 @@ SOURCES += main.cpp\
     Widgets/cabinetcheckitem.cpp \
     Widgets/cabinetstorelist.cpp \
     Widgets/cabinetstorelistitem.cpp \
-    Structs/goodscar.cpp
+    Structs/goodscar.cpp \
+    Widgets/cabinetrefund.cpp \
+    Widgets/cabinetrefunditem.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -102,7 +104,9 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetcheckitem.h \
     Widgets/cabinetstorelist.h \
     Widgets/cabinetstorelistitem.h \
-    Structs/goodscar.h
+    Structs/goodscar.h \
+    Widgets/cabinetrefund.h \
+    Widgets/cabinetrefunditem.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -126,7 +130,9 @@ FORMS    += mainwidget.ui \
     Widgets/cabinetcheck.ui \
     Widgets/cabinetcheckitem.ui \
     Widgets/cabinetstorelist.ui \
-    Widgets/cabinetstorelistitem.ui
+    Widgets/cabinetstorelistitem.ui \
+    Widgets/cabinetrefund.ui \
+    Widgets/cabinetrefunditem.ui
 
 RESOURCES += \
     image.qrc

@@ -13,6 +13,7 @@
 #include "Widgets/cabinetlistview.h"
 #include "Widgets/cabinetcheck.h"
 #include "Widgets/cabinetstorelist.h"
+#include "Widgets/cabinetrefund.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
@@ -117,6 +118,7 @@ private:
     CabinetListView* win_cab_list_view;//柜子列表视图窗口
     CabinetCheck* win_check;//盘点窗口
     CabinetStoreList* win_store_list;
+    CabinetRefund* win_refund;//退货窗口
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);

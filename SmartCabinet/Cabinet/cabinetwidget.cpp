@@ -39,6 +39,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_cab_list_view = new CabinetListView();
     win_check = new CabinetCheck();
     win_store_list = new CabinetStoreList();
+    win_refund = new CabinetRefund();
 
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -72,6 +73,10 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 CabinetWidget::~CabinetWidget()
 {
     delete win_access;
+    delete win_refund;
+    delete win_cab_list_view;
+    delete win_check;
+    delete win_store_list;
     delete ui;
 }
 
@@ -309,14 +314,18 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     }
     else if(config->state == STATE_REFUN)
     {
-        emit requireOpenCase(cabSeqNum, caseIndex);
+        casePos.cabinetSeqNUM = cabSeqNum;
+        casePos.caseIndex = caseIndex;
+        win_refund->refundStart(casePos);
+        clickLock = false;
+//        emit requireOpenCase(cabSeqNum, caseIndex);
 
-        waitForCodeScan = true;
-        clickLock = true;
-        scanInfo = QString();
-        CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
-        win_access->setAccessModel(false);
-        win_access->clickOpen(info);
+//        waitForCodeScan = true;
+//        clickLock = true;
+//        scanInfo = QString();
+//        CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
+//        win_access->setAccessModel(false);
+//        win_access->clickOpen(info);
     }
     else if(config->state == STATE_CHECK)
     {
