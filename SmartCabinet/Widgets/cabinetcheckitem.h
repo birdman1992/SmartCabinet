@@ -18,21 +18,23 @@ public:
     ~CabinetCheckItem();
     int itemNum();
     QString itemId();
+    bool itemAdd();
 
 private slots:
-    void on_minus_10_clicked();
+//    void on_minus_10_clicked();
 
-    void on_minus_clicked();
+//    void on_minus_clicked();
 
-    void on_add_clicked();
+//    void on_add_clicked();
 
-    void on_add_10_clicked();
+//    void on_add_10_clicked();
 
 private:
     Ui::CabinetCheckItem *ui;
     void paintEvent(QPaintEvent *);
 
     int num;
+    int maxNum;
     QString package_id;
     QString name;
 };

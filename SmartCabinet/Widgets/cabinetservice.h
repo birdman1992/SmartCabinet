@@ -39,6 +39,10 @@ private slots:
 
     void on_clear_clicked();
 
+    void on_init_clicked();
+
+    void on_check_clicked();
+
 private:
     Ui::CabinetService *ui;
     QNetInterface* dev_network;

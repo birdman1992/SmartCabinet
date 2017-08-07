@@ -24,10 +24,10 @@ public:
     bool installGlobalConfig(CabinetConfig *globalConfig);
     void checkStop();
     void checkRst(QString msg);
+    void checkScan(QString scanId, QString fullId);
 
 private slots:
     void on_pushButton_clicked();
-
     void on_ok_clicked();
 
 signals:
@@ -39,9 +39,12 @@ private:
     CabinetInfo* curCheckCab;
     CabinetConfig* config;
     QList<CabinetCheckItem*> list_item;
+    QStringList list_code;
 
     void paintEvent(QPaintEvent *);
     void tableClear();
+    bool codeAppend(QString code);
+    void codeAppendCancel();
 
 };
 

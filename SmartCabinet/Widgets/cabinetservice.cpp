@@ -246,3 +246,28 @@ void CabinetService::on_clear_clicked()
 {
     emit requireClear();
 }
+
+void CabinetService::on_init_clicked()
+{
+    QProcess process;
+    process.start("rm /home/config/cabinet.ini");
+    process.waitForFinished();
+    qApp->closeAllWindows();
+
+#ifdef SIMULATE_ON
+    QProcess::startDetached(qApp->applicationFilePath(), QStringList());
+#else
+    QProcess::startDetached("/home/qtdemo");
+#endif
+}
+
+void CabinetService::on_check_clicked()
+{
+#ifdef SIMULATE_ON
+    return;
+#endif
+    QProcess process;
+    process.start("rm /etc/pointercal");
+    process.waitForFinished();
+    QProcess::startDetached("/home/qtdemo");
+}

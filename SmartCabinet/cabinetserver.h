@@ -61,6 +61,7 @@ signals:
     void goodsNumChanged(QString goodsId, int goodsNum);
     void accessFailed(QString msg);
     void timeUpdate();
+    void idUpdate();
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);

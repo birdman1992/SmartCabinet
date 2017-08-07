@@ -9,10 +9,12 @@ CabinetCheckItem::CabinetCheckItem(GoodsInfo* info, QWidget *parent) :
     ui->setupUi(this);
     name = info->name;
     package_id = info->packageId;
-    num = info->num;
+    maxNum = info->num;
+    num = 0;
 
     ui->name->setText(name);
     ui->num->setText(QString::number(num));
+    ui->maxNum->setText(QString::number(maxNum));
 }
 
 CabinetCheckItem::~CabinetCheckItem()
@@ -30,6 +32,22 @@ QString CabinetCheckItem::itemId()
     return package_id;
 }
 
+bool CabinetCheckItem::itemAdd()
+{
+    if(num >= maxNum)
+    {
+        num = maxNum;
+        ui->num->setText(QString::number(num));
+        return false;
+    }
+    else
+    {
+        num++;
+        ui->num->setText(QString::number(num));
+        return true;
+    }
+}
+
 void CabinetCheckItem::paintEvent(QPaintEvent*)
 {
     QStyleOption opt;
@@ -38,26 +56,26 @@ void CabinetCheckItem::paintEvent(QPaintEvent*)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-void CabinetCheckItem::on_minus_10_clicked()
-{
-    num = (num-10)<0?0:(num-10);
-    ui->num->setText(QString::number(num));
-}
+//void CabinetCheckItem::on_minus_10_clicked()
+//{
+//    num = (num-10)<0?0:(num-10);
+//    ui->num->setText(QString::number(num));
+//}
 
-void CabinetCheckItem::on_minus_clicked()
-{
-    num = (num-1)<0?0:(num-1);
-    ui->num->setText(QString::number(num));
-}
+//void CabinetCheckItem::on_minus_clicked()
+//{
+//    num = (num-1)<0?0:(num-1);
+//    ui->num->setText(QString::number(num));
+//}
 
-void CabinetCheckItem::on_add_clicked()
-{
-    num += 1;
-    ui->num->setText(QString::number(num));
-}
+//void CabinetCheckItem::on_add_clicked()
+//{
+//    num += 1;
+//    ui->num->setText(QString::number(num));
+//}
 
-void CabinetCheckItem::on_add_10_clicked()
-{
-    num += 10;
-    ui->num->setText(QString::number(num));
-}
+//void CabinetCheckItem::on_add_10_clicked()
+//{
+//    num += 10;
+//    ui->num->setText(QString::number(num));
+//}

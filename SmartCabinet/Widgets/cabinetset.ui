@@ -225,6 +225,9 @@
    <property name="styleSheet">
     <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
    </property>
+   <property name="text">
+    <string>120.77.159.8:8080</string>
+   </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">

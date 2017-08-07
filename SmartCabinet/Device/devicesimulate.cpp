@@ -127,3 +127,11 @@ void DeviceSimulate::on_car1_clicked()
     emit sendRfidData(qba);
 }
 
+
+void DeviceSimulate::on_car2_clicked()
+{
+    QByteArray qba = "fc0700000000ff";
+    qba.replace(4,8, ui->car2->text().toLocal8Bit());
+    qba = QByteArray::fromHex(qba);
+    emit sendRfidData(qba);
+}

@@ -111,7 +111,7 @@ void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
     qDebug()<<"bind"<<info.id;
     config->list_cabinet[seq]->setCaseName(info, index);
-    emit requireCaseBind(seq, index, info.id);
+    emit requireCaseBind(seq, index, info.packageId);
 }
 
 void CabinetWidget::initAccessState()
@@ -342,7 +342,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
 
     bool newStore = false;
-    QByteArray code = scanDataTrans(qba);//截取去掉唯一码
+    QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
 
     if(scanInfo != QString(code))
     {
@@ -363,7 +363,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         else
             qDebug()<<"[recvScanData]"<<"scan goods id find";
         //根据物品名搜索柜格位置
-        CaseAddress pos = config->checkCabinetByName(curGoods->name);
+        CaseAddress pos = config->checkCabinetByBarCode(curGoods->packageBarcode);
 
         if(pos.cabinetSeqNUM == -1)//没有搜索到药品对应的柜格
         {
@@ -429,6 +429,10 @@ void CabinetWidget::recvScanData(QByteArray qba)
     else if(config->state == STATE_LIST)
     {
         win_cab_list_view->recvScanData(qba);
+    }
+    else if(config->state == STATE_CHECK)
+    {
+        win_check->checkScan(scanInfo,fullScanInfo);
     }
 
 }
@@ -595,6 +599,7 @@ void CabinetWidget::on_check_clicked(bool checked)
     if(checked)
     {
         config->state = STATE_CHECK;
+        waitForCodeScan = true;
         config->list_cabinet[0]->showMsg(MSG_CHECK,false);
         clickLock = false;
         clearMenuState();
@@ -841,8 +846,9 @@ void CabinetWidget::recvGoodsCheckRst(QString msg)
 
 void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
 {
-    CaseAddress addr = config->checkCabinetByGoodsId(goodsId);
+    CaseAddress addr = config->checkCabinetByBarCode(goodsId);
     waitForServer = false;
+//    qDebug()<<goodsId<<num<<config->state;
     if(addr.cabinetSeqNUM == -1)
         return;
     else
@@ -881,6 +887,11 @@ void CabinetWidget::accessFailedMsg(QString msg)
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+}
+
+void CabinetWidget::updateId()
+{
+    ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
 }
 
 void CabinetWidget::newGoodsList(QString, QString)

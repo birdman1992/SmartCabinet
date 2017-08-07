@@ -38,6 +38,7 @@ private slots:
     void on_listCode_clicked();
     void on_listCode_2_clicked();
     void on_car1_clicked();
+    void on_car2_clicked();
 };
 
 #endif // DEVICESIMULATE_H

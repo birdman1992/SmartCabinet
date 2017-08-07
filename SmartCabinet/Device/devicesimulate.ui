@@ -135,7 +135,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>220170726092219033</string>
+        <string>220170803100457173</string>
        </property>
       </widget>
       <widget class="QPushButton" name="listCode_2">
@@ -174,7 +174,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>00000006</string>
+        <string>77777777</string>
        </property>
       </widget>
       <widget class="QPushButton" name="car3">
@@ -187,7 +187,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>00000007</string>
+        <string>88888</string>
        </property>
       </widget>
       <widget class="QPushButton" name="car4">
@@ -200,7 +200,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>00000008</string>
+        <string>66666</string>
        </property>
       </widget>
      </widget>
@@ -218,7 +218,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>2017-A0213002797-10-</string>
+        <string>2017-B0203000317-10-</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_6">

@@ -10,7 +10,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
-#define DEV_RFID_CTRL "/dev/ttymxc4"    //rfid网关串口
+#define DEV_RFID_CTRL "/dev/ttymxc3"    //rfid网关串口
 //#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
@@ -313,7 +313,7 @@ void ControlDevice::readCodeScanData(QByteArray qba)
 
 void ControlDevice::readRfidData(QByteArray qba)
 {
-//    qDebug()<<"[readRfidData]"<<qba.toHex();
+    qDebug()<<"[readRfidData]"<<qba.toHex();
     if(qba.at(1) != qba.size())
         return;
 

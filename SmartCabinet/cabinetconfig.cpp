@@ -57,7 +57,7 @@ void CabinetConfig::setServerAddress(QString addr)
     serverAddr = addr;
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("SERVER", addr);
-    restart();
+//    restart();
 }
 
 void CabinetConfig::clearConfig()
@@ -136,6 +136,14 @@ void CabinetConfig::readCabinetConfig()
 
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
 
+    cabinetId = settings.value("CabinetId", QString()).toString();
+
+    if(cabinetId.isEmpty())
+    {
+        firstUse = true;
+//        return;
+    }
+
     int cabNum = settings.value("CabNum",0).toInt();
     if(cabNum == 0)
     {
@@ -147,14 +155,18 @@ void CabinetConfig::readCabinetConfig()
     if(serverAddr.isEmpty())
     {
         firstUse = true;
-        return;
+//        return;
     }
 
     int i = 0;
     int j = 0;
     int k = 0;
 
-    cabinetId = settings.value("CabinetId", QString()).toString();
+    if(!list_cabinet.isEmpty())
+    {
+        qDeleteAll(list_cabinet.begin(),list_cabinet.end());
+        list_cabinet.clear();
+    }
 
     for(i=0; i<cabNum; i++)
     {
@@ -396,9 +408,10 @@ void CabinetConfig::addNewUser(UserInfo *info)
 
 void CabinetConfig::restart()
 {
-    qApp->closeAllWindows();
-
+//    qDebug()<<"[restart]";
+//    return;
 #ifdef SIMULATE_ON
+    qApp->closeAllWindows();
     QProcess::startDetached(qApp->applicationFilePath(), QStringList());
 #else
     QProcess::startDetached("/home/qtdemo");

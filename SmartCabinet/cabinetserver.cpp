@@ -47,11 +47,11 @@ bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
         return true;
 
     ApiAddress = config->getServerAddress();
-    if(ApiAddress.isEmpty())
-    {
-        ApiAddress = SERVER_ADDR;
-        config->setServerAddress(ApiAddress);
-    }
+//    if(ApiAddress.isEmpty())
+//    {
+//        ApiAddress = SERVER_ADDR;
+//        config->setServerAddress(ApiAddress);
+//    }
     checkTime();
 //    config->getCabinetId();
 
@@ -138,6 +138,7 @@ void CabinetServer::replyCheck(QNetworkReply *reply)
 
 void CabinetServer::getServerAddr(QString addr)
 {
+    qDebug("[getServerAddr]");
     ApiAddress = QString("http://") + addr;
     needSaveAddress = true;
 //    config->setServerAddress(ApiAddress);
@@ -371,6 +372,7 @@ void CabinetServer::recvCabRegister()
         qDebug()<<"[Cabinet register]:success"<<regId;
         config->setCabinetId(regId);
         qDebug()<<"reg"<<config->getCabinetId();
+        emit idUpdate();
     }
     else
     {
@@ -611,6 +613,7 @@ void CabinetServer::recvListAccess()
     reply_goods_access = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvListAccess]";
     qDebug()<<cJSON_Print(json);
 
     if(!json)
@@ -633,7 +636,9 @@ void CabinetServer::recvListAccess()
         {
             cJSON* item = cJSON_GetArrayItem(data, i);
             QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(item,"goodsId")->valuestring);
+            int goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             int goodsNum = cJSON_GetObjectItem(item, "packageCount")->valueint;
+            goodsId += "-"+QString::number(goodsType);
             emit goodsNumChanged(goodsId, goodsNum);
         }
     }
@@ -705,6 +710,7 @@ void CabinetServer::recvDateTime()
 
     if(!needSaveAddress)
         return;
+    needSaveAddress = false;
 
     config->setServerAddress(ApiAddress);
 
