@@ -368,6 +368,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
 
     if(config->state == STATE_STORE)
     {
+        return;
         curGoods = curStoreList->getGoodsById(scanInfo);
         if(curGoods == NULL)
         {

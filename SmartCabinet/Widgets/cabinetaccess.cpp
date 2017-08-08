@@ -171,7 +171,9 @@ void CabinetAccess::scanOpen(QString goodsId)
     else if(config->state == STATE_FETCH)
     {
         addr = config->checkCabinetByBarCode(goodsId);
+//        qDebug()<<"fetch1"<<config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
+//        qDebug()<<"fetch2"<<config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         ui->name->setText(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->name);
         ui->tip->setText("正在取出");
     }
@@ -215,7 +217,11 @@ void CabinetAccess::storeFailed(QString msg)
 
 void CabinetAccess::fetchFailed(QString msg)
 {
-    config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum--;
+//    if(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum > 0)
+        config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum--;
+//        qDebug()<<"fetchFailed"<<config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+//    else
+//        config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum = 0;
     ui->tip->setText(msg);
 }
 
@@ -256,6 +262,8 @@ void CabinetAccess::on_ok_clicked()
 //    {
     this->hide();
     keyBoard->hide();
+//    if(config->state == STATE_FETCH)
+
 //    }
 //    else
 //    {
@@ -307,14 +315,16 @@ void CabinetAccess::recvOptGoodsNum(int num)
     {
         int outNum = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         QString unit = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
-        ui->info->setText(QString("已取出%1%2，剩余%3%4").arg(outNum).arg(unit).arg(num).arg(unit));
+        int goodsType = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
+        ui->info->setText(QString("已取出%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
         ui->tip->setText("取出成功");
     }
     else if(config->state == STATE_REFUN)
     {
         int outNum = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+        int goodsType = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
         QString unit = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
-        ui->info->setText(QString("已退%1%2，剩余%3%4").arg(outNum).arg(unit).arg(num).arg(unit));
+        ui->info->setText(QString("已退%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
         ui->tip->setText("退货成功");
     }
 }
