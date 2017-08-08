@@ -72,7 +72,7 @@ QString CabinetInfo::caseShowStr()
         QString str = list_goods.at(i)->name;
         if(!str.isEmpty())
         {
-            str += QString("×%1").arg(list_goods.at(i)->num);
+            str += QString("(%1)×%2").arg(list_goods.at(i)->goodsType).arg(list_goods.at(i)->num);
             str += "\n";
             ret += str;
         }
@@ -94,4 +94,5 @@ GoodsInfo::GoodsInfo(GoodsInfo &info)
     packageId = info.packageId;
     unit = info.unit;
     Py = info.Py;
+    goodsType = info.goodsType;
 }

@@ -162,6 +162,7 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
     if((addr.cabinetSeqNUM == -1) || num<0)
         return;
 
+    qDebug()<<"[updateGoodsNum]"<<addr.cabinetSeqNUM<<addr.caseIndex<<addr.goodsIndex<<num;
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
     QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
     lab->setText(list_case.at(addr.caseIndex)->caseShowStr());

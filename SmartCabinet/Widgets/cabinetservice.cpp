@@ -99,7 +99,7 @@ void CabinetService::initGroup()
     l_lock_num.addButton(ui->btn_6, 6);
     l_lock_num.addButton(ui->btn_7, 7);
     l_lock_num.addButton(ui->btn_8, 8);
-    l_lock_num.addButton(ui->btn_9, 8);
+    l_lock_num.addButton(ui->btn_9, 9);
     l_lock_num.addButton(ui->btn_10, 10);
     l_lock_num.addButton(ui->btn_11, 11);
     l_lock_num.addButton(ui->btn_12, 12);

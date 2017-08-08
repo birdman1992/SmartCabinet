@@ -523,7 +523,7 @@ border-image: url(:/image/image/btn_out_sel.png);
              </layout>
             </widget>
             <widget class="QWidget" name="page">
-             <layout class="QVBoxLayout" name="verticalLayout_7" stretch="6,4">
+             <layout class="QVBoxLayout" name="verticalLayout_7" stretch="6,8">
               <property name="spacing">
                <number>1</number>
               </property>
@@ -531,7 +531,7 @@ border-image: url(:/image/image/btn_out_sel.png);
                <number>10</number>
               </property>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_8" stretch="1,1">
+               <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1">
                 <property name="leftMargin">
                  <number>30</number>
                 </property>
@@ -552,7 +552,7 @@ border-image: url(:/image/image/btn_out_sel.png);
                   <property name="sizeHint" stdset="0">
                    <size>
                     <width>20</width>
-                    <height>40</height>
+                    <height>10</height>
                    </size>
                   </property>
                  </spacer>
@@ -582,45 +582,12 @@ border-image: url(:/image/image/btn_out_sel.png);
               </item>
               <item>
                <widget class="QFrame" name="search_frame">
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QGridLayout" name="gridLayout">
-                 <property name="topMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>15</number>
-                 </property>
-                 <property name="spacing">
-                  <number>5</number>
-                 </property>
-                 <item row="1" column="0">
-                  <widget class="QPushButton" name="btn_0">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>50</width>
-                     <height>50</height>
-                    </size>
-                   </property>
-                   <property name="focusPolicy">
-                    <enum>Qt::NoFocus</enum>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
+                <property name="styleSheet">
+                 <string notr="true">QPushButton::!checked{
+font: 35px &quot;微软雅黑&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
-border-radius: 25px;
+border-radius: 35px;
 background-color:  rgba(22, 52, 73, 200);
 }
 
@@ -630,6 +597,36 @@ border:0px solid grey;
 border-radius: 25px;
 background-color: rgb(36, 221, 149);
 }</string>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout">
+                 <property name="topMargin">
+                  <number>20</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QPushButton" name="btn_0">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>70</width>
+                     <height>70</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>A</string>
@@ -642,7 +639,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
+                 <item row="0" column="1">
                   <widget class="QPushButton" name="btn_1">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -652,28 +649,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>B</string>
@@ -686,7 +670,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
+                 <item row="0" column="2">
                   <widget class="QPushButton" name="btn_2">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -696,28 +680,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>C</string>
@@ -730,7 +701,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="3">
+                 <item row="0" column="3">
                   <widget class="QPushButton" name="btn_3">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -740,28 +711,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>D</string>
@@ -774,7 +732,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4">
+                 <item row="1" column="0">
                   <widget class="QPushButton" name="btn_4">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -784,28 +742,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>E</string>
@@ -818,7 +763,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
+                 <item row="1" column="1">
                   <widget class="QPushButton" name="btn_5">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -828,28 +773,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>F</string>
@@ -862,7 +794,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
+                 <item row="1" column="2">
                   <widget class="QPushButton" name="btn_6">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -872,28 +804,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>G</string>
@@ -906,7 +825,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="2">
+                 <item row="1" column="3">
                   <widget class="QPushButton" name="btn_7">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -916,28 +835,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>H</string>
@@ -950,7 +856,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="3">
+                 <item row="2" column="0">
                   <widget class="QPushButton" name="btn_8">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -960,28 +866,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>I</string>
@@ -994,7 +887,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="4">
+                 <item row="2" column="1">
                   <widget class="QPushButton" name="btn_9">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1004,28 +897,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>J</string>
@@ -1038,7 +918,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
+                 <item row="2" column="2">
                   <widget class="QPushButton" name="btn_10">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1048,28 +928,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>K</string>
@@ -1082,7 +949,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="1">
+                 <item row="2" column="3">
                   <widget class="QPushButton" name="btn_11">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1092,28 +959,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>L</string>
@@ -1126,7 +980,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="2">
+                 <item row="3" column="0">
                   <widget class="QPushButton" name="btn_12">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1136,28 +990,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>M</string>
@@ -1170,7 +1011,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="3">
+                 <item row="3" column="1">
                   <widget class="QPushButton" name="btn_13">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1180,28 +1021,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>N</string>
@@ -1214,7 +1042,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="4">
+                 <item row="3" column="2">
                   <widget class="QPushButton" name="btn_14">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1224,28 +1052,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>O</string>
@@ -1258,7 +1073,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
+                 <item row="3" column="3">
                   <widget class="QPushButton" name="btn_15">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1268,28 +1083,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>P</string>
@@ -1302,7 +1104,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="1">
+                 <item row="4" column="0">
                   <widget class="QPushButton" name="btn_16">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1312,28 +1114,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>Q</string>
@@ -1346,7 +1135,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="2">
+                 <item row="4" column="1">
                   <widget class="QPushButton" name="btn_17">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1356,28 +1145,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>R</string>
@@ -1390,7 +1166,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="3">
+                 <item row="4" column="2">
                   <widget class="QPushButton" name="btn_18">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1400,28 +1176,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>S</string>
@@ -1434,7 +1197,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="4">
+                 <item row="4" column="3">
                   <widget class="QPushButton" name="btn_19">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1444,28 +1207,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>T</string>
@@ -1479,6 +1229,28 @@ background-color: rgb(36, 221, 149);
                   </widget>
                  </item>
                  <item row="5" column="0">
+                  <widget class="QPushButton" name="btn_25">
+                   <property name="minimumSize">
+                    <size>
+                     <width>70</width>
+                     <height>70</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                   <property name="text">
+                    <string>U</string>
+                   </property>
+                   <property name="checkable">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
                   <widget class="QPushButton" name="btn_20">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1488,28 +1260,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>V</string>
@@ -1522,7 +1281,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="1">
+                 <item row="5" column="2">
                   <widget class="QPushButton" name="btn_21">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1532,28 +1291,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>W</string>
@@ -1566,7 +1312,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="2">
+                 <item row="5" column="3">
                   <widget class="QPushButton" name="btn_22">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1576,28 +1322,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>X</string>
@@ -1610,7 +1343,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="3">
+                 <item row="6" column="0">
                   <widget class="QPushButton" name="btn_23">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1620,28 +1353,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>Y</string>
@@ -1654,7 +1374,7 @@ background-color: rgb(36, 221, 149);
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="4">
+                 <item row="6" column="1">
                   <widget class="QPushButton" name="btn_24">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1664,28 +1384,15 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>50</width>
-                     <height>50</height>
+                     <width>70</width>
+                     <height>70</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
                     <enum>Qt::NoFocus</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">QPushButton::!checked{
-font: 30px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color:  rgba(22, 52, 73, 200);
-}
-
-QPushButton::checked{
-color: rgb(255, 255, 255);
-border:0px solid grey;
-border-radius: 25px;
-background-color: rgb(36, 221, 149);
-}</string>
+                    <string notr="true"/>
                    </property>
                    <property name="text">
                     <string>Z</string>

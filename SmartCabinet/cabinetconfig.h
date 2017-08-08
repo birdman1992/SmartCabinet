@@ -29,6 +29,7 @@ public:
     CabinetConfig();
     ~CabinetConfig();
     void setCabinetId(QString id);
+    int getGoodsType(QString packageId);
     QString getPyCh(QString str);
     QString getCabinetId();
     QString getServerAddress();

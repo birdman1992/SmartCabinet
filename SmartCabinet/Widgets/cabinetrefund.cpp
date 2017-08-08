@@ -42,6 +42,7 @@ void CabinetRefund::refundScan(QString scanId, QString fullId)
 
     for(i=0; i<list_item.count(); i++)
     {
+        qDebug()<<scanId<<list_item.at(i)->itemId();
         if(scanId == list_item.at(i)->itemId())
         {
             if(!list_item.at(i)->itemAdd())
@@ -59,7 +60,7 @@ void CabinetRefund::refundScan(QString scanId, QString fullId)
 }
 
 void CabinetRefund::refundStart(CaseAddress addr)
-{
+{qDebug("[refundStart]");
     ui->msg->setText("");
     ui->ok->setText("提交");
 

@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
 #ifndef SIMULATE_ON
-    QWSServer::setCursorVisible(false);
+//    QWSServer::setCursorVisible(false);
 #endif
     MyInputPanelContext* inputContext = new MyInputPanelContext;
     QFile outFile("/home/debuglog.txt");

@@ -32,7 +32,8 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
+   <string notr="true">background-color: rgba(0, 0, 0, 0);
+font: 15px &quot;微软雅黑&quot;;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="2,4">
    <property name="spacing">
@@ -66,7 +67,11 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>9</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>-1</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
       </font>
      </property>
      <property name="styleSheet">
@@ -99,7 +104,7 @@
      </property>
      <property name="styleSheet">
       <string notr="true">QTableWidget{
-                                   font-size: 15px;
+                                   font-size: 25px;
                                        color: rgb(255, 255, 255);    /*前景色：文字颜色*/
                                        border:0px solid gray;  /*边框线的宽度、颜色*/
                                    }</string>

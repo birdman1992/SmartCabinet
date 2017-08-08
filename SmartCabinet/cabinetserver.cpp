@@ -638,7 +638,13 @@ void CabinetServer::recvListAccess()
             QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(item,"goodsId")->valuestring);
             int goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             int goodsNum = cJSON_GetObjectItem(item, "packageCount")->valueint;
-            goodsId += "-"+QString::number(goodsType);
+            qDebug()<<goodsId<<goodsNum;
+            if(goodsType<10)
+                goodsId += "-0"+QString::number(goodsType);
+            else
+                goodsId += "-"+QString::number(goodsType);
+
+            qDebug()<<goodsId;
             emit goodsNumChanged(goodsId, goodsNum);
         }
     }
@@ -742,10 +748,10 @@ void CabinetServer::recvListState()
         cJSON_Delete(json);
         return;
     }
-qDebug("A");
+
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
-    {qDebug("b");
+    {
         cJSON* json_data = cJSON_GetObjectItem(json,"data");
         if(json_data->type == cJSON_NULL)
         {
@@ -766,8 +772,8 @@ qDebug("A");
 //            needReqCar = false;
         }
     }
-    qDebug("c");
-    cJSON_Delete(json);qDebug("d");
+
+    cJSON_Delete(json);
 }
 
 void CabinetServer::sysTimeout()

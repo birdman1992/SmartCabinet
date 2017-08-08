@@ -55,6 +55,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(win_store_list, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
     connect(win_store_list, SIGNAL(storeList(QList<CabinetStoreListItem*>)), this, SIGNAL(storeList(QList<CabinetStoreListItem*>)));
 
+    connect(win_refund, SIGNAL(refundCase(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
 //    optUser = QString();
     ui->store->hide();
     ui->refund->hide();
@@ -110,11 +111,14 @@ void CabinetWidget::cabLock()
     ui->search->hide();
     curStoreList = NULL;
     config->state = STATE_FETCH;
+    config->clearSearch();
 }
 
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
     qDebug()<<"bind"<<info.id;
+    info.goodsType = config->getGoodsType(info.packageId);
+    qDebug()<<info.goodsType;
     config->list_cabinet[seq]->setCaseName(info, index);
     emit requireCaseBind(seq, index, info.packageId);
 }
@@ -152,7 +156,8 @@ void CabinetWidget::initSearchBtns()
     groupBtn.addButton(ui->btn_22, 22);
     groupBtn.addButton(ui->btn_23, 23);
     groupBtn.addButton(ui->btn_24, 24);
-    groupBtn.setExclusive(false);
+    groupBtn.addButton(ui->btn_25, 25);
+    groupBtn.setExclusive(true);
 
     connect(&groupBtn, SIGNAL(buttonClicked(int)), this, SLOT(pinyinSearch(int)));
 }
@@ -420,20 +425,20 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_REFUN)
     {
-        CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
-        if(addr.cabinetSeqNUM == -1)
-        {
-            qDebug()<<"[refun]"<<"scan data not find";
-            return;
-        }
-//        if(config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
-        {
-            if(!needWaitForServer())
-            {
-                win_access->scanOpen(scanInfo);
-                emit goodsAccess(addr, fullScanInfo,1, 3);
-            }
-        }
+        win_refund->refundScan(scanInfo,fullScanInfo);
+//        CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
+//        if(addr.cabinetSeqNUM == -1)
+//        {
+//            qDebug()<<"[refun]"<<"scan data not find";
+//            return;
+//        }
+
+//        if(!needWaitForServer())
+//        {
+//            win_access->scanOpen(scanInfo);
+//            emit goodsAccess(addr, fullScanInfo,1, 3);
+//        }
+
     }
     else if(config->state == STATE_LIST)
     {
@@ -500,6 +505,7 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
     win_cab_list_view->installGlobalConfig(config);
     win_check->installGlobalConfig(config);
     win_store_list->installGlobalConfig(config);
+    win_refund->installGlobalConfig(config);
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
     return true;
 }
@@ -567,6 +573,7 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
         config->list_cabinet[0]->showMsg(MSG_REFUND,false);
         clearMenuState();
         ui->refund->setChecked(true);
+        waitForCodeScan = true;
     }
     else
     {
@@ -624,22 +631,25 @@ void CabinetWidget::on_check_clicked(bool checked)
 
 void CabinetWidget::pinyinSearch(int id)
 {
-    int i = 0;
+//    int i = 0;
     qDebug()<<groupBtn.button(id)->text()<<groupBtn.button(id)->isChecked();
 
-    if(!groupBtn.button(id)->isChecked())
-    {
-        groupBtn.button(id)->setChecked(false);
-        config->clearSearch();
-        return;
-    }
+//    if(!groupBtn.button(id)->isChecked())
+//    {
+//        groupBtn.button(id)->setChecked(false);
+//        config->clearSearch();
+//        return;
+//    }
+//    else
+        config->searchByPinyin(groupBtn.button(id)->text().at(0));
 
-    for(i=0; i<25; i++)
-    {
-        if(i != id)
-            groupBtn.button(i)->setChecked(false);
-    }
-    config->searchByPinyin(groupBtn.button(id)->text().at(0));
+//    for(i=0; i<25; i++)
+//    {
+//        if(i != id)
+//            groupBtn.button(i)->setChecked(false);
+//    }
+
+
 }
 
 void CabinetWidget::wait_timeout()
@@ -857,7 +867,7 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
 {
     CaseAddress addr = config->checkCabinetByBarCode(goodsId);
     waitForServer = false;
-//    qDebug()<<goodsId<<num<<config->state;
+    qDebug()<<goodsId<<num<<config->state<<addr.cabinetSeqNUM;
     if(addr.cabinetSeqNUM == -1)
         return;
     else
@@ -867,6 +877,8 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
             win_cab_list_view->fetchSuccess();
         else if(config->state == STATE_STORE)
             win_store_list->storeRst("存入成功",true);
+        else if(config->state == STATE_REFUN)
+            win_refund->refundRst("退货成功");
         else
         {
             emit goodsNumChanged(num);
@@ -889,6 +901,10 @@ void CabinetWidget::accessFailedMsg(QString msg)
     else if(config->state == STATE_FETCH)
     {
         win_access->fetchFailed(msg);
+    }
+    else if(config->state == STATE_REFUN)
+    {
+        win_refund->refundRst(msg);
     }
     qDebug()<<msg;
 }
