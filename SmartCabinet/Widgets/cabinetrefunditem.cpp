@@ -34,18 +34,18 @@ QString CabinetRefundItem::itemId()
 
 bool CabinetRefundItem::itemAdd()
 {
-    if(num >= maxNum)
-    {
-        num = maxNum;
-        ui->num->setText(QString::number(num));
-        return false;
-    }
-    else
-    {
+//    if(num >= maxNum)
+//    {
+//        num = maxNum;
+//        ui->num->setText(QString::number(num));
+//        return false;
+//    }
+//    else
+//    {
         num++;
         ui->num->setText(QString::number(num));
         return true;
-    }
+//    }
 }
 
 void CabinetRefundItem::paintEvent(QPaintEvent*)

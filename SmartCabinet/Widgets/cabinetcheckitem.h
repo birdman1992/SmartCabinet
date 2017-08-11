@@ -23,9 +23,9 @@ public:
 private slots:
 //    void on_minus_10_clicked();
 
-//    void on_minus_clicked();
+    void on_minus_clicked();
 
-//    void on_add_clicked();
+    void on_add_clicked();
 
 //    void on_add_10_clicked();
 

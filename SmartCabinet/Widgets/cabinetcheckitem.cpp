@@ -62,17 +62,18 @@ void CabinetCheckItem::paintEvent(QPaintEvent*)
 //    ui->num->setText(QString::number(num));
 //}
 
-//void CabinetCheckItem::on_minus_clicked()
-//{
-//    num = (num-1)<0?0:(num-1);
-//    ui->num->setText(QString::number(num));
-//}
+void CabinetCheckItem::on_minus_clicked()
+{
+    num = (num-1)<0?0:(num-1);
+    ui->num->setText(QString::number(num));
+}
 
-//void CabinetCheckItem::on_add_clicked()
-//{
+void CabinetCheckItem::on_add_clicked()
+{
+    itemAdd();
 //    num += 1;
 //    ui->num->setText(QString::number(num));
-//}
+}
 
 //void CabinetCheckItem::on_add_10_clicked()
 //{

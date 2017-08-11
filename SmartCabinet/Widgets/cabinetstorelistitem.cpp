@@ -16,6 +16,8 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
 
     ui->name->setText(name);
     ui->num->setText(QString::number(num));
+    ui->add->hide();
+    ui->minus->hide();
 
     updateOptState();
 }
