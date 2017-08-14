@@ -17,7 +17,8 @@
 #define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
 #define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //退货接口
 #define API_CHECK_TIME "/spd-web/mapper/Time/query/"
-#define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口
+#define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
+#define API_REQ_LIST_NEW "/spd/work/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
 
 
 
@@ -118,7 +119,7 @@ void CabinetServer::checkSysTime(QDateTime _time)
 void CabinetServer::requireListState()
 {
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(config->getCabinetId()).toUtf8();
-    QString url = ApiAddress + QString(API_REQ_LIST) +'?'+ qba.toBase64();
+    QString url = ApiAddress + QString(API_REQ_LIST_NEW) +'?'+ qba.toBase64();
 
     replyCheck(reply_list_state);
     reply_list_state = manager->get(QNetworkRequest(QUrl(url)));

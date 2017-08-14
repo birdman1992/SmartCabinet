@@ -1,7 +1,7 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#define CONF_USER "/home/config/user.ini"
+#define CONF_USER "/home/config/cabinet.ini"
 #define CONF_CABINET "/home/config/cabinet.ini"
 
 /*模拟无服务器状态*/
