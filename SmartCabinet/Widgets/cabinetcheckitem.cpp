@@ -7,7 +7,7 @@ CabinetCheckItem::CabinetCheckItem(GoodsInfo* info, QWidget *parent) :
     ui(new Ui::CabinetCheckItem)
 {
     ui->setupUi(this);
-    name = info->name;
+    name = info->nameWithType();
     package_id = info->packageId;
     maxNum = info->num;
     num = 0;

@@ -7,7 +7,7 @@ CabinetRefundItem::CabinetRefundItem(GoodsInfo* info, QWidget *parent) :
     ui(new Ui::CabinetRefundItem)
 {
     ui->setupUi(this);
-    name = info->name;
+    name = info->nameWithType();
     package_id = info->packageId;
     maxNum = info->num;
     num = 0;

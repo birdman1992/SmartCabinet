@@ -95,3 +95,8 @@ GoodsInfo::GoodsInfo(GoodsInfo &info)
     Py = info.Py;
     goodsType = info.goodsType;
 }
+
+QString GoodsInfo::nameWithType()
+{
+    return QString(name + QString("(%1)").arg(goodsType));
+}

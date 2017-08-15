@@ -401,12 +401,17 @@ void CabinetConfig::addNewUser(UserInfo *info)
     }
 
     QSettings settings(CONF_USER,QSettings::IniFormat);
-    settings.beginGroup(QString("user%1").arg(list_user.count()));
+    settings.beginGroup(QString("Users"));
+    int index = settings.beginReadArray("user");
+    settings.endArray();
+    settings.beginWriteArray("user");
+    settings.setArrayIndex(index);
+    settings.setValue("name",QVariant(info->name));
+    settings.setValue("power", QVariant(info->power));
     settings.setValue("cardId",QVariant(info->cardId));
+    settings.endArray();
     settings.endGroup();
     list_user<<info;
-    settings.setValue("userNum", QVariant(list_user.count()));
-    firstUse = false;
 }
 
 void CabinetConfig::restart()

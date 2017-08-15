@@ -18,7 +18,7 @@
 #define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //退货接口
 #define API_CHECK_TIME "/spd-web/mapper/Time/query/"
 #define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
-#define API_REQ_LIST_NEW "/spd/work/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
+#define API_LIST_CHECK_NEW "/spd-web/work/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
 
 
 
@@ -119,7 +119,7 @@ void CabinetServer::checkSysTime(QDateTime _time)
 void CabinetServer::requireListState()
 {
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(config->getCabinetId()).toUtf8();
-    QString url = ApiAddress + QString(API_REQ_LIST_NEW) +'?'+ qba.toBase64();
+    QString url = ApiAddress + QString(API_REQ_LIST) +'?'+ qba.toBase64();
 
     replyCheck(reply_list_state);
     reply_list_state = manager->get(QNetworkRequest(QUrl(url)));
@@ -171,7 +171,7 @@ void CabinetServer::userLogin(QString userId)
 void CabinetServer::listCheck(QString code)
 {
     QByteArray qba = QString("{\"barcode\":\"%1\"}").arg(code).toUtf8();
-    QString nUrl = ApiAddress+QString(API_LIST_CHECK)+'?'+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_LIST_CHECK_NEW)+'?'+qba.toBase64();
     barCode = code;
     qDebug()<<"[listCheck]"<<nUrl;
     replyCheck(reply_list_check);
@@ -639,13 +639,13 @@ void CabinetServer::recvListAccess()
             QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(item,"goodsId")->valuestring);
             int goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             int goodsNum = cJSON_GetObjectItem(item, "packageCount")->valueint;
-            qDebug()<<goodsId<<goodsNum;
+
             if(goodsType<10)
                 goodsId += "-0"+QString::number(goodsType);
             else
                 goodsId += "-"+QString::number(goodsType);
 
-            qDebug()<<goodsId;
+            qDebug()<<goodsId<<goodsNum;
             emit goodsNumChanged(goodsId, goodsNum);
         }
     }

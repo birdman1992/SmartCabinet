@@ -179,7 +179,7 @@ void CabinetListView::updateCabList(QChar filter)
     int i;
     for(i=0; i<list_filted.count(); i++)
     {
-        ui->list_goods->setItem(i, 0, new QTableWidgetItem(QIcon(":/image/image/icon_ar_left.png"), list_filted[i]->name));
+        ui->list_goods->setItem(i, 0, new QTableWidgetItem(QIcon(":/image/image/icon_ar_left.png"), list_filted[i]->nameWithType()));
     }
     config->searchByPinyin(filter);
     showCabView();
