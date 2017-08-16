@@ -257,7 +257,9 @@ void CabinetService::on_init_clicked()
 #ifdef SIMULATE_ON
     QProcess::startDetached(qApp->applicationFilePath(), QStringList());
 #else
-    QProcess::startDetached("/home/qtdemo");
+    QStringList args;
+    args.append("-qws");
+    QProcess::startDetached(qApp->applicationFilePath(),args);
 #endif
 }
 
