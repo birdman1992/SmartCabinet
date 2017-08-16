@@ -112,3 +112,8 @@ void CabinetSet::on_serverAddr_editingFinished()
     }
     config->clearCabinet();
 }
+
+void CabinetSet::on_lock_test_clicked()
+{
+    emit lockTest();
+}

@@ -40,22 +40,28 @@ private:
     QNetworkReply* reply_datetime;
     QNetworkReply* reply_list_state;
     QString regId;
+    QString logId;
     QString barCode;
     QString ApiAddress;
     bool timeIsChecked;
     bool needReqCar;
     bool needSaveAddress;
+    bool networkState;
+    bool netFlag;
     QTimer sysClock;
     QStringList list_goodsList;
+    UserInfo* cur_user;
+    int apiState;
 
     void cabRegister();
     void checkTime();
     void checkSysTime(QDateTime _time);
     void requireListState();//查询是否有送货单在途中
     void replyCheck(QNetworkReply* reply);
+    void netTimeStart();
 
 signals:
-    void loginRst(UserInfo);
+    void loginRst(UserInfo*);
     void listRst(GoodsList*);
     void bindRst(bool);
     void goodsNumChanged(QString goodsId, int goodsNum);
@@ -65,6 +71,7 @@ signals:
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);
+    void netState(bool);//true:连接  false:断开
 
 public slots:
     void getServerAddr(QString addr);
@@ -91,6 +98,7 @@ private slots:
     void recvDateTime();
     void recvDateTimeError(QNetworkReply::NetworkError code);
     void recvListState();
+    void netTimeout();
 };
 
 #endif // CABINETSERVER_H

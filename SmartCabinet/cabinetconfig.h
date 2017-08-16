@@ -39,6 +39,7 @@ public:
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
     int checkUser(QString userId);//检查用户是否存在，管理员用户返回0,其他用户大于0,不存在小于0
+    UserInfo* checkUserLocal(QString userId);//本地用户校验
     void creatCabinetConfig(QByteArray);//创建智能柜配置文件
 //    void writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo* info);
     CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置,如未搜索到，返回坐标为-1
@@ -67,7 +68,6 @@ private:
     void readCabinetConfig();//读取柜子配置
     void addNewUser(UserInfo* info);
     void restart();//重启自身
-
 public slots:
 
 

@@ -17,6 +17,7 @@
 #define MSG_FETCH_EMPTY "没有库存了 请关好柜门 点击此处退出"
 #define MSG_CHECK  "请点击柜格开始盘点"
 #define MSG_REFUND  "点击柜格扫码退货"
+#define MSG_OFFLINE  "当前为离线状态，请点击 切换 按钮批量取货"
 
 CabinetWidget::CabinetWidget(QWidget *parent) :
     QWidget(parent),
@@ -91,7 +92,7 @@ void CabinetWidget::paintEvent(QPaintEvent*)
 
 void CabinetWidget::cabLock()
 {
-    optUser = UserInfo();
+    optUser = NULL;
     ui->userInfo->setText("请刷卡使用");
     storeNum = 0;
     loginState = false;
@@ -306,6 +307,12 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //            return;
 //        }
         //打开对应柜门
+        if(!ui->netState->isChecked())//离线状态只能批量取货
+        {
+            config->list_cabinet[0]->showMsg(MSG_OFFLINE,0);
+            return;
+        }
+
         qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
         emit requireOpenCase(cabSeqNum, caseIndex);
 
@@ -653,6 +660,11 @@ void CabinetWidget::pinyinSearch(int id)
 
 }
 
+void CabinetWidget::updateNetState(bool connected)
+{
+    ui->netState->setChecked(connected);
+}
+
 void CabinetWidget::wait_timeout()
 {
     waitForServer = false;
@@ -760,35 +772,66 @@ void CabinetWidget::setPowerState(int power)
     ui->check->hide();
     ui->search->show();
 
-    switch(power)
+    if(ui->netState->isChecked())
     {
-    case 0://超级管理员:|补货|退货|服务|退出|
-        ui->store->show();
-        ui->refund->show();
-        ui->service->show();
-        ui->cut->show();
-        ui->check->show();
-        break;
+        switch(power)
+        {
+        case 0://超级管理员:|补货|退货|服务|退出|
+            ui->store->show();
+            ui->refund->show();
+            ui->service->show();
+            ui->cut->show();
+            ui->check->show();
+            break;
 
-    case 1://仓库员工:|补货|退货|退出|
-        ui->store->show();
-        ui->refund->show();
-        ui->cut->show();
-        ui->check->show();
-        break;
+        case 1://仓库员工:|补货|退货|退出|
+            ui->store->show();
+            ui->refund->show();
+            ui->cut->show();
+            ui->check->show();
+            break;
 
-    case 2://医院管理:|补货|退货|服务|退出|
-        ui->store->show();
-        ui->refund->show();
-        ui->cut->show();
-//        ui->service->show();
-        break;
+        case 2://医院管理:|补货|退货|服务|退出|
+            ui->store->show();
+            ui->refund->show();
+            ui->cut->show();
+            //        ui->service->show();
+            break;
 
-    case 3://医院员工:|退货|服务|退出|
-        ui->refund->show();
-        ui->cut->show();
-//        ui->service->show();
-        break;
+        case 3://医院员工:|退货|服务|退出|
+            ui->refund->show();
+            ui->cut->show();
+            //        ui->service->show();
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        switch(power)
+        {
+        case 0://超级管理员:|服务|
+            ui->service->show();
+            ui->cut->show();
+            break;
+
+        case 1://仓库员工:
+            ui->cut->show();
+            break;
+
+        case 2://医院管理:
+            ui->cut->show();
+            //        ui->service->show();
+            break;
+
+        case 3://医院员工:
+            ui->cut->show();
+            //        ui->service->show();
+            break;
+        default:
+            break;
+        }
     }
 }
 
@@ -951,14 +994,14 @@ void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)
     emit checkCase(l, addr);
 }
 
-void CabinetWidget::recvUserCheckRst(UserInfo info)
+void CabinetWidget::recvUserCheckRst(UserInfo* info)
 {
     waitForServer = false;
     msgClear();
     optUser = info;
-    qDebug()<<optUser.cardId;
-    ui->userInfo->setText(QString("您好！%1").arg(optUser.name));
-    setPowerState(info.power);
+    qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
+    ui->userInfo->setText(QString("您好！%1").arg(optUser->name));
+    setPowerState(info->power);
     loginState = true;
     win_store_list->setLoginState(loginState);
 

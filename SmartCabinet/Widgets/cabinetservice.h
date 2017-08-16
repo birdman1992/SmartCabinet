@@ -34,7 +34,6 @@ private slots:
     void on_ok_clicked();
     void on_cancel_clicked();
     void ctrl_lock(int);
-    void ctrl_boardcast();//广播控制
     void initNetwork();
 
     void on_clear_clicked();
@@ -42,6 +41,9 @@ private slots:
     void on_init_clicked();
 
     void on_check_clicked();
+
+public slots:
+    void ctrl_boardcast();//广播控制
 
 private:
     Ui::CabinetService *ui;

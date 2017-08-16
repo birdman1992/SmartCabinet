@@ -245,6 +245,24 @@
     <string>服务器地址</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="lock_test">
+   <property name="geometry">
+    <rect>
+     <x>810</x>
+     <y>140</y>
+     <width>181</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>20</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>锁控测试</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

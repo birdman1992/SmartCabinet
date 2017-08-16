@@ -41,7 +41,7 @@ public slots:
     void recvScanData(QByteArray);
     void logoClicked();//logo被点击
     void cabinetInit();
-    void recvUserCheckRst(UserInfo);//接收用户校验结果
+    void recvUserCheckRst(UserInfo *);//接收用户校验结果
     void recvUserInfo(QByteArray qba);//接收用户信息
     void recvListInfo(GoodsList*);
     void recvBindRst(bool);
@@ -79,6 +79,7 @@ private slots:
 //    void on_fetch_toggled(bool checked);
     void on_store_clicked(bool checked);
     void pinyinSearch(int);
+    void updateNetState(bool);
 
     void on_service_clicked(bool checked);
 
@@ -109,7 +110,7 @@ private:
     bool checkMask;
     QString scanInfo;
     QString fullScanInfo;
-    UserInfo optUser;//操作者id
+    UserInfo* optUser;//操作者id
     CaseAddress casePos;
     QMessageBox* msgBox;
     GoodsList* curStoreList;

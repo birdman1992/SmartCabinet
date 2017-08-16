@@ -22,8 +22,8 @@ CabinetConfig::CabinetConfig()
         dir.mkdir("/home/config");
     }
 
-//    readUserConfig();
     readCabinetConfig();
+    readUserConfig();
 }
 
 CabinetConfig::~CabinetConfig()
@@ -108,18 +108,19 @@ void CabinetConfig::readUserConfig()
         //        firstUse = true;
         return;
     }
+    qDebug()<<"[readUserConfig]";
     QSettings settings(CONF_USER,QSettings::IniFormat);
     int i = 0;
-    firstUse = false;
+    settings.beginGroup(QString("Users"));
+    int index = settings.beginReadArray("user");
 
-    userNum = settings.value("userNum").toInt();//读取用户数量
-
-    for(i=0; i<userNum; i++)
+    for(i=0; i<index; i++)
     {
+        settings.setArrayIndex(i);
         UserInfo* info = new UserInfo;
-
-        info->cardId = settings.value(QString("user%1/cardId").arg(i)).toString();
-
+        info->name = settings.value("name", QString()).toString();
+        info->power = settings.value("power", -1).toInt();
+        info->cardId = settings.value("cardId", QString()).toString();
         list_user<<info;
     }
 }
@@ -400,6 +401,10 @@ void CabinetConfig::addNewUser(UserInfo *info)
         qDebug()<<"[addNewUser]"<<"user info is null";
     }
 
+    if(checkUserLocal(info->cardId) != NULL)
+        return;
+    qDebug()<<"[addNewUser]"<<info->cardId;
+
     QSettings settings(CONF_USER,QSettings::IniFormat);
     settings.beginGroup(QString("Users"));
     int index = settings.beginReadArray("user");
@@ -425,6 +430,20 @@ void CabinetConfig::restart()
     QProcess::startDetached("/home/qtdemo");
 #endif
 
+}
+
+UserInfo* CabinetConfig::checkUserLocal(QString userId)
+{
+    int i = 0;
+
+    for(i=0; i<list_user.count(); i++)
+    {
+        qDebug()<<list_user.at(i)->cardId<<userId;
+        if(list_user.at(i)->cardId == userId)
+            return list_user.at(i);
+    }
+
+    return NULL;
 }
 
 int CabinetConfig::getGoodsType(QString packageId)

@@ -28,6 +28,8 @@ private slots:
 
     void on_serverAddr_editingFinished();
 
+    void on_lock_test_clicked();
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
@@ -36,6 +38,7 @@ signals:
     void setCabinet(QByteArray);
     void cabinetCreated();
     void updateServerAddr(QString addr);
+    void lockTest();
 
 private:
     Ui::CabinetSet *ui;

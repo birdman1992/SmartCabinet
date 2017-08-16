@@ -64,6 +64,46 @@ background-image: url(:/image/image/bg_main.png);
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
+          <widget class="QPushButton" name="netState">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="geometry">
+            <rect>
+             <x>400</x>
+             <y>25</y>
+             <width>15</width>
+             <height>15</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">#netState::checked{
+border:1px solid rgb(140, 158, 175);
+border-radius:7px;
+background-color: rgb(147, 224, 0);
+}
+#netState::!checked{
+border:1px solid rgb(140, 158, 175);
+border-radius:7px;
+background-color: rgb(238, 0, 0);
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <property name="autoRepeat">
+            <bool>false</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>false</bool>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>

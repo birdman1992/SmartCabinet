@@ -616,7 +616,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
     connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
     connect(win_cabinet, SIGNAL(storeList(QList<CabinetStoreListItem*>)), cabServer, SLOT(goodsListStore(QList<CabinetStoreListItem*>)));
-    connect(cabServer, SIGNAL(loginRst(UserInfo)), win_cabinet, SLOT(recvUserCheckRst(UserInfo)));
+    connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));
     connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
     connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
     connect(cabServer, SIGNAL(goodsNumChanged(QString,int)), win_cabinet, SLOT(recvGoodsNumInfo(QString,int)));
@@ -625,6 +625,7 @@ void MainWidget::init_huangpo()
     connect(cabServer, SIGNAL(idUpdate()), win_cabinet, SLOT(updateId()));
     connect(cabServer, SIGNAL(goodsCheckRst(QString)), win_cabinet, SLOT(recvGoodsCheckRst(QString)));
     connect(cabServer, SIGNAL(newGoodsList(QString,QString)), win_cabinet, SLOT(newGoodsList(QString,QString)));
+    connect(cabServer, SIGNAL(netState(bool)), win_cabinet, SLOT(updateNetState(bool)));
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -644,6 +645,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
     connect(win_cabinet_set,SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
+    connect(win_cabinet_set, SIGNAL(lockTest()), win_cab_service, SLOT(ctrl_boardcast()));
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ui->stackedWidget->addWidget(win_standby);

@@ -19,6 +19,7 @@
 #define API_CHECK_TIME "/spd-web/mapper/Time/query/"
 #define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
 #define API_LIST_CHECK_NEW "/spd-web/work/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
+#define API_NETSTATE_CHECK "/spd-web/websocket/"    //网络状态检查
 
 
 
@@ -34,6 +35,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_goods_check = NULL;
     reply_datetime = NULL;
     reply_list_state = NULL;
+    apiState = 0;
     needReqCar = true;
     needSaveAddress = false;
 }
@@ -102,6 +104,7 @@ void CabinetServer::checkTime()
 
     sysClock.start(60000);
     connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+    netTimeStart();
 }
 
 void CabinetServer::checkSysTime(QDateTime _time)
@@ -127,6 +130,7 @@ void CabinetServer::requireListState()
     qDebug()<<qba;
     connect(reply_list_state, SIGNAL(readyRead()), this, SLOT(recvListState()));
 
+    netTimeStart();
 //    sysClock.start(60000);
     //    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
 }
@@ -135,6 +139,12 @@ void CabinetServer::replyCheck(QNetworkReply *reply)
 {
     if(reply != NULL)
         reply->deleteLater();
+}
+
+void CabinetServer::netTimeStart()
+{
+    netFlag = false;
+    QTimer::singleShot(5000,this,SLOT(netTimeout()));
 }
 
 void CabinetServer::getServerAddr(QString addr)
@@ -162,10 +172,13 @@ void CabinetServer::userLogin(QString userId)
     QString nUrl = ApiAddress+QString(API_LOGIN)+'?'+qba.toBase64();
     qDebug()<<"[login]"<<nUrl;
     qDebug()<<qba;
+    logId = userId;
 
     replyCheck(reply_login);
     reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
+    apiState = 1;
+    netTimeStart();
 }
 
 void CabinetServer::listCheck(QString code)
@@ -393,11 +406,11 @@ void CabinetServer::recvUserLogin()
 
     if(!json)
         return;
-
+    netFlag = true;
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
-        UserInfo info;
+        UserInfo* info = new UserInfo;
         cJSON* json_data = cJSON_GetObjectItem(json,"data");
         if(cJSON_GetArraySize(json_data) <= 0)
         {
@@ -406,15 +419,16 @@ void CabinetServer::recvUserLogin()
         }
 
         cJSON* json_info = cJSON_GetArrayItem(json_data,0);
-        info.id = cJSON_GetObjectItem(json_info,"id")->valueint;
-        info.cardId = QString(cJSON_GetObjectItem(json_info,"cardId")->valuestring);
-        info.departId = QString(cJSON_GetObjectItem(json_info,"departId")->valuestring);
-        info.identityId = QString(cJSON_GetObjectItem(json_info,"identityId")->valuestring);
-        info.name = QString(cJSON_GetObjectItem(json_info,"name")->valuestring);
-        info.power = cJSON_GetObjectItem(json_info,"power")->valueint;
-        info.tel = QString(cJSON_GetObjectItem(json_info,"tel")->valuestring);
-        qDebug()<<"[recvUserLogin]"<<info.cardId<<info.power;
+        info->id = cJSON_GetObjectItem(json_info,"id")->valueint;
+        info->cardId = QString(cJSON_GetObjectItem(json_info,"cardId")->valuestring);
+        info->departId = QString(cJSON_GetObjectItem(json_info,"departId")->valuestring);
+        info->identityId = QString(cJSON_GetObjectItem(json_info,"identityId")->valuestring);
+        info->name = QString(cJSON_GetObjectItem(json_info,"name")->valuestring);
+        info->power = cJSON_GetObjectItem(json_info,"power")->valueint;
+        info->tel = QString(cJSON_GetObjectItem(json_info,"tel")->valuestring);
+        qDebug()<<"[recvUserLogin]"<<info->cardId<<info->power;
         emit loginRst(info);
+        config->addUser(info);
     }
     else
     {
@@ -697,6 +711,7 @@ void CabinetServer::recvDateTime()
     if(!json)
         return;
 
+    netFlag = true;
     cJSON* rst = cJSON_GetObjectItem(json, "success");
 
     if(rst->type != cJSON_True)
@@ -741,6 +756,7 @@ void CabinetServer::recvListState()
     reply_list_state->deleteLater();
     reply_list_state = NULL;
 
+
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<"[recvListState]"<<cJSON_Print(json);
 
@@ -749,7 +765,7 @@ void CabinetServer::recvListState()
         cJSON_Delete(json);
         return;
     }
-
+    netFlag = true;
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
@@ -775,6 +791,30 @@ void CabinetServer::recvListState()
     }
 
     cJSON_Delete(json);
+}
+
+void CabinetServer::netTimeout()
+{
+    if(netFlag)
+        networkState = true;
+    else
+        networkState = false;
+
+    qDebug()<<"netstate"<<networkState;
+    emit netState(networkState);
+    if(apiState == 1 && (!networkState))
+    {
+        cur_user = config->checkUserLocal(logId);
+        qDebug()<<"check null";
+        if(cur_user == NULL)
+        {
+            apiState = 0;
+            return;
+        }
+        qDebug()<<"check"<<cur_user->cardId;
+        emit loginRst(cur_user);
+    }
+    apiState = 0;
 }
 
 void CabinetServer::sysTimeout()
