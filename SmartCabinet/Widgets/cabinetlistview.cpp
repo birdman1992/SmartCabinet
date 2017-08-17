@@ -49,11 +49,17 @@ void CabinetListView::fetchSuccess()
     clearList();
     getCabList();
     updateCabList();
+
 }
 
 void CabinetListView::fetchFailed(QString msg)
 {
     ui->msg->setText(msg);
+}
+
+void CabinetListView::setNetState(bool state)
+{
+    networkState = state;
 }
 
 void CabinetListView::paintEvent(QPaintEvent*)
@@ -212,7 +218,7 @@ void CabinetListView::on_list_goods_clicked(const QModelIndex &index)
         return;
 
     ui->msg->setText("");
-    CabinetListItem* item = new CabinetListItem(info->name, info->packageId);
+    CabinetListItem* item = new CabinetListItem(info->nameWithType(), info->packageId);
     CaseAddress addr = config->checkCabinetByBarCode(info->packageId);
     emit requireOpenCase(addr.cabinetSeqNUM, addr.caseIndex);
     selectMap.insert(info->packageId, item);
@@ -237,6 +243,11 @@ void CabinetListView::on_fetch_clicked()
     ui->msg->setText("正在取出");
     ui->fetch->setEnabled(false);
     emit requireAccessList(fetchList, 1);
+    qDebug()<<"networkState"<<networkState;
+    if(!networkState)
+    {
+        fetchSuccess();
+    }
 }
 
 void CabinetListView::search(int id)

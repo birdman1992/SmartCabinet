@@ -11,6 +11,7 @@
 CabinetConfig::CabinetConfig()
 {
     state = STATE_NO;
+    sleepFlag = 0;
     //    cabId.clear();
     cabinetId.clear();
     list_user.clear();
@@ -30,6 +31,48 @@ CabinetConfig::~CabinetConfig()
 {
     qDeleteAll(list_user.begin(), list_user.end());
     list_user.clear();
+}
+
+void CabinetConfig::saveFetchList(QByteArray _data)
+{
+    QSettings settings(CAB_CACHE, QSettings::IniFormat);
+    settings.beginGroup("Fetch");
+    int index = settings.beginReadArray("fetch");
+    settings.endArray();
+    settings.beginWriteArray("fetch");
+    settings.setArrayIndex(index);
+    settings.setValue("list", _data);
+    settings.endArray();
+    settings.endGroup();
+    settings.sync();
+}
+
+QList<QByteArray> CabinetConfig::getFetchList()
+{
+    int i = 0;
+    QList<QByteArray> ret;
+    ret.clear();
+
+    QSettings settings(CAB_CACHE, QSettings::IniFormat);
+    settings.beginGroup("Fetch");
+    int length = settings.beginReadArray("fetch");
+    if(length == 0)
+    {
+        settings.endArray();
+        settings.endGroup();
+        return ret;
+    }
+
+    for(i=0; i<length; i++)
+    {
+        settings.setArrayIndex(i);
+        QByteArray qba = settings.value("list").toByteArray();
+        ret<<qba;
+    }
+    settings.endArray();
+    settings.remove("");
+    settings.endGroup();
+    return ret;
 }
 
 void CabinetConfig::setCabinetId(QString id)
@@ -77,6 +120,16 @@ void CabinetConfig::clearCabinet()
     settings.clear();
     if(!ID.isEmpty())
         settings.setValue("CabinetId", ID);
+}
+
+void CabinetConfig::wakeUp(int flag)
+{
+    sleepFlag = flag;
+}
+
+int CabinetConfig::getSleepFlag()
+{
+    return sleepFlag;
 }
 
 bool CabinetConfig::isFirstUse()

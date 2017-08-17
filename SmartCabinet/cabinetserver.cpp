@@ -35,6 +35,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_goods_check = NULL;
     reply_datetime = NULL;
     reply_list_state = NULL;
+    list_access_cache.clear();
     apiState = 0;
     needReqCar = true;
     needSaveAddress = false;
@@ -147,6 +148,27 @@ void CabinetServer::netTimeStart()
     QTimer::singleShot(5000,this,SLOT(netTimeout()));
 }
 
+void CabinetServer::localCacheAccess()
+{
+    list_access_cache = config->getFetchList();
+
+    accessLoop();
+}
+
+void CabinetServer::accessLoop()
+{
+    if(list_access_cache.isEmpty())
+        return;
+
+    QByteArray qba = list_access_cache.takeFirst();
+    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba;
+    qDebug()<<"[accessLoop]"<<nUrl;
+    qDebug()<<QByteArray::fromBase64(qba);
+    replyCheck(reply_goods_access);
+    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
+}
+
 void CabinetServer::getServerAddr(QString addr)
 {
     qDebug("[getServerAddr]");
@@ -246,6 +268,7 @@ void CabinetServer::listAccess(QStringList list, int optType)
         QByteArray barcode = barCode.toLocal8Bit();
         CaseAddress addr = config->checkCabinetByBarCode(pack_id);
         QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
+
         cJSON* obj = cJSON_CreateObject();
         cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
         cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));
@@ -256,6 +279,13 @@ void CabinetServer::listAccess(QStringList list, int optType)
         }
         cJSON_AddItemToObject(obj, "goodsCode", cJSON_CreateString(goodsCode.data()));
         cJSON_AddItemToObject(obj, "optCount", cJSON_CreateNumber(1));
+        if(cur_user != NULL)
+        {
+            QByteArray optCard = cur_user->cardId.toLocal8Bit();
+            QByteArray optTime = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss").toLocal8Bit();
+            cJSON_AddItemToObject(obj, "name", cJSON_CreateString(optCard.data()));
+            cJSON_AddItemToObject(obj, "takeOutTime", cJSON_CreateString(optTime.data()));
+        }
         cJSON_AddItemToArray(jlist, obj);
     }
     cJSON_AddItemToObject(json, "li",jlist);
@@ -263,14 +293,22 @@ void CabinetServer::listAccess(QStringList list, int optType)
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
 
-    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
-    qDebug()<<"[goodsAccess]"<<nUrl;
-    qDebug()<<qba;
-    replyCheck(reply_goods_access);
-    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
-    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
-    free(buff);
-//    qDebug()<<"[list fetch]"<<cJSON_Print(json);
+    if(!networkState)
+    {
+        config->saveFetchList(qba.toBase64());
+        free(buff);
+    }
+    else
+    {
+        QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+        qDebug()<<"[goodsAccess]"<<nUrl;
+        qDebug()<<qba;
+        replyCheck(reply_goods_access);
+        reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+        connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
+        free(buff);
+    //    qDebug()<<"[list fetch]"<<cJSON_Print(json);
+    }
 }
 
 void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
@@ -407,6 +445,7 @@ void CabinetServer::recvUserLogin()
     if(!json)
         return;
     netFlag = true;
+    emit netState(true);
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
@@ -427,6 +466,7 @@ void CabinetServer::recvUserLogin()
         info->power = cJSON_GetObjectItem(json_info,"power")->valueint;
         info->tel = QString(cJSON_GetObjectItem(json_info,"tel")->valuestring);
         qDebug()<<"[recvUserLogin]"<<info->cardId<<info->power;
+        cur_user = info;
         emit loginRst(info);
         config->addUser(info);
     }
@@ -668,6 +708,8 @@ void CabinetServer::recvListAccess()
         emit accessFailed(QString(cJSON_GetObjectItem(json,"msg")->valuestring));
     }
     cJSON_Delete(json);
+
+    accessLoop();
 }
 
 void CabinetServer::recvGoodsCheck()
@@ -802,19 +844,29 @@ void CabinetServer::netTimeout()
 
     qDebug()<<"netstate"<<networkState;
     emit netState(networkState);
-    if(apiState == 1 && (!networkState))
+    if(networkState)
     {
-        cur_user = config->checkUserLocal(logId);
-        qDebug()<<"check null";
-        if(cur_user == NULL)
-        {
-            apiState = 0;
-            return;
-        }
-        qDebug()<<"check"<<cur_user->cardId;
-        emit loginRst(cur_user);
+        localCacheAccess();
     }
-    apiState = 0;
+    else
+    {
+        if(apiState == 1)
+        {
+            cur_user = config->checkUserLocal(logId);
+            qDebug()<<"check null";
+            if(cur_user == NULL)
+            {
+                apiState = 0;
+                return;
+            }
+            qDebug()<<"check"<<cur_user->cardId;
+            emit loginRst(cur_user);
+        }
+        apiState = 0;
+    }
+
+
+
 }
 
 void CabinetServer::sysTimeout()
@@ -830,5 +882,13 @@ void CabinetServer::sysTimeout()
     }
     if(needReqCar)
         requireListState();
+
+    if(config->getSleepFlag() == 1)
+    {
+        emit sysLock();
+        config->wakeUp(0);
+    }
+    else if(config->getSleepFlag() == 2)
+        config->wakeUp(1);
 }
 

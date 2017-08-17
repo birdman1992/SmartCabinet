@@ -3,6 +3,7 @@
 
 #define CONF_USER "/home/config/cabinet.ini"
 #define CONF_CABINET "/home/config/cabinet.ini"
+#define CAB_CACHE "/home/config/cache.ini"
 
 /*模拟无服务器状态*/
 //#define NO_SERVER

@@ -29,6 +29,7 @@ public:
     void setCabView(QFrame* cab);
     void fetchSuccess();
     void fetchFailed(QString msg);
+    void setNetState(bool state);
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 private slots:
@@ -46,6 +47,7 @@ signals:
 
 private:
     Ui::CabinetListView *ui;
+    bool networkState;
     QFrame* cabFrame;
     QButtonGroup groupSearch;
     QMap<QString, CabinetListItem*> selectMap;

@@ -52,6 +52,7 @@ private:
     QStringList list_goodsList;
     UserInfo* cur_user;
     int apiState;
+    QList<QByteArray> list_access_cache;
 
     void cabRegister();
     void checkTime();
@@ -59,6 +60,8 @@ private:
     void requireListState();//查询是否有送货单在途中
     void replyCheck(QNetworkReply* reply);
     void netTimeStart();
+    void localCacheAccess();//提交本地缓存存取
+    void accessLoop();
 
 signals:
     void loginRst(UserInfo*);
@@ -72,6 +75,7 @@ signals:
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);
     void netState(bool);//true:连接  false:断开
+    void sysLock();//锁定系统
 
 public slots:
     void getServerAddr(QString addr);

@@ -52,6 +52,7 @@ public slots:
     void updateId();
     void newGoodsList(QString listCode, QString rfidCode);
     void readyGoodsList(QString listCode);
+    void sysLock();
 
 signals:
     void winSwitch(int);
