@@ -421,13 +421,14 @@ void CabinetConfig::addNewUser(UserInfo *info)
 
 void CabinetConfig::restart()
 {
-//    qDebug()<<"[restart]";
-//    return;
+        qApp->closeAllWindows();
 #ifdef SIMULATE_ON
-    qApp->closeAllWindows();
     QProcess::startDetached(qApp->applicationFilePath(), QStringList());
 #else
-    QProcess::startDetached("/home/qtdemo");
+//    qDebug()<<"[restart] /home/qtdemo";
+    QStringList args;
+    args.append("-qws");
+    QProcess::startDetached(qApp->applicationFilePath(),args);
 #endif
 
 }
