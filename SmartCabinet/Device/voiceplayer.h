@@ -9,6 +9,7 @@
 #define VOICE_SCAN "2.wav"
 #define VOICE_CLOSE_DOOR "3.wav"
 #define VOICE_WELCOME_USE "4.wav"
+#define VOICE_ERROR "5.wav"
 
 class VoicePlayer
 {

@@ -846,6 +846,9 @@ void CabinetWidget::setPowerState(int power)
 
 void CabinetWidget::recvUserInfo(QByteArray qba)
 {
+    if(this->isHidden())
+        return;
+
     if(!waitForCardReader)
     {
         qDebug()<<"[CabinetWidget]"<<"recvUserInfo not need.";
@@ -860,6 +863,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
         msgShow("身份验证", "身份验证中...",false);
         emit requireUserCheck(QString(qba));
     }
+        setPowerState(0);
 }
 
 void CabinetWidget::recvListInfo(GoodsList *l)

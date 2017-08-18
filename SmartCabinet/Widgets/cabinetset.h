@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QByteArray>
 #include"cabinetconfig.h"
+#include <QButtonGroup>
 
 namespace Ui {
 class CabinetSet;
@@ -20,15 +21,20 @@ public:
     ~CabinetSet();
     bool installGlobalConfig(CabinetConfig *globalConfig);
 
+public slots:
+    void getCardId(QByteArray id);
+    void getCodeScanData(QByteArray code);
+
 private slots:
     void on_add_left_clicked();
     void on_add_right_clicked();
     void on_clear_clicked();
     void on_save_clicked();
-
     void on_serverAddr_editingFinished();
-
     void on_lock_test_clicked();
+    void on_lock_group_clicked(int id);
+
+    void on_pushButton_clicked();
 
 signals:
     void winSwitch(int index);//窗口切换
@@ -39,12 +45,14 @@ signals:
     void cabinetCreated();
     void updateServerAddr(QString addr);
     void lockTest();
+    void requireOpenCase(int,int);
 
 private:
     Ui::CabinetSet *ui;
     CabinetConfig* config;
     QByteArray cabinet_pos;
     QList<QLabel*> list_cabinet;
+    QButtonGroup group_lock;
 };
 
 #endif // CABINETSET_H

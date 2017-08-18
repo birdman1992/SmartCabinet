@@ -44,7 +44,7 @@ background-image: url(:/image/image/bg_main.png);
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="584,464,392">
+       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="584,100,392">
         <item>
          <widget class="QLabel" name="msk1">
           <property name="styleSheet">
@@ -58,56 +58,34 @@ background-image: url(:/image/image/bg_main.png);
         </item>
         <item>
          <widget class="QFrame" name="frame_7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <widget class="QPushButton" name="netState">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>400</x>
-             <y>25</y>
-             <width>15</width>
-             <height>15</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">#netState::checked{
-border:1px solid rgb(140, 158, 175);
-border-radius:7px;
-background-color: rgb(147, 224, 0);
-}
-#netState::!checked{
-border:1px solid rgb(140, 158, 175);
-border-radius:7px;
-background-color: rgb(238, 0, 0);
-}</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-           <property name="autoRepeat">
-            <bool>false</bool>
-           </property>
-           <property name="autoExclusive">
-            <bool>false</bool>
-           </property>
-          </widget>
          </widget>
         </item>
         <item>
          <widget class="QFrame" name="frame_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>461</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
@@ -131,6 +109,9 @@ background-color: rgb(238, 0, 0);
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <property name="spacing">
               <number>10</number>
+             </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetFixedSize</enum>
              </property>
              <item>
               <widget class="QFrame" name="frame_5">
@@ -236,6 +217,52 @@ color: rgb(255, 255, 255);</string>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="netState">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>15</width>
+                 <height>15</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#netState::checked{
+border:1px solid rgb(140, 158, 175);
+border-radius:7px;
+background-color: rgb(147, 224, 0);
+}
+#netState::!checked{
+border:1px solid rgb(140, 158, 175);
+border-radius:7px;
+background-color: rgb(238, 0, 0);
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <property name="autoRepeat">
+                <bool>false</bool>
+               </property>
+               <property name="autoExclusive">
+                <bool>false</bool>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QLabel" name="time">
@@ -1514,7 +1541,7 @@ background-color: rgb(36, 221, 149);
    <item>
     <widget class="QFrame" name="frame_2">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
@@ -1530,7 +1557,7 @@ background-color: rgb(36, 221, 149);
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>10</number>
       </property>
       <property name="bottomMargin">
        <number>0</number>

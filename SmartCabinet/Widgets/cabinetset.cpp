@@ -17,6 +17,17 @@ CabinetSet::CabinetSet(QWidget *parent) :
     ui->label_2->hide();
     ui->label_3->hide();
     ui->label_4->hide();
+
+    group_lock.addButton(ui->lock_test_2 , 0);
+    group_lock.addButton(ui->lock_test_3 , 1);
+    group_lock.addButton(ui->lock_test_4 , 2);
+    group_lock.addButton(ui->lock_test_5 , 3);
+    group_lock.addButton(ui->lock_test_6 , 4);
+    group_lock.addButton(ui->lock_test_7 , 5);
+    group_lock.addButton(ui->lock_test_8 , 6);
+    group_lock.addButton(ui->lock_test_9 , 7);
+
+    connect(&group_lock, SIGNAL(buttonClicked(int)), this, SLOT(on_lock_group_clicked(int)));
 }
 
 CabinetSet::~CabinetSet()
@@ -31,6 +42,16 @@ bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
     config = globalConfig;
 
     return true;
+}
+
+void CabinetSet::getCardId(QByteArray id)
+{
+    ui->cardId->setText(id);
+}
+
+void CabinetSet::getCodeScanData(QByteArray code)
+{
+    ui->scanCode->setText(code);
 }
 
 void CabinetSet::on_add_left_clicked()
@@ -116,4 +137,15 @@ void CabinetSet::on_serverAddr_editingFinished()
 void CabinetSet::on_lock_test_clicked()
 {
     emit lockTest();
+}
+
+void CabinetSet::on_lock_group_clicked(int id)
+{
+    emit requireOpenCase(ui->comboBox->currentIndex(), id);
+}
+
+void CabinetSet::on_pushButton_clicked()
+{
+    ui->cardId->clear();
+    ui->scanCode->clear();
 }
