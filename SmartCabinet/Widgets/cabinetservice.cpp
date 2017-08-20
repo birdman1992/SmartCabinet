@@ -8,6 +8,8 @@
 #include <QElapsedTimer>
 #include <unistd.h>
 #include <QDebug>
+#include <QLayout>
+#include <QPushButton>
 #include "Device/controldevice.h"
 
 CabinetService::CabinetService(QWidget *parent) :
@@ -17,6 +19,10 @@ CabinetService::CabinetService(QWidget *parent) :
     ui->setupUi(this);
     ui->addr->installEventFilter(this);
     dev_network = NULL;
+    win_ctrl_config = new CabinetCtrlConfig();
+    connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
+    connect(win_ctrl_config, SIGNAL(updateBtn()), this,SLOT(updateBtn()));
+
     initStack();
     initGroup();
     ui->listWidget->setCurrentRow(0);
@@ -29,6 +35,7 @@ CabinetService::CabinetService(QWidget *parent) :
 
 CabinetService::~CabinetService()
 {
+    delete win_ctrl_config;
     delete ui;
 }
 
@@ -40,6 +47,17 @@ void CabinetService::paintEvent(QPaintEvent*)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     p.fillRect(this->rect(), QColor(255, 255, 255, 80));  //QColor最后一个参数80代表背景的透明度
 }
+
+bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
+{
+    if(globalConfig == NULL)
+        return false;
+    config = globalConfig;
+    win_ctrl_config->installGlobalConfig(config);
+    creatCtrlConfig();
+    return true;
+}
+
 
 void CabinetService::on_back_clicked()
 {
@@ -79,6 +97,7 @@ void CabinetService::initStack()
     ui->listWidget->addItem(new QListWidgetItem("网络配置"));
     ui->listWidget->addItem(new QListWidgetItem("锁控测试"));
     ui->listWidget->addItem(new QListWidgetItem("设置"));
+    ui->listWidget->addItem(new QListWidgetItem("锁控配置"));
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->listWidget->setCurrentRow(0);
@@ -117,6 +136,57 @@ void CabinetService::initGroup()
 
     connect(&l_lock_num, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_lock(int)));
     connect(ui->boardcast, SIGNAL(clicked(bool)), this, SLOT(ctrl_boardcast()));
+}
+
+void CabinetService::creatCtrlConfig()
+{
+    int i = 0;
+    int j = 0;
+
+    i = config->list_cabinet.count() - 1;
+
+    for(; i>=0; i--)
+    {
+        QVBoxLayout* layout = new QVBoxLayout(this);
+
+        if(!config->list_cabinet[i]->isInLeft())
+            continue;
+
+        for(j=0; j<config->list_cabinet[i]->list_case.count(); j++)
+        {
+                QPushButton* btn = new QPushButton(this);
+                btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+                btn->setMaximumWidth(400);
+                QString str = QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlSeq).arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlIndex);
+                btn->setText(str);
+                layout->addWidget(btn);
+                l_lock_conf.addButton(btn,(i<<8)+j);
+        }
+        ui->ctrlCfg->addLayout(layout);
+    }
+
+    i = 0;
+    for(; i<config->list_cabinet.count(); i++)
+    {
+        QVBoxLayout* layout = new QVBoxLayout(this);
+
+        if((config->list_cabinet[i]->isInLeft()))
+            continue;
+
+        for(j=0; j<config->list_cabinet[i]->list_case.count(); j++)
+        {
+                QPushButton* btn = new QPushButton(this);
+                btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+                btn->setMaximumWidth(400);
+                QString str = QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlSeq).arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlIndex);
+                btn->setText(str);
+                layout->addWidget(btn);
+                l_lock_conf.addButton(btn,(i<<8)+j);
+        }
+        ui->ctrlCfg->addLayout(layout);
+    }
+
+    connect(&l_lock_conf, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_conf(int)));
 }
 
 void CabinetService::initNetwork()
@@ -267,9 +337,37 @@ void CabinetService::on_check_clicked()
 {
 #ifdef SIMULATE_ON
     return;
-#endif
+#else
     QProcess process;
     process.start("rm /etc/pointercal");
     process.waitForFinished();
-    QProcess::startDetached("/home/qtdemo");
+    QProcess::startDetached("reboot");
+//    QStringList args;
+//    args.append("-qws");
+//    QProcess::startDetached(qApp->applicationFilePath(),args);
+#endif
+}
+
+void CabinetService::ctrl_conf(int id)
+{
+    curId = id;
+    win_ctrl_config->configStart(id>>8, id&0xff);
+    //    qDebug()<<(id>>8)<<(id&0xff);
+}
+
+void CabinetService::updateBtn()
+{
+    QPushButton* btn = (QPushButton*)l_lock_conf.button(curId);
+    if(btn == NULL)
+        return;
+
+    int seq = curId>>8;
+    int index = curId&0xff;
+
+    if(seq >= config->list_cabinet.count())
+        return;
+    if(index >= config->list_cabinet[seq]->list_case.count())
+        return;
+
+    btn->setText(QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(seq)->list_case.at(index)->ctrlSeq).arg(config->list_cabinet.at(seq)->list_case.at(index)->ctrlIndex));
 }

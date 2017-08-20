@@ -231,7 +231,9 @@ void CabinetConfig::readCabinetConfig()
     }
 
     settings.beginGroup("Cabinet0");
-//    settings.beginReadArray("Cabinet0");
+    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
+    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
+
     for(j=0; j<CAB_CASE_1_NUM; j++)
     {
 //        if(j == 1)
@@ -252,6 +254,7 @@ void CabinetConfig::readCabinetConfig()
             info->goodsType = getGoodsType(info->packageId);
 //            qDebug()<<"[getGoodsType]"<<info->packageId<<info->goodsType;
             list_cabinet[0]->addCase(info,j);//qDebug()<<"[read conf]"<<j;
+            list_cabinet[0]->setCtrlWord(j, ctrlSeq, ctrlIndex);
         }
         settings.endArray();
     }
@@ -260,6 +263,9 @@ void CabinetConfig::readCabinetConfig()
     for(i=1; i<cabNum; i++)
     {
         settings.beginGroup(QString("Cabinet%1").arg(i));
+        QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
+        QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
+
 //        settings.beginReadArray(QString("Cabinet%1").arg(i));
         for(j=0; j<CAB_CASE_0_NUM; j++)
         {
@@ -278,6 +284,7 @@ void CabinetConfig::readCabinetConfig()
                 info->goodsType = getGoodsType(info->packageId);
                 info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
                 list_cabinet[i]->addCase(info,j);
+                list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
             }
             settings.endArray();
         }

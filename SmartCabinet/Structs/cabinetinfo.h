@@ -27,6 +27,8 @@ public:
     int caseSearch(QString name);
     int barcodeSearch(QString id);
     int goodsIdSearch(QString id);
+    int ctrlSeq;
+    int ctrlIndex;
     void clearFetchNum();
     QString caseShowStr();
     QList<GoodsInfo*> list_goods;

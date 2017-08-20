@@ -110,6 +110,7 @@ void CabinetWidget::cabLock()
     ui->refund->hide();
     ui->check->hide();
     ui->search->hide();
+    win_access->hide();
     curStoreList = NULL;
     config->state = STATE_FETCH;
     config->clearSearch();
@@ -863,7 +864,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
         msgShow("身份验证", "身份验证中...",false);
         emit requireUserCheck(QString(qba));
     }
-        setPowerState(0);
+//        setPowerState(0);
 }
 
 void CabinetWidget::recvListInfo(GoodsList *l)

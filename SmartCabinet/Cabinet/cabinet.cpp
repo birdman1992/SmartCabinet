@@ -96,6 +96,23 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
     }
 }
 
+void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
+{
+    qDebug()<<"setCtrlWord"<<caseIndex<<seq.toHex()<<index.toHex();
+    if(caseIndex >= list_case.count())
+        return;
+
+    if(seq.size() <= caseIndex)
+        list_case[caseIndex]->ctrlSeq = seqNum;
+    else
+        list_case[caseIndex]->ctrlSeq = ((int)seq[caseIndex]==0)?seqNum:seq[caseIndex];
+
+    if(index.size() <= caseIndex)
+        list_case[caseIndex]->ctrlIndex = caseIndex;
+    else
+        list_case[caseIndex]->ctrlIndex = ((int)index[caseIndex]==0)?caseIndex:index[caseIndex];
+}
+
 int Cabinet::getIndexByName(QString findName)
 {
     int i = 0;

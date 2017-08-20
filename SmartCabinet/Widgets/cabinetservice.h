@@ -8,7 +8,10 @@
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <QTimer>
+#include <QButtonGroup>
 #include "Device/Network/qnetinterface.h"
+#include "cabinetconfig.h"
+#include "Widgets/cabinetctrlconfig.h"
 
 namespace Ui {
 class CabinetService;
@@ -22,6 +25,7 @@ public:
     explicit CabinetService(QWidget *parent = 0);
     ~CabinetService();
 
+    bool installGlobalConfig(CabinetConfig *globalConfig);
 signals:
     void winSwitch(int);
     void requireOpenLock(int seqNum, int lockId);
@@ -35,12 +39,11 @@ private slots:
     void on_cancel_clicked();
     void ctrl_lock(int);
     void initNetwork();
-
     void on_clear_clicked();
-
     void on_init_clicked();
-
     void on_check_clicked();
+    void ctrl_conf(int id);
+    void updateBtn();
 
 public slots:
     void ctrl_boardcast();//广播控制
@@ -53,10 +56,15 @@ private:
     QString dev_gateway;
     QList<QCheckBox*> l_board_num;//锁控板号
     QButtonGroup l_lock_num;//锁号
+    CabinetConfig* config;
+    QButtonGroup l_lock_conf;
+    CabinetCtrlConfig* win_ctrl_config;
+    int curId;
 
     void updateNetInfo();
     void initStack();
     void initGroup();
+    void creatCtrlConfig();
 
     void showEvent(QShowEvent*);
     bool eventFilter(QObject *w, QEvent *e);

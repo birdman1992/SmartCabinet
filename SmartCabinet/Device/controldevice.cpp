@@ -204,8 +204,10 @@ void ControlDevice::lockCtrl(int ioNum)
 void ControlDevice::lockCtrl(int seqNum, int ioNum)
 {
     QByteArray qba = QByteArray::fromHex("fa000100ff");
-    qba[1] = seqNum;
-    qba[3] = ioNum;
+//    qba[1] = seqNum;
+//    qba[3] = ioNum;
+    qba[1] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlSeq;
+    qba[3] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlIndex;
     qDebug()<<"[lockCtrl]"<<qba.toHex();
 
 #ifndef SIMULATE_ON

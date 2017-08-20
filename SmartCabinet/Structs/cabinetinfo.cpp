@@ -3,7 +3,8 @@
 
 CabinetInfo::CabinetInfo()
 {
-
+    ctrlIndex = 0;
+    ctrlSeq = 0;
 }
 
 int CabinetInfo::caseSearch(QString name)
@@ -69,6 +70,10 @@ QString CabinetInfo::caseShowStr()
     for(i=0; i<list_goods.count(); i++)
     {
         QString str = list_goods.at(i)->name;
+
+        if(!list_goods.at(i)->abbName.isEmpty())
+            str = list_goods.at(i)->abbName;
+
         if(!str.isEmpty())
         {
             str += QString("(%1)×%2").arg(list_goods.at(i)->goodsType).arg(list_goods.at(i)->num);

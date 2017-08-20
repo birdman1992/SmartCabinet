@@ -26,6 +26,7 @@ public:
     void setCabType(int _type);
     void checkCase(int index);
     void addCase(GoodsInfo *info, int caseIndex);//用于读取配置信息添加到信息列表尾部
+    void setCtrlWord(int caseIndex, QByteArray seq, QByteArray index);
 
     int getIndexByName(QString findName);//根据药品名检索柜格下标
     void consumableIn(CaseAddress addr, int num=1);//药品存放

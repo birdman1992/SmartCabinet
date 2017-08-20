@@ -9,6 +9,7 @@ CabinetAccess::CabinetAccess(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    this->setAttribute(Qt::WA_TranslucentBackground, true);
     QDesktopWidget* desktop = QApplication::desktop(); // =qApp->desktop();也可以
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
     isStore = false;//默认为取模式
@@ -230,6 +231,7 @@ void CabinetAccess::paintEvent(QPaintEvent*)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
+    p.fillRect(this->rect(), QColor(22, 52, 73, 200));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 

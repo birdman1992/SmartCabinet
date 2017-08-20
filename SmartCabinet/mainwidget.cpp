@@ -596,6 +596,7 @@ void MainWidget::init_huangpo()
 
     //服务界面
     win_cab_service = new CabinetService();
+    win_cab_service->installGlobalConfig(cabinetConf);
     connect(win_cab_service, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cab_service, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_cab_service, SIGNAL(requireClear()), this, SLOT(cabinetClear()));

@@ -21,8 +21,8 @@
     <rect>
      <x>10</x>
      <y>180</y>
-     <width>511</width>
-     <height>511</height>
+     <width>531</width>
+     <height>711</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -31,60 +31,10 @@
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>100</y>
-      <width>91</width>
-      <height>391</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>40</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 170, 127);</string>
-    </property>
-    <property name="text">
-     <string>副
-柜</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>100</y>
-      <width>91</width>
-      <height>391</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>40</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 170, 127);</string>
-    </property>
-    <property name="text">
-     <string>副
-柜</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QPushButton" name="add_left">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>20</y>
       <width>91</width>
       <height>61</height>
@@ -102,7 +52,7 @@
    <widget class="QPushButton" name="clear">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>220</x>
       <y>20</y>
       <width>91</width>
       <height>61</height>
@@ -117,11 +67,54 @@
      <string>-</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QPushButton" name="add_right">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>100</y>
+      <x>420</x>
+      <y>20</y>
+      <width>91</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>+--&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>91</width>
+      <height>391</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>40</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 170, 127);</string>
+    </property>
+    <property name="text">
+     <string>副
+柜</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_1">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>120</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -145,8 +138,8 @@
    <widget class="QLabel" name="label_0">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>100</y>
+      <x>220</x>
+      <y>120</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -167,29 +160,36 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="add_right">
+   <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>20</y>
+      <x>320</x>
+      <y>120</y>
       <width>91</width>
-      <height>61</height>
+      <height>391</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <pointsize>40</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 170, 127);</string>
+    </property>
     <property name="text">
-     <string>+--&gt;</string>
+     <string>副
+柜</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_1">
+   <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>100</y>
+      <x>420</x>
+      <y>120</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -216,7 +216,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>511</width>
+     <width>531</width>
      <height>161</height>
     </rect>
    </property>
@@ -304,7 +304,7 @@ font: 18px &quot;微软雅黑&quot;;
   <widget class="QFrame" name="frame_3">
    <property name="geometry">
     <rect>
-     <x>550</x>
+     <x>560</x>
      <y>10</y>
      <width>221</width>
      <height>881</height>
@@ -556,7 +556,7 @@ font: 18px &quot;微软雅黑&quot;;
     <rect>
      <x>800</x>
      <y>10</y>
-     <width>621</width>
+     <width>631</width>
      <height>191</height>
     </rect>
    </property>
@@ -614,7 +614,7 @@ font: 18px &quot;微软雅黑&quot;;
      <rect>
       <x>140</x>
       <y>0</y>
-      <width>481</width>
+      <width>491</width>
       <height>51</height>
      </rect>
     </property>
@@ -631,7 +631,7 @@ padding-left:10px;</string>
      <rect>
       <x>140</x>
       <y>60</y>
-      <width>481</width>
+      <width>491</width>
       <height>51</height>
      </rect>
     </property>

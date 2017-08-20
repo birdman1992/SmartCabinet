@@ -10,7 +10,7 @@ CabinetCheckItem::CabinetCheckItem(GoodsInfo* info, QWidget *parent) :
     name = info->nameWithType();
     package_id = info->packageId;
     maxNum = info->num;
-    num = 0;
+    num = info->num;
 
     ui->name->setText(name);
     ui->num->setText(QString::number(num));
