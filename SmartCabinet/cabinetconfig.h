@@ -50,6 +50,7 @@ public:
     CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
+sds
     void searchByPinyin(QChar ch);
     void clearSearch();
     QChar str2py(QChar ch);
@@ -65,6 +66,7 @@ private:
     bool firstUse;//第一次使用
     int sleepFlag;//休眠标志
     int userNum;//用户数量
+    int caseWidth;
 //    QString cabId;
     QString cabinetId;
     QString serverAddr;
