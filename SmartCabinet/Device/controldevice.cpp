@@ -189,6 +189,19 @@ void ControlDevice::comRfidInit(int baudRate, int dataBits, int Parity, int stop
 
 }
 
+void ControlDevice::openCase(int seqNum, int index)
+{
+    if((seqNum<0) || (seqNum>=config->list_cabinet.count()))
+        return;
+    if((index<0) || (seqNum>=config->list_cabinet[seqNum]->list_case.count()))
+        return;
+
+    seqNum = config->list_cabinet[seqNum]->list_case[index]->ctrlSeq;
+    index = config->list_cabinet[seqNum]->list_case[index]->ctrlIndex;
+
+    lockCtrl(seqNum, index);
+}
+
 void ControlDevice::lockCtrl(int ioNum)
 {
     QByteArray qba = QByteArray::fromHex("FA0100FF");
@@ -204,10 +217,10 @@ void ControlDevice::lockCtrl(int ioNum)
 void ControlDevice::lockCtrl(int seqNum, int ioNum)
 {
     QByteArray qba = QByteArray::fromHex("fa000100ff");
-//    qba[1] = seqNum;
-//    qba[3] = ioNum;
-    qba[1] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlSeq;
-    qba[3] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlIndex;
+    qba[1] = seqNum;
+    qba[3] = ioNum;
+//    qba[1] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlSeq;
+//    qba[3] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlIndex;
     qDebug()<<"[lockCtrl]"<<qba.toHex();
 
 #ifndef SIMULATE_ON
@@ -233,6 +246,10 @@ void ControlDevice::openLock(int seqNum, int index)
 //    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
 //    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
 //    lockCtrl(ctrlNum);
+    QByteArray qba = QByteArray::fromHex("fa000100ff");
+    qba[1] = seqNum;
+    qba[3] = index;
+
     lockCtrl(seqNum, index);
 }
 

@@ -608,7 +608,7 @@ void MainWidget::init_huangpo()
     connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
     connect(ctrlUi, SIGNAL(readyListData(QString)), win_cabinet,SLOT(readyGoodsList(QString)));
     connect(win_cabinet, SIGNAL(checkLockState()), ctrlUi, SLOT(getLockState()));
-    connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
+    connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
     connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
     connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));

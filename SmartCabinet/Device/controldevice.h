@@ -61,7 +61,8 @@ signals:
     void readyListData(QString listCode);//预备存入单号
 
 public slots:
-    void openLock(int seqNum, int index);
+    void openCase(int seqNum, int index);//柜格映射IO参数
+    void openLock(int seqNum, int index);//直接锁控IO参数
     void getLockState();
     void readyForNewCar(GoodsCar car);
 
