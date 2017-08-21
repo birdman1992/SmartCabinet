@@ -9,6 +9,7 @@
 #include <qcheckbox.h>
 #include <QTimer>
 #include <QButtonGroup>
+#include <QLayout>
 #include "Device/Network/qnetinterface.h"
 #include "cabinetconfig.h"
 #include "Widgets/cabinetctrlconfig.h"
@@ -59,6 +60,7 @@ private:
     CabinetConfig* config;
     QButtonGroup l_lock_conf;
     CabinetCtrlConfig* win_ctrl_config;
+    QHBoxLayout* cfg_layout;
     int curId;
 
     void updateNetInfo();

@@ -56,7 +56,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="cardReader">
       <widget class="QPushButton" name="pushButton">
@@ -218,7 +218,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>2017-A0202003953-05-</string>
+        <string>2017-C0218004658-10-</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_6">
@@ -378,7 +378,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>2017-A0202003953-10-</string>
+        <string>2017-B0214000021-02-</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_16">

@@ -114,7 +114,7 @@ QPushButton::pressed{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_0">
       <widget class="QFrame" name="network">
@@ -820,7 +820,7 @@ font:20px&quot;微软雅黑&quot;;
       </widget>
      </widget>
      <widget class="QWidget" name="page">
-      <widget class="QWidget" name="horizontalLayoutWidget">
+      <widget class="QFrame" name="ctrlCfg">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -829,7 +829,6 @@ font:20px&quot;微软雅黑&quot;;
          <height>801</height>
         </rect>
        </property>
-       <layout class="QHBoxLayout" name="ctrlCfg"/>
       </widget>
      </widget>
     </widget>

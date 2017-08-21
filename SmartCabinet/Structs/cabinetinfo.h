@@ -2,6 +2,7 @@
 #define CABINETINFO_H
 #include <QString>
 #include <QList>
+#include <QFont>
 
 class GoodsInfo
 {
@@ -30,8 +31,10 @@ public:
     int ctrlSeq;
     int ctrlIndex;
     void clearFetchNum();
-    QString caseShowStr();
+    QStringList caseShowStr(QFont font, int maxWidth);
     QList<GoodsInfo*> list_goods;
+private:
+    QString geteElidedText(QFont font, QString str, int MaxWidth);
 };
 
 #endif // CABINETINFO_H

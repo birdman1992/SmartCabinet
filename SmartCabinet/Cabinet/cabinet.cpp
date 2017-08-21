@@ -74,9 +74,10 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
     if(caseIndex<list_case.count())
     {
         list_case.at(caseIndex)->list_goods<<info;
-        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(caseIndex,0);
-        lab->setWordWrap(true);
-        lab->setText(list_case.at(caseIndex)->caseShowStr());
+        CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
+//        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(caseIndex,0);
+//        lab->setWordWrap(true);
+        lab->setText(list_case.at(caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
 //        ui->tableWidget->item(caseIndex,0)->setText(list_case.at(caseIndex)->caseShowStr());
     }
     else
@@ -87,8 +88,10 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         list_case<<cabInfo;
         if(isMainCabinet && (caseIndex == 1))
             return;
-        QLabel* lab = new QLabel(cabInfo->caseShowStr());
-        lab->setWordWrap(true);
+        CasePanel* lab = new CasePanel();
+        lab->setText(cabInfo->caseShowStr(lab->caseFont(), lab->labWidth()));
+//        QLabel* lab = new QLabel(cabInfo->caseShowStr());
+//        lab->setWordWrap(true);
         ui->tableWidget->setCellWidget(caseIndex, 0, lab);
         setCaseState(caseIndex, 0);
 //        ui->tableWidget->setItem(caseIndex,0,new QTableWidgetItem(cabInfo->caseShowStr()));
@@ -98,7 +101,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
 
 void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
 {
-    qDebug()<<"setCtrlWord"<<caseIndex<<seq.toHex()<<index.toHex();
+//    qDebug()<<"setCtrlWord"<<caseIndex<<seq.toHex()<<index.toHex();
     if(caseIndex >= list_case.count())
         return;
 
@@ -137,8 +140,8 @@ void Cabinet::consumableIn(CaseAddress addr, int num)
 //        setCaseState(index, 0);
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num+=num;
-    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
-    lab->setText(list_case.at(addr.caseIndex)->caseShowStr());
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+    lab->setText(list_case.at(addr.caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
 //    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
@@ -159,8 +162,8 @@ void Cabinet::consumableOut(CaseAddress addr,int num)
         return;
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = ((list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num)<0)?0:list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num;
-    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
-    lab->setText(list_case.at(addr.caseIndex)->caseShowStr());
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+    lab->setText(list_case.at(addr.caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
     //    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
@@ -181,8 +184,8 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
 
     qDebug()<<"[updateGoodsNum]"<<addr.cabinetSeqNUM<<addr.caseIndex<<addr.goodsIndex<<num;
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
-    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
-    lab->setText(list_case.at(addr.caseIndex)->caseShowStr());
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+    lab->setText(list_case.at(addr.caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
 //    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
@@ -239,8 +242,8 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
 
     GoodsInfo* gInfo = new GoodsInfo(info);
     list_case.at(index)->list_goods<<gInfo;
-    QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
-    lab->setText(list_case.at(index)->caseShowStr());
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
+    lab->setText(list_case.at(index)->caseShowStr(lab->caseFont(), lab->labWidth()));
 //    ui->tableWidget->item(index,0)->setText(list_case.at(index)->caseShowStr());
 //    list_case.at(index)->name = info.name;
 //    list_case.at(index)->id = info.id;
@@ -343,17 +346,17 @@ void Cabinet::setCaseState(int index, int numState)
 
     if(numState == 0)//正常状态
     {
-        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
+        CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setStyleSheet(cellStyle(QColor(36, 221, 149)));
     }
     else if(numState == 1)//被搜索状态
     {
-        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
+        CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setStyleSheet(cellStyle(QColor(6, 161, 101)));
     }
     else if(numState == 2)//盘点完毕状态
     {
-        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(index,0);
+        CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setStyleSheet(cellStyle(QColor(36, 221, 149))+checkStyle());
     }
 }

@@ -18,6 +18,10 @@ CabinetService::CabinetService(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->addr->installEventFilter(this);
+
+    cfg_layout = new QHBoxLayout();
+    ui->ctrlCfg->setLayout(cfg_layout);
+
     dev_network = NULL;
     win_ctrl_config = new CabinetCtrlConfig();
     connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
@@ -147,7 +151,7 @@ void CabinetService::creatCtrlConfig()
 
     for(; i>=0; i--)
     {
-        QVBoxLayout* layout = new QVBoxLayout(this);
+        QVBoxLayout* layout = new QVBoxLayout();
 
         if(!config->list_cabinet[i]->isInLeft())
             continue;
@@ -162,13 +166,13 @@ void CabinetService::creatCtrlConfig()
                 layout->addWidget(btn);
                 l_lock_conf.addButton(btn,(i<<8)+j);
         }
-        ui->ctrlCfg->addLayout(layout);
+        cfg_layout->addLayout(layout);
     }
 
     i = 0;
     for(; i<config->list_cabinet.count(); i++)
     {
-        QVBoxLayout* layout = new QVBoxLayout(this);
+        QVBoxLayout* layout = new QVBoxLayout();
 
         if((config->list_cabinet[i]->isInLeft()))
             continue;
@@ -183,7 +187,7 @@ void CabinetService::creatCtrlConfig()
                 layout->addWidget(btn);
                 l_lock_conf.addButton(btn,(i<<8)+j);
         }
-        ui->ctrlCfg->addLayout(layout);
+        cfg_layout->addLayout(layout);
     }
 
     connect(&l_lock_conf, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_conf(int)));

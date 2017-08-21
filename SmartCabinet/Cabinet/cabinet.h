@@ -8,6 +8,7 @@
 #include <QPaintEvent>
 #include "Structs/cabinetinfo.h"
 #include "Structs/caseaddress.h"
+#include "Widgets/casepanel.h"
 
 namespace Ui {
 class Cabinet;

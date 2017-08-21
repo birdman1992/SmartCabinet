@@ -104,7 +104,7 @@ font: 15px &quot;微软雅黑&quot;;</string>
      </property>
      <property name="styleSheet">
       <string notr="true">QTableWidget{
-                                   font-size: 25px;
+                                   font-size: 5px;
                                        color: rgb(255, 255, 255);    /*前景色：文字颜色*/
                                        border:0px solid gray;  /*边框线的宽度、颜色*/
                                    }</string>

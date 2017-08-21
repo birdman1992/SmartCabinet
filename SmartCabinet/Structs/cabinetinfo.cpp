@@ -1,5 +1,8 @@
 #include "cabinetinfo.h"
 #include <QDebug>
+#include <QStringList>
+#include <QFontMetrics>
+
 
 CabinetInfo::CabinetInfo()
 {
@@ -62,10 +65,23 @@ void CabinetInfo::clearFetchNum()
     }
 }
 
-QString CabinetInfo::caseShowStr()
+QString CabinetInfo::geteElidedText(QFont font, QString str, int MaxWidth)
 {
-    QString ret = QString();
+    QFontMetrics fontWidth(font);
+    int width = fontWidth.width(str);  //计算字符串宽度
+    qDebug()<<"[geteElidedText]"<<str<<fontWidth.width(str)<<MaxWidth;  //qDebug获取"abcdefg..." 为60
+    if(width>=MaxWidth)  //当字符串宽度大于最大宽度时进行转换
+    {
+        str = fontWidth.elidedText(str,Qt::ElideRight, MaxWidth);  //右部显示省略号
+    }
+    return str;   //返回处理后的字符串
+}
+
+QStringList CabinetInfo::caseShowStr(QFont font, int maxWidth)
+{
+//    QString ret = QString();
     int i = 0;
+    QStringList ret;
 
     for(i=0; i<list_goods.count(); i++)
     {
@@ -74,11 +90,15 @@ QString CabinetInfo::caseShowStr()
         if(!list_goods.at(i)->abbName.isEmpty())
             str = list_goods.at(i)->abbName;
 
+        str = geteElidedText(font, str, maxWidth-80) + "...";
+
+
         if(!str.isEmpty())
         {
             str += QString("(%1)×%2").arg(list_goods.at(i)->goodsType).arg(list_goods.at(i)->num);
-            str += "\n";
-            ret += str;
+//            str += "\n";
+//            ret += str;
+            ret<<str;
         }
     }
 
