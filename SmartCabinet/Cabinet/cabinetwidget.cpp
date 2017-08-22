@@ -6,18 +6,6 @@
 #include "Device/controldevice.h"
 
 //提示信息
-#define MSG_EMPTY ""
-#define MSG_SCAN_LIST "请扫描送货单条码"
-#define MSG_LIST_ERROR "无效的送货单"
-#define MSG_STORE "请扫描待存放物品条形码"
-#define MSG_STORE_SELECT "请选择绑定位置"
-#define MSG_STORE_SELECT_REPEAT "选择的位置被占用 请重新选择"
-#define MSG_FETCH "请选择要取出的物品 柜门打开后请扫描条形码取出"
-#define MSG_FETCH_SCAN "请扫描条形码取出物品 取用完毕请点击此处并关闭柜门"
-#define MSG_FETCH_EMPTY "没有库存了 请关好柜门 点击此处退出"
-#define MSG_CHECK  "请点击柜格开始盘点"
-#define MSG_REFUND  "点击柜格扫码退货"
-#define MSG_OFFLINE  "当前为离线状态，请点击 切换 按钮批量取货"
 
 CabinetWidget::CabinetWidget(QWidget *parent) :
     QWidget(parent),
@@ -32,6 +20,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForCardReader = true;
     waitForInit = true;
     loginState = false;
+    rebindGoods = NULL;
     curStoreList = NULL;
     msgBox = NULL;
     selectCase = -1;
@@ -121,7 +110,7 @@ void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
     qDebug()<<"bind"<<info.id;
     info.goodsType = config->getGoodsType(info.packageId);
-    qDebug()<<info.goodsType;
+//    qDebug()<<info.goodsType;
     config->list_cabinet[seq]->setCaseName(info, index);
     emit requireCaseBind(seq, index, info.packageId);
 }
@@ -255,7 +244,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if((cabSeqNum == 0) && (caseIndex == 1))
         return;
-    if(clickLock)//锁定状态下点击无效
+    if(clickLock && (config->state != STATE_REBIND))//锁定状态下点击无效
     {
         if((caseIndex==selectCase) && (cabSeqNum == selectCab))
             return;
@@ -349,6 +338,15 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         win_check->checkStart(casePos);
         config->list_cabinet[cabSeqNum]->checkCase(caseIndex);
         clickLock = false;
+    }
+    else if(config->state == STATE_REBIND)
+    {
+        emit requireOpenCase(cabSeqNum, caseIndex);
+
+        if(rebindGoods == NULL)
+            return;
+
+        cabInfoBind(selectCab, selectCase, *rebindGoods);
     }
 }
 

@@ -46,6 +46,8 @@ private slots:
     void ctrl_conf(int id);
     void updateBtn();
 
+    void on_rebind_clicked();
+
 public slots:
     void ctrl_boardcast();//广播控制
 

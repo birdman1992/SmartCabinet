@@ -65,7 +65,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 
 void CabinetService::on_back_clicked()
 {
-    winSwitch(INDEX_CAB_SHOW);
+    emit winSwitch(INDEX_CAB_SHOW);
 }
 
 void CabinetService::showEvent(QShowEvent *)
@@ -374,4 +374,11 @@ void CabinetService::updateBtn()
         return;
 
     btn->setText(QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(seq)->list_case.at(index)->ctrlSeq).arg(config->list_cabinet.at(seq)->list_case.at(index)->ctrlIndex));
+}
+
+void CabinetService::on_rebind_clicked()
+{
+    config->state = STATE_REBIND;
+    config->list_cabinet[0]->showMsg(MSG_REBIND_SCAN,0);
+    emit winSwitch(INDEX_CAB_SHOW);
 }

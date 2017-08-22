@@ -69,7 +69,8 @@ QString CabinetInfo::geteElidedText(QFont font, QString str, int MaxWidth)
 {
     QFontMetrics fontWidth(font);
     int width = fontWidth.width(str);  //计算字符串宽度
-    qDebug()<<"[geteElidedText]"<<str<<fontWidth.width(str)<<MaxWidth;  //qDebug获取"abcdefg..." 为60
+    qDebug()<<font;
+//    qDebug()<<"[geteElidedText]"<<str<<fontWidth.width(str)<<MaxWidth<<fontWidth.width("...(10)×50");  //qDebug获取"abcdefg..." 为60
     if(width>=MaxWidth)  //当字符串宽度大于最大宽度时进行转换
     {
         str = fontWidth.elidedText(str,Qt::ElideRight, MaxWidth);  //右部显示省略号
@@ -90,7 +91,7 @@ QStringList CabinetInfo::caseShowStr(QFont font, int maxWidth)
         if(!list_goods.at(i)->abbName.isEmpty())
             str = list_goods.at(i)->abbName;
 
-        str = geteElidedText(font, str, maxWidth-80) + "...";
+        str = geteElidedText(font, str, maxWidth-67) + "...";
 
 
         if(!str.isEmpty())
@@ -98,6 +99,7 @@ QStringList CabinetInfo::caseShowStr(QFont font, int maxWidth)
             str += QString("(%1)×%2").arg(list_goods.at(i)->goodsType).arg(list_goods.at(i)->num);
 //            str += "\n";
 //            ret += str;
+            qDebug()<<"[show str]"<<str;
             ret<<str;
         }
     }
@@ -119,6 +121,7 @@ GoodsInfo::GoodsInfo(GoodsInfo &info)
     unit = info.unit;
     Py = info.Py;
     goodsType = info.goodsType;
+    abbName = info.abbName;
 }
 
 QString GoodsInfo::nameWithType()

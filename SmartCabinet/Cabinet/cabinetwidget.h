@@ -116,6 +116,7 @@ private:
     QMessageBox* msgBox;
     GoodsList* curStoreList;
     Goods* curGoods;
+    GoodsInfo* rebindGoods;
     CabinetAccess* win_access;//存取窗口
     CabinetListView* win_cab_list_view;//柜子列表视图窗口
     CabinetCheck* win_check;//盘点窗口

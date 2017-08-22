@@ -865,8 +865,6 @@ void CabinetServer::netTimeout()
         apiState = 0;
     }
 
-
-
 }
 
 void CabinetServer::sysTimeout()
@@ -877,6 +875,8 @@ void CabinetServer::sysTimeout()
     }
     else
     {
+        sysClock.stop();
+        disconnect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
         checkTime();
         return;
     }

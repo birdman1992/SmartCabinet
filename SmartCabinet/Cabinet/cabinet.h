@@ -22,7 +22,7 @@ public:
     explicit Cabinet(QWidget *parent = 0);
     ~Cabinet();
 
-    void CabinetInit(int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
+    void CabinetInit(int _width, int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
     void setCabPos(int pos);
     void setCabType(int _type);
     void checkCase(int index);
@@ -33,6 +33,7 @@ public:
     void consumableIn(CaseAddress addr, int num=1);//药品存放
     void consumableOut(CaseAddress addr, int num=1);//药品取出
     void updateGoodsNum(CaseAddress addr, int num);//更新物品数量
+    void updateCabinetCase(CaseAddress addr);
     int cabinetPosNum();//获取位置编号
     void clearSelectState(int row);//清除选中状态
     void showMsg(QString msg, bool showBigCharacter);
@@ -53,6 +54,7 @@ signals:
 private:
     Ui::Cabinet *ui;
     int state;
+    int caseWidth;
     bool isMainCabinet;//是否为主柜
     int seqNum;//顺序编号
     int posNum;//位置编号

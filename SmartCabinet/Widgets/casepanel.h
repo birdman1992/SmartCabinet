@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QStringList>
 #include <QFont>
+#include <QResizeEvent>
+#include "Structs/cabinetinfo.h"
 
 namespace Ui {
 class CasePanel;
@@ -17,14 +19,21 @@ public:
     explicit CasePanel(QWidget *parent = 0);
     ~CasePanel();
     void setText(QStringList text);
+    void setText(QList<GoodsInfo*> list);
     QFont caseFont();
     int labWidth();
 
 private:
     Ui::CasePanel *ui;
     QFont* font;
-    QString geteElidedText(QFont font, QString str, int MaxWidth);
+    QList<GoodsInfo *> list_show;
+    QString geteElidedText(QFont _font, QString str, int MaxWidth);
+    QString getShowStr(GoodsInfo* info);
+    int getMaxLine();
+    int getStringWidth(QString str);
+    void updatePanel();
     void paintEvent(QPaintEvent *);
+    void resizeEvent(QResizeEvent* );
 };
 
 #endif // CASEPANEL_H

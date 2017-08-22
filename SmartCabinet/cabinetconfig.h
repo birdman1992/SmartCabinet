@@ -21,6 +21,7 @@ enum CabState
     STATE_REFUN = 3,//退货状态
     STATE_LIST = 4,//列表取货状态
     STATE_CHECK = 5,//盘点状态
+    STATE_REBIND = 6,//重新绑定
 };
 
 class CabinetConfig
@@ -50,7 +51,9 @@ public:
     CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
-sds
+    int getCaseWidth();
+    void removeConfig(QSettings& settings, CaseAddress addr);
+
     void searchByPinyin(QChar ch);
     void clearSearch();
     QChar str2py(QChar ch);

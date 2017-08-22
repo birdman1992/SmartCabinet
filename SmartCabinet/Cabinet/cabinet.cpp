@@ -18,8 +18,9 @@ Cabinet::~Cabinet()
     delete ui;
 }
 
-void Cabinet::CabinetInit(int seq, int pos, int, bool mainCab)
+void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
 {
+    caseWidth = _width;
     seqNum = seq;
     posNum = pos;
 //    caseNum = num;
@@ -77,7 +78,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
 //        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(caseIndex,0);
 //        lab->setWordWrap(true);
-        lab->setText(list_case.at(caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
+        lab->setText(list_case.at(caseIndex)->list_goods);//->caseShowStr(lab->caseFont(), caseWidth/2));
 //        ui->tableWidget->item(caseIndex,0)->setText(list_case.at(caseIndex)->caseShowStr());
     }
     else
@@ -89,7 +90,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         if(isMainCabinet && (caseIndex == 1))
             return;
         CasePanel* lab = new CasePanel();
-        lab->setText(cabInfo->caseShowStr(lab->caseFont(), lab->labWidth()));
+        lab->setText(list_case.at(caseIndex)->list_goods);//->caseShowStr(lab->caseFont(), caseWidth/2));
 //        QLabel* lab = new QLabel(cabInfo->caseShowStr());
 //        lab->setWordWrap(true);
         ui->tableWidget->setCellWidget(caseIndex, 0, lab);
@@ -141,7 +142,7 @@ void Cabinet::consumableIn(CaseAddress addr, int num)
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num+=num;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
-    lab->setText(list_case.at(addr.caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
+    lab->setText(list_case.at(addr.caseIndex)->list_goods);
 //    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
@@ -163,7 +164,7 @@ void Cabinet::consumableOut(CaseAddress addr,int num)
 
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = ((list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num)<0)?0:list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num-num;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
-    lab->setText(list_case.at(addr.caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
+    lab->setText(list_case.at(addr.caseIndex)->list_goods);
     //    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
 
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
@@ -185,7 +186,7 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
     qDebug()<<"[updateGoodsNum]"<<addr.cabinetSeqNUM<<addr.caseIndex<<addr.goodsIndex<<num;
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
-    lab->setText(list_case.at(addr.caseIndex)->caseShowStr(lab->caseFont(), lab->labWidth()));
+    lab->setText(list_case.at(addr.caseIndex)->list_goods);
 //    ui->tableWidget->item(addr.caseIndex,0)->setText(list_case.at(addr.caseIndex)->caseShowStr());
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
@@ -194,6 +195,16 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
     settings.setValue("num",num);
     settings.endArray();
     settings.endGroup();
+}
+
+void Cabinet::updateCabinetCase(CaseAddress addr)
+{
+    if((addr.cabinetSeqNUM == -1) || num<0)
+        return;
+
+    qDebug()<<"[updateCabinetCase]"<<addr.cabinetSeqNUM<<addr.caseIndex;
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+    lab->setText(list_case.at(addr.caseIndex)->list_goods);
 }
 
 int Cabinet::cabinetPosNum()
@@ -243,7 +254,7 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     GoodsInfo* gInfo = new GoodsInfo(info);
     list_case.at(index)->list_goods<<gInfo;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
-    lab->setText(list_case.at(index)->caseShowStr(lab->caseFont(), lab->labWidth()));
+    lab->setText(list_case.at(index)->list_goods);
 //    ui->tableWidget->item(index,0)->setText(list_case.at(index)->caseShowStr());
 //    list_case.at(index)->name = info.name;
 //    list_case.at(index)->id = info.id;

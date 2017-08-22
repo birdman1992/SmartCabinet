@@ -114,7 +114,7 @@ QPushButton::pressed{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_0">
       <widget class="QFrame" name="network">
@@ -816,6 +816,19 @@ font:20px&quot;微软雅黑&quot;;
        </property>
        <property name="text">
         <string>校准触摸屏</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="rebind">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>120</y>
+         <width>421</width>
+         <height>111</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>重新绑定物品柜格</string>
        </property>
       </widget>
      </widget>
