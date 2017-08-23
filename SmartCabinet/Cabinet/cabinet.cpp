@@ -133,7 +133,7 @@ int Cabinet::getIndexByName(QString findName)
 
 void Cabinet::consumableIn(CaseAddress addr, int num)
 {
-    if((addr.caseIndex >= list_case.count()) || (addr.cabinetSeqNUM!=seqNum) || (addr.goodsIndex>=list_case.at(addr.caseIndex)->list_goods.count()))
+    if((addr.caseIndex >= list_case.count()) || (addr.cabinetSeqNum!=seqNum) || (addr.goodsIndex>=list_case.at(addr.caseIndex)->list_goods.count()))
         return;
 
 //    if(list_case.at(index)->num == 0)
@@ -156,7 +156,7 @@ void Cabinet::consumableIn(CaseAddress addr, int num)
 
 void Cabinet::consumableOut(CaseAddress addr,int num)
 {qDebug("[consumableOut]");
-    if((addr.caseIndex >= list_case.count()) || (addr.cabinetSeqNUM!=seqNum) || (addr.goodsIndex>=list_case.at(addr.caseIndex)->list_goods.count()))
+    if((addr.caseIndex >= list_case.count()) || (addr.cabinetSeqNum!=seqNum) || (addr.goodsIndex>=list_case.at(addr.caseIndex)->list_goods.count()))
         return;
 
     if(list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num == 0)
@@ -180,10 +180,10 @@ void Cabinet::consumableOut(CaseAddress addr,int num)
 
 void Cabinet::updateGoodsNum(CaseAddress addr, int num)
 {
-    if((addr.cabinetSeqNUM == -1) || num<0)
+    if((addr.cabinetSeqNum == -1) || num<0)
         return;
 
-    qDebug()<<"[updateGoodsNum]"<<addr.cabinetSeqNUM<<addr.caseIndex<<addr.goodsIndex<<num;
+    qDebug()<<"[updateGoodsNum]"<<addr.cabinetSeqNum<<addr.caseIndex<<addr.goodsIndex<<num;
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
     lab->setText(list_case.at(addr.caseIndex)->list_goods);
@@ -199,10 +199,10 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
 
 void Cabinet::updateCabinetCase(CaseAddress addr)
 {
-    if((addr.cabinetSeqNUM == -1) || num<0)
+    if(addr.cabinetSeqNum == -1)
         return;
 
-    qDebug()<<"[updateCabinetCase]"<<addr.cabinetSeqNUM<<addr.caseIndex;
+    qDebug()<<"[updateCabinetCase]"<<addr.cabinetSeqNum<<addr.caseIndex;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
     lab->setText(list_case.at(addr.caseIndex)->list_goods);
 }

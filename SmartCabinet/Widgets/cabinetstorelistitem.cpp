@@ -11,7 +11,7 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
     name = goods->name;
     num = goods->takeCount;
     package_id = goods->packageBarcode;
-    pos_seq = addr.cabinetSeqNUM;
+    pos_seq = addr.cabinetSeqNum;
     pos_index = addr.caseIndex;
 
     ui->name->setText(name);
@@ -29,7 +29,7 @@ CabinetStoreListItem::~CabinetStoreListItem()
 
 void CabinetStoreListItem::bindRst(CaseAddress addr)
 {
-    pos_seq = addr.cabinetSeqNUM;
+    pos_seq = addr.cabinetSeqNum;
     pos_index = addr.caseIndex;
 
     updateOptState();

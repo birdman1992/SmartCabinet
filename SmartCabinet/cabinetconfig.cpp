@@ -370,10 +370,10 @@ CaseAddress CabinetConfig::checkCabinetByName(QString name)
             goodsIndex = list_cabinet.at(i)->list_case.at(j)->caseSearch(name);
             if(goodsIndex != -1)
             {
-                ret.cabinetSeqNUM = i;
+                ret.cabinetSeqNum = i;
                 ret.caseIndex = j;
                 ret.goodsIndex = goodsIndex;
-                qDebug()<<"[checkCabinetByName]"<<ret.cabinetSeqNUM<<ret.caseIndex<<ret.goodsIndex;
+                qDebug()<<"[checkCabinetByName]"<<ret.cabinetSeqNum<<ret.caseIndex<<ret.goodsIndex;
                 return ret;
             }
         }
@@ -396,10 +396,10 @@ CaseAddress CabinetConfig::checkCabinetByBarCode(QString id)
             goodsIndex = list_cabinet.at(i)->list_case.at(j)->barcodeSearch(id);
             if(goodsIndex != -1)
             {
-                ret.cabinetSeqNUM = i;
+                ret.cabinetSeqNum = i;
                 ret.caseIndex = j;
                 ret.goodsIndex = goodsIndex;
-                qDebug()<<ret.cabinetSeqNUM<<ret.caseIndex<<ret.goodsIndex;
+                qDebug()<<ret.cabinetSeqNum<<ret.caseIndex<<ret.goodsIndex;
                 return ret;
             }
         }
@@ -422,10 +422,10 @@ CaseAddress CabinetConfig::checkCabinetByGoodsId(QString id)
             goodsIndex = list_cabinet.at(i)->list_case.at(j)->goodsIdSearch(id);
             if(goodsIndex != -1)
             {
-                ret.cabinetSeqNUM = i;
+                ret.cabinetSeqNum = i;
                 ret.caseIndex = j;
                 ret.goodsIndex = goodsIndex;
-                qDebug()<<ret.cabinetSeqNUM<<ret.caseIndex<<ret.goodsIndex;
+                qDebug()<<ret.cabinetSeqNum<<ret.caseIndex<<ret.goodsIndex;
                 return ret;
             }
         }
@@ -444,12 +444,13 @@ int CabinetConfig::getCaseWidth()
     return caseWidth;
 }
 
-void CabinetConfig::removeConfig(QSettings &settings, CaseAddress addr)
+void CabinetConfig::removeConfig(CaseAddress addr)
 {
-    if((addr.cabinetSeqNUM<0) || (addr.caseIndex<0) || (addr.goodsIndex<0))
+    if((addr.cabinetSeqNum<0) || (addr.caseIndex<0) || (addr.goodsIndex<0))
         return;
 
-    settings.beginGroup(QString("Cabinet%1").arg(addr.cabinetSeqNUM));
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    settings.beginGroup(QString("Cabinet%1").arg(addr.cabinetSeqNum));
     int len = settings.beginReadArray(QString("case%1").arg(addr.caseIndex));
     QList<GoodsInfo*> l_temp;
 
@@ -467,29 +468,44 @@ void CabinetConfig::removeConfig(QSettings &settings, CaseAddress addr)
         l_temp<<info;
     }
     settings.endArray();
+    settings.endGroup();
+    settings.remove(QString("Cabinet%1/case%2").arg(addr.cabinetSeqNum).arg(addr.caseIndex));
 
     GoodsInfo* info = l_temp.takeAt(addr.goodsIndex);
     delete(info);
+    settings.beginGroup(QString("Cabinet%1").arg(addr.cabinetSeqNum));
 
     settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
     i=0;
-    for(i=0; i<l_temp.count(); i++)
+    if(l_temp.isEmpty())
     {
-        settings.setArrayIndex(i);
-        GoodsInfo* info = l_temp.at(i);
-        settings.setValue("abbName", QVariant(info->abbName));
-        settings.setValue("id", QVariant(info->id));
-        settings.setValue("name", QVariant(info->name));
-        settings.setValue("num", QVariant(info->num));
-        settings.setValue("packageId", QVariant(info->packageId));
-        settings.setValue("unit", QVariant(info->unit));
+        settings.setArrayIndex(0);
+        settings.setValue("name",QVariant(QString()));
+        settings.setValue("num", QVariant(0));
+        settings.setValue("unit",QVariant(QString()));
+        settings.setValue("id",QVariant(QString()));
+        settings.setValue("packageId",QVariant(QString()));
+    }
+    else
+    {
+        for(i=0; i<l_temp.count(); i++)
+        {
+            settings.setArrayIndex(i);
+            GoodsInfo* info = l_temp.at(i);
+            settings.setValue("abbName", QVariant(info->abbName));
+            settings.setValue("id", QVariant(info->id));
+            settings.setValue("name", QVariant(info->name));
+            settings.setValue("num", QVariant(info->num));
+            settings.setValue("packageId", QVariant(info->packageId));
+            settings.setValue("unit", QVariant(info->unit));
+        }
     }
     settings.endArray();
 
     settings.endGroup();
     settings.sync();
 
-    list_cabinet[addr.cabinetSeqNUM]->updateCabinetCase();
+    list_cabinet[addr.cabinetSeqNum]->updateCabinetCase(addr);
 }
 
 void CabinetConfig::searchByPinyin(QChar ch)

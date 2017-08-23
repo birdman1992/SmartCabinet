@@ -52,7 +52,7 @@ public:
     CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
     int getCaseWidth();
-    void removeConfig(QSettings& settings, CaseAddress addr);
+    void removeConfig(CaseAddress addr);
 
     void searchByPinyin(QChar ch);
     void clearSearch();

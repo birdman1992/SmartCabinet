@@ -107,7 +107,7 @@ QNetworkInterface QNetInterface::getNetworkInterface(QString name)
         if(ni.name() == name)
             return ni;
     }
-
+//qDebug("getNetworkInterface");
     return QNetworkInterface();
 }
 
@@ -118,6 +118,8 @@ void QNetInterface::getNetworkInfo()
         return;
 
     QList<QNetworkAddressEntry> entryList = interface.addressEntries();
+    if(entryList.isEmpty())
+        return;
     netEntry = entryList.at(0);
 
     foreach(QNetworkAddressEntry en, entryList)

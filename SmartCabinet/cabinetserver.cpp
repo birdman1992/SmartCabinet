@@ -216,6 +216,11 @@ void CabinetServer::listCheck(QString code)
 
 void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
 {
+    if(!networkState)
+    {
+        emit bindRst(false);
+        return;
+    }
     QString caseId = QString::number(config->getLockId(seqNum, index));
     QString cabinetId = config->getCabinetId();
     QByteArray qba = QString("{\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
@@ -227,8 +232,8 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
 }
 
 void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optType)
-{qDebug()<<addr.cabinetSeqNUM<<id<<num<<optType;
-    QString caseId = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex));
+{qDebug()<<addr.cabinetSeqNum<<id<<num<<optType;
+    QString caseId = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex));
     QString cabinetId = config->getCabinetId();
     QByteArray qba;
 
@@ -267,7 +272,7 @@ void CabinetServer::listAccess(QStringList list, int optType)
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
         QByteArray barcode = barCode.toLocal8Bit();
         CaseAddress addr = config->checkCabinetByBarCode(pack_id);
-        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
+        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex)).toLocal8Bit();
 
         cJSON* obj = cJSON_CreateObject();
         cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
@@ -325,7 +330,7 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
 
         QByteArray packageBarcode = item->itemId().toLocal8Bit();
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
-        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
+        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex)).toLocal8Bit();
         int optCount = item->itemNum();
         cJSON* obj = cJSON_CreateObject();
         cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
@@ -366,7 +371,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
         CaseAddress addr = config->checkCabinetByBarCode(pack_id);
         QByteArray barcode = barCode.toLocal8Bit();
-        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNUM, addr.caseIndex)).toLocal8Bit();
+        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex)).toLocal8Bit();
         cJSON* obj = cJSON_CreateObject();
         cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
         cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));

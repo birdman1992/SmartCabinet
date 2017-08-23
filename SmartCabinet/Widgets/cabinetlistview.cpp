@@ -220,7 +220,7 @@ void CabinetListView::on_list_goods_clicked(const QModelIndex &index)
     ui->msg->setText("");
     CabinetListItem* item = new CabinetListItem(info->nameWithType(), info->packageId);
     CaseAddress addr = config->checkCabinetByBarCode(info->packageId);
-    emit requireOpenCase(addr.cabinetSeqNUM, addr.caseIndex);
+    emit requireOpenCase(addr.cabinetSeqNum, addr.caseIndex);
     selectMap.insert(info->packageId, item);
 
     int listSize = ui->list_select->rowCount();

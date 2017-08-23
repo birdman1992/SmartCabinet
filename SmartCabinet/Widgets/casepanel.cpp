@@ -28,7 +28,7 @@ void CasePanel::paintEvent(QPaintEvent*)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-void CasePanel::resizeEvent(QResizeEvent *e)
+void CasePanel::resizeEvent(QResizeEvent *)
 {
     updatePanel();
 }
@@ -72,7 +72,7 @@ QString CasePanel::geteElidedText(QFont _font, QString str, int MaxWidth)
 {
     QFontMetrics fontWidth(_font);
     int width = fontWidth.width(str);  //计算字符串宽度
-    qDebug()<<"[geteElidedText]"<<str<<fontWidth.width(str)<<MaxWidth;  //qDebug获取"abcdefg..." 为60
+//    qDebug()<<"[geteElidedText]"<<str<<fontWidth.width(str)<<MaxWidth;  //qDebug获取"abcdefg..." 为60
     if(width>=MaxWidth)  //当字符串宽度大于最大宽度时进行转换
     {
         str = fontWidth.elidedText(str,Qt::ElideRight, MaxWidth);  //右部显示省略号

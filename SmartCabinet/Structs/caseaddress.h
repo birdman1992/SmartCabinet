@@ -6,7 +6,8 @@ class CaseAddress//用于描述柜格位置
 {
 public:
     CaseAddress();
-    int cabinetSeqNUM;//智能柜顺序编号
+    void clear();
+    int cabinetSeqNum;//智能柜顺序编号
     int caseIndex;//柜格编号
     int goodsIndex;//物品柜格内序号
 };

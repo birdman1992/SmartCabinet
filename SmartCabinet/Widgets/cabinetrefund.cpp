@@ -64,8 +64,8 @@ void CabinetRefund::refundStart(CaseAddress addr)
     ui->msg->setText("");
     ui->ok->setText("提交");
 
-    curRefundCab = config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex];
-    curAddr.cabinetSeqNUM = addr.cabinetSeqNUM;
+    curRefundCab = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex];
+    curAddr.cabinetSeqNum = addr.cabinetSeqNum;
     curAddr.caseIndex = addr.caseIndex;
 
     int i = 0;

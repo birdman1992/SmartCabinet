@@ -113,6 +113,8 @@ private:
     QString fullScanInfo;
     UserInfo* optUser;//操作者id
     CaseAddress casePos;
+    CaseAddress rebind_old_addr;
+    CaseAddress rebind_new_addr;
     QMessageBox* msgBox;
     GoodsList* curStoreList;
     Goods* curGoods;
@@ -135,6 +137,8 @@ private:
     void initSearchBtns();
     bool needWaitForServer();
     void showCurrentTime(QString curTime);
+    void rebindRecover();//重绑定恢复
+    void rebindOver();//重绑定完成
     void clearCheckState();
     void clearMenuState();
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
