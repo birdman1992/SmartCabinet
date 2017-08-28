@@ -221,9 +221,10 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
         emit bindRst(false);
         return;
     }
-    QString caseId = QString::number(config->getLockId(seqNum, index));
+//    QString caseId = QString::number(config->getLockId(seqNum, index));
     QString cabinetId = config->getCabinetId();
-    QByteArray qba = QString("{\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
+    QByteArray qba = QString("{\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"cabinetRow\":%3,\"cabinetCol\":%4}").arg(goodsId).arg(cabinetId).arg(index).arg(seqNum).toUtf8();
+//    QByteArray qba = QString("{\"goodId\":\"%1\",\"chesetCode\":\"%2\",\"caseId\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CAB_BIND)+"?"+qba.toBase64();
     qDebug()<<"[cabinetBind]"<<nUrl<<"\n"<<qba;
     replyCheck(reply_cabinet_bind);
@@ -620,7 +621,7 @@ void CabinetServer::recvCabBind()
     reply_cabinet_bind = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<cJSON_Print(json);
+    qDebug()<<"[recvCabBind]"<<cJSON_Print(json);
 
     if(!json)
         return;

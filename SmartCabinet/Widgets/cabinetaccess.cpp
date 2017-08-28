@@ -50,6 +50,7 @@ void CabinetAccess::setStoreList(GoodsList *list)
 
 void CabinetAccess::clickOpen(QString goodsId)
 {
+    return;//废弃
     if(isStore)
     {
         Goods* storeGoods = storeList->getGoodsById(goodsId);

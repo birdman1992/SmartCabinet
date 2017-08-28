@@ -4,6 +4,7 @@
 #include <QTextCodec>
 #include <qobject.h>
 #include <QApplication>
+#include "Json/cJSON.h"
 #include "defines.h"
 #include "funcs/chineseletterhelper.h"
 #include "Device/controldevice.h"
@@ -506,6 +507,53 @@ void CabinetConfig::removeConfig(CaseAddress addr)
     settings.sync();
 
     list_cabinet[addr.cabinetSeqNum]->updateCabinetCase(addr);
+}
+
+QByteArray CabinetConfig::creatCabinetJson()
+{
+//    QByteArray chesetCode = cabinetId.toLocal8Bit();
+//    QByteArray cabinetPos = getCabinetPos();
+//    QByteArray cabinetSize = getCabinetSize();
+
+//    cJSON* json;
+//    json = cJSON_CreateObject();
+//    cJSON_CreateString();
+//    cJSON_AddItemToObject(json, "chesetCode", cjson_crea);
+//    cJSON_AddItemToObject();
+}
+
+QByteArray CabinetConfig::getCabinetPos()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QByteArray ret;
+    int i=0;
+    int cabNum = settings.value("CabNum", QVariant(0)).toInt();
+
+    ret.resize(cabNum);
+
+    for(i=0; i<cabNum; i++)
+    {
+        ret[i] = settings.value(QString("Cab%1PosNum").arg(i),0).toInt();
+    }
+
+    return ret;
+}
+
+QByteArray CabinetConfig::getCabinetSize()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QByteArray ret;
+    int i=0;
+    int cabNum = settings.value("CabNum", QVariant(0)).toInt();
+
+    ret.resize(cabNum);
+
+    for(i=0; i<cabNum; i++)
+    {
+        ret[i] = settings.value(QString("Cabinet%1/cabinetSize").arg(i),0).toInt();
+    }
+
+    return ret;
 }
 
 void CabinetConfig::searchByPinyin(QChar ch)

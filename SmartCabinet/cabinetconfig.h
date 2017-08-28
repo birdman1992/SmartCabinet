@@ -53,6 +53,9 @@ public:
     int getLockId(int seq, int index);
     int getCaseWidth();
     void removeConfig(CaseAddress addr);
+    QByteArray creatCabinetJson();
+    QByteArray getCabinetPos();
+    QByteArray getCabinetSize();
 
     void searchByPinyin(QChar ch);
     void clearSearch();
