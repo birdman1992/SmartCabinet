@@ -20,6 +20,19 @@ CasePanel::~CasePanel()
     delete ui;
 }
 
+void CasePanel::setCheckState(bool checked)
+{
+    if(checked)
+    {
+        ui->right->setStyleSheet("image: url(:/image/image/icon_check.png);\
+                                 image-position:top right");
+    }
+    else
+    {
+        ui->right->setStyleSheet("");
+    }
+}
+
 void CasePanel::paintEvent(QPaintEvent*)
 {
     QStyleOption opt;

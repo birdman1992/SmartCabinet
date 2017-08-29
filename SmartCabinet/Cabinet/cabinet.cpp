@@ -358,17 +358,20 @@ void Cabinet::setCaseState(int index, int numState)
     if(numState == 0)//正常状态
     {
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
+        lab->setCheckState(false);
         lab->setStyleSheet(cellStyle(QColor(36, 221, 149)));
     }
     else if(numState == 1)//被搜索状态
     {
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
+        lab->setCheckState(false);
         lab->setStyleSheet(cellStyle(QColor(6, 161, 101)));
     }
     else if(numState == 2)//盘点完毕状态
     {
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
-        lab->setStyleSheet(cellStyle(QColor(36, 221, 149))+checkStyle());
+        lab->setCheckState(true);
+//        lab->setStyleSheet(cellStyle(QColor(36, 221, 149))+checkStyle());
     }
 }
 

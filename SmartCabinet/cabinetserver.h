@@ -81,6 +81,10 @@ public slots:
     void getServerAddr(QString addr);
     void userLogin(QString);
     void listCheck(QString);//送货单信息校验
+    void cabInfoUpload();//柜子信息上传
+    void cabInfoReq();//柜子信息查询
+    void cabCloneReq();//柜子克隆请求
+    void cabCloneSync();//柜子克隆数据同步
     void cabinetBind(int, int, QString);
     void goodsAccess(CaseAddress, QString, int, int optType);
     void listAccess(QStringList list, int optType);

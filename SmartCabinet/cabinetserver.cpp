@@ -9,6 +9,10 @@
 //#define SERVER_ADDR "http://175.11.185.181"
 #define SERVER_ADDR "http://120.77.159.8:8080"
 #define API_REG "/spd-web/mapper/SmartCheset/saveOrUpdate/"   //注册接口
+#define API_INFO_UPLOAD ""    //柜子信息上传接口
+#define API_INFO_REQ "/spd-web/mapper/SmartCheset/query/"      //柜子信息查询接口
+#define API_CLONE_REQ "/spd-web/mapper/SmartCheset/query/"     //柜子克隆请求接口
+#define API_CLONE_SYNC  ""      //柜子克隆数据同步接口
 #define API_LOGIN "/spd-web/mapper/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/spd-web/work/OutStorage/query/goods/" //送货单检查接口
 //#define API_GOODS_CHECK "/spd-web/mapper/Goods/query/"  //货物查询
@@ -214,6 +218,32 @@ void CabinetServer::listCheck(QString code)
     connect(reply_list_check, SIGNAL(finished()), this, SLOT(recvListCheck()));
 }
 
+void CabinetServer::cabInfoUpload()
+{
+    QByteArray qba = config->creatCabinetJson();
+    QString nUrl = ApiAddress+QString(API_INFO_UPLOAD)+"?"+qba.toBase64();
+    qDebug()<<"[cabInfoUpload]"<<nUrl<<qba;
+}
+
+void CabinetServer::cabInfoReq()
+{
+    QByteArray qba = QString("{\"chesetCode\"\":%1\"}").arg(config->getCabinetId());
+    QString nUrl = ApiAddress+QString(API_INFO_REQ)+"?"+qba.toBase64();
+    qDebug()<<"[cabInfoReq]"<<nUrl<<qba;
+}
+
+void CabinetServer::cabCloneReq()
+{
+    QByteArray qba = QString("{\"newCabinetId\":\"%1\", \"oldCabinetId\":\"%2\"}");
+    QString nUrl = ApiAddress+QString(API_CLONE_REQ)+"?"+qba.toBase64();
+    qDebug()<<"[cabCloneReq]"<<nUrl<<qba;
+}
+
+void CabinetServer::cabCloneSync()
+{
+
+}
+
 void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
 {
     if(!networkState)
@@ -221,9 +251,9 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
         emit bindRst(false);
         return;
     }
-//    QString caseId = QString::number(config->getLockId(seqNum, index));
+    QString caseId = QString::number(config->getLockId(seqNum, index));
     QString cabinetId = config->getCabinetId();
-    QByteArray qba = QString("{\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"cabinetRow\":%3,\"cabinetCol\":%4}").arg(goodsId).arg(cabinetId).arg(index).arg(seqNum).toUtf8();
+    QByteArray qba = QString("{\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"cabinetRow\":%4,\"cabinetCol\":%5}").arg(goodsId).arg(cabinetId).arg(caseId).arg(index).arg(seqNum).toUtf8();
 //    QByteArray qba = QString("{\"goodId\":\"%1\",\"chesetCode\":\"%2\",\"caseId\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CAB_BIND)+"?"+qba.toBase64();
     qDebug()<<"[cabinetBind]"<<nUrl<<"\n"<<qba;

@@ -18,6 +18,7 @@ class CasePanel : public QWidget
 public:
     explicit CasePanel(QWidget *parent = 0);
     ~CasePanel();
+    void setCheckState(bool checked);
     void setText(QStringList text);
     void setText(QList<GoodsInfo*> list);
     QFont caseFont();

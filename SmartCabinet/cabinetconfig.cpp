@@ -295,6 +295,7 @@ void CabinetConfig::readCabinetConfig()
         }
         settings.endGroup();
     }
+    creatCabinetJson();
 }
 
 //创建柜子配置文件  qba:柜子位置信息
@@ -511,15 +512,40 @@ void CabinetConfig::removeConfig(CaseAddress addr)
 
 QByteArray CabinetConfig::creatCabinetJson()
 {
-//    QByteArray chesetCode = cabinetId.toLocal8Bit();
-//    QByteArray cabinetPos = getCabinetPos();
-//    QByteArray cabinetSize = getCabinetSize();
+    QByteArray chesetCode = cabinetId.toLocal8Bit();
+    QByteArray cabinetPos = getCabinetPos().toHex();
+    QByteArray cabinetSize = getCabinetSize().toHex();
+    QByteArray ret;
 
-//    cJSON* json;
-//    json = cJSON_CreateObject();
-//    cJSON_CreateString();
-//    cJSON_AddItemToObject(json, "chesetCode", cjson_crea);
-//    cJSON_AddItemToObject();
+    cJSON* json;
+    json = cJSON_CreateObject();
+    cJSON_AddItemToObject(json, "chesetCode", cJSON_CreateString(chesetCode.data()));
+    cJSON_AddItemToObject(json, "cabinetPos", cJSON_CreateString(cabinetPos.data()));
+    cJSON_AddItemToObject(json, "cabinetSize", cJSON_CreateString(cabinetSize.data()));
+
+    cJSON* cabinetCtrlConfig = cJSON_CreateArray();
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+
+    int i = 0;
+    for(i=0; i<settings.value("CabNum").toInt(); i++)
+    {
+        settings.beginGroup(QString("Cabinet%1").arg(i));
+        QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray("00000000000000000000000000000000")).toByteArray();
+        QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray("00000000000000000000000000000000")).toByteArray();
+        settings.endGroup();
+
+        cJSON* obj = cJSON_CreateObject();
+        cJSON_AddItemToObject(obj, "ctrlSeq", cJSON_CreateString(ctrlSeq.data()));
+        cJSON_AddItemToObject(obj, "ctrlIndex", cJSON_CreateString(ctrlIndex.data()));
+        cJSON_AddItemToArray(cabinetCtrlConfig, obj);
+    }
+    cJSON_AddItemToObject(json, "cabinetCtrlConfig", cabinetCtrlConfig);
+
+    ret = QByteArray(cJSON_Print(json));
+    cJSON_Delete(json);
+
+    qDebug()<<"[creatCabinetJson]"<<ret;
+    return ret;
 }
 
 QByteArray CabinetConfig::getCabinetPos()
@@ -528,12 +554,14 @@ QByteArray CabinetConfig::getCabinetPos()
     QByteArray ret;
     int i=0;
     int cabNum = settings.value("CabNum", QVariant(0)).toInt();
-
+    qDebug()<<"CabNum"<<cabNum;
     ret.resize(cabNum);
+    qDebug()<<ret.size();
 
     for(i=0; i<cabNum; i++)
     {
         ret[i] = settings.value(QString("Cab%1PosNum").arg(i),0).toInt();
+        qDebug()<<ret.toHex();
     }
 
     return ret;

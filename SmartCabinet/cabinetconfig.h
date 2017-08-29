@@ -65,6 +65,7 @@ public:
     QList<Cabinet*> list_cabinet;
     CabState state;
     VoicePlayer cabVoice;
+    QString regId;
 //    QList<>
 
     QString scanDataTrans(QString code);
