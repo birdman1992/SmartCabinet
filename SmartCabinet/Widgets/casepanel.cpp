@@ -3,7 +3,7 @@
 #include <qdebug.h>
 #include <QPainter>
 
-CasePanel::CasePanel(QWidget *parent) :
+CasePanel::CasePanel(bool doubleCol, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CasePanel)
 {
@@ -12,6 +12,7 @@ CasePanel::CasePanel(QWidget *parent) :
     font->setPixelSize(15);
     this->setFont(*font);
     list_show.clear();
+    showDoubleCol = doubleCol;
 }
 
 CasePanel::~CasePanel()
@@ -107,25 +108,45 @@ void CasePanel::updatePanel()
     int i = 0;
     int maxLine = getMaxLine()-1;
 
-    for(i=0; i<list_show.count(); i++)
+    if(showDoubleCol)
     {
-        if(i<maxLine)
+        ui->right->show();
+        for(i=0; i<list_show.count(); i++)
         {
-            left += getShowStr(list_show.at(i));
-            if(i<maxLine-1)
-                left += "\n";
+            if(i<maxLine)
+            {
+                left += getShowStr(list_show.at(i));
+                if(i<maxLine-1)
+                    left += "\n";
+            }
+            else if(i<(2*maxLine))
+            {
+                right += getShowStr(list_show.at(i));
+                if(i<(2*maxLine-1))
+                    right += "\n";
+            }
+            else
+                break;
         }
-        else if(i<(2*maxLine))
-        {
-            right += getShowStr(list_show.at(i));
-            if(i<(2*maxLine-1))
-                right += "\n";
-        }
-        else
-            break;
+        ui->left->setText(left);
+        ui->right->setText(right);
     }
-    ui->left->setText(left);
-    ui->right->setText(right);
+    else
+    {
+        ui->right->hide();
+        for(i=0; i<list_show.count(); i++)
+        {
+            if(i<maxLine)
+            {
+                left += getShowStr(list_show.at(i));
+                if(i<maxLine-1)
+                    left += "\n";
+            }
+            else
+                break;
+        }
+        ui->left->setText(left);
+    }
 }
 
 QString CasePanel::getShowStr(GoodsInfo *info)

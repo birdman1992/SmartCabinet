@@ -39,6 +39,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_goods_check = NULL;
     reply_datetime = NULL;
     reply_list_state = NULL;
+    reply_cabinet_info = NULL;
     list_access_cache.clear();
     apiState = 0;
     needReqCar = true;
@@ -223,18 +224,21 @@ void CabinetServer::cabInfoUpload()
     QByteArray qba = config->creatCabinetJson();
     QString nUrl = ApiAddress+QString(API_INFO_UPLOAD)+"?"+qba.toBase64();
     qDebug()<<"[cabInfoUpload]"<<nUrl<<qba;
+    replyCheck(reply_cabinet_info);
+    reply_cabinet_info = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_cabinet_info, SIGNAL(finished()), this, SLOT(recvInfoUploadResult()));
 }
 
 void CabinetServer::cabInfoReq()
 {
-    QByteArray qba = QString("{\"chesetCode\"\":%1\"}").arg(config->getCabinetId());
+    QByteArray qba = QString("{\"chesetCode\"\":%1\"}").arg(config->getCabinetId()).toUtf8();
     QString nUrl = ApiAddress+QString(API_INFO_REQ)+"?"+qba.toBase64();
     qDebug()<<"[cabInfoReq]"<<nUrl<<qba;
 }
 
-void CabinetServer::cabCloneReq()
+void CabinetServer::cabCloneReq(QString oldCabinetId)
 {
-    QByteArray qba = QString("{\"newCabinetId\":\"%1\", \"oldCabinetId\":\"%2\"}");
+    QByteArray qba = QString("{\"newCabinetId\":\"%1\", \"oldCabinetId\":\"%2\"}").arg(config->getCabinetId()).arg(oldCabinetId).toUtf8() ;
     QString nUrl = ApiAddress+QString(API_CLONE_REQ)+"?"+qba.toBase64();
     qDebug()<<"[cabCloneReq]"<<nUrl<<qba;
 }
@@ -448,7 +452,7 @@ void CabinetServer::recvCabRegister()
     reply_register = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-//    qDebug()<<cJSON_Print(json);
+    qDebug()<<"[recvCabRegister]"<<cJSON_Print(json);
 
     if(!json)
         return;
@@ -869,6 +873,11 @@ void CabinetServer::recvListState()
     }
 
     cJSON_Delete(json);
+}
+
+void CabinetServer::recvInfoUploadResult()
+{
+
 }
 
 void CabinetServer::netTimeout()

@@ -16,7 +16,7 @@ class CasePanel : public QWidget
     Q_OBJECT
 
 public:
-    explicit CasePanel(QWidget *parent = 0);
+    explicit CasePanel(bool doubleCol ,QWidget *parent = 0);
     ~CasePanel();
     void setCheckState(bool checked);
     void setText(QStringList text);
@@ -26,6 +26,7 @@ public:
 
 private:
     Ui::CasePanel *ui;
+    bool showDoubleCol;
     QFont* font;
     QList<GoodsInfo *> list_show;
     QString geteElidedText(QFont _font, QString str, int MaxWidth);

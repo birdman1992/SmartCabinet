@@ -39,6 +39,7 @@ private:
     QNetworkReply* reply_goods_check;
     QNetworkReply* reply_datetime;
     QNetworkReply* reply_list_state;
+    QNetworkReply* reply_cabinet_info;
     QString regId;
     QString logId;
     QString barCode;
@@ -83,7 +84,7 @@ public slots:
     void listCheck(QString);//送货单信息校验
     void cabInfoUpload();//柜子信息上传
     void cabInfoReq();//柜子信息查询
-    void cabCloneReq();//柜子克隆请求
+    void cabCloneReq(QString oldCabinetId);//柜子克隆请求
     void cabCloneSync();//柜子克隆数据同步
     void cabinetBind(int, int, QString);
     void goodsAccess(CaseAddress, QString, int, int optType);
@@ -106,6 +107,7 @@ private slots:
     void recvDateTime();
     void recvDateTimeError(QNetworkReply::NetworkError code);
     void recvListState();
+    void recvInfoUploadResult();
     void netTimeout();
 };
 

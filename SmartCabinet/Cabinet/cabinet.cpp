@@ -62,7 +62,7 @@ void Cabinet::checkCase(int index)
     setCaseState(index, 2);
 }
 
-void Cabinet::addCase(GoodsInfo *info, int caseIndex)
+void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol:是否使用双列显示
 {
     if(list_case.count()>=caseNum)
     {
@@ -89,7 +89,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex)
         list_case<<cabInfo;
         if(isMainCabinet && (caseIndex == 1))
             return;
-        CasePanel* lab = new CasePanel();
+        CasePanel* lab = new CasePanel(doubleCol);
         lab->setText(list_case.at(caseIndex)->list_goods);//->caseShowStr(lab->caseFont(), caseWidth/2));
 //        QLabel* lab = new QLabel(cabInfo->caseShowStr());
 //        lab->setWordWrap(true);
@@ -349,7 +349,7 @@ void Cabinet::setCaseState(int index, int numState)
 {
     if(index > list_case.count())
         return;
-    qDebug()<<"setCaseState"<<index<<numState;
+//    qDebug()<<"setCaseState"<<index<<numState;
     state = numState;
 
 //    if(isMainCabinet && index)

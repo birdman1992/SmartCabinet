@@ -64,31 +64,46 @@ bool QNetInterface::numPointCheck(QString str)
     return true;
 }
 
-void QNetInterface::setIp(QString _ip)
+bool QNetInterface::setIp(QString _ip)
 {
+    if(!numPointCheck(_ip))
+        return false;
+
     QProcess p;
     QString cmd = QString("ifconfig %1 %2").arg(devName).arg(_ip);
     qDebug()<<"[setIp]"<<cmd;
     p.start(cmd);
     p.waitForFinished();
+
+    return true;
 }
 
-void QNetInterface::setNetmask(QString _netmask)
+bool QNetInterface::setNetmask(QString _netmask)
 {
+    if(!numPointCheck(_netmask))
+        return false;
+
     QProcess p;
     QString cmd = QString("ifconfig %1 netmask %2").arg(devName).arg(_netmask);
     qDebug()<<"[setNetmask]"<<cmd;
     p.start(cmd);
     p.waitForFinished();
+
+    return true;
 }
 
-void QNetInterface::setGateway(QString _gateway)
+bool QNetInterface::setGateway(QString _gateway)
 {
+    if(!numPointCheck(_gateway))
+        return false;
+
     QProcess p;
     QString cmd = QString("route add default gw %1").arg(_gateway);
     qDebug()<<"[setGateway]"<<cmd;
     p.start(cmd);
     p.waitForFinished();
+
+    return true;
 }
 
 bool QNetInterface::isValid()

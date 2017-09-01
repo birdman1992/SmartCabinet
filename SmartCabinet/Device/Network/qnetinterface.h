@@ -16,9 +16,9 @@ public:
     QString netmask();
     QString gateway();
     bool numPointCheck(QString str);//数点字符串校验
-    void setIp(QString _ip);
-    void setNetmask(QString _netmask);
-    void setGateway(QString _gateway);
+    bool setIp(QString _ip);
+    bool setNetmask(QString _netmask);
+    bool setGateway(QString _gateway);
 
     bool isValid();
 

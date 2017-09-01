@@ -258,7 +258,7 @@ void CabinetConfig::readCabinetConfig()
             info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->goodsType = getGoodsType(info->packageId);
 //            qDebug()<<"[getGoodsType]"<<info->packageId<<info->goodsType;
-            list_cabinet[0]->addCase(info,j);//qDebug()<<"[read conf]"<<j;
+            list_cabinet[0]->addCase(info,j,(cabNum == 3));//qDebug()<<"[read conf]"<<j;
             list_cabinet[0]->setCtrlWord(j, ctrlSeq, ctrlIndex);
         }
         settings.endArray();
@@ -288,7 +288,7 @@ void CabinetConfig::readCabinetConfig()
                 info->packageId = settings.value("packageId").toString();
                 info->goodsType = getGoodsType(info->packageId);
                 info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-                list_cabinet[i]->addCase(info,j);
+                list_cabinet[i]->addCase(info,j,(cabNum == 3));
                 list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
             }
             settings.endArray();
@@ -544,7 +544,7 @@ QByteArray CabinetConfig::creatCabinetJson()
     ret = QByteArray(cJSON_Print(json));
     cJSON_Delete(json);
 
-    qDebug()<<"[creatCabinetJson]"<<ret;
+//    qDebug()<<"[creatCabinetJson]"<<ret;
     return ret;
 }
 
@@ -554,14 +554,14 @@ QByteArray CabinetConfig::getCabinetPos()
     QByteArray ret;
     int i=0;
     int cabNum = settings.value("CabNum", QVariant(0)).toInt();
-    qDebug()<<"CabNum"<<cabNum;
+//    qDebug()<<"CabNum"<<cabNum;
     ret.resize(cabNum);
-    qDebug()<<ret.size();
+//    qDebug()<<ret.size();
 
     for(i=0; i<cabNum; i++)
     {
         ret[i] = settings.value(QString("Cab%1PosNum").arg(i),0).toInt();
-        qDebug()<<ret.toHex();
+//        qDebug()<<ret.toHex();
     }
 
     return ret;

@@ -10,6 +10,7 @@ CabinetSet::CabinetSet(QWidget *parent) :
     ui->setupUi(this);
     cabinet_pos.clear();
     cabinet_pos[0] = 0;
+    dev_network = NULL;
     ui->save->hide();
     list_cabinet<< ui->label_0 << ui->label_1<< ui->label_2 << ui->label_3 << ui->label_4;
 
@@ -26,13 +27,25 @@ CabinetSet::CabinetSet(QWidget *parent) :
     group_lock.addButton(ui->lock_test_7 , 5);
     group_lock.addButton(ui->lock_test_8 , 6);
     group_lock.addButton(ui->lock_test_9 , 7);
+    group_lock.addButton(ui->lock_test_10 , 8);
+    group_lock.addButton(ui->lock_test_11 , 9);
+    group_lock.addButton(ui->lock_test_12 , 10);
+    group_lock.addButton(ui->lock_test_13 , 11);
+    group_lock.addButton(ui->lock_test_14 , 12);
+    group_lock.addButton(ui->lock_test_15 , 13);
+    group_lock.addButton(ui->lock_test_16 , 14);
+    group_lock.addButton(ui->lock_test_17 , 15);
+
 
     connect(&group_lock, SIGNAL(buttonClicked(int)), this, SLOT(on_lock_group_clicked(int)));
+    on_netUpdate_clicked();
 }
 
 CabinetSet::~CabinetSet()
 {
     delete ui;
+    if(dev_network != NULL)
+        delete dev_network;
 }
 
 bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
@@ -148,4 +161,37 @@ void CabinetSet::on_pushButton_clicked()
 {
     ui->cardId->clear();
     ui->scanCode->clear();
+}
+
+void CabinetSet::on_netUpdate_clicked()
+{
+    if(dev_network != NULL)
+        delete dev_network;
+#ifdef SIMULATE_ON
+    dev_network = new QNetInterface("eth0");
+#else
+    dev_network = new QNetInterface("eth1");
+#endif
+
+    ui->ip->setText(dev_network->ip());
+    ui->netmask->setText(dev_network->netmask());
+    ui->gateway->setText(dev_network->gateway());
+}
+
+void CabinetSet::on_netSet_clicked()
+{
+    if(dev_network == NULL)
+        return;
+
+    QString ip = ui->ip->text();
+    QString gateway = ui->gateway->text();
+    QString netmask = ui->netmask->text();
+
+    dev_network->setIp(ip);
+    dev_network->setGateway(gateway);
+    dev_network->setNetmask(netmask);
+
+    ui->ip->setText(dev_network->ip());
+    ui->netmask->setText(dev_network->netmask());
+    ui->gateway->setText(dev_network->gateway());
 }

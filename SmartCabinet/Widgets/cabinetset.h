@@ -5,8 +5,10 @@
 #include <QList>
 #include <QLabel>
 #include <QByteArray>
-#include"cabinetconfig.h"
+#include "cabinetconfig.h"
+#include "Device/Network/qnetinterface.h"
 #include <QButtonGroup>
+#include "Device/controldevice.h"
 
 namespace Ui {
 class CabinetSet;
@@ -36,6 +38,10 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_netUpdate_clicked();
+
+    void on_netSet_clicked();
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
@@ -49,10 +55,12 @@ signals:
 
 private:
     Ui::CabinetSet *ui;
+    QNetInterface* dev_network;
     CabinetConfig* config;
     QByteArray cabinet_pos;
     QList<QLabel*> list_cabinet;
     QButtonGroup group_lock;
+
 };
 
 #endif // CABINETSET_H
