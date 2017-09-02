@@ -1,5 +1,6 @@
 #include "qnetinterface.h"
 #include <QProcess>
+#include <QSettings>
 
 QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
 {
@@ -38,6 +39,11 @@ QString QNetInterface::gateway()
 {
     if(interface.isValid())
     {
+        QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+        QString netGateway = settings.value("gateway", QString()).toString();
+        if(!netGateway.isEmpty())
+            return netGateway;
+
         getNetworkInfo();
         QString _ip = netEntry.ip().toString();
         QStringList l = _ip.split('.');
@@ -97,6 +103,7 @@ bool QNetInterface::setGateway(QString _gateway)
     if(!numPointCheck(_gateway))
         return false;
 
+    devGateway = _gateway;
     QProcess p;
     QString cmd = QString("route add default gw %1").arg(_gateway);
     qDebug()<<"[setGateway]"<<cmd;
@@ -104,6 +111,27 @@ bool QNetInterface::setGateway(QString _gateway)
     p.waitForFinished();
 
     return true;
+}
+
+void QNetInterface::saveNetwork()
+{
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    settings.setValue("ip", QVariant(ip()));
+    settings.setValue("gateway", QVariant(devGateway));
+    settings.setValue("netmask", QVariant(netmask()));
+    settings.sync();
+}
+
+void QNetInterface::initNetwork()
+{
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    QString netIp = settings.value("ip", QString()).toString();
+    QString netNetmask = settings.value("netmask", QString()).toString();
+    QString netGateway = settings.value("gateway", QString()).toString();
+
+    setIp(netIp);
+    setNetmask(netNetmask);
+    setGateway(netGateway);
 }
 
 bool QNetInterface::isValid()
