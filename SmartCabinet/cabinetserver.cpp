@@ -391,6 +391,11 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
 
 void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
 {
+    qDebug("goodsListStore");
+    qDebug()<<l.count();
+
+    return;
+
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();
 

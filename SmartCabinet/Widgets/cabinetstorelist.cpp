@@ -12,6 +12,8 @@ CabinetStoreList::CabinetStoreList(QWidget *parent) :
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     bindItem = NULL;
     loginState = false;
+    time_test.start(1000);
+    connect(&time_test, SIGNAL(timeout()), this, SLOT(timeOut()));
 }
 
 CabinetStoreList::~CabinetStoreList()
@@ -106,6 +108,19 @@ void CabinetStoreList::clearList()
     list_store = NULL;
     ui->storeTable->clear();
     ui->storeTable->setRowCount(0);
+}
+
+void CabinetStoreList::timeOut()
+{
+    qDebug("[timeOut]");
+    Goods* goods = new Goods();
+    CaseAddress addr;
+    CabinetStoreListItem* item = new CabinetStoreListItem(goods, addr);
+    connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
+    connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+    list_item<<item;
+    emit storeList(list_item);
+    qDebug("[timeOut] emit");
 }
 
 void CabinetStoreList::itemBind(Goods* goods, CabinetStoreListItem* item)

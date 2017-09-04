@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QTextStream>
+#include <QMetaType>
 #include "defines.h"
 //#include "test/setdebugnew.h"
 
@@ -578,6 +579,8 @@ void MainWidget::cabinet_cleck_four(int num)
 void MainWidget::init_huangpo()
 {
     qDebug("init_huangpo<<server");
+//    qRegisterMetaType<QList<CabinetStoreListItem*> >("QList<CabinetStoreListItem*>");
+
     //智能柜配置
     cabinetConf = new CabinetConfig();
 

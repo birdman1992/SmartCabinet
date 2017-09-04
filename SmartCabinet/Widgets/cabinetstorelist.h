@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <qtimer.h>
 #include "Structs/goodslist.h"
 #include "cabinetstorelistitem.h"
 #include "cabinetconfig.h"
@@ -30,12 +31,14 @@ private:
     void paintEvent(QPaintEvent *);
     void clearList();
 
+    QTimer time_test;
     bool loginState;
     CabinetConfig* config;
     GoodsList* list_store;
     CabinetStoreListItem* bindItem;
     QList<CabinetStoreListItem*> list_item;
 private slots:
+    void timeOut();
     void itemBind(Goods*, CabinetStoreListItem*);
 
     void on_ok_clicked();
