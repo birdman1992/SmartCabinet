@@ -514,7 +514,7 @@ void CabinetServer::recvUserLogin()
         cur_user = info;
         emit loginRst(info);
         config->addUser(info);
-        config->wakeUp(2);
+        config->wakeUp(TIMEOUT_BASE);
     }
     else
     {
@@ -901,7 +901,7 @@ void CabinetServer::netTimeout()
     }
     else
     {
-        if(apiState == 1)
+        if(apiState == 1)//登录
         {
             cur_user = config->checkUserLocal(logId);
             qDebug()<<"check null";
@@ -911,7 +911,7 @@ void CabinetServer::netTimeout()
                 return;
             }
             qDebug()<<"check"<<cur_user->cardId;
-            config->wakeUp(2);
+            config->wakeUp(TIMEOUT_FETCH);
             emit loginRst(cur_user);
         }
         apiState = 0;
@@ -931,27 +931,20 @@ void CabinetServer::sysTimeout()
         disconnect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
         checkTime();
 
-        if(config->getSleepFlag() == 1)
+        if(config->sleepFlagTimeout())
         {
             qDebug("[lock]");
             emit sysLock();
-            config->wakeUp(0);
         }
-        else if(config->getSleepFlag() == 2)
-            config->wakeUp(1);
-
         return;
     }
     if(needReqCar)
         requireListState();
 
-    if(config->getSleepFlag() == 1)
+    if(config->sleepFlagTimeout())
     {
         qDebug("[lock]");
         emit sysLock();
-        config->wakeUp(0);
     }
-    else if(config->getSleepFlag() == 2)
-        config->wakeUp(1);
 }
 

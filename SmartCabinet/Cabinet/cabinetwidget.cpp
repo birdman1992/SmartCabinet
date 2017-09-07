@@ -261,7 +261,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
     qDebug()<<caseIndex<<cabSeqNum;
     qDebug()<<clickLock;
-    config->wakeUp(2);
+    config->wakeUp(TIMEOUT_BASE);
 //    qDebug()<<config->getCabinetId();
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if((cabSeqNum == 0) && (caseIndex == 1))
@@ -394,7 +394,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         emit requireGoodsListCheck(QString(qba));
         return;
     }
-    config->wakeUp(2);
+    config->wakeUp(TIMEOUT_FETCH);
 
     bool newStore = false;
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
@@ -612,7 +612,7 @@ void CabinetWidget::on_service_clicked(bool checked)
         ui->service->setChecked(true);
         config->state = STATE_FETCH;
         config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
-        config->wakeUp(2);
+        config->wakeUp(TIMEOUT_BASE);
     }
     else
     {
@@ -629,7 +629,7 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
         clearMenuState();
         ui->refund->setChecked(true);
         waitForCodeScan = true;
-        config->wakeUp(2);
+        config->wakeUp(TIMEOUT_FETCH);
     }
     else
     {
@@ -650,7 +650,7 @@ void CabinetWidget::on_store_clicked(bool checked)
         win_access->setAccessModel(true);
         clearMenuState();
         ui->store->setChecked(true);
-        config->wakeUp(2);
+        config->wakeUp(TIMEOUT_BASE);
     }
     else
     {
@@ -666,7 +666,7 @@ void CabinetWidget::on_cut_clicked()
     waitForCodeScan = true;
     win_cab_list_view->setNetState(ui->netState->isChecked());
     win_cab_list_view->show();
-    config->wakeUp(2);
+    config->wakeUp(TIMEOUT_BASE);
 }
 
 void CabinetWidget::on_check_clicked(bool checked)
@@ -679,7 +679,7 @@ void CabinetWidget::on_check_clicked(bool checked)
         clickLock = false;
         clearMenuState();
         ui->check->setChecked(true);
-        config->wakeUp(2);
+        config->wakeUp(TIMEOUT_CHECK);
     }
     else
     {
@@ -1091,7 +1091,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
 
 void CabinetWidget::on_search_clicked()
 {
-    config->wakeUp(2);
+    config->wakeUp(TIMEOUT_BASE);
     config->state = STATE_FETCH;
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     ui->menuWidget->setCurrentIndex(1);
@@ -1099,6 +1099,6 @@ void CabinetWidget::on_search_clicked()
 
 void CabinetWidget::on_search_back_clicked()
 {
-    config->wakeUp(2);
+    config->wakeUp(TIMEOUT_BASE);
     ui->menuWidget->setCurrentIndex(0);
 }
