@@ -579,7 +579,8 @@ void MainWidget::cabinet_cleck_four(int num)
 void MainWidget::init_huangpo()
 {
     qDebug("init_huangpo<<server");
-//    qRegisterMetaType<QList<CabinetStoreListItem*> >("QList<CabinetStoreListItem*>");
+    qRegisterMetaType<QList<CabinetStoreListItem*> >("QList<CabinetStoreListItem*>");
+    qRegisterMetaType<QList<CabinetCheckItem*> >("QList<CabinetCheckItem*>");
 
     //智能柜配置
     cabinetConf = new CabinetConfig();

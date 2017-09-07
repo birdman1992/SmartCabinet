@@ -72,7 +72,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>006B4CF1CA</string>
+        <string>006b4cf1ca</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_2">

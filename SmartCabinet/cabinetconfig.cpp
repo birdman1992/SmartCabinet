@@ -133,6 +133,16 @@ int CabinetConfig::getSleepFlag()
     return sleepFlag;
 }
 
+bool CabinetConfig::sleepFlagTimeout()
+{
+    if(sleepFlag == 0)
+        return false;
+
+    sleepFlag--;
+
+    return (sleepFlag == 0);//超时
+}
+
 bool CabinetConfig::isFirstUse()
 {
     return firstUse;

@@ -12,8 +12,8 @@ CabinetStoreList::CabinetStoreList(QWidget *parent) :
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     bindItem = NULL;
     loginState = false;
-    time_test.start(1000);
-    connect(&time_test, SIGNAL(timeout()), this, SLOT(timeOut()));
+//    time_test.start(100);
+//    connect(&time_test, SIGNAL(timeout()), this, SLOT(timeOut()));
 }
 
 CabinetStoreList::~CabinetStoreList()
@@ -103,6 +103,7 @@ void CabinetStoreList::clearList()
 {
     if(!list_item.isEmpty())
     {
+        qDeleteAll(list_item.begin(), list_item.end());
         list_item.clear();
     }
     list_store = NULL;
@@ -110,17 +111,26 @@ void CabinetStoreList::clearList()
     ui->storeTable->setRowCount(0);
 }
 
+//test function
 void CabinetStoreList::timeOut()
 {
     qDebug("[timeOut]");
-    Goods* goods = new Goods();
-    CaseAddress addr;
-    CabinetStoreListItem* item = new CabinetStoreListItem(goods, addr);
-    connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
-    connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
-    list_item<<item;
-    emit storeList(list_item);
-    qDebug("[timeOut] emit");
+
+    if(list_item.count()<3)
+    {
+        Goods* goods = new Goods();
+        CaseAddress addr;
+        CabinetStoreListItem* item = new CabinetStoreListItem(goods, addr);
+        connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
+        connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+        list_item<<item;
+    }
+    else
+    {
+        clearList();
+    }
+    on_ok_clicked();
+
 }
 
 void CabinetStoreList::itemBind(Goods* goods, CabinetStoreListItem* item)

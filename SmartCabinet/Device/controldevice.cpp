@@ -316,6 +316,8 @@ void ControlDevice::timeout()
 
 void ControlDevice::readCardReaderData(QByteArray qba)
 {
+    QString upStr = QString(qba);
+    qba = upStr.toUpper().toLocal8Bit();
     qDebug()<<"[readCardReaderData]"<<qba;
     emit cardReaderData(qba);
 }

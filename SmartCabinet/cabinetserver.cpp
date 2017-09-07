@@ -394,7 +394,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     qDebug("goodsListStore");
     qDebug()<<l.count();
 
-    return;
+//    return;
 
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();
@@ -514,6 +514,7 @@ void CabinetServer::recvUserLogin()
         cur_user = info;
         emit loginRst(info);
         config->addUser(info);
+        config->wakeUp(2);
     }
     else
     {
@@ -910,6 +911,7 @@ void CabinetServer::netTimeout()
                 return;
             }
             qDebug()<<"check"<<cur_user->cardId;
+            config->wakeUp(2);
             emit loginRst(cur_user);
         }
         apiState = 0;
@@ -928,6 +930,16 @@ void CabinetServer::sysTimeout()
         sysClock.stop();
         disconnect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
         checkTime();
+
+        if(config->getSleepFlag() == 1)
+        {
+            qDebug("[lock]");
+            emit sysLock();
+            config->wakeUp(0);
+        }
+        else if(config->getSleepFlag() == 2)
+            config->wakeUp(1);
+
         return;
     }
     if(needReqCar)
@@ -935,6 +947,7 @@ void CabinetServer::sysTimeout()
 
     if(config->getSleepFlag() == 1)
     {
+        qDebug("[lock]");
         emit sysLock();
         config->wakeUp(0);
     }

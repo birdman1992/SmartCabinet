@@ -41,6 +41,7 @@ public:
     void clearCabinet();
     void wakeUp(int flag);//唤醒
     int getSleepFlag();
+    bool sleepFlagTimeout();//唤醒超时检查
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
     int checkUser(QString userId);//检查用户是否存在，管理员用户返回0,其他用户大于0,不存在小于0

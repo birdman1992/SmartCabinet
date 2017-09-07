@@ -14,7 +14,7 @@
 
 
 //#define SIMULATE_ON  //打开仿真
-#define LOG_ON //打开日志
+//#define LOG_ON //打开日志
 
 
 

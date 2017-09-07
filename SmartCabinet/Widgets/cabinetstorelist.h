@@ -49,6 +49,7 @@ signals:
     void requireBind(Goods*);
     void requireOpenCase(int seq, int index);
     void storeList(QList<CabinetStoreListItem*>);
+//    void storeList(QStringList);
 };
 
 #endif // CABINETSTORELIST_H
