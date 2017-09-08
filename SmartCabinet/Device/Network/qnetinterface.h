@@ -19,11 +19,14 @@ public:
     bool setIp(QString _ip);
     bool setNetmask(QString _netmask);
     bool setGateway(QString _gateway);
+    void saveNetwork();
+    void initNetwork();
 
     bool isValid();
 
 private:
     QString devName;
+    QString devGateway;
     QNetworkInterface interface;
     QNetworkAddressEntry netEntry;
     QNetworkInterface getNetworkInterface(QString name);
