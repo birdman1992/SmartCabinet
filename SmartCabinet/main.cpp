@@ -3,6 +3,7 @@
 #include <QTextCodec>
 #include <QFont>
 #include <QWSServer>
+#include <globalapp.h>
 #include "inputcontex/myinputpanelcontext.h"
 #include "beautifului.h"
 
@@ -37,7 +38,7 @@ void customMessageHandler(QtMsgType type, const char *msg)
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    GlobalApp a(argc, argv);
 
 #ifndef SIMULATE_ON
 //    QWSServer::setCursorVisible(false);
@@ -64,6 +65,7 @@ int main(int argc, char *argv[])
 
     MainWidget w;
     w.show();
+    a.setWidows(&w);
 
     return a.exec();
 }

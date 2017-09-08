@@ -59,6 +59,7 @@ public slots:
     void win_swich_2(int);
     void set_cabinet(QByteArray);
     void cabinetClear();
+    void globalTouch();
 
 protected:
     int readSettings();                //--读配置信息

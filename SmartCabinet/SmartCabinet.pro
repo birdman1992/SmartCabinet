@@ -59,7 +59,8 @@ SOURCES += main.cpp\
     Widgets/cabinetrefund.cpp \
     Widgets/cabinetrefunditem.cpp \
     Widgets/cabinetctrlconfig.cpp \
-    Widgets/casepanel.cpp
+    Widgets/casepanel.cpp \
+    globalapp.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -110,7 +111,8 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetrefund.h \
     Widgets/cabinetrefunditem.h \
     Widgets/cabinetctrlconfig.h \
-    Widgets/casepanel.h
+    Widgets/casepanel.h \
+    globalapp.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

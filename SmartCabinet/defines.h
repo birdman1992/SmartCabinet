@@ -7,7 +7,7 @@
 
 //超时时间配置
 #define TIMEOUT_FETCH 10
-#define TIMEOUT_CHECK 10
+#define TIMEOUT_CHECK 0
 #define TIMEOUT_BASE 10
 
 

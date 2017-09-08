@@ -35,10 +35,9 @@ public slots:
 private slots:
     void group_card_clicked(int);
     void group_drug_clicked(int);
-    void on_listCode_clicked();
-    void on_listCode_2_clicked();
     void on_car1_clicked();
     void on_car2_clicked();
+    void on_listcode_clicked();
 };
 
 #endif // DEVICESIMULATE_H

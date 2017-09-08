@@ -39,7 +39,8 @@ public:
     void setServerAddress(QString addr);
     void clearConfig();
     void clearCabinet();
-    void wakeUp(int flag);//唤醒
+    void wakeUp(int minutes);//唤醒
+    void clearTimeoutFlag();
     int getSleepFlag();
     bool sleepFlagTimeout();//唤醒超时检查
     bool isFirstUse();//判断是否第一次使用
@@ -73,6 +74,7 @@ public:
 private:
     bool firstUse;//第一次使用
     int sleepFlag;//休眠标志
+    int timeoutFlag;//超时标志
     int userNum;//用户数量
     int caseWidth;
 //    QString cabId;

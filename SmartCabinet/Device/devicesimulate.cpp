@@ -106,19 +106,6 @@ void DeviceSimulate::initBtnText()
 
 }
 
-
-void DeviceSimulate::on_listCode_clicked()
-{
-    QString str = ui->listCode->text();
-    emit sendCodeScanData(str.toUtf8());
-}
-
-void DeviceSimulate::on_listCode_2_clicked()
-{
-    QString str = ui->listCode_2->text();
-    emit sendCodeScanData(str.toUtf8());
-}
-
 void DeviceSimulate::on_car1_clicked()
 {
     QByteArray qba = "fc0700000000ff";
@@ -134,4 +121,13 @@ void DeviceSimulate::on_car2_clicked()
     qba.replace(4,8, ui->car2->text().toLocal8Bit());
     qba = QByteArray::fromHex(qba);
     emit sendRfidData(qba);
+}
+
+void DeviceSimulate::on_listcode_clicked()
+{
+    QString str = ui->code->text();
+    if(str.isEmpty())
+        return;
+
+    emit sendCodeScanData(str.toUtf8());
 }

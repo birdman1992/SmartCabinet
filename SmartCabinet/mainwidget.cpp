@@ -81,6 +81,12 @@ void MainWidget::cabinetClear()
     cabinetConf->clearConfig();
 }
 
+void MainWidget::globalTouch()
+{
+    qDebug()<<"[globalTouch]";
+    cabinetConf->clearTimeoutFlag();
+}
+
 void MainWidget::win_swich_2(int)
 {
     init_xg_ui_set();

@@ -123,9 +123,15 @@ void CabinetConfig::clearCabinet()
         settings.setValue("CabinetId", ID);
 }
 
-void CabinetConfig::wakeUp(int flag)
+void CabinetConfig::wakeUp(int minutes)
 {
-    sleepFlag = flag;
+    sleepFlag = minutes;
+    timeoutFlag = 0;
+}
+
+void CabinetConfig::clearTimeoutFlag()
+{
+    timeoutFlag = 0;
 }
 
 int CabinetConfig::getSleepFlag()
@@ -138,9 +144,10 @@ bool CabinetConfig::sleepFlagTimeout()
     if(sleepFlag == 0)
         return false;
 
-    sleepFlag--;
+    timeoutFlag++;
+    qDebug()<<"[sleepFlagTimeout]"<<timeoutFlag<<sleepFlag;
 
-    return (sleepFlag == 0);//超时
+    return (timeoutFlag >= sleepFlag);//超时
 }
 
 bool CabinetConfig::isFirstUse()

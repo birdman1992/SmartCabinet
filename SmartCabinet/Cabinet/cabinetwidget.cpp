@@ -683,7 +683,6 @@ void CabinetWidget::on_check_clicked(bool checked)
     }
     else
     {
-        qDebug("<>>>>>>>>>>>>>>");
         config->clearSearch();//重置单元格状态
         cabLock();
     }
@@ -1052,6 +1051,7 @@ void CabinetWidget::sysLock()
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->search->setChecked(false);
+    this->show();
     cabLock();
 }
 
