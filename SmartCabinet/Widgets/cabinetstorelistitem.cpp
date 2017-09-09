@@ -8,7 +8,7 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
 {
     ui->setupUi(this);
     cabGoods = new Goods(goods);
-    name = goods->name;
+    name = goods->name+QString("(%1)").arg(goods->packageType);
     num = goods->takeCount;
     package_id = goods->packageBarcode;
     pos_seq = addr.cabinetSeqNum;

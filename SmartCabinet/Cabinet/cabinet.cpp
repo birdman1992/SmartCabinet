@@ -235,7 +235,8 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     bool isEmpty = settings.value("name").toString().isEmpty();
     settings.endArray();
     settings.beginWriteArray(QString("case%1").arg(index));
-//    qDebug()<<isEmpty<<arr_size;
+    qDebug()<<"[setCaseName]"<<"caseindex:"<<index<<"goodsindex"<<arr_size;
+    qDebug()<<"is empty"<<isEmpty;
     if(isEmpty)
         settings.setArrayIndex(0);
     else

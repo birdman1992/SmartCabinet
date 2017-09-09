@@ -209,7 +209,7 @@ color: rgb(255, 255, 255);</string>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <property name="spacing">
-              <number>10</number>
+              <number>15</number>
              </property>
              <property name="rightMargin">
               <number>10</number>
@@ -226,6 +226,44 @@ color: rgb(255, 255, 255);</string>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="devReader">
+               <property name="maximumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border-image: url(:/image/image/rfid.png);</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="devScan">
+               <property name="maximumSize">
+                <size>
+                 <width>32</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border-image: url(:/image/image/scanner.png);</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="netState">

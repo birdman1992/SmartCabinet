@@ -42,6 +42,10 @@ public:
     void wakeUp(int minutes);//唤醒
     void clearTimeoutFlag();
     int getSleepFlag();
+    void setCardReaderState(bool ok);
+    bool getCardReaderState();
+    void setCodeScanState(bool ok);
+    bool getCodeScanState();
     bool sleepFlagTimeout();//唤醒超时检查
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
@@ -72,6 +76,8 @@ public:
 
     QString scanDataTrans(QString code);
 private:
+    bool cardReaderIsOk;
+    bool codeScanIsOk;
     bool firstUse;//第一次使用
     int sleepFlag;//休眠标志
     int timeoutFlag;//超时标志

@@ -64,7 +64,7 @@ bool ControlDevice::installGlobalConfig(CabinetConfig *globalConfig)
     if(globalConfig == NULL)
         return false;
     config = globalConfig;
-
+    getDevState();
     return true;
 }
 
@@ -435,4 +435,12 @@ int ControlDevice::get_path(void)
     closedir(pDir);
     free(usb_info);
     return event;
+}
+
+void ControlDevice::getDevState()
+{
+    config->setCardReaderState( strlen(dev_path[0])!=0 );
+    config->setCodeScanState( strlen(dev_path[1])!=0 );
+    qDebug()<<"[rfid dev]"<<strlen(dev_path[0]);
+    qDebug()<<"[scan dev]"<<strlen(dev_path[1]);
 }

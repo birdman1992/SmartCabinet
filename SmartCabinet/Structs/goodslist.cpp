@@ -15,10 +15,18 @@ GoodsList::~GoodsList()
 
 void GoodsList::addGoods(Goods *_goods)
 {
-    list_goods<<_goods;
-    map_goods.insert(_goods->packageBarcode, _goods);
-    qDebug()<<"[addtoMap]"<<_goods->packageBarcode;
-//       map_goods.insert(_goods->goodsId, _goods);
+    int repeatIndex = 0;
+    if(goodsIsRepeat(_goods, &repeatIndex))
+    {
+        list_goods[repeatIndex]->takeCount += _goods->takeCount;
+    }
+    else
+    {
+        list_goods<<_goods;
+        map_goods.insert(_goods->packageBarcode, _goods);
+        qDebug()<<"[addtoMap]"<<_goods->packageBarcode;
+        //       map_goods.insert(_goods->goodsId, _goods);
+    }
 }
 
 void GoodsList::goodsIn(QString goodsId, int)
@@ -38,6 +46,26 @@ void GoodsList::goodsOut(QString goodsId, int num)
         return;
     goods->curNum-=num;
     goods->finish = (goods->curNum == goods->totalNum);
+}
+
+bool GoodsList::goodsIsRepeat(Goods *_goods, int *index)
+{
+    int i=0;
+
+    if(index != NULL)
+        *index = -1;
+
+    for(i=0; i<list_goods.count(); i++)
+    {
+        if(list_goods.at(i)->packageBarcode == _goods->packageBarcode)
+        {
+            if(index != NULL)
+                *index = i;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 Goods *GoodsList::getGoodsById(QString goodsId)

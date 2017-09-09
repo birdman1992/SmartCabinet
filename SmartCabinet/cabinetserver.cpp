@@ -150,7 +150,7 @@ void CabinetServer::replyCheck(QNetworkReply *reply)
 void CabinetServer::netTimeStart()
 {
     netFlag = false;
-    QTimer::singleShot(5000,this,SLOT(netTimeout()));
+    QTimer::singleShot(10000,this,SLOT(netTimeout()));
 }
 
 void CabinetServer::localCacheAccess()
@@ -938,7 +938,7 @@ void CabinetServer::sysTimeout()
         }
         return;
     }
-    if(needReqCar)
+    if(needReqCar&& config->state!=STATE_STORE)
         requireListState();
 
     if(config->sleepFlagTimeout())

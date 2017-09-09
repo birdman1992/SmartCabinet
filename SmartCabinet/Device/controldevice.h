@@ -12,7 +12,7 @@
 //#include "Device/SerialPort/qserialport.h"
 #include "Structs/goodscar.h"
 
-#define SIMULATE_ON  //打开仿真
+//#define SIMULATE_ON  //打开仿真
 //#define LOG_ON //打开日志
 
 typedef struct ui{
@@ -49,6 +49,7 @@ private:
 
     int get_dev_info(char *dev_name, USBINFO *uInfo);
     int get_path();
+    void getDevState();
     void comRfidInit(int baudRate, int dataBits, int Parity, int stopBits);
 signals:
     void cardReaderTimeout();//读卡超时
