@@ -63,6 +63,7 @@ private:
     void netTimeStart();
     void localCacheAccess();//提交本地缓存存取
     void accessLoop();
+    QString getAbbName(QString fullName);
 
 signals:
     void loginRst(UserInfo*);

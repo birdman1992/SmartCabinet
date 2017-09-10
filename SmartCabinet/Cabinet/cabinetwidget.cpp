@@ -108,7 +108,7 @@ void CabinetWidget::cabLock()
 
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
-    qDebug()<<"bind"<<info.id;
+    qDebug()<<"bind"<<info.id<<info.abbName;
     info.goodsType = config->getGoodsType(info.packageId);
 //    qDebug()<<info.goodsType;
     config->list_cabinet[seq]->setCaseName(info, index);
@@ -295,16 +295,18 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //        }
         if(curGoods == NULL)
             return;
-        GoodsInfo info;
-        info.abbName = curGoods->abbName;
-        info.name = curGoods->name;
-        info.id = curGoods->goodsId;
-        info.packageId = curGoods->packageBarcode;
-        info.unit = curGoods->unit;
-        info.num = 0;
-        info.Py = config->getPyCh(info.name);
-        qDebug()<<"[pinyin]"<<info.Py;
-        cabInfoBind(selectCab, selectCase, info);
+//        GoodsInfo info;
+        bindInfo.abbName = curGoods->abbName;
+        bindInfo.name = curGoods->name;
+        bindInfo.id = curGoods->goodsId;
+        bindInfo.packageId = curGoods->packageBarcode;
+        bindInfo.unit = curGoods->unit;
+        bindInfo.num = 0;
+        bindInfo.Py = config->getPyCh(bindInfo.name);
+        bindCab = selectCab;
+        bindCase = selectCase;
+        qDebug()<<"[pinyin]"<<bindInfo.Py;
+//        cabInfoBind(selectCab, selectCase, info);
         config->list_cabinet[0]->showMsg(MSG_EMPTY,0);
 //        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
@@ -950,16 +952,21 @@ void CabinetWidget::recvBindRst(bool rst)
         if(rst)
         {
             CaseAddress addr;
-            addr.cabinetSeqNum = selectCab;
-            addr.caseIndex = selectCase;
+            addr.cabinetSeqNum = bindCab;
+            addr.caseIndex = bindCase;
+            cabInfoBind(selectCab, selectCase, bindInfo);
+
             win_store_list->show();
             win_store_list->bindRst(addr);
+            win_store_list->bindMsg("绑定成功");
     //        win_access->clickOpen(curGoods->packageBarcode);
     //        emit requireOpenCase(selectCab, selectCase);
         }
         else
         {
             clickLock = false;
+            win_store_list->show();
+            win_store_list->bindMsg("绑定失败");
     //        win_access->save();
     //        win_access->hide();
             config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);

@@ -24,7 +24,7 @@ void GoodsList::addGoods(Goods *_goods)
     {
         list_goods<<_goods;
         map_goods.insert(_goods->packageBarcode, _goods);
-        qDebug()<<"[addtoMap]"<<_goods->packageBarcode;
+        qDebug()<<"[addtoMap]"<<_goods->packageBarcode<<_goods->abbName;
         //       map_goods.insert(_goods->goodsId, _goods);
     }
 }
@@ -113,6 +113,7 @@ Goods::Goods(QString _goodsId , QString goodsName, int goodsNum)
 
 Goods::Goods(Goods *goods)
 {
+    abbName = goods->abbName;
     name = goods->name;
     goodsId = goods->goodsId;
     size = goods->size;

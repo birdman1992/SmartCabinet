@@ -1,6 +1,7 @@
 #include "cabinetstorelist.h"
 #include "ui_cabinetstorelist.h"
 #include <QPainter>
+#include <QDebug>
 
 CabinetStoreList::CabinetStoreList(QWidget *parent) :
     QWidget(parent),
@@ -34,6 +35,7 @@ void CabinetStoreList::storeStart(GoodsList *l)
     for(i=0; i<list_store->list_goods.count(); i++)
     {
         Goods* goods = l->list_goods.at(i);
+        qDebug()<<"storeStart"<<goods->abbName;
         CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
         item = new CabinetStoreListItem(goods, addr);
         connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
@@ -54,6 +56,11 @@ void CabinetStoreList::bindRst(CaseAddress addr)
         return;
 
     bindItem->bindRst(addr);
+}
+
+void CabinetStoreList::bindMsg(QString msg)
+{
+    ui->msg->setText(msg);
 }
 
 void CabinetStoreList::storeRst(QString msg, bool success)

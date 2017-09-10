@@ -104,6 +104,10 @@ private:
     bool clickLock;//点击锁,如果为true，点击无效
     int selectCab;//选中的柜子顺序编号
     int selectCase;//选中的柜格编号
+    int bindCab;
+    int bindCase;
+    GoodsInfo bindInfo;
+
     int storeNum;
     bool waitForCodeScan;
     bool waitForInit;

@@ -174,6 +174,16 @@ void CabinetServer::accessLoop()
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
 }
 
+QString CabinetServer::getAbbName(QString fullName)
+{
+    if(fullName.indexOf("一次性使用") == 0)
+    {
+        return fullName.remove(0,5);
+    }
+
+    return QString();
+}
+
 void CabinetServer::getServerAddr(QString addr)
 {
     qDebug("[getServerAddr]");
@@ -635,6 +645,12 @@ void CabinetServer::recvListCheck()
             info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
+
+            if(info->name.indexOf("一次性使用") == 0)
+            {
+                info->abbName = getAbbName(info->abbName);
+            }
+
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
             list->addGoods(info);
         }
