@@ -187,8 +187,8 @@ void Cabinet::updateGoodsNum(CaseAddress addr, int num)
     list_case.at(addr.caseIndex)->list_goods.at(addr.goodsIndex)->num = num;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
     lab->setText(list_case.at(addr.caseIndex)->list_goods);
-    QString setKey = QString("Cabinet%1/case%2/%3/num").arg(seqNum).arg(addr.caseIndex).arg(addr.goodsIndex);
-
+    QString setKey = QString("Cabinet%1/case%2/%3/num").arg(seqNum).arg(addr.caseIndex).arg(addr.goodsIndex+1);
+    qDebug()<<"setkey"<<setKey;
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.setValue(setKey, num);
     settings.sync();

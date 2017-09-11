@@ -291,6 +291,7 @@ void CabinetConfig::readCabinetConfig()
             info->abbName = settings.value("abbName", QString()).toString();
             info->name = settings.value("name").toString();
             info->num = settings.value("num").toInt();
+            info->outNum = 0;
             info->id = settings.value("id").toString();
             info->unit = settings.value("unit").toString();
             info->packageId = settings.value("packageId").toString();

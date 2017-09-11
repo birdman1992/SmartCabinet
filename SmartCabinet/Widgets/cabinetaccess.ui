@@ -85,6 +85,9 @@ color: rgb(215,26,33);</string>
 padding-left:10px;
 font: 20px &quot;微软雅黑&quot;;</string>
       </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
      </widget>
      <widget class="QPushButton" name="cancel">
       <property name="geometry">

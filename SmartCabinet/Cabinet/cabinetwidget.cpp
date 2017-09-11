@@ -108,11 +108,11 @@ void CabinetWidget::cabLock()
 
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
-    qDebug()<<"bind"<<info.id<<info.abbName;
-    info.goodsType = config->getGoodsType(info.packageId);
+//    qDebug()<<"bind"<<info.id<<info.abbName;
+//    info.goodsType = config->getGoodsType(info.packageId);
 //    qDebug()<<info.goodsType;
     config->list_cabinet[seq]->setCaseName(info, index);
-    emit requireCaseBind(seq, index, info.packageId);
+//    emit requireCaseBind(seq, index, info.packageId);
 }
 
 void CabinetWidget::initAccessState()
@@ -303,10 +303,12 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         bindInfo.unit = curGoods->unit;
         bindInfo.num = 0;
         bindInfo.Py = config->getPyCh(bindInfo.name);
+        bindInfo.goodsType = config->getGoodsType(bindInfo.packageId);
         bindCab = selectCab;
         bindCase = selectCase;
         qDebug()<<"[pinyin]"<<bindInfo.Py;
 //        cabInfoBind(selectCab, selectCase, info);
+        emit requireCaseBind(bindCab, bindCase, bindInfo.packageId);
         config->list_cabinet[0]->showMsg(MSG_EMPTY,0);
 //        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
@@ -379,8 +381,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
 
         config->removeConfig(rebind_old_addr);
-
-        cabInfoBind(selectCab, selectCase, *rebindGoods);
+        emit requireCaseBind(selectCab, selectCase, rebindGoods->packageId);
+//        cabInfoBind(selectCab, selectCase, *rebindGoods);
     }
 }
 
@@ -954,7 +956,7 @@ void CabinetWidget::recvBindRst(bool rst)
             CaseAddress addr;
             addr.cabinetSeqNum = bindCab;
             addr.caseIndex = bindCase;
-            cabInfoBind(selectCab, selectCase, bindInfo);
+            cabInfoBind(bindCab, bindCase, bindInfo);
 
             win_store_list->show();
             win_store_list->bindRst(addr);

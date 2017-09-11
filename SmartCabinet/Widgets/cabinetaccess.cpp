@@ -173,7 +173,7 @@ void CabinetAccess::scanOpen(QString goodsId)
     else if(config->state == STATE_FETCH)
     {
         addr = config->checkCabinetByBarCode(goodsId);
-//        qDebug()<<"fetch1"<<config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+        qDebug()<<"fetch1"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
         qDebug()<<"fetch outnum"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         ui->name->setText(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->name);
@@ -309,6 +309,7 @@ void CabinetAccess::recvOptGoodsNum(int num)
     qDebug()<<"[recvOptGoodsNum]"<<config->state<<num;
     if(config->state == STATE_STORE)
     {
+        ui->info->clear();
         ui->tip->setText("存入成功");
         QString info = QString("已存入%1%2   共需存入存入%3%4").arg(curGoods->curNum).arg(curGoods->unit).arg(curGoods->totalNum).arg(curGoods->unit);
         ui->info->setText(info);
@@ -316,6 +317,7 @@ void CabinetAccess::recvOptGoodsNum(int num)
     }
     else if(config->state == STATE_FETCH)
     {
+        ui->info->clear();
         int outNum = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         qDebug()<<"rst outnum"<<outNum;
         QString unit = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
