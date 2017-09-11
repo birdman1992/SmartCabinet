@@ -1,6 +1,9 @@
 #include "cabinetstorelist.h"
 #include "ui_cabinetstorelist.h"
 #include <QPainter>
+#include <qscrollbar.h>
+#include <QDebug>
+#include <QString>
 
 CabinetStoreList::CabinetStoreList(QWidget *parent) :
     QWidget(parent),
@@ -12,6 +15,12 @@ CabinetStoreList::CabinetStoreList(QWidget *parent) :
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     bindItem = NULL;
     loginState = false;
+    QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
+    qssScrollbar.open(QIODevice::ReadOnly);
+    QString style = QString(qssScrollbar.readAll());
+    qDebug()<<"qssScrollbar"<<style;
+    ui->storeTable->verticalScrollBar()->setStyleSheet(style);
+    qssScrollbar.close();
 //    time_test.start(100);
 //    connect(&time_test, SIGNAL(timeout()), this, SLOT(timeOut()));
 }

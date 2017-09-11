@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QIcon>
 #include <QFont>
+#include <qscrollbar.h>
 
 CabinetListView::CabinetListView(QWidget *parent) :
     QWidget(parent),
@@ -20,6 +21,11 @@ CabinetListView::CabinetListView(QWidget *parent) :
     font.setPixelSize(20);
     ui->list_select->setFont(font);
     initButtons();
+
+    QFile qssScrollbar("styleSheet/ScrollBar.qss");
+    qssScrollbar.open(QIODevice::ReadOnly);
+    ui->list_goods->verticalScrollBar()->setStyleSheet(qssScrollbar.readAll());
+    ui->list_select->verticalScrollBar()->setStyleSheet(qssScrollbar.readAll());
 
     cabFrame = NULL;
 }

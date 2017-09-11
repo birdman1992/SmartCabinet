@@ -91,7 +91,7 @@ const char *bus_str(int bus)
 int get_path(void)
 {
 	int event = 0;
-	int count = 0;
+	//int count = 0;
 	char path[24] = {"/dev/"};
 	DIR* pDir = NULL;
 	USBINFO* usb_info = (USBINFO *)malloc(sizeof(USBINFO));
@@ -111,39 +111,20 @@ int get_path(void)
 				if(strstr(pFile->d_name,"hidraw")!=NULL)
 				{
 					sprintf(path,"/dev/%s",pFile->d_name);
-					printf("touch path:%s\n",path);
 					get_dev_info(path,usb_info);
 					if(usb_info->vid==3944 && usb_info->pid==22630)	// touch
 					{	
-					
-					if(strcmp(pFile->d_name,"hidraw0") == 0)
+						if(strcmp(pFile->d_name,"hidraw0") == 0)
 							event = 4;
-					else if(strcmp(pFile->d_name,"hidraw1") == 0)
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
 							event = 5;
-					else
+						else
 							event = 6;
-							/*
-						switch(count)
-						{
-							case 2:
-								event = 4;
-								break;
-							case 1:
-								event = 5;
-								break;
-							case 0:
-								event = 6;
-								break;
-							default:
-								event = 0;
-								break;
-						}*/
 					}
 					else if((usb_info->vid==2303) && (usb_info->pid==9))	// RFID
 						snprintf(dev_path[0],20,"%s",path);
 					else if(usb_info->vid==1155 && usb_info->pid==17)	// scan
 						snprintf(dev_path[1],20,"%s",path);
-					count++;
 					printf("vid: %lu\t,pid: %lu\n",usb_info->vid,usb_info->pid);
 					memset(path,0x00,24);
 				}

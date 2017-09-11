@@ -98,6 +98,9 @@ font: 18px &quot;微软雅黑&quot;;</string>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
           </property>
+          <property name="verticalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOn</enum>
+          </property>
           <property name="horizontalScrollBarPolicy">
            <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>

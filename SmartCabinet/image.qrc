@@ -26,4 +26,7 @@
         <file>image/icon_check.png</file>
         <file>image/code_test.png</file>
     </qresource>
+    <qresource prefix="/stylesheet">
+        <file>styleSheet/ScrollBar.qss</file>
+    </qresource>
 </RCC>

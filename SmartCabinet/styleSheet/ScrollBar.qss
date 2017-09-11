@@ -1,0 +1,25 @@
+QScrollBar:vertical
+{
+    width:50px;
+    background:rgba(0,0,0,0%);
+    margin:0px,0px,0px,0px;
+}
+QScrollBar::handle:vertical
+{
+    width:50px;
+    background:rgba(0,0,0,25%);
+    border-radius:25px;
+    min-height:20;
+}
+QScrollBar::handle:vertical:hover
+{
+    width:50px;
+    background:rgba(0,0,0,50%);
+    border-radius:25px;
+    min-height:20;
+}
+QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical
+{
+    background:rgba(0,0,0,10%);
+    border-radius:4px;
+}
