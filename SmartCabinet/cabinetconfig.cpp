@@ -13,6 +13,8 @@ CabinetConfig::CabinetConfig()
 {
     state = STATE_NO;
     sleepFlag = 0;
+    cardReaderIsOk = false;
+    codeScanIsOk = false;
     //    cabId.clear();
     cabinetId.clear();
     list_user.clear();
@@ -137,6 +139,26 @@ void CabinetConfig::clearTimeoutFlag()
 int CabinetConfig::getSleepFlag()
 {
     return sleepFlag;
+}
+
+void CabinetConfig::setCardReaderState(bool ok)
+{
+    cardReaderIsOk = ok;
+}
+
+bool CabinetConfig::getCardReaderState()
+{
+    return cardReaderIsOk;
+}
+
+void CabinetConfig::setCodeScanState(bool ok)
+{
+    codeScanIsOk = ok;
+}
+
+bool CabinetConfig::getCodeScanState()
+{
+    return codeScanIsOk;
 }
 
 bool CabinetConfig::sleepFlagTimeout()

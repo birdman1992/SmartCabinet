@@ -36,6 +36,7 @@ public:
     void addGoods(Goods* _goods);
     void goodsIn(QString goodsId,int num);
     void goodsOut(QString goodsId, int num);
+    bool goodsIsRepeat(Goods* _goods, int *index=NULL);
     Goods* getGoodsById(QString goodsId);
     bool isFinished();
     bool listCheck();

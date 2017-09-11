@@ -25,6 +25,8 @@
         <file>image/btn_search_normal.png</file>
         <file>image/icon_check.png</file>
         <file>image/code_test.png</file>
+        <file>image/rfid.png</file>
+        <file>image/scanner.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

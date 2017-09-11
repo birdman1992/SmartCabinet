@@ -22,6 +22,7 @@ public:
     void storeStart(GoodsList* l);
     void storeFinish();
     void bindRst(CaseAddress addr);
+    void bindMsg(QString msg);
     void storeRst(QString msg, bool success);
     void setLoginState(bool login);
 

@@ -13,6 +13,12 @@ CabinetSet::CabinetSet(QWidget *parent) :
     dev_network = NULL;
     ui->save->hide();
     list_cabinet<< ui->label_0 << ui->label_1<< ui->label_2 << ui->label_3 << ui->label_4;
+#ifdef SIMULATE_ON
+    dev_network = new QNetInterface("eth0");
+#else
+    dev_network = new QNetInterface("eth1");
+#endif
+    dev_network->initNetwork();
 
     ui->label_1->hide();
     ui->label_2->hide();
@@ -190,6 +196,7 @@ void CabinetSet::on_netSet_clicked()
     dev_network->setIp(ip);
     dev_network->setGateway(gateway);
     dev_network->setNetmask(netmask);
+    dev_network->saveNetwork();
 
     ui->ip->setText(dev_network->ip());
     ui->netmask->setText(dev_network->netmask());

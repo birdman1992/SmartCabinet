@@ -250,19 +250,20 @@ void CabinetService::on_ok_clicked()
             ui->warning->setText("地址格式错误");
         }
     }
-    if(ui->gateway->text() != dev_gateway)
+//    if(ui->gateway->text() != dev_gateway)
+//    {
+    if(dev_network->numPointCheck(dev_gateway))
     {
-        if(dev_network->numPointCheck(dev_gateway))
-        {
-            dev_gateway = ui->gateway->text();
-            dev_network->setGateway(dev_gateway);
-            ui->warning->clear();
-        }
-        else
-        {
-            ui->warning->setText("地址格式错误");
-        }
+        dev_gateway = ui->gateway->text();
+        dev_network->setGateway(dev_gateway);
+        ui->warning->clear();
     }
+    else
+    {
+        ui->warning->setText("地址格式错误");
+    }
+//    }
+    dev_network->saveNetwork();
     updateNetInfo();
 }
 

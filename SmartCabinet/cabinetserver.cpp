@@ -150,7 +150,7 @@ void CabinetServer::replyCheck(QNetworkReply *reply)
 void CabinetServer::netTimeStart()
 {
     netFlag = false;
-    QTimer::singleShot(5000,this,SLOT(netTimeout()));
+    QTimer::singleShot(10000,this,SLOT(netTimeout()));
 }
 
 void CabinetServer::localCacheAccess()
@@ -172,6 +172,16 @@ void CabinetServer::accessLoop()
     replyCheck(reply_goods_access);
     reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
+}
+
+QString CabinetServer::getAbbName(QString fullName)
+{
+    if(fullName.indexOf("一次性使用") == 0)
+    {
+        return fullName.remove(0,5);
+    }
+
+    return QString();
 }
 
 void CabinetServer::getServerAddr(QString addr)
@@ -635,6 +645,12 @@ void CabinetServer::recvListCheck()
             info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
+
+            if(info->name.indexOf("一次性使用") == 0)
+            {
+                info->abbName = getAbbName(info->abbName);
+            }
+
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
             list->addGoods(info);
         }
@@ -938,7 +954,7 @@ void CabinetServer::sysTimeout()
         }
         return;
     }
-    if(needReqCar)
+    if(needReqCar&& config->state!=STATE_STORE)
         requireListState();
 
     if(config->sleepFlagTimeout())
