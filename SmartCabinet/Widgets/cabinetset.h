@@ -42,6 +42,8 @@ private slots:
 
     void on_netSet_clicked();
 
+    void on_devState_toggled(bool checked);
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
@@ -60,6 +62,7 @@ private:
     QByteArray cabinet_pos;
     QList<QLabel*> list_cabinet;
     QButtonGroup group_lock;
+    void checkDevice();
 
 };
 

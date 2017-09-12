@@ -954,7 +954,7 @@ void CabinetServer::sysTimeout()
         }
         return;
     }
-    if(needReqCar&& config->state!=STATE_STORE)
+    if(needReqCar&& config->state == STATE_NO)
         requireListState();
 
     if(config->sleepFlagTimeout())

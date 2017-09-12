@@ -101,7 +101,7 @@ void CabinetWidget::cabLock()
     ui->search->hide();
     win_access->hide();
     curStoreList = NULL;
-    config->state = STATE_FETCH;
+    config->state = STATE_NO;
     config->clearSearch();
     config->wakeUp(0);
 }
@@ -630,6 +630,7 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
 {
     if(checked)
     {
+        qDebug()<<"[REFUND]";
         config->state = STATE_REFUN;
         config->list_cabinet[0]->showMsg(MSG_REFUND,false);
         clearMenuState();
@@ -1092,6 +1093,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     msgClear();
     optUser = info;
     qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
+    config->state = STATE_FETCH;
     ui->userInfo->setText(QString("您好！%1").arg(optUser->name));
     setPowerState(info->power);
     loginState = true;

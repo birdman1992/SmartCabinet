@@ -11,6 +11,7 @@ QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
         qDebug()<<"[QNetInterface]"<<name<<"open failed";
     else
         getNetworkInfo();
+    qDebug()<<"[MAC address]"<<macAddress();
 }
 
 QString QNetInterface::ip()
@@ -51,6 +52,14 @@ QString QNetInterface::gateway()
         l.append("1");
         return l.join(".");
     }
+    else
+        return QString();
+}
+
+QString QNetInterface::macAddress()
+{
+    if(interface.isValid())
+        return interface.hardwareAddress();
     else
         return QString();
 }
@@ -113,12 +122,34 @@ bool QNetInterface::setGateway(QString _gateway)
     return true;
 }
 
+bool QNetInterface::setMacAddress(QString _macAddr)
+{
+    if(_macAddr.isEmpty())
+        return false;
+
+    QProcess p;
+    QString cmd_down = QString("ifconfig %1 down").arg(devName);
+    QString cmd_set = QString("ifconfig %1 hw ether %2").arg(devName).arg(_macAddr);
+    QString cmd_up = QString("ifconfig %1 up").arg(devName);;
+    qDebug()<<"[setMacAddress]"<<_macAddr;
+    p.start(cmd_down);
+    p.waitForFinished();
+
+    p.start(cmd_set);
+    p.waitForFinished();
+
+    p.start(cmd_up);
+    p.waitForFinished();
+    return true;
+}
+
 void QNetInterface::saveNetwork()
 {
     QSettings settings("/home/config/network.ini", QSettings::IniFormat);
     settings.setValue("ip", QVariant(ip()));
     settings.setValue("gateway", QVariant(devGateway));
     settings.setValue("netmask", QVariant(netmask()));
+    settings.setValue("mac", QVariant(macAddress()));
     settings.sync();
 }
 
@@ -128,7 +159,9 @@ void QNetInterface::initNetwork()
     QString netIp = settings.value("ip", QString()).toString();
     QString netNetmask = settings.value("netmask", QString()).toString();
     QString netGateway = settings.value("gateway", QString()).toString();
+    QString netMac = settings.value("mac", QString()).toString();
 
+    setMacAddress(netMac);
     setIp(netIp);
     setNetmask(netNetmask);
     setGateway(netGateway);

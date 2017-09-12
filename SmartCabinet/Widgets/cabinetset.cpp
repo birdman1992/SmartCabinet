@@ -24,6 +24,7 @@ CabinetSet::CabinetSet(QWidget *parent) :
     ui->label_2->hide();
     ui->label_3->hide();
     ui->label_4->hide();
+    ui->devState->setEnabled(false);
 
     group_lock.addButton(ui->lock_test_2 , 0);
     group_lock.addButton(ui->lock_test_3 , 1);
@@ -59,6 +60,7 @@ bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
     if(globalConfig == NULL)
         return false;
     config = globalConfig;
+    checkDevice();
 
     return true;
 }
@@ -201,4 +203,23 @@ void CabinetSet::on_netSet_clicked()
     ui->ip->setText(dev_network->ip());
     ui->netmask->setText(dev_network->netmask());
     ui->gateway->setText(dev_network->gateway());
+}
+
+void CabinetSet::checkDevice()
+{
+    ui->devReader->setVisible(config->getCardReaderState());
+    ui->devScan->setVisible(config->getCodeScanState());
+
+    if(config->getCardReaderState() && config->getCodeScanState())
+        ui->devState->setChecked(false);//设备正常
+    else
+        ui->devState->setChecked(true);//设备异常
+}
+
+void CabinetSet::on_devState_toggled(bool checked)
+{
+    if(checked)
+        ui->devState->setText("设备异常");
+    else
+        ui->devState->setText("设备正常");
 }

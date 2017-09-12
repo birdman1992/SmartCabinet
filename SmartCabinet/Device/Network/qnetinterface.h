@@ -15,10 +15,12 @@ public:
     QString ip();
     QString netmask();
     QString gateway();
+    QString macAddress();
     bool numPointCheck(QString str);//数点字符串校验
     bool setIp(QString _ip);
     bool setNetmask(QString _netmask);
     bool setGateway(QString _gateway);
+    bool setMacAddress(QString _macAddr);
     void saveNetwork();
     void initNetwork();
 
