@@ -30,6 +30,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_check = new CabinetCheck();
     win_store_list = new CabinetStoreList();
     win_refund = new CabinetRefund();
+    win_net_set = new NetworkSet();
 
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));

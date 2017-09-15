@@ -14,6 +14,7 @@
 #include "Widgets/cabinetcheck.h"
 #include "Widgets/cabinetstorelist.h"
 #include "Widgets/cabinetrefund.h"
+#include "Device/Network/networkset.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
@@ -128,6 +129,7 @@ private:
     CabinetCheck* win_check;//盘点窗口
     CabinetStoreList* win_store_list;
     CabinetRefund* win_refund;//退货窗口
+    NetworkSet* win_net_set;//网络配置
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);

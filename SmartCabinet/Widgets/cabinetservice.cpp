@@ -195,7 +195,7 @@ void CabinetService::creatCtrlConfig()
 
 void CabinetService::initNetwork()
 {
-    qDebug("[QNetInterface1]");
+//    qDebug("[QNetInterface1]");
 //    QNetworkInterface::interfaceFromName("eth0");
 //    qDebug()<<QNetworkInterface::interfaceFromName("eth1").flags();
 //    return;
@@ -207,7 +207,7 @@ void CabinetService::initNetwork()
 #else
     dev_network = new QNetInterface("eth1");
 #endif
-    qDebug("[QNetInterface2]");
+//    qDebug("[QNetInterface2]");
     updateNetInfo();
 }
 

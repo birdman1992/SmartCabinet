@@ -60,7 +60,8 @@ SOURCES += main.cpp\
     Widgets/cabinetrefunditem.cpp \
     Widgets/cabinetctrlconfig.cpp \
     Widgets/casepanel.cpp \
-    globalapp.cpp
+    globalapp.cpp \
+    Device/Network/networkset.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -112,7 +113,8 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetrefunditem.h \
     Widgets/cabinetctrlconfig.h \
     Widgets/casepanel.h \
-    globalapp.h
+    globalapp.h \
+    Device/Network/networkset.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -140,7 +142,8 @@ FORMS    += mainwidget.ui \
     Widgets/cabinetrefund.ui \
     Widgets/cabinetrefunditem.ui \
     Widgets/cabinetctrlconfig.ui \
-    Widgets/casepanel.ui
+    Widgets/casepanel.ui \
+    Device/Network/networkset.ui
 
 RESOURCES += \
     image.qrc
