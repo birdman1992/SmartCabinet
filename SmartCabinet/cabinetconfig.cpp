@@ -699,6 +699,29 @@ UserInfo* CabinetConfig::checkUserLocal(QString userId)
     return NULL;
 }
 
+bool CabinetConfig::checkManagers(QString userId)
+{
+    QFile fManager("/home/config/managers.ini");
+
+    if(!fManager.exists())
+        return false;
+
+    fManager.open(QFile::ReadOnly);
+    QString managerStr = QString(fManager.readAll());
+    fManager.close();
+
+    QStringList managers = managerStr.split(' ');
+//    qDebug()<<"[managers]"<<managers<<userId<<managers.indexOf(userId);
+//    qDebug()<<managers.at(7);
+
+    if(managers.isEmpty())
+        return false;
+    if(managers.indexOf(userId) == -1)
+        return false;
+    else
+        return true;
+}
+
 int CabinetConfig::getGoodsType(QString packageId)
 {
     int index = packageId.indexOf('-');

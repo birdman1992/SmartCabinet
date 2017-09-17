@@ -52,6 +52,7 @@ private:
     QTimer sysClock;
     QStringList list_goodsList;
     UserInfo* cur_user;
+    UserInfo* cur_manager;
     int apiState;
     QList<QByteArray> list_access_cache;
 

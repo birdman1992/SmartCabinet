@@ -30,6 +30,7 @@
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
+    cur_manager = new UserInfo();
     reply_register = NULL;
     reply_login = NULL;
     reply_list_check = NULL;
@@ -202,9 +203,9 @@ void CabinetServer::getServerAddr(QString addr)
 
 void CabinetServer::userLogin(QString userId)
 {
-#ifdef NO_SERVER
-    emit loginRst(true);
-#endif
+//#ifdef NO_SERVER
+//    emit loginRst(true);
+//#endif
     QByteArray qba = QString("{\"cardId\":\"%2\",\"departId\":\"%1\"}").arg(config->getCabinetId()).arg(userId).toUtf8();
     QString nUrl = ApiAddress+QString(API_LOGIN)+'?'+qba.toBase64();
     qDebug()<<"[login]"<<nUrl;
@@ -919,16 +920,29 @@ void CabinetServer::netTimeout()
     {
         if(apiState == 1)//登录
         {
-            cur_user = config->checkUserLocal(logId);
-            qDebug()<<"check null";
-            if(cur_user == NULL)
+            if(config->checkManagers(logId))
             {
-                apiState = 0;
-                return;
+                cur_manager->name = "管理员";
+                cur_manager->power = 0;
+                cur_manager->cardId = logId;
+                cur_user = cur_manager;
+
+                config->wakeUp(TIMEOUT_FETCH);
+                emit loginRst(cur_user);
             }
-            qDebug()<<"check"<<cur_user->cardId;
-            config->wakeUp(TIMEOUT_FETCH);
-            emit loginRst(cur_user);
+            else
+            {
+                cur_user = config->checkUserLocal(logId);
+                qDebug()<<"check null";
+                if(cur_user == NULL)
+                {
+                    apiState = 0;
+                    return;
+                }
+                qDebug()<<"check"<<cur_user->cardId;
+                config->wakeUp(TIMEOUT_FETCH);
+                emit loginRst(cur_user);
+            }
         }
         apiState = 0;
     }
