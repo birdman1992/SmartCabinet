@@ -964,3 +964,8 @@ void CabinetServer::sysTimeout()
     }
 }
 
+void CabinetServer::updateAddress()
+{
+    ApiAddress = config->getServerAddress();
+}
+

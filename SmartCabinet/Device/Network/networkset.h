@@ -24,6 +24,7 @@ private slots:
 
     void on_ok_2_clicked();
 
+    void on_ok_clicked();
 signals:
     void updateServerAddress();
 
@@ -36,6 +37,8 @@ private:
     QString dev_gateway;
     void paintEvent(QPaintEvent *);
     void showEvent(QShowEvent *);
+    void updateNetInfo();
+    void initNetwork();
 };
 
 #endif // NETWORKSET_H

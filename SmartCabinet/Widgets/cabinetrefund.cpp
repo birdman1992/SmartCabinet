@@ -1,6 +1,7 @@
 #include "cabinetrefund.h"
 #include "ui_cabinetrefund.h"
 #include <QDebug>
+#include <QScrollBar>
 
 CabinetRefund::CabinetRefund(QWidget *parent) :
     QWidget(parent),
@@ -9,6 +10,11 @@ CabinetRefund::CabinetRefund(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
+    QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
+    qssScrollbar.open(QIODevice::ReadOnly);
+    QString style = QString(qssScrollbar.readAll());
+    ui->checktable->verticalScrollBar()->setStyleSheet(style);
+    qssScrollbar.close();
 }
 
 CabinetRefund::~CabinetRefund()

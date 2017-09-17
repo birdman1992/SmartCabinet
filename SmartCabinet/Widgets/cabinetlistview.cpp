@@ -22,10 +22,12 @@ CabinetListView::CabinetListView(QWidget *parent) :
     ui->list_select->setFont(font);
     initButtons();
 
-    QFile qssScrollbar("styleSheet/ScrollBar.qss");
+    QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
-    ui->list_goods->verticalScrollBar()->setStyleSheet(qssScrollbar.readAll());
-    ui->list_select->verticalScrollBar()->setStyleSheet(qssScrollbar.readAll());
+    QString style = QString(qssScrollbar.readAll());
+    ui->list_goods->verticalScrollBar()->setStyleSheet(style);
+    ui->list_select->verticalScrollBar()->setStyleSheet(style);
+    qssScrollbar.close();
 
     cabFrame = NULL;
 }

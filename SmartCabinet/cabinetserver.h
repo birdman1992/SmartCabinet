@@ -95,6 +95,7 @@ public slots:
     void goodsListStore(QList<CabinetStoreListItem*> l);
     void goodsCarScan();
     void sysTimeout();
+    void updateAddress();
 
 private slots:
     void recvCabRegister();

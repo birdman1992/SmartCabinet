@@ -31,6 +31,7 @@ signals:
     void winSwitch(int);
     void requireOpenLock(int seqNum, int lockId);
     void requireClear();
+    void requireUpdateServerAddress();
 
 private slots:
     void on_back_clicked();
@@ -47,6 +48,10 @@ private slots:
     void updateBtn();
 
     void on_rebind_clicked();
+
+    void on_set_server_addr_clicked();
+
+    void on_server_addr_editingFinished();
 
 public slots:
     void ctrl_boardcast();//广播控制

@@ -103,6 +103,7 @@ void CabinetConfig::setServerAddress(QString addr)
     serverAddr = addr;
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("SERVER", addr);
+    settings.sync();
 //    restart();
 }
 

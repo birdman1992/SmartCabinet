@@ -121,6 +121,6 @@ void NetworkSet::on_pushButton_clicked()
 
 void NetworkSet::on_ok_2_clicked()
 {
-    config->setServerAddress(ui->addr);
+    config->setServerAddress(ui->addr->text());
     emit updateServerAddress();
 }

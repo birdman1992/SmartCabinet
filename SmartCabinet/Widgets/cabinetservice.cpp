@@ -71,6 +71,7 @@ void CabinetService::on_back_clicked()
 void CabinetService::showEvent(QShowEvent *)
 {
     initNetwork();
+    ui->server_addr->setText(config->getServerAddress());
 }
 
 bool CabinetService::eventFilter(QObject *w, QEvent *e)
@@ -382,4 +383,27 @@ void CabinetService::on_rebind_clicked()
     config->state = STATE_REBIND;
     config->list_cabinet[0]->showMsg(MSG_REBIND_SCAN,0);
     emit winSwitch(INDEX_CAB_SHOW);
+}
+
+void CabinetService::on_set_server_addr_clicked()
+{
+    QString strAddr = ui->server_addr->text();
+    if(strAddr.indexOf("http:") != 0)
+        strAddr = QString("http://") +strAddr;
+
+    config->setServerAddress(strAddr);
+    qDebug()<<"setServerAddress"<<ui->server_addr->text();
+    emit requireUpdateServerAddress();
+}
+
+void CabinetService::on_server_addr_editingFinished()
+{
+    QString str = ui->server_addr->text();
+
+    if(str.split('.').count() > 4)
+    {
+        int index = str.lastIndexOf('.');
+        str.replace(index,1,':');
+        ui->server_addr->setText(str);
+    }
 }

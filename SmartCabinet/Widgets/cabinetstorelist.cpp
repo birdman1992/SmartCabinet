@@ -18,7 +18,6 @@ CabinetStoreList::CabinetStoreList(QWidget *parent) :
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
     QString style = QString(qssScrollbar.readAll());
-    qDebug()<<"qssScrollbar"<<style;
     ui->storeTable->verticalScrollBar()->setStyleSheet(style);
     qssScrollbar.close();
 //    time_test.start(100);

@@ -2,6 +2,7 @@
 #include "ui_cabinetcheck.h"
 #include <QPainter>
 #include <QDebug>
+#include <qscrollbar.h>
 
 CabinetCheck::CabinetCheck(QWidget *parent) :
     QWidget(parent),
@@ -10,6 +11,12 @@ CabinetCheck::CabinetCheck(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
+
+    QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
+    qssScrollbar.open(QIODevice::ReadOnly);
+    QString style = QString(qssScrollbar.readAll());
+    ui->checktable->verticalScrollBar()->setStyleSheet(style);
+    qssScrollbar.close();
 }
 
 CabinetCheck::~CabinetCheck()

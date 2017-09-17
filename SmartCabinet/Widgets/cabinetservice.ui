@@ -273,6 +273,42 @@ font:20px&quot;微软雅黑&quot;;
         </item>
        </layout>
       </widget>
+      <widget class="QLineEdit" name="server_addr">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>90</y>
+         <width>291</width>
+         <height>41</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_4">
+       <property name="geometry">
+        <rect>
+         <x>310</x>
+         <y>90</y>
+         <width>80</width>
+         <height>38</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>服务器地址</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="set_server_addr">
+       <property name="geometry">
+        <rect>
+         <x>720</x>
+         <y>85</y>
+         <width>99</width>
+         <height>48</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>设置</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="page_1">
       <widget class="QCheckBox" name="checkBox">
