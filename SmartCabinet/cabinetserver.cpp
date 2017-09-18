@@ -417,6 +417,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     for(i=0; i<l.count(); i++)
     {
         goodsItem = l.at(i);
+        qDebug()<<goodsItem->itemId()<<goodsItem->itemNum();
         QString pack_id = goodsItem->itemId();
         QByteArray packageBarcode = goodsItem->itemId().toLocal8Bit();
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
@@ -526,6 +527,7 @@ void CabinetServer::recvUserLogin()
         emit loginRst(info);
         config->addUser(info);
         config->wakeUp(TIMEOUT_BASE);
+        networkState = true;
     }
     else
     {

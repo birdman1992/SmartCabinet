@@ -39,7 +39,7 @@ private:
     CabinetStoreListItem* bindItem;
     QList<CabinetStoreListItem*> list_item;
 private slots:
-    void timeOut();
+//    void timeOut();
     void itemBind(Goods*, CabinetStoreListItem*);
 
     void on_ok_clicked();

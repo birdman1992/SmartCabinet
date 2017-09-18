@@ -1,4 +1,4 @@
-#include "cabinetstorelist.h"
+﻿#include "cabinetstorelist.h"
 #include "ui_cabinetstorelist.h"
 #include <QPainter>
 #include <qscrollbar.h>
@@ -31,6 +31,7 @@ CabinetStoreList::~CabinetStoreList()
 
 void CabinetStoreList::storeStart(GoodsList *l)
 {
+    clearList();
     list_store = l;
     CabinetStoreListItem* item;
     int i = 0;
@@ -126,26 +127,26 @@ void CabinetStoreList::clearList()
 }
 
 //test function
-void CabinetStoreList::timeOut()
-{
-    qDebug("[timeOut]");
+//void CabinetStoreList::timeOut()
+//{
+//    qDebug("[timeOut]");
 
-    if(list_item.count()<3)
-    {
-        Goods* goods = new Goods();
-        CaseAddress addr;
-        CabinetStoreListItem* item = new CabinetStoreListItem(goods, addr);
-        connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
-        connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
-        list_item<<item;
-    }
-    else
-    {
-        clearList();
-    }
-    on_ok_clicked();
+//    if(list_item.count()<3)
+//    {
+//        Goods* goods = new Goods();
+//        CaseAddress addr;
+//        CabinetStoreListItem* item = new CabinetStoreListItem(goods, addr);
+//        connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
+//        connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+//        list_item<<item;
+//    }
+//    else
+//    {
+//        clearList();
+//    }
+//    on_ok_clicked();
 
-}
+//}
 
 void CabinetStoreList::itemBind(Goods* goods, CabinetStoreListItem* item)
 {
