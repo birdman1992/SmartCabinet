@@ -196,10 +196,10 @@ void ControlDevice::openCase(int seqNum, int index)
     if((index<0) || (seqNum>=config->list_cabinet[seqNum]->list_case.count()))
         return;
 
-    seqNum = config->list_cabinet[seqNum]->list_case[index]->ctrlSeq;
-    index = config->list_cabinet[seqNum]->list_case[index]->ctrlIndex;
+    int ctrl_seqNum = config->list_cabinet[seqNum]->list_case[index]->ctrlSeq;
+    int ctrl_index = config->list_cabinet[seqNum]->list_case[index]->ctrlIndex;
 
-    lockCtrl(seqNum, index);
+    lockCtrl(ctrl_seqNum, ctrl_index);
 }
 
 void ControlDevice::lockCtrl(int ioNum)

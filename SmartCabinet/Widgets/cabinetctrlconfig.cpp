@@ -79,6 +79,7 @@ void CabinetCtrlConfig::on_ok_clicked()
 
     settings.setValue("ctrlSeq", ctrlSeq);
     settings.setValue("ctrlIndex", ctrlIndex);
+    settings.endGroup();
     settings.sync();
     ui->tips->setText("配置成功");
 }

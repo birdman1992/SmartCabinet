@@ -95,6 +95,9 @@ private slots:
 
     void on_search_back_clicked();
 
+protected:
+
+
 private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;

@@ -276,8 +276,8 @@ void CabinetConfig::readCabinetConfig()
     }
 
     settings.beginGroup("Cabinet0");
-    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
-    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
+    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray()).toByteArray();
+    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray()).toByteArray();
 
     for(j=0; j<CAB_CASE_1_NUM; j++)
     {

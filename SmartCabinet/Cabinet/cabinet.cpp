@@ -102,19 +102,23 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
 
 void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
 {
-//    qDebug()<<"setCtrlWord"<<caseIndex<<seq.toHex()<<index.toHex();
+    qDebug()<<"setCtrlWord"<<seqNum<<caseIndex<<seq.toHex()<<index.toHex();
     if(caseIndex >= list_case.count())
         return;
 
-    if(seq.size() <= caseIndex)
+    if(seq.size() <= caseIndex || seq.isEmpty())
         list_case[caseIndex]->ctrlSeq = seqNum;
     else
-        list_case[caseIndex]->ctrlSeq = ((int)seq[caseIndex]==0)?seqNum:seq[caseIndex];
+        list_case[caseIndex]->ctrlSeq = seq[caseIndex];
 
-    if(index.size() <= caseIndex)
+    if(index.size() <= caseIndex || index.isEmpty())
+    {
         list_case[caseIndex]->ctrlIndex = caseIndex;
+    }
     else
-        list_case[caseIndex]->ctrlIndex = ((int)index[caseIndex]==0)?caseIndex:index[caseIndex];
+        list_case[caseIndex]->ctrlIndex = index[caseIndex];
+
+    qDebug()<<list_case[caseIndex]->ctrlSeq<<list_case[caseIndex]->ctrlIndex;
 }
 
 int Cabinet::getIndexByName(QString findName)
