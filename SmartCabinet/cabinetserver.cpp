@@ -4,7 +4,9 @@
 #include <QTime>
 #include <QUrl>
 #include <QtGlobal>
+#include <fcntl.h>
 #include "defines.h"
+#include "Device/controldevice.h"
 
 //#define SERVER_ADDR "http://175.11.185.181"
 #define SERVER_ADDR "http://120.77.159.8:8080"
@@ -26,7 +28,6 @@
 #define API_NETSTATE_CHECK "/spd-web/websocket/"    //网络状态检查
 
 
-
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
@@ -45,6 +46,10 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     apiState = 0;
     needReqCar = true;
     needSaveAddress = false;
+    fWatchdog = -1;
+#ifndef SIMULATE_ON
+    watchdogStart();
+#endif
 }
 
 bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
@@ -183,6 +188,20 @@ QString CabinetServer::getAbbName(QString fullName)
     }
 
     return QString();
+}
+
+void CabinetServer::watchdogStart()
+{
+    fWatchdog = -1;
+    fWatchdog = open("/dev/watchdog", O_WRONLY);
+    if (fWatchdog == -1)
+    {
+        qDebug()<<"[watchdog] watchdog start failed.";
+        return;
+    }
+    qDebug()<<"[watchdog]"<<"start";
+    watdogClock.start(10000);
+    connect(&watdogClock, SIGNAL(timeout()), this, SLOT(watchdogTimeout()));
 }
 
 void CabinetServer::getServerAddr(QString addr)
@@ -948,7 +967,13 @@ void CabinetServer::netTimeout()
         }
         apiState = 0;
     }
+}
 
+void CabinetServer::watchdogTimeout()
+{
+//    qDebug()<<"[watchdog]"<<"write";
+    if (fWatchdog != -1)
+           write(fWatchdog, "a", 1);
 }
 
 void CabinetServer::sysTimeout()

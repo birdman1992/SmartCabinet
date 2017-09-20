@@ -105,6 +105,7 @@ void CabinetWidget::cabLock()
     config->state = STATE_NO;
     config->clearSearch();
     config->wakeUp(0);
+    emit checkLockState();
 }
 
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)

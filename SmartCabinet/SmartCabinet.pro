@@ -61,7 +61,8 @@ SOURCES += main.cpp\
     Widgets/cabinetctrlconfig.cpp \
     Widgets/casepanel.cpp \
     globalapp.cpp \
-    Device/Network/networkset.cpp
+    Device/Network/networkset.cpp \
+    Device/QDeviceWatcher/qdevicewatcher.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -114,7 +115,8 @@ HEADERS  += mainwidget.h \
     Widgets/cabinetctrlconfig.h \
     Widgets/casepanel.h \
     globalapp.h \
-    Device/Network/networkset.h
+    Device/Network/networkset.h \
+    Device/QDeviceWatcher/qdevicewatcher.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

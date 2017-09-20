@@ -50,10 +50,12 @@ private:
     bool networkState;
     bool netFlag;
     QTimer sysClock;
+    QTimer watdogClock;
     QStringList list_goodsList;
     UserInfo* cur_user;
     UserInfo* cur_manager;
     int apiState;
+    int fWatchdog;
     QList<QByteArray> list_access_cache;
 
     void cabRegister();
@@ -65,6 +67,7 @@ private:
     void localCacheAccess();//提交本地缓存存取
     void accessLoop();
     QString getAbbName(QString fullName);
+    void watchdogStart();
 
 signals:
     void loginRst(UserInfo*);
@@ -112,6 +115,7 @@ private slots:
     void recvListState();
     void recvInfoUploadResult();
     void netTimeout();
+    void watchdogTimeout();
 };
 
 #endif // CABINETSERVER_H
