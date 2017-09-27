@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QtGlobal>
 #include <fcntl.h>
+#include <unistd.h>
 #include "defines.h"
 #include "Device/controldevice.h"
 
@@ -624,7 +625,7 @@ void CabinetServer::recvListCheck()
     reply_list_check = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<cJSON_Print(json);
+    qDebug()<<"recvListCheck";//cJSON_Print(json);
 
     if(!json)
         return;

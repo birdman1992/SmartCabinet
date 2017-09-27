@@ -962,6 +962,7 @@ void CabinetWidget::recvBindRst(bool rst)
             cabInfoBind(bindCab, bindCase, bindInfo);
 
             win_store_list->show();
+            setMenuHide(false);
             win_store_list->bindRst(addr);
             win_store_list->bindMsg("绑定成功");
     //        win_access->clickOpen(curGoods->packageBarcode);
@@ -971,6 +972,7 @@ void CabinetWidget::recvBindRst(bool rst)
         {
             clickLock = false;
             win_store_list->show();
+            setMenuHide(false);
             win_store_list->bindMsg("绑定失败");
     //        win_access->save();
     //        win_access->hide();
@@ -1069,10 +1071,33 @@ void CabinetWidget::sysLock()
     cabLock();
 }
 
+void CabinetWidget::setMenuHide(bool ishide)
+{
+    if(ishide)
+    {
+        ui->store->hide();
+        ui->service->hide();
+        ui->cut->hide();
+        ui->refund->hide();
+        ui->check->hide();
+        ui->search->hide();
+    }
+    else
+    {
+        ui->store->show();
+        ui->service->show();
+        ui->cut->show();
+        ui->refund->show();
+        ui->check->show();
+        ui->search->show();
+    }
+}
+
 void CabinetWidget::cabinetBind(Goods *goods)
 {
     curGoods = goods;
     clickLock = false;
+    setMenuHide(true);
     win_store_list->hide();
     config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);
 }

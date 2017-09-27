@@ -72,6 +72,7 @@ signals:
     void requireTimeout();
 
 private slots:
+    void setMenuHide(bool ishide);
     void cabinetBind(Goods* goods);
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
 //    void on_fetch_clicked();

@@ -25,6 +25,9 @@
      <height>711</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
    </property>
@@ -121,6 +124,7 @@
     </property>
     <property name="font">
      <font>
+      <family>Ubuntu</family>
       <pointsize>40</pointsize>
      </font>
     </property>
@@ -332,8 +336,15 @@ font: 18px &quot;微软雅黑&quot;;
     </property>
     <property name="font">
      <font>
-      <pointsize>20</pointsize>
+      <family>微软雅黑</family>
+      <pointsize>-1</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 22px &quot;微软雅黑&quot;;</string>
     </property>
     <property name="text">
      <string>锁控全开</string>
