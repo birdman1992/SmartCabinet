@@ -56,10 +56,10 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->search->hide();
     ui->menuWidget->setCurrentIndex(0);
 
-#ifndef SIMULATE_ON
+//#ifndef SIMULATE_ON
     ui->msk1->hide();
     ui->msk2->hide();
-#endif
+//#endif
 }
 
 CabinetWidget::~CabinetWidget()
@@ -633,6 +633,7 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
     if(checked)
     {
         qDebug()<<"[REFUND]";
+        clickLock = false;
         config->state = STATE_REFUN;
         config->list_cabinet[0]->showMsg(MSG_REFUND,false);
         clearMenuState();
@@ -670,6 +671,7 @@ void CabinetWidget::on_store_clicked(bool checked)
 
 void CabinetWidget::on_cut_clicked()
 {
+    clearMenuState();
     config->state = STATE_FETCH;
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     waitForCodeScan = true;
@@ -1131,6 +1133,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
 
 void CabinetWidget::on_search_clicked()
 {
+    clearMenuState();
     config->wakeUp(TIMEOUT_BASE);
     config->state = STATE_FETCH;
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
