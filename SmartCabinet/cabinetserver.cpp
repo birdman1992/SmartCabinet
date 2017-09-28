@@ -970,11 +970,16 @@ void CabinetServer::netTimeout()
     }
 }
 
-void CabinetServer::watchdogTimeout()
+int CabinetServer::watchdogTimeout()
 {
+    int ret = 0;
 //    qDebug()<<"[watchdog]"<<"write";
     if (fWatchdog != -1)
-           write(fWatchdog, "a", 1);
+    {
+        ret = write(fWatchdog, "a", 1);
+
+    }
+    return ret;
 }
 
 void CabinetServer::sysTimeout()

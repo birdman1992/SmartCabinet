@@ -858,7 +858,7 @@ void CabinetWidget::setPowerState(int power)
             //        ui->service->show();
             break;
 
-        case 3://医院员工:|退货|服务|退出|
+        case 3://医院员工:|退货|退出|
             ui->refund->show();
             ui->cut->show();
             //        ui->service->show();
