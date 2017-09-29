@@ -83,7 +83,7 @@ void MainWidget::cabinetClear()
 
 void MainWidget::globalTouch()
 {
-    qDebug()<<"[globalTouch]";
+//    qDebug()<<"[globalTouch]";
     cabinetConf->clearTimeoutFlag();
 }
 
