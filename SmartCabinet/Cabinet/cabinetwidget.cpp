@@ -176,20 +176,27 @@ void CabinetWidget::showCurrentTime(QString curTime)
 void CabinetWidget::rebindRecover()
 {
     qDebug("rebindRecover");
-    qDebug()<<rebind_new_addr.goodsIndex;
-    if((rebindGoods == NULL) || (rebind_new_addr.cabinetSeqNum == -1) || (rebind_old_addr.cabinetSeqNum == -1))
-        return;
-qDebug("rebindRecover2");
-    config->list_cabinet[rebind_new_addr.cabinetSeqNum]->list_case[rebind_new_addr.caseIndex]->list_goods.removeAt(rebind_new_addr.goodsIndex);
-    config->removeConfig(rebind_new_addr);
-    config->list_cabinet[rebind_old_addr.cabinetSeqNum]->setCaseName(*rebindGoods, rebind_old_addr.caseIndex);
+//    qDebug()<<rebind_new_addr.goodsIndex;
+//    if((rebindGoods == NULL) || (rebind_new_addr.cabinetSeqNum == -1) || (rebind_old_addr.cabinetSeqNum == -1))
+//        return;
+//    qDebug("rebindRecover2");
+//    config->list_cabinet[rebind_new_addr.cabinetSeqNum]->list_case[rebind_new_addr.caseIndex]->list_goods.removeAt(rebind_new_addr.goodsIndex);
+//    config->removeConfig(rebind_new_addr);
+//    config->list_cabinet[rebind_old_addr.cabinetSeqNum]->setCaseName(*rebindGoods, rebind_old_addr.caseIndex);
 
-    rebindOver();
+//    rebindOver();
+    rebindGoods = NULL;
+    rebind_new_addr.clear();
+    rebind_old_addr.clear();
+    config->list_cabinet[0]->showMsg(MSG_REBIND_SCAN,0);
 }
 
 void CabinetWidget::rebindOver()
 {
     qDebug("rebindOver");
+    config->removeConfig(rebind_old_addr);
+    config->setConfig(rebind_new_addr, rebindGoods);
+
     rebindGoods = NULL;
     rebind_new_addr.clear();
     rebind_old_addr.clear();
@@ -382,7 +389,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         rebind_new_addr.caseIndex = selectCase;
         rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
 
-        config->removeConfig(rebind_old_addr);
+//        config->removeConfig(rebind_old_addr);
         emit requireCaseBind(selectCab, selectCase, rebindGoods->packageId);
 //        cabInfoBind(selectCab, selectCase, *rebindGoods);
     }
@@ -440,7 +447,6 @@ void CabinetWidget::recvScanData(QByteArray qba)
             qDebug()<<"[CabinetWidget]"<<"[open]"<<pos.cabinetSeqNum<<pos.caseIndex;
             if(newStore)
                 emit requireOpenCase(pos.cabinetSeqNum, pos.caseIndex);
-
 
             if(curGoods->curNum < curGoods->totalNum && (!needWaitForServer()))
             {

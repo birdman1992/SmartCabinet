@@ -60,6 +60,7 @@ public:
     int getLockId(int seq, int index);
     int getCaseWidth();
     void removeConfig(CaseAddress addr);
+    void setConfig(CaseAddress addr, GoodsInfo* info);
     QByteArray creatCabinetJson();
     QByteArray getCabinetPos();
     QByteArray getCabinetSize();

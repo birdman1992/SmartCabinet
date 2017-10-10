@@ -228,7 +228,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>2017-B0208005901-01-1</string>
+        <string>2017-B0208005902-01-1</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_6">
@@ -388,7 +388,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>2017-A0202006424-03-4</string>
+        <string>2017-C0218006717-10-4</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_16">

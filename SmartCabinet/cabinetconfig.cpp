@@ -551,6 +551,35 @@ void CabinetConfig::removeConfig(CaseAddress addr)
     list_cabinet[addr.cabinetSeqNum]->updateCabinetCase(addr);
 }
 
+void CabinetConfig::setConfig(CaseAddress addr, GoodsInfo *info)
+{
+    Cabinet* curCab = list_cabinet[addr.cabinetSeqNum];
+    CabinetInfo* curInfo = curCab->list_case[addr.caseIndex];
+    if(addr.goodsIndex != curInfo->list_goods.count())
+    {
+        qDebug()<<"[setConfig]"<<"address is invalid.";
+    }
+
+    curInfo->list_goods<<info;
+
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.beginGroup(QString("Cabinet%1").arg(addr.cabinetSeqNum));
+    settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
+
+    settings.setArrayIndex(addr.goodsIndex);
+    settings.setValue("abbName", QVariant(info->abbName));
+    settings.setValue("id", QVariant(info->id));
+    settings.setValue("name", QVariant(info->name));
+    settings.setValue("num", QVariant(info->num));
+    settings.setValue("packageId", QVariant(info->packageId));
+    settings.setValue("unit", QVariant(info->unit));
+    settings.sync();
+    settings.endArray();
+    settings.endGroup();
+
+    list_cabinet[addr.cabinetSeqNum]->updateCabinetCase(addr);
+}
+
 QByteArray CabinetConfig::creatCabinetJson()
 {
     QByteArray chesetCode = cabinetId.toLocal8Bit();
