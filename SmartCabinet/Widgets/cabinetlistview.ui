@@ -18,15 +18,15 @@
 font: 18px &quot;微软雅黑&quot;;
 }</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4" stretch="20,1">
+  <layout class="QVBoxLayout" name="verticalLayout_4" stretch="25,2,2">
    <property name="spacing">
-    <number>0</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>138</number>
+    <number>100</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>20</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="6,4">
@@ -303,20 +303,21 @@ QTableWidget::Item{
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="frame_button">
+    <widget class="QFrame" name="frame_3">
      <property name="styleSheet">
-      <string notr="true">QPushButton::!checked{
+      <string notr="true">QPushButton::pressed{
 font: 23px &quot;微软雅黑&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
-border-radius: 18px;
+border-radius: 26px;
 background-color:  rgba(22, 52, 73, 200);
 }
 
-QPushButton::checked{
+QPushButton{
+font: 23px &quot;微软雅黑&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
-border-radius: 18px;
+border-radius: 26px;
 background-color: rgb(36, 221, 149);
 }</string>
      </property>
@@ -326,12 +327,12 @@ background-color: rgb(36, 221, 149);
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="spacing">
        <number>3</number>
       </property>
       <property name="leftMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
        <number>0</number>
@@ -352,8 +353,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -377,8 +378,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -402,8 +403,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -427,8 +428,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -452,8 +453,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -477,8 +478,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -502,8 +503,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -527,8 +528,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -552,8 +553,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -564,6 +565,9 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -577,8 +581,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -602,8 +606,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -627,8 +631,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -652,8 +656,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -677,8 +681,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -702,8 +706,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -727,8 +731,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -752,8 +756,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -777,8 +781,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -802,8 +806,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -827,8 +831,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -852,8 +856,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -877,8 +881,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -902,8 +906,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -927,8 +931,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -952,8 +956,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -977,8 +981,8 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="minimumSize">
          <size>
-          <width>36</width>
-          <height>36</height>
+          <width>52</width>
+          <height>52</height>
          </size>
         </property>
         <property name="styleSheet">
@@ -989,6 +993,97 @@ background-color: rgb(36, 221, 149);
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>44</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame_button">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="searchStr">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
+border:1px solid grey;
+border-radius:8px;
+font: 20px &quot;微软雅黑&quot;;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="searchClear">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 35px &quot;微软雅黑&quot;;
+color: rgb(255, 255, 255);
+border:0px solid grey;
+border-radius: 8px;
+background-color: rgb(36, 221, 149);</string>
+        </property>
+        <property name="text">
+         <string>清空</string>
         </property>
        </widget>
       </item>

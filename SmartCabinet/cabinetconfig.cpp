@@ -654,7 +654,7 @@ QByteArray CabinetConfig::getCabinetSize()
     return ret;
 }
 
-void CabinetConfig::searchByPinyin(QChar ch)
+void CabinetConfig::searchByPinyin(QString ch)
 {
     int i;
 

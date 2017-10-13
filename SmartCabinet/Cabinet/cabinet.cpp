@@ -278,11 +278,11 @@ bool Cabinet::isInLeft()
     return posNum%2;
 }
 
-void Cabinet::searchByPinyin(QChar ch)
+void Cabinet::searchByPinyin(QString ch)
 {
     int i = 0;
     int j = 0;
-    qDebug()<<"searchByPinyin";
+//    qDebug()<<"searchByPinyin";
 
     for(i=0; i<list_case.count(); i++)
     {
@@ -290,7 +290,7 @@ void Cabinet::searchByPinyin(QChar ch)
 
         for(j=0; j<info->list_goods.count(); j++)
         {
-            if(info->list_goods[j]->Py.at(0) == ch)
+            if(info->list_goods[j]->Py.indexOf(ch) != -1)
             {
                 setCaseState(i, 1);
                 break;

@@ -38,6 +38,8 @@ private slots:
     void on_fetch_clicked();
     void search(int);
 
+    void on_searchClear_clicked();
+
 public slots:
     void recvScanData(QByteArray qba);
 
@@ -61,7 +63,7 @@ private:
     void showCabView();
     void clearList();
     void getCabList();
-    void updateCabList(QChar filter=' ');
+    void updateCabList(QString filter=" ");
     bool packIsSelected(QString packId);
     QString scanDataTrans(QString code);
 };

@@ -83,18 +83,13 @@ private slots:
     void on_store_clicked(bool checked);
     void pinyinSearch(int);
     void updateNetState(bool);
-
     void on_service_clicked(bool checked);
-
     void on_refund_clicked(bool checked);
-
     void on_cut_clicked();
-
     void on_check_clicked(bool checked);
-
     void on_search_clicked();
-
     void on_search_back_clicked();
+    void on_searchClear_clicked();
 
 protected:
 

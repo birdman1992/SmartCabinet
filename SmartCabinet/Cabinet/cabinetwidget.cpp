@@ -705,29 +705,6 @@ void CabinetWidget::on_check_clicked(bool checked)
     }
 }
 
-void CabinetWidget::pinyinSearch(int id)
-{
-//    int i = 0;
-    qDebug()<<groupBtn.button(id)->text()<<groupBtn.button(id)->isChecked();
-
-//    if(!groupBtn.button(id)->isChecked())
-//    {
-//        groupBtn.button(id)->setChecked(false);
-//        config->clearSearch();
-//        return;
-//    }
-//    else
-        config->searchByPinyin(groupBtn.button(id)->text().at(0));
-
-//    for(i=0; i<25; i++)
-//    {
-//        if(i != id)
-//            groupBtn.button(i)->setChecked(false);
-//    }
-
-
-}
-
 void CabinetWidget::updateNetState(bool connected)
 {
     ui->netState->setChecked(connected);
@@ -871,6 +848,12 @@ void CabinetWidget::setPowerState(int power)
             ui->cut->show();
             //        ui->service->show();
             break;
+
+        case 4://医院员工:|退出|
+            ui->cut->show();
+            //        ui->service->show();
+            break;
+
         default:
             break;
         }
@@ -1150,4 +1133,17 @@ void CabinetWidget::on_search_back_clicked()
 {
     config->wakeUp(TIMEOUT_BASE);
     ui->menuWidget->setCurrentIndex(0);
+}
+
+void CabinetWidget::on_searchClear_clicked()
+{
+    ui->searchStr->clear();
+    config->clearSearch();
+}
+
+void CabinetWidget::pinyinSearch(int id)
+{
+    QString str = ui->searchStr->text()+groupBtn.button(id)->text();
+    ui->searchStr->setText(str);
+    config->searchByPinyin(str);
 }

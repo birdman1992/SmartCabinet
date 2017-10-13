@@ -65,7 +65,7 @@ public:
     QByteArray getCabinetPos();
     QByteArray getCabinetSize();
 
-    void searchByPinyin(QChar ch);
+    void searchByPinyin(QString ch);
     void clearSearch();
     QChar str2py(QChar ch);
 

@@ -164,11 +164,11 @@ void CabinetListView::getCabList()
     }
 }
 
-void CabinetListView::updateCabList(QChar filter)
+void CabinetListView::updateCabList(QString filter)
 {
     list_filted.clear();
 
-    if(!filter.isUpper())
+    if(!filter.at(0).isUpper())
     {
         int i = 0;
         for(i=0; i<list_goods.count(); i++)
@@ -181,8 +181,8 @@ void CabinetListView::updateCabList(QChar filter)
         int i = 0;
         for(i=0; i<list_goods.count(); i++)
         {
-            qDebug()<<filter<<list_goods[i]->Py;
-            if(list_goods[i]->Py.at(0) == filter)
+//            qDebug()<<filter<<list_goods[i]->Py;
+            if(list_goods[i]->Py.indexOf(filter) != -1)
                 list_filted<<list_goods[i];
         }
     }
@@ -260,25 +260,33 @@ void CabinetListView::on_fetch_clicked()
 
 void CabinetListView::search(int id)
 {
-    int i = 0;
-    qDebug()<<groupSearch.button(id)->text()<<groupSearch.button(id)->isChecked();
-    QChar ch = groupSearch.button(id)->text().at(0);
+//    int i = 0;
+//    qDebug()<<groupSearch.button(id)->text()<<groupSearch.button(id)->isChecked();
+    QString ch = ui->searchStr->text() + groupSearch.button(id)->text().at(0);
+    ui->searchStr->setText(ch);
 
-    if(!groupSearch.button(id)->isChecked())
-    {
-        groupSearch.button(id)->setChecked(false);
-        config->clearSearch();
-        updateCabList();
-        return;
-    }
+//    if(!groupSearch.button(id)->isChecked())
+//    {
+//        groupSearch.button(id)->setChecked(false);
+//        config->clearSearch();
+//        updateCabList();
+//        return;
+//    }
 
-    for(i=0; i<25; i++)
-    {
-        if(i != id)
-            groupSearch.button(i)->setChecked(false);
-    }
+//    for(i=0; i<25; i++)
+//    {
+//        if(i != id)
+//            groupSearch.button(i)->setChecked(false);
+//    }
     config->searchByPinyin(ch);
     updateCabList(ch);
+}
+
+void CabinetListView::on_searchClear_clicked()
+{
+    ui->searchStr->clear();
+    config->clearSearch();
+    updateCabList();
 }
 
 void CabinetListView::recvScanData(QByteArray qba)

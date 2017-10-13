@@ -39,7 +39,7 @@ public:
     void showMsg(QString msg, bool showBigCharacter);
     void setCaseName(GoodsInfo info, int index);//设置柜格存放物品名
     bool isInLeft();//true:柜子在主柜左边 false:柜子在主柜右边
-    void searchByPinyin(QChar ch);
+    void searchByPinyin(QString ch);
     void clearSearch();
 
     QList<CabinetInfo*> list_case;//柜格列表
