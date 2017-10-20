@@ -8,6 +8,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QButtonGroup>
+#include <QSlider>
 #include "Cabinet/cabinet.h"
 #include "Widgets/cabinetaccess.h"
 #include "Widgets/cabinetlistview.h"
@@ -90,6 +91,11 @@ private slots:
     void on_search_clicked();
     void on_search_back_clicked();
     void on_searchClear_clicked();
+    void on_netState_clicked();
+    void on_volCtrl_clicked();
+    void vol_changed(int);
+    void vol_released();
+    void vol_pressed();
 
 protected:
 
@@ -98,6 +104,8 @@ private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;
     QButtonGroup groupBtn;
+    QSlider* volume;//音量控件
+    bool volPressed;
     bool waitForCardReader;
     bool waitForGoodsListCode;
     bool loginState;
@@ -140,12 +148,14 @@ private:
     void cabInfoBind(int seq, int index, GoodsInfo info);
     void initAccessState();
     void initSearchBtns();
+    void initVolum();
     bool needWaitForServer();
     void showCurrentTime(QString curTime);
     void rebindRecover();//重绑定恢复
     void rebindOver();//重绑定完成
     void clearCheckState();
     void clearMenuState();
+    void volumTest();
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

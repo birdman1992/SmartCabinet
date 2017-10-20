@@ -37,6 +37,9 @@ public:
     QString getCabinetId();
     QString getServerAddress();
     void setServerAddress(QString addr);
+    int getSysVolem();
+    void setSysVolem(int vol);
+    int volTodB(int vol);//音量转分贝
     void clearConfig();
     void clearCabinet();
     void wakeUp(int minutes);//唤醒

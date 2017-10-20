@@ -151,5 +151,4 @@ RESOURCES += \
     image.qrc
 
 DISTFILES += \
-    Jsoncpp/sconscript \
-    styleSheet/ScrollBar.qss
+    Jsoncpp/sconscript

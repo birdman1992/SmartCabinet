@@ -31,7 +31,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_store_list = new CabinetStoreList();
     win_refund = new CabinetRefund();
     win_net_set = new NetworkSet();
-
+    initVolum();
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
@@ -156,6 +156,23 @@ void CabinetWidget::initSearchBtns()
     connect(&groupBtn, SIGNAL(buttonClicked(int)), this, SLOT(pinyinSearch(int)));
 }
 
+void CabinetWidget::initVolum()
+{
+    volume = new QSlider();
+    QFile sliderStyle(":/stylesheet/styleSheet/SliderBar.qss");
+    sliderStyle.open(QIODevice::ReadOnly);
+    QString style = sliderStyle.readAll();
+    volume->setStyleSheet(style);
+    volume->setWindowFlags(Qt::FramelessWindowHint);
+    volume->resize(48, 240);
+    volume->setMaximum(100);
+    volume->setValue(config->getSysVolem());
+
+    connect(volume, SIGNAL(sliderPressed()), this, SLOT(vol_pressed()));
+    connect(volume, SIGNAL(sliderReleased()), this, SLOT(vol_released()));
+    connect(volume, SIGNAL(valueChanged(int)), this, SLOT(vol_changed(int)));
+}
+
 bool CabinetWidget::needWaitForServer()
 {
     if(waitForServer)
@@ -214,6 +231,11 @@ void CabinetWidget::clearMenuState()
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->service->setChecked(false);
+}
+
+void CabinetWidget::volumTest()
+{
+    config->cabVoice.voicePlay("vol.wav");
 }
 
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
@@ -1146,4 +1168,50 @@ void CabinetWidget::pinyinSearch(int id)
     QString str = ui->searchStr->text()+groupBtn.button(id)->text();
     ui->searchStr->setText(str);
     config->searchByPinyin(str);
+}
+
+void CabinetWidget::on_netState_clicked()
+{
+
+}
+
+void CabinetWidget::on_volCtrl_clicked()
+{
+    if(volume->isHidden())
+    {
+        QPoint showPos = ui->volCtrl->geometry().topLeft();
+        showPos = ui->volCtrl->mapToGlobal(QPoint(0,0));
+        showPos.setY(showPos.y()+ui->volCtrl->height()+10);
+        volume->move(showPos);
+        volume->show();
+    }
+    else
+    {
+        volume->hide();
+        volume->show();
+    }
+
+}
+
+void CabinetWidget::vol_changed(int vol)
+{
+    if(!volPressed)
+    {
+        config->setSysVolem(vol);
+        volumTest();
+        qDebug()<<"vol_changed";
+    }
+}
+
+void CabinetWidget::vol_released()
+{
+    config->setSysVolem(volume->value());
+    volumTest();
+    qDebug()<<"vol_released";
+    volPressed = false;
+}
+
+void CabinetWidget::vol_pressed()
+{
+    volPressed = true;
 }

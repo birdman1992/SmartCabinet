@@ -1,9 +1,11 @@
 #include "cabinetconfig.h"
 #include <QVariant>
 #include <QDebug>
+#include <qstring.h>
 #include <QTextCodec>
 #include <qobject.h>
 #include <QApplication>
+#include <QtCore/qmath.h>
 #include "Json/cJSON.h"
 #include "defines.h"
 #include "funcs/chineseletterhelper.h"
@@ -104,7 +106,44 @@ void CabinetConfig::setServerAddress(QString addr)
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("SERVER", addr);
     settings.sync();
-//    restart();
+    //    restart();
+}
+
+int CabinetConfig::getSysVolem()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    return settings.value("vol", QVariant(90)).toInt();
+}
+
+void CabinetConfig::setSysVolem(int vol)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("vol", vol);
+    settings.sync();
+    QString cmd;
+    QStringList params;
+    vol++;
+#ifdef SIMULATE_ON
+    cmd = "amixer";
+    params<<"cset"<<"name=\'Master Playback Volume\'"<<QString::number(volTodB(vol));
+#else
+    cmd = "amixer";
+    params<<"cset"<<"name=\'Headphone Volume\'"<<QString::number(volTodB(vol));
+#endif
+
+    QProcess pro;
+    qDebug()<<cmd<<params;
+    pro.start(cmd, params);
+    pro.waitForFinished(100);
+}
+
+int CabinetConfig::volTodB(int vol)
+{
+#ifdef SIMULATE_ON
+    return qLn((double)vol/100)/qLn(10)*10+63;
+#else
+    return qLn((double)vol/100)/qLn(10)*10+127;
+#endif
 }
 
 void CabinetConfig::clearConfig()
