@@ -595,6 +595,8 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
     win_store_list->installGlobalConfig(config);
     win_refund->installGlobalConfig(config);
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
+//    ui->devReader->setVisible(true);
+//    ui->devScan->setVisible(true);
     ui->devReader->setVisible(config->getCardReaderState());
     ui->devScan->setVisible(config->getCodeScanState());
     return true;

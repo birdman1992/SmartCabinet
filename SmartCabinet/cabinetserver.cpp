@@ -183,12 +183,20 @@ void CabinetServer::accessLoop()
 
 QString CabinetServer::getAbbName(QString fullName)
 {
-    if(fullName.indexOf("一次性使用") == 0)
+    if(fullName.indexOf("一次性") == 0)
     {
-        return fullName.remove(0,5);
+        fullName = fullName.remove(0,3);
+    }
+    if(fullName.indexOf("使用") == 0)
+    {
+        fullName = fullName.remove(0,2);
+    }
+    if(fullName.indexOf("医用") == 0)
+    {
+        fullName = fullName.remove(0,2);
     }
 
-    return QString();
+    return fullName;
 }
 
 void CabinetServer::watchdogStart()
@@ -669,9 +677,9 @@ void CabinetServer::recvListCheck()
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
 
-            if(info->name.indexOf("一次性使用") == 0)
+            if(info->abbName == info->name)
             {
-                info->abbName = getAbbName(info->abbName);
+                info->abbName = getAbbName(info->name);
             }
 
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
