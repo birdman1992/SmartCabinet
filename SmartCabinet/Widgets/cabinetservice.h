@@ -69,6 +69,7 @@ private:
     CabinetCtrlConfig* win_ctrl_config;
     QHBoxLayout* cfg_layout;
     int curId;
+    bool lockConfigIsOk;
 
     void updateNetInfo();
     void initStack();

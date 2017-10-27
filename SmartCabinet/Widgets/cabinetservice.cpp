@@ -23,6 +23,7 @@ CabinetService::CabinetService(QWidget *parent) :
     ui->ctrlCfg->setLayout(cfg_layout);
 
     dev_network = NULL;
+    lockConfigIsOk = false;
     win_ctrl_config = new CabinetCtrlConfig();
     connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
     connect(win_ctrl_config, SIGNAL(updateBtn()), this,SLOT(updateBtn()));
@@ -58,7 +59,6 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     win_ctrl_config->installGlobalConfig(config);
-    creatCtrlConfig();
     return true;
 }
 
@@ -71,6 +71,7 @@ void CabinetService::on_back_clicked()
 void CabinetService::showEvent(QShowEvent *)
 {
     initNetwork();
+    creatCtrlConfig();
     ui->server_addr->setText(config->getServerAddress());
 }
 
@@ -145,10 +146,16 @@ void CabinetService::initGroup()
 
 void CabinetService::creatCtrlConfig()
 {
+    if(lockConfigIsOk)
+        return;
+
+    lockConfigIsOk = true;
+
     int i = 0;
     int j = 0;
 
     i = config->list_cabinet.count() - 1;
+    qDebug()<<"[creatCtrlConfig]:"<<i;
 
     for(; i>=0; i--)
     {
