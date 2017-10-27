@@ -31,7 +31,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_store_list = new CabinetStoreList();
     win_refund = new CabinetRefund();
     win_net_set = new NetworkSet();
-
+    initVolum();
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
@@ -56,10 +56,10 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->search->hide();
     ui->menuWidget->setCurrentIndex(0);
 
-#ifndef SIMULATE_ON
+//#ifndef SIMULATE_ON
     ui->msk1->hide();
     ui->msk2->hide();
-#endif
+//#endif
 }
 
 CabinetWidget::~CabinetWidget()
@@ -156,6 +156,23 @@ void CabinetWidget::initSearchBtns()
     connect(&groupBtn, SIGNAL(buttonClicked(int)), this, SLOT(pinyinSearch(int)));
 }
 
+void CabinetWidget::initVolum()
+{
+    volume = new QSlider();
+    QFile sliderStyle(":/stylesheet/styleSheet/SliderBar.qss");
+    sliderStyle.open(QIODevice::ReadOnly);
+    QString style = sliderStyle.readAll();
+    volume->setStyleSheet(style);
+    volume->setWindowFlags(Qt::FramelessWindowHint);
+    volume->resize(48, 240);
+    volume->setMaximum(100);
+    volume->setValue(config->getSysVolem());
+
+    connect(volume, SIGNAL(sliderPressed()), this, SLOT(vol_pressed()));
+    connect(volume, SIGNAL(sliderReleased()), this, SLOT(vol_released()));
+    connect(volume, SIGNAL(valueChanged(int)), this, SLOT(vol_changed(int)));
+}
+
 bool CabinetWidget::needWaitForServer()
 {
     if(waitForServer)
@@ -176,20 +193,27 @@ void CabinetWidget::showCurrentTime(QString curTime)
 void CabinetWidget::rebindRecover()
 {
     qDebug("rebindRecover");
-    qDebug()<<rebind_new_addr.goodsIndex;
-    if((rebindGoods == NULL) || (rebind_new_addr.cabinetSeqNum == -1) || (rebind_old_addr.cabinetSeqNum == -1))
-        return;
-qDebug("rebindRecover2");
-    config->list_cabinet[rebind_new_addr.cabinetSeqNum]->list_case[rebind_new_addr.caseIndex]->list_goods.removeAt(rebind_new_addr.goodsIndex);
-    config->removeConfig(rebind_new_addr);
-    config->list_cabinet[rebind_old_addr.cabinetSeqNum]->setCaseName(*rebindGoods, rebind_old_addr.caseIndex);
+//    qDebug()<<rebind_new_addr.goodsIndex;
+//    if((rebindGoods == NULL) || (rebind_new_addr.cabinetSeqNum == -1) || (rebind_old_addr.cabinetSeqNum == -1))
+//        return;
+//    qDebug("rebindRecover2");
+//    config->list_cabinet[rebind_new_addr.cabinetSeqNum]->list_case[rebind_new_addr.caseIndex]->list_goods.removeAt(rebind_new_addr.goodsIndex);
+//    config->removeConfig(rebind_new_addr);
+//    config->list_cabinet[rebind_old_addr.cabinetSeqNum]->setCaseName(*rebindGoods, rebind_old_addr.caseIndex);
 
-    rebindOver();
+//    rebindOver();
+    rebindGoods = NULL;
+    rebind_new_addr.clear();
+    rebind_old_addr.clear();
+    config->list_cabinet[0]->showMsg(MSG_REBIND_SCAN,0);
 }
 
 void CabinetWidget::rebindOver()
 {
     qDebug("rebindOver");
+    config->removeConfig(rebind_old_addr);
+    config->setConfig(rebind_new_addr, rebindGoods);
+
     rebindGoods = NULL;
     rebind_new_addr.clear();
     rebind_old_addr.clear();
@@ -207,6 +231,11 @@ void CabinetWidget::clearMenuState()
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->service->setChecked(false);
+}
+
+void CabinetWidget::volumTest()
+{
+    config->cabVoice.voicePlay("vol.wav");
 }
 
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
@@ -382,7 +411,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         rebind_new_addr.caseIndex = selectCase;
         rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
 
-        config->removeConfig(rebind_old_addr);
+//        config->removeConfig(rebind_old_addr);
         emit requireCaseBind(selectCab, selectCase, rebindGoods->packageId);
 //        cabInfoBind(selectCab, selectCase, *rebindGoods);
     }
@@ -440,7 +469,6 @@ void CabinetWidget::recvScanData(QByteArray qba)
             qDebug()<<"[CabinetWidget]"<<"[open]"<<pos.cabinetSeqNum<<pos.caseIndex;
             if(newStore)
                 emit requireOpenCase(pos.cabinetSeqNum, pos.caseIndex);
-
 
             if(curGoods->curNum < curGoods->totalNum && (!needWaitForServer()))
             {
@@ -567,6 +595,8 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
     win_store_list->installGlobalConfig(config);
     win_refund->installGlobalConfig(config);
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));
+//    ui->devReader->setVisible(true);
+//    ui->devScan->setVisible(true);
     ui->devReader->setVisible(config->getCardReaderState());
     ui->devScan->setVisible(config->getCodeScanState());
     return true;
@@ -633,6 +663,7 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
     if(checked)
     {
         qDebug()<<"[REFUND]";
+        clickLock = false;
         config->state = STATE_REFUN;
         config->list_cabinet[0]->showMsg(MSG_REFUND,false);
         clearMenuState();
@@ -670,6 +701,7 @@ void CabinetWidget::on_store_clicked(bool checked)
 
 void CabinetWidget::on_cut_clicked()
 {
+    clearMenuState();
     config->state = STATE_FETCH;
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     waitForCodeScan = true;
@@ -695,29 +727,6 @@ void CabinetWidget::on_check_clicked(bool checked)
         config->clearSearch();//重置单元格状态
         cabLock();
     }
-}
-
-void CabinetWidget::pinyinSearch(int id)
-{
-//    int i = 0;
-    qDebug()<<groupBtn.button(id)->text()<<groupBtn.button(id)->isChecked();
-
-//    if(!groupBtn.button(id)->isChecked())
-//    {
-//        groupBtn.button(id)->setChecked(false);
-//        config->clearSearch();
-//        return;
-//    }
-//    else
-        config->searchByPinyin(groupBtn.button(id)->text().at(0));
-
-//    for(i=0; i<25; i++)
-//    {
-//        if(i != id)
-//            groupBtn.button(i)->setChecked(false);
-//    }
-
-
 }
 
 void CabinetWidget::updateNetState(bool connected)
@@ -858,11 +867,17 @@ void CabinetWidget::setPowerState(int power)
             //        ui->service->show();
             break;
 
-        case 3://医院员工:|退货|服务|退出|
+        case 3://医院员工:|退货|退出|
             ui->refund->show();
             ui->cut->show();
             //        ui->service->show();
             break;
+
+        case 4://医院员工:|退出|
+            ui->cut->show();
+            //        ui->service->show();
+            break;
+
         default:
             break;
         }
@@ -962,6 +977,7 @@ void CabinetWidget::recvBindRst(bool rst)
             cabInfoBind(bindCab, bindCase, bindInfo);
 
             win_store_list->show();
+            setMenuHide(false);
             win_store_list->bindRst(addr);
             win_store_list->bindMsg("绑定成功");
     //        win_access->clickOpen(curGoods->packageBarcode);
@@ -971,6 +987,7 @@ void CabinetWidget::recvBindRst(bool rst)
         {
             clickLock = false;
             win_store_list->show();
+            setMenuHide(false);
             win_store_list->bindMsg("绑定失败");
     //        win_access->save();
     //        win_access->hide();
@@ -1069,10 +1086,33 @@ void CabinetWidget::sysLock()
     cabLock();
 }
 
+void CabinetWidget::setMenuHide(bool ishide)
+{
+    if(ishide)
+    {
+        ui->store->hide();
+        ui->service->hide();
+        ui->cut->hide();
+        ui->refund->hide();
+        ui->check->hide();
+        ui->search->hide();
+    }
+    else
+    {
+        ui->store->show();
+        ui->service->show();
+        ui->cut->show();
+        ui->refund->show();
+        ui->check->show();
+        ui->search->show();
+    }
+}
+
 void CabinetWidget::cabinetBind(Goods *goods)
 {
     curGoods = goods;
     clickLock = false;
+    setMenuHide(true);
     win_store_list->hide();
     config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);
 }
@@ -1106,6 +1146,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
 
 void CabinetWidget::on_search_clicked()
 {
+    clearMenuState();
     config->wakeUp(TIMEOUT_BASE);
     config->state = STATE_FETCH;
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
@@ -1116,4 +1157,63 @@ void CabinetWidget::on_search_back_clicked()
 {
     config->wakeUp(TIMEOUT_BASE);
     ui->menuWidget->setCurrentIndex(0);
+}
+
+void CabinetWidget::on_searchClear_clicked()
+{
+    ui->searchStr->clear();
+    config->clearSearch();
+}
+
+void CabinetWidget::pinyinSearch(int id)
+{
+    QString str = ui->searchStr->text()+groupBtn.button(id)->text();
+    ui->searchStr->setText(str);
+    config->searchByPinyin(str);
+}
+
+void CabinetWidget::on_netState_clicked()
+{
+
+}
+
+void CabinetWidget::on_volCtrl_clicked()
+{
+    if(volume->isHidden())
+    {
+        QPoint showPos = ui->volCtrl->geometry().topLeft();
+        showPos = ui->volCtrl->mapToGlobal(QPoint(0,0));
+        showPos.setY(showPos.y()+ui->volCtrl->height()+10);
+        volume->move(showPos);
+        volume->show();
+    }
+    else
+    {
+        volume->hide();
+        volume->show();
+    }
+
+}
+
+void CabinetWidget::vol_changed(int vol)
+{
+    if(!volPressed)
+    {
+        config->setSysVolem(vol);
+        volumTest();
+        qDebug()<<"vol_changed";
+    }
+}
+
+void CabinetWidget::vol_released()
+{
+    config->setSysVolem(volume->value());
+    volumTest();
+    qDebug()<<"vol_released";
+    volPressed = false;
+}
+
+void CabinetWidget::vol_pressed()
+{
+    volPressed = true;
 }

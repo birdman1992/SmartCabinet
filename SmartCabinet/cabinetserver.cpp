@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QtGlobal>
 #include <fcntl.h>
+#include <unistd.h>
 #include "defines.h"
 #include "Device/controldevice.h"
 
@@ -182,12 +183,20 @@ void CabinetServer::accessLoop()
 
 QString CabinetServer::getAbbName(QString fullName)
 {
-    if(fullName.indexOf("一次性使用") == 0)
+    if(fullName.indexOf("一次性") == 0)
     {
-        return fullName.remove(0,5);
+        fullName = fullName.remove(0,3);
+    }
+    if(fullName.indexOf("使用") == 0)
+    {
+        fullName = fullName.remove(0,2);
+    }
+    if(fullName.indexOf("医用") == 0)
+    {
+        fullName = fullName.remove(0,2);
     }
 
-    return QString();
+    return fullName;
 }
 
 void CabinetServer::watchdogStart()
@@ -624,7 +633,7 @@ void CabinetServer::recvListCheck()
     reply_list_check = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<cJSON_Print(json);
+    qDebug()<<"recvListCheck";//cJSON_Print(json);
 
     if(!json)
         return;
@@ -668,9 +677,9 @@ void CabinetServer::recvListCheck()
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
 
-            if(info->name.indexOf("一次性使用") == 0)
+            if(info->abbName == info->name)
             {
-                info->abbName = getAbbName(info->abbName);
+                info->abbName = getAbbName(info->name);
             }
 
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
@@ -969,11 +978,16 @@ void CabinetServer::netTimeout()
     }
 }
 
-void CabinetServer::watchdogTimeout()
+int CabinetServer::watchdogTimeout()
 {
+    int ret = 0;
 //    qDebug()<<"[watchdog]"<<"write";
     if (fWatchdog != -1)
-           write(fWatchdog, "a", 1);
+    {
+        ret = write(fWatchdog, "a", 1);
+
+    }
+    return ret;
 }
 
 void CabinetServer::sysTimeout()

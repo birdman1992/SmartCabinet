@@ -1,0 +1,27 @@
+QSlider{
+        background-color: #1270a1;
+}
+QSlider::add-page:vertical {
+    background: #62c0f1;
+}
+
+QSlider::sub-page:vertical {
+    background: #dddddd;
+}
+
+QSlider::groove:vertical {
+    border: 0px solid;
+    width: 8px;
+    background-color: #62c0f1;
+        position: absolute;
+        top:2px;
+        bottom:2px;
+}
+
+QSlider::handle:vertical {
+    border-left: 1px solid  #d1e4eb;
+        border-radius:3px;
+    height: 20px;
+    margin: 0px -20px 0px -16px;
+        background-color: qconicalgradient(cx:1, cy:0.5, angle:0, stop:0 rgba(255, 255, 255, 0), stop:0.324 rgba(255, 255, 255, 0), stop:0.324001  #d1e4eb, stop:0.675  #d1e4eb, stop:0.675001 rgba(255, 255, 255, 0), stop:1 rgba(255, 255, 255, 0));
+}

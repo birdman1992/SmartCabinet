@@ -99,11 +99,22 @@ void CabinetService::initStack()
 {
 //    QListWidgetItem* item = new QListWidgetItem("网络配置");
 //    item->setSizeHint();
+    QListWidgetItem *add_item;
+    add_item = new QListWidgetItem("网络配置");
+    add_item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    ui->listWidget->addItem(add_item);
 
-    ui->listWidget->addItem(new QListWidgetItem("网络配置"));
-    ui->listWidget->addItem(new QListWidgetItem("锁控测试"));
-    ui->listWidget->addItem(new QListWidgetItem("设置"));
-    ui->listWidget->addItem(new QListWidgetItem("锁控配置"));
+    add_item = new QListWidgetItem("锁控测试");
+    add_item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    ui->listWidget->addItem(add_item);
+
+    add_item = new QListWidgetItem("设置");
+    add_item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    ui->listWidget->addItem(add_item);
+
+    add_item = new QListWidgetItem("锁控配置");
+    add_item->setTextAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    ui->listWidget->addItem(add_item);
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->listWidget->setCurrentRow(0);

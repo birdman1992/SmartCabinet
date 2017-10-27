@@ -152,7 +152,7 @@ void CasePanel::updatePanel()
 QString CasePanel::getShowStr(GoodsInfo *info)
 {
     QString str = info->name;
-    QString strTail = QString("(%1)×%2").arg(info->goodsType).arg(info->num);
+    QString strTail = QString("×%1").arg(info->num);
 
     if(!info->abbName.isEmpty())
         str = info->abbName;

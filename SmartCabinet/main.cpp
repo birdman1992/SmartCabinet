@@ -4,6 +4,7 @@
 #include <QFont>
 #include <QWSServer>
 #include <globalapp.h>
+#include <QDebug>
 #include "inputcontex/myinputpanelcontext.h"
 #include "beautifului.h"
 
@@ -45,6 +46,15 @@ int main(int argc, char *argv[])
 #endif
     MyInputPanelContext* inputContext = new MyInputPanelContext;
     QFile outFile("/home/debuglog.txt");
+    QFile lastFile("/home/lastlog.txt");
+
+    if(lastFile.exists())
+        lastFile.remove();
+
+    if(outFile.exists())
+    {
+        QFile::rename("/home/debuglog.txt", "/home/lastlog.txt");
+    }
     outFile.open(QIODevice::WriteOnly);
     outFile.close();
 

@@ -37,6 +37,9 @@ public:
     QString getCabinetId();
     QString getServerAddress();
     void setServerAddress(QString addr);
+    int getSysVolem();
+    void setSysVolem(int vol);
+    int volTodB(int vol);//音量转分贝
     void clearConfig();
     void clearCabinet();
     void wakeUp(int minutes);//唤醒
@@ -60,11 +63,12 @@ public:
     int getLockId(int seq, int index);
     int getCaseWidth();
     void removeConfig(CaseAddress addr);
+    void setConfig(CaseAddress addr, GoodsInfo* info);
     QByteArray creatCabinetJson();
     QByteArray getCabinetPos();
     QByteArray getCabinetSize();
 
-    void searchByPinyin(QChar ch);
+    void searchByPinyin(QString ch);
     void clearSearch();
     QChar str2py(QChar ch);
 

@@ -115,7 +115,7 @@ private slots:
     void recvListState();
     void recvInfoUploadResult();
     void netTimeout();
-    void watchdogTimeout();
+    int watchdogTimeout();
 };
 
 #endif // CABINETSERVER_H
