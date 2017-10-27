@@ -374,7 +374,7 @@ void Cabinet::setCaseState(int index, int numState)
     {
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setCheckState(false);
-        lab->setStyleSheet(cellStyle(QColor(6, 161, 101)));
+        lab->setStyleSheet(cellStyle(QColor(238, 128, 61)));
     }
     else if(numState == 2)//盘点完毕状态
     {

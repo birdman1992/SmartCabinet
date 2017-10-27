@@ -9,9 +9,9 @@
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
-//#define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
+#define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
 #define DEV_RFID_CTRL "/dev/ttymxc4"    //rfid网关串口
-#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
+//#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
 
@@ -39,8 +39,8 @@ void ControlDevice::deviceInit()
     //控制串口初始化
     comLockCtrlInit(38400, 8, 0, 1);
     connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
-    int ret = com_lock_ctrl->write(QByteArray("test"));
-    qDebug()<<"[write to lock]"<<DEV_LOCK_CTRL<<ret<<QByteArray("test");
+//    int ret = com_lock_ctrl->write(QByteArray("test"));
+//    qDebug()<<"[write to lock]"<<DEV_LOCK_CTRL<<ret<<QByteArray("test");
     //rfid网关串口初始化
     comRfidInit(38400, 8, 0, 1);
     connect(com_rfid_gateway, SIGNAL(readyRead()), this, SLOT(readRfidGatewayData()));

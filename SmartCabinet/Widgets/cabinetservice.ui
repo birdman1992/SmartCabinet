@@ -897,10 +897,11 @@ font:20px&quot;微软雅黑&quot;;
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">font: 75 25px &quot;微软雅黑&quot;;</string>
+        <string notr="true">font: 75 25px &quot;微软雅黑&quot;;
+</string>
        </property>
        <property name="text">
-        <string>当前版本 1.0.1.20171026</string>
+        <string>当前版本 1.0.1.20171027</string>
        </property>
       </widget>
      </widget>
