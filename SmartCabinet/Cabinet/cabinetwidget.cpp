@@ -2,6 +2,7 @@
 #include "ui_cabinetwidget.h"
 #include <QDebug>
 #include <QDateTime>
+#include <QWidget>
 #include "defines.h"
 #include "Device/controldevice.h"
 
@@ -159,6 +160,7 @@ void CabinetWidget::initSearchBtns()
 void CabinetWidget::initVolum()
 {
     volume = new QSlider();
+    volume->installEventFilter(this);
     QFile sliderStyle(":/stylesheet/styleSheet/SliderBar.qss");
     sliderStyle.open(QIODevice::ReadOnly);
     QString style = sliderStyle.readAll();
@@ -1186,11 +1188,12 @@ void CabinetWidget::on_volCtrl_clicked()
         showPos.setY(showPos.y()+ui->volCtrl->height()+10);
         volume->move(showPos);
         volume->show();
+        volume->setFocus();
     }
     else
     {
         volume->hide();
-        volume->show();
+//        volume->show();
     }
 
 }
@@ -1216,4 +1219,17 @@ void CabinetWidget::vol_released()
 void CabinetWidget::vol_pressed()
 {
     volPressed = true;
+}
+
+bool CabinetWidget::eventFilter(QObject *w, QEvent *e)
+{
+    if(w == volume)
+    {
+        if(e->type() == QEvent::FocusOut)
+        {
+            volume->hide();
+            return true;
+        }
+    }
+    return QWidget::eventFilter(w, e);
 }

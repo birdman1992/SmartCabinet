@@ -26,6 +26,8 @@ public:
 public slots:
     void getCardId(QByteArray id);
     void getCodeScanData(QByteArray code);
+    void cloneResult(bool isSuccess, QString msg=QString());
+    void regResult(bool isSuccess);
 
 private slots:
     void on_add_left_clicked();
@@ -44,6 +46,14 @@ private slots:
 
     void on_devState_toggled(bool checked);
 
+    void on_cloneStart_clicked();
+
+    void on_regId_clicked();
+
+    void on_savePos_clicked();
+
+    void on_finish_clicked();
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
@@ -54,9 +64,12 @@ signals:
     void updateServerAddr(QString addr);
     void lockTest();
     void requireOpenCase(int,int);
+    void cabinetClone(QString id);
+    void requireCabRigster();
 
 private:
     Ui::CabinetSet *ui;
+    int initStep;
     QNetInterface* dev_network;
     CabinetConfig* config;
     QByteArray cabinet_pos;

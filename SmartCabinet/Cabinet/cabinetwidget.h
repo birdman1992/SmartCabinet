@@ -98,7 +98,7 @@ private slots:
     void vol_pressed();
 
 protected:
-
+    bool eventFilter(QObject *, QEvent *);
 
 private:
     Ui::CabinetWidget *ui;

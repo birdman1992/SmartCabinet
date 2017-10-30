@@ -892,7 +892,7 @@ font:20px&quot;微软雅黑&quot;;
         <rect>
          <x>30</x>
          <y>30</y>
-         <width>381</width>
+         <width>391</width>
          <height>61</height>
         </rect>
        </property>
@@ -901,7 +901,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>当前版本 1.0.1.20171027_beta</string>
+        <string>当前版本 1.1.1.20171030_alpha</string>
        </property>
       </widget>
      </widget>

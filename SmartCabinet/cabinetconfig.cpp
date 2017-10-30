@@ -100,6 +100,12 @@ QString CabinetConfig::getServerAddress()
     return serverAddr;
 }
 
+void CabinetConfig::insertGoods(GoodsInfo *info, int row, int col)
+{
+    qDebug()<<"[insertGoods]"<<row<<col;
+    list_cabinet[col]->setCaseName(*info, row);//  addCase(info,row,(list_cabinet.count() == 3));
+}
+
 void CabinetConfig::setServerAddress(QString addr)
 {
     serverAddr = addr;

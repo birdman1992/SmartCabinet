@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="focusPolicy">
-   <enum>Qt::ClickFocus</enum>
+   <enum>Qt::StrongFocus</enum>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -41,6 +41,9 @@ background-image: url(:/image/image/bg_main.png);
     <layout class="QHBoxLayout" name="ctrl_layout">
      <item>
       <widget class="QFrame" name="frame">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
@@ -93,6 +96,9 @@ background-image: url(:/image/image/bg_main.png);
             <width>500</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,4,6">
            <property name="leftMargin">
@@ -157,6 +163,9 @@ border:0px solid #1270a1;</string>
                  <width>212</width>
                  <height>48</height>
                 </size>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::StrongFocus</enum>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(18, 112, 161);</string>
@@ -1762,6 +1771,9 @@ background-color: rgb(36, 221, 149);
          <width>100</width>
          <height>0</height>
         </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgba(0, 0, 0, 50);</string>
