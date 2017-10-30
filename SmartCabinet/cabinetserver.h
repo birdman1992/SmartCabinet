@@ -40,6 +40,7 @@ private:
     QNetworkReply* reply_datetime;
     QNetworkReply* reply_list_state;
     QNetworkReply* reply_cabinet_info;
+    QNetworkReply* reply_cabinet_clone;
     QString regId;
     QString logId;
     QString barCode;
@@ -58,7 +59,7 @@ private:
     int fWatchdog;
     QList<QByteArray> list_access_cache;
 
-    void cabRegister();
+
     void checkTime();
     void checkSysTime(QDateTime _time);
     void requireListState();//查询是否有送货单在途中
@@ -77,6 +78,8 @@ signals:
     void accessFailed(QString msg);
     void timeUpdate();
     void idUpdate();
+    void regResult(bool);
+    void cloneResult(bool, QString);
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);
@@ -84,6 +87,7 @@ signals:
     void sysLock();//锁定系统
 
 public slots:
+    void cabRegister();
     void getServerAddr(QString addr);
     void userLogin(QString);
     void listCheck(QString);//送货单信息校验
@@ -114,6 +118,7 @@ private slots:
     void recvDateTimeError(QNetworkReply::NetworkError code);
     void recvListState();
     void recvInfoUploadResult();
+    void recvCabClone();
     void netTimeout();
     int watchdogTimeout();
 };
