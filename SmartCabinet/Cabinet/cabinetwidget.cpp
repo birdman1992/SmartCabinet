@@ -42,6 +42,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(win_cab_list_view, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
 
     connect(win_check, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), this, SLOT(checkOneCase(QList<CabinetCheckItem*>,CaseAddress)));
+    connect(win_check, SIGNAL(checkCase(QStringList,CaseAddress)), this, SLOT(checkOneCase(QStringList,CaseAddress)));
 
     connect(win_store_list, SIGNAL(requireBind(Goods*)), this, SLOT(cabinetBind(Goods*)));
     connect(win_store_list, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
@@ -733,7 +734,8 @@ void CabinetWidget::on_check_clicked(bool checked)
 
 void CabinetWidget::updateNetState(bool connected)
 {
-    ui->netState->setChecked(connected);
+    netCheckState = connected;
+    ui->netState->setChecked(netCheckState);
 }
 
 void CabinetWidget::wait_timeout()
@@ -1088,6 +1090,16 @@ void CabinetWidget::sysLock()
     cabLock();
 }
 
+void CabinetWidget::recvCabSyncResult(bool rst)
+{
+    if(rst)
+        ui->syncMsg->setText("智能柜数据同步成功");
+    else
+        ui->syncMsg->setText("智能柜数据同步失败");
+
+    QTimer::singleShot(3000, this, SLOT(syncMsgTimeout()));
+}
+
 void CabinetWidget::setMenuHide(bool ishide)
 {
     if(ishide)
@@ -1128,6 +1140,18 @@ void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)
         addr.goodsIndex = i;
         config->list_cabinet[addr.cabinetSeqNum]->updateGoodsNum(addr, l[i]->itemNum());
     }
+//    emit checkCase(l, addr);
+}
+
+void CabinetWidget::checkOneCase(QStringList l, CaseAddress addr)
+{
+//    int i=0;
+
+//    for(i=0; i<l.count(); i++)
+//    {
+//        addr.goodsIndex = i;
+//        config->list_cabinet[addr.cabinetSeqNum]->updateGoodsNum(addr, l[i]->itemNum());
+//    }
     emit checkCase(l, addr);
 }
 
@@ -1176,7 +1200,10 @@ void CabinetWidget::pinyinSearch(int id)
 
 void CabinetWidget::on_netState_clicked()
 {
-
+    ui->netState->setChecked(netCheckState);
+    ui->syncMsg->setText("智能柜数据同步中..");
+    emit requireCabSync();
+    QTimer::singleShot(3000, this, SLOT(syncMsgTimeout()));
 }
 
 void CabinetWidget::on_volCtrl_clicked()
@@ -1219,6 +1246,11 @@ void CabinetWidget::vol_released()
 void CabinetWidget::vol_pressed()
 {
     volPressed = true;
+}
+
+void CabinetWidget::syncMsgTimeout()
+{
+    ui->syncMsg->clear();
 }
 
 bool CabinetWidget::eventFilter(QObject *w, QEvent *e)

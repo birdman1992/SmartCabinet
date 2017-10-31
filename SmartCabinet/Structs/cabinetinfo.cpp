@@ -125,7 +125,35 @@ GoodsInfo::GoodsInfo(GoodsInfo &info)
     outNum = 0;
 }
 
+void GoodsInfo::resetInfo(GoodsInfo &info)
+{
+    name = info.name;
+    id = info.id;
+    num = info.num;
+    packageId = info.packageId;
+    unit = info.unit;
+    Py = info.Py;
+    goodsType = info.goodsType;
+    abbName = info.abbName;
+    outNum = info.outNum;
+}
+
 QString GoodsInfo::nameWithType()
 {
     return QString(name + QString("(%1)").arg(goodsType));
+}
+
+GoodsInfo& GoodsInfo::operator=(GoodsInfo &info)
+{
+    this->name = info.name;
+    this->id = info.id;
+    this->num = info.num;
+    this->packageId = info.packageId;
+    this->unit = info.unit;
+    this->Py = info.Py;
+    this->goodsType = info.goodsType;
+    this->abbName = info.abbName;
+    this->outNum = info.outNum;
+    qDebug()<<"[operator=]"<<this->packageId<<this->num;
+    return *this;
 }

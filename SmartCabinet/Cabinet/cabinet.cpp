@@ -100,6 +100,12 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
     }
 }
 
+void Cabinet::updateCase(int caseIndex)
+{
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
+    lab->setText(list_case.at(caseIndex)->list_goods);
+}
+
 void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
 {
     qDebug()<<"setCtrlWord"<<seqNum<<caseIndex<<seq.toHex()<<index.toHex();

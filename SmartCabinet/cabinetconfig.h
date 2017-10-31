@@ -37,6 +37,7 @@ public:
     QString getCabinetId();
     QString getServerAddress();
     void insertGoods(GoodsInfo* info, int row, int col);
+    void syncGoods(GoodsInfo* info, int row, int col);
     void setServerAddress(QString addr);
     int getSysVolem();
     void setSysVolem(int vol);

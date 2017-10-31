@@ -887,12 +887,12 @@ font:20px&quot;微软雅黑&quot;;
         <string>重新绑定物品柜格</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_5">
+      <widget class="QLabel" name="verInfo">
        <property name="geometry">
         <rect>
          <x>30</x>
          <y>30</y>
-         <width>391</width>
+         <width>401</width>
          <height>61</height>
         </rect>
        </property>
@@ -901,7 +901,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>当前版本 1.1.1.20171030_alpha</string>
+        <string>VERSION: 1.1.2.20171031_alpha</string>
        </property>
       </widget>
      </widget>

@@ -7,6 +7,7 @@
 #include <QListWidgetItem>
 #include <QElapsedTimer>
 #include <unistd.h>
+#include <stdio.h>
 #include <QDebug>
 #include <QLayout>
 #include <QPushButton>
@@ -30,6 +31,8 @@ CabinetService::CabinetService(QWidget *parent) :
 
     initStack();
     initGroup();
+    showVerInfo();
+
     ui->listWidget->setCurrentRow(0);
     ui->stackedWidget->setCurrentIndex(0);
 //    QTimer::singleShot(1000, this, SLOT(initNetwork()));
@@ -210,6 +213,14 @@ void CabinetService::creatCtrlConfig()
     }
 
     connect(&l_lock_conf, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_conf(int)));
+}
+
+void CabinetService::showVerInfo()
+{
+    QByteArray info = ui->verInfo->text().toUtf8();
+    printf("************************************\n\n\n");
+    printf("%s\n",info.data());
+    printf("\n\n************************************\n");
 }
 
 void CabinetService::initNetwork()
@@ -406,8 +417,8 @@ void CabinetService::on_rebind_clicked()
 void CabinetService::on_set_server_addr_clicked()
 {
     QString strAddr = ui->server_addr->text();
-    if(strAddr.indexOf("http:") != 0)
-        strAddr = QString("http://") +strAddr;
+//    if(strAddr.indexOf("http:") != 0)
+//        strAddr = QString("http://") +strAddr;
 
     config->setServerAddress(strAddr);
     qDebug()<<"setServerAddress"<<ui->server_addr->text();

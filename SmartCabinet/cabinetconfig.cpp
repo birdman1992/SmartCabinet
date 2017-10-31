@@ -106,11 +106,43 @@ void CabinetConfig::insertGoods(GoodsInfo *info, int row, int col)
     list_cabinet[col]->setCaseName(*info, row);//  addCase(info,row,(list_cabinet.count() == 3));
 }
 
+void CabinetConfig::syncGoods(GoodsInfo *info, int row, int col)
+{
+    if((col >= list_cabinet.count()))
+        return;
+    if(row >= list_cabinet[col]->list_case.count())
+        return;
+
+    QList<GoodsInfo*> targetList = list_cabinet[col]->list_case[row]->list_goods;
+    GoodsInfo* target;
+
+    int i = 0;
+    for(i=0; ; i++)
+    {
+        target = targetList[i];
+        if(target->packageId == info->packageId)
+            break;
+        if(i == targetList.count())//未找到匹配项
+        {
+            qDebug()<<"[syncGoods]"<<"new goods"<<info->packageId;
+            list_cabinet[col]->setCaseName(*info, row);//插入新物品项
+            return;
+        }
+    }
+
+    *target = *info;
+    list_cabinet[col]->updateCase(row);
+}
+
 void CabinetConfig::setServerAddress(QString addr)
 {
     serverAddr = addr;
+
+    if(serverAddr.indexOf("http:") != 0)
+        serverAddr = QString("http://") +serverAddr;
+
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    settings.setValue("SERVER", addr);
+    settings.setValue("SERVER", serverAddr);
     settings.sync();
     //    restart();
 }

@@ -9,7 +9,10 @@ class GoodsInfo
 public:
     GoodsInfo();
     GoodsInfo(GoodsInfo &info);
+    void resetInfo(GoodsInfo &info);
     QString nameWithType();
+    GoodsInfo &operator=(GoodsInfo &info);
+
     QString abbName;//简称
     QString name;//耗材名
     QString id;//耗材id

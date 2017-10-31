@@ -75,6 +75,7 @@ private:
     void initStack();
     void initGroup();
     void creatCtrlConfig();
+    void showVerInfo();
 
     void showEvent(QShowEvent*);
     bool eventFilter(QObject *w, QEvent *e);

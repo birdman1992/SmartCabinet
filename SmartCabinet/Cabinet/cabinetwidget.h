@@ -55,6 +55,7 @@ public slots:
     void newGoodsList(QString listCode, QString rfidCode);
     void readyGoodsList(QString listCode);
     void sysLock();
+    void recvCabSyncResult(bool);
 
 signals:
     void winSwitch(int);
@@ -69,14 +70,17 @@ signals:
     void requireFetchList();
     void requireAccessList(QStringList list, int optType);
     void checkCase(QList<CabinetCheckItem*> l, CaseAddress addr);
+    void checkCase(QStringList, CaseAddress);
     void storeList(QList<CabinetStoreListItem*>);
     void requireTimeout();
+    void requireCabSync();
 
 private slots:
     void setMenuHide(bool ishide);
     void cabinetBind(Goods* goods);
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
-//    void on_fetch_clicked();
+    void checkOneCase(QStringList l, CaseAddress addr);
+    //    void on_fetch_clicked();
     void wait_timeout();
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
@@ -96,6 +100,7 @@ private slots:
     void vol_changed(int);
     void vol_released();
     void vol_pressed();
+    void syncMsgTimeout();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -109,6 +114,7 @@ private:
     bool waitForCardReader;
     bool waitForGoodsListCode;
     bool loginState;
+    bool netCheckState;
     bool clickLock;//点击锁,如果为true，点击无效
     int selectCab;//选中的柜子顺序编号
     int selectCase;//选中的柜格编号

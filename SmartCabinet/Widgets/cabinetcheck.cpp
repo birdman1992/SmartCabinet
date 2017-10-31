@@ -137,5 +137,6 @@ void CabinetCheck::on_pushButton_clicked()
 void CabinetCheck::on_ok_clicked()
 {
     ui->msg->setText("正在提交");
+    emit checkCase(list_code, curAddr);
     emit checkCase(list_item, curAddr);
 }

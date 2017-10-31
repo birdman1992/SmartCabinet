@@ -80,6 +80,7 @@ signals:
     void idUpdate();
     void regResult(bool);
     void cloneResult(bool, QString);
+    void cabSyncResult(bool);
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);
@@ -94,12 +95,13 @@ public slots:
     void cabInfoUpload();//柜子信息上传
     void cabInfoReq();//柜子信息查询
     void cabCloneReq(QString oldCabinetId);//柜子克隆请求
-    void cabCloneSync();//柜子克隆数据同步
+    void cabInfoSync();//柜子数据同步
     void cabinetBind(int, int, QString);
     void goodsAccess(CaseAddress, QString, int, int optType);
     void listAccess(QStringList list, int optType);
     void goodsBack(QString);//退货
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
+    void goodsCheck(QStringList l, CaseAddress);
     void goodsListStore(QList<CabinetStoreListItem*> l);
     void goodsCarScan();
     void sysTimeout();
@@ -119,6 +121,7 @@ private slots:
     void recvListState();
     void recvInfoUploadResult();
     void recvCabClone();
+    void recvCabSync();
     void netTimeout();
     int watchdogTimeout();
 };
