@@ -1140,7 +1140,7 @@ void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)
         addr.goodsIndex = i;
         config->list_cabinet[addr.cabinetSeqNum]->updateGoodsNum(addr, l[i]->itemNum());
     }
-//    emit checkCase(l, addr);
+    emit checkCase(l, addr);
 }
 
 void CabinetWidget::checkOneCase(QStringList l, CaseAddress addr)

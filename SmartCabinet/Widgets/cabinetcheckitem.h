@@ -19,6 +19,7 @@ public:
     int itemNum();
     QString itemId();
     bool itemAdd();
+    QStringList list_fullId;
 
 private slots:
 //    void on_minus_10_clicked();

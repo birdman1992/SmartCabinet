@@ -408,27 +408,36 @@ void CabinetServer::listAccess(QStringList list, int optType)
 void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
 {
     cJSON* json = cJSON_CreateObject();
-    cJSON* jlist = cJSON_CreateArray();
+    cJSON* packageList = cJSON_CreateArray();
 
     CabinetCheckItem* item;
     int i = 0;
+
+    QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
+    QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex)).toLocal8Bit();
+    cJSON_AddItemToObject(json, "departCode", cJSON_CreateString(chesetCode.data()));
+    cJSON_AddItemToObject(json, "cabinetId", cJSON_CreateString(goodsCode.data()));
 
     for(i=0; i<l.count(); i++)
     {
         item = l.at(i);
         QByteArray packageBarcode = item->itemId().toLocal8Bit();
-        QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
-        QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex)).toLocal8Bit();
-        int optCount = item->itemNum();
-        cJSON* obj = cJSON_CreateObject();
-        cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
-        cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));
-        cJSON_AddItemToObject(obj, "optCount", cJSON_CreateNumber(optCount));
-        cJSON_AddItemToObject(obj, "goodsCode", cJSON_CreateString(goodsCode.data()));
 
-        cJSON_AddItemToArray(jlist, obj);
+        cJSON* codeList = cJSON_CreateArray();
+        cJSON* package = cJSON_CreateObject();
+        cJSON_AddItemToObject(package, "packageType", cJSON_CreateString(packageBarcode.data()));
+
+        int j = 0;
+        for(j=0; j<item->list_fullId.count(); j++)
+        {
+            QByteArray qba = item->list_fullId.at(j).toLocal8Bit();
+            cJSON_AddItemToArray(codeList, cJSON_CreateString(qba.data()));
+        }
+
+        cJSON_AddItemToObject(package, "packageCode", codeList);
+        cJSON_AddItemToArray(packageList, package);
     }
-    cJSON_AddItemToObject(json, "li",jlist);
+    cJSON_AddItemToObject(json, "packageList",packageList);
     char* buff = cJSON_Print(json);
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
