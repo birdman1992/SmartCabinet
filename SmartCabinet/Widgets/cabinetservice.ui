@@ -901,7 +901,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.1.3.20171103_alpha</string>
+        <string>VERSION: 1.1.3.20171104_beta</string>
        </property>
       </widget>
      </widget>

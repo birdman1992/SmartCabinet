@@ -43,6 +43,9 @@
 
 #include "myinputpanelcontext.h"
 
+#define SCREEN_W 1600
+#define SCREEN_H 900
+
 //! [0]
 
 MyInputPanelContext::MyInputPanelContext()
@@ -150,6 +153,11 @@ void MyInputPanelContext::updatePosition()
     QRect widgetRect = widget->rect();
     QPoint panelPos = QPoint(widgetRect.left(), widgetRect.bottom() + 2);
     panelPos = widget->mapToGlobal(panelPos);
+
+    int pos_y = panelPos.y();
+    if((pos_y+370) > SCREEN_H)
+        panelPos.setY(pos_y - 370 -4 -widgetRect.height());
+
     inputPanel->move(panelPos);
 }
 
