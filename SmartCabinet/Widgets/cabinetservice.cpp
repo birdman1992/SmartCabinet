@@ -7,6 +7,7 @@
 #include <QListWidgetItem>
 #include <QElapsedTimer>
 #include <unistd.h>
+#include <stdio.h>
 #include <QDebug>
 #include <QLayout>
 #include <QPushButton>
@@ -23,12 +24,15 @@ CabinetService::CabinetService(QWidget *parent) :
     ui->ctrlCfg->setLayout(cfg_layout);
 
     dev_network = NULL;
+    lockConfigIsOk = false;
     win_ctrl_config = new CabinetCtrlConfig();
     connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
     connect(win_ctrl_config, SIGNAL(updateBtn()), this,SLOT(updateBtn()));
 
     initStack();
     initGroup();
+    showVerInfo();
+
     ui->listWidget->setCurrentRow(0);
     ui->stackedWidget->setCurrentIndex(0);
 //    QTimer::singleShot(1000, this, SLOT(initNetwork()));
@@ -58,7 +62,6 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     win_ctrl_config->installGlobalConfig(config);
-    creatCtrlConfig();
     return true;
 }
 
@@ -71,6 +74,7 @@ void CabinetService::on_back_clicked()
 void CabinetService::showEvent(QShowEvent *)
 {
     initNetwork();
+    creatCtrlConfig();
     ui->server_addr->setText(config->getServerAddress());
 }
 
@@ -156,10 +160,16 @@ void CabinetService::initGroup()
 
 void CabinetService::creatCtrlConfig()
 {
+    if(lockConfigIsOk)
+        return;
+
+    lockConfigIsOk = true;
+
     int i = 0;
     int j = 0;
 
     i = config->list_cabinet.count() - 1;
+    qDebug()<<"[creatCtrlConfig]:"<<i;
 
     for(; i>=0; i--)
     {
@@ -203,6 +213,14 @@ void CabinetService::creatCtrlConfig()
     }
 
     connect(&l_lock_conf, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_conf(int)));
+}
+
+void CabinetService::showVerInfo()
+{
+    QByteArray info = ui->verInfo->text().toUtf8();
+    printf("************************************\n\n\n");
+    printf("%s\n",info.data());
+    printf("\n\n************************************\n");
 }
 
 void CabinetService::initNetwork()
@@ -399,8 +417,8 @@ void CabinetService::on_rebind_clicked()
 void CabinetService::on_set_server_addr_clicked()
 {
     QString strAddr = ui->server_addr->text();
-    if(strAddr.indexOf("http:") != 0)
-        strAddr = QString("http://") +strAddr;
+//    if(strAddr.indexOf("http:") != 0)
+//        strAddr = QString("http://") +strAddr;
 
     config->setServerAddress(strAddr);
     qDebug()<<"setServerAddress"<<ui->server_addr->text();

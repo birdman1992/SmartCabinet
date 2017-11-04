@@ -1,9 +1,11 @@
 #include "cabinetconfig.h"
 #include <QVariant>
 #include <QDebug>
+#include <qstring.h>
 #include <QTextCodec>
 #include <qobject.h>
 #include <QApplication>
+#include <QtCore/qmath.h>
 #include "Json/cJSON.h"
 #include "defines.h"
 #include "funcs/chineseletterhelper.h"
@@ -98,13 +100,88 @@ QString CabinetConfig::getServerAddress()
     return serverAddr;
 }
 
+void CabinetConfig::insertGoods(GoodsInfo *info, int row, int col)
+{
+    qDebug()<<"[insertGoods]"<<row<<col;
+    list_cabinet[col]->setCaseName(*info, row);//  addCase(info,row,(list_cabinet.count() == 3));
+}
+
+void CabinetConfig::syncGoods(GoodsInfo *info, int row, int col)
+{
+    if((col >= list_cabinet.count()))
+        return;
+    if(row >= list_cabinet[col]->list_case.count())
+        return;
+
+    QList<GoodsInfo*> targetList = list_cabinet[col]->list_case[row]->list_goods;
+    GoodsInfo* target;
+
+    int i = 0;
+    for(i=0; ; i++)
+    {
+        target = targetList[i];
+        if(target->packageId == info->packageId)
+            break;
+        if(i == targetList.count())//未找到匹配项
+        {
+            qDebug()<<"[syncGoods]"<<"new goods"<<info->packageId;
+            list_cabinet[col]->setCaseName(*info, row);//插入新物品项
+            return;
+        }
+    }
+
+    *target = *info;
+    list_cabinet[col]->updateCase(row);
+}
+
 void CabinetConfig::setServerAddress(QString addr)
 {
     serverAddr = addr;
+
+    if(serverAddr.indexOf("http:") != 0)
+        serverAddr = QString("http://") +serverAddr;
+
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    settings.setValue("SERVER", addr);
+    settings.setValue("SERVER", serverAddr);
     settings.sync();
-//    restart();
+    //    restart();
+}
+
+int CabinetConfig::getSysVolem()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    return settings.value("vol", QVariant(90)).toInt();
+}
+
+void CabinetConfig::setSysVolem(int vol)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("vol", vol);
+    settings.sync();
+    QString cmd;
+    QStringList params;
+    vol++;
+#ifdef SIMULATE_ON
+    cmd = "amixer";
+    params<<"cset"<<"name=\'Master Playback Volume\'"<<QString::number(volTodB(vol));
+#else
+    cmd = "amixer";
+    params<<"cset"<<"name=\'Headphone Volume\'"<<QString::number(volTodB(vol));
+#endif
+
+    QProcess pro;
+    qDebug()<<cmd<<params;
+    pro.start(cmd, params);
+    pro.waitForFinished(100);
+}
+
+int CabinetConfig::volTodB(int vol)
+{
+#ifdef SIMULATE_ON
+    return qLn((double)vol/100)/qLn(10)*10+63;
+#else
+    return qLn((double)vol/100)/qLn(10)*10+127;
+#endif
 }
 
 void CabinetConfig::clearConfig()
@@ -551,6 +628,35 @@ void CabinetConfig::removeConfig(CaseAddress addr)
     list_cabinet[addr.cabinetSeqNum]->updateCabinetCase(addr);
 }
 
+void CabinetConfig::setConfig(CaseAddress addr, GoodsInfo *info)
+{
+    Cabinet* curCab = list_cabinet[addr.cabinetSeqNum];
+    CabinetInfo* curInfo = curCab->list_case[addr.caseIndex];
+    if(addr.goodsIndex != curInfo->list_goods.count())
+    {
+        qDebug()<<"[setConfig]"<<"address is invalid.";
+    }
+
+    curInfo->list_goods<<info;
+
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.beginGroup(QString("Cabinet%1").arg(addr.cabinetSeqNum));
+    settings.beginWriteArray(QString("case%1").arg(addr.caseIndex));
+
+    settings.setArrayIndex(addr.goodsIndex);
+    settings.setValue("abbName", QVariant(info->abbName));
+    settings.setValue("id", QVariant(info->id));
+    settings.setValue("name", QVariant(info->name));
+    settings.setValue("num", QVariant(info->num));
+    settings.setValue("packageId", QVariant(info->packageId));
+    settings.setValue("unit", QVariant(info->unit));
+    settings.sync();
+    settings.endArray();
+    settings.endGroup();
+
+    list_cabinet[addr.cabinetSeqNum]->updateCabinetCase(addr);
+}
+
 QByteArray CabinetConfig::creatCabinetJson()
 {
     QByteArray chesetCode = cabinetId.toLocal8Bit();
@@ -625,7 +731,7 @@ QByteArray CabinetConfig::getCabinetSize()
     return ret;
 }
 
-void CabinetConfig::searchByPinyin(QChar ch)
+void CabinetConfig::searchByPinyin(QString ch)
 {
     int i;
 

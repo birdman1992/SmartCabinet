@@ -39,7 +39,8 @@ void ControlDevice::deviceInit()
     //控制串口初始化
     comLockCtrlInit(38400, 8, 0, 1);
     connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
-
+//    int ret = com_lock_ctrl->write(QByteArray("test"));
+//    qDebug()<<"[write to lock]"<<DEV_LOCK_CTRL<<ret<<QByteArray("test");
     //rfid网关串口初始化
     comRfidInit(38400, 8, 0, 1);
     connect(com_rfid_gateway, SIGNAL(readyRead()), this, SLOT(readRfidGatewayData()));
@@ -222,7 +223,6 @@ void ControlDevice::lockCtrl(int seqNum, int ioNum)
 //    qba[1] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlSeq;
 //    qba[3] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlIndex;
     qDebug()<<"[lockCtrl]"<<qba.toHex();
-
 #ifndef SIMULATE_ON
     com_lock_ctrl->write(qba);
 #endif

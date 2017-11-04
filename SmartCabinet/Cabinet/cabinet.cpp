@@ -100,6 +100,12 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
     }
 }
 
+void Cabinet::updateCase(int caseIndex)
+{
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
+    lab->setText(list_case.at(caseIndex)->list_goods);
+}
+
 void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
 {
     qDebug()<<"setCtrlWord"<<seqNum<<caseIndex<<seq.toHex()<<index.toHex();
@@ -278,11 +284,11 @@ bool Cabinet::isInLeft()
     return posNum%2;
 }
 
-void Cabinet::searchByPinyin(QChar ch)
+void Cabinet::searchByPinyin(QString ch)
 {
     int i = 0;
     int j = 0;
-    qDebug()<<"searchByPinyin";
+//    qDebug()<<"searchByPinyin";
 
     for(i=0; i<list_case.count(); i++)
     {
@@ -290,7 +296,7 @@ void Cabinet::searchByPinyin(QChar ch)
 
         for(j=0; j<info->list_goods.count(); j++)
         {
-            if(info->list_goods[j]->Py.at(0) == ch)
+            if(info->list_goods[j]->Py.indexOf(ch) != -1)
             {
                 setCaseState(i, 1);
                 break;
@@ -374,7 +380,7 @@ void Cabinet::setCaseState(int index, int numState)
     {
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setCheckState(false);
-        lab->setStyleSheet(cellStyle(QColor(6, 161, 101)));
+        lab->setStyleSheet(cellStyle(QColor(238, 128, 61)));
     }
     else if(numState == 2)//盘点完毕状态
     {

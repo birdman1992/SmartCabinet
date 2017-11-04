@@ -12,8 +12,8 @@
 //#include "Device/SerialPort/qserialport.h"
 #include "Structs/goodscar.h"
 
-#define SIMULATE_ON  //打开仿真
-//#define LOG_ON //打开日志
+//#define SIMULATE_ON  //打开仿真
+#define LOG_ON //打开日志
 
 typedef struct ui{
     long vid;

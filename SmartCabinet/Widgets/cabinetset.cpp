@@ -10,8 +10,10 @@ CabinetSet::CabinetSet(QWidget *parent) :
     ui->setupUi(this);
     cabinet_pos.clear();
     cabinet_pos[0] = 0;
+    initStep = 0;
+    ui->finish->hide();
     dev_network = NULL;
-    ui->save->hide();
+//    ui->save->hide();
     list_cabinet<< ui->label_0 << ui->label_1<< ui->label_2 << ui->label_3 << ui->label_4;
 #ifdef SIMULATE_ON
     dev_network = new QNetInterface("eth0");
@@ -75,6 +77,34 @@ void CabinetSet::getCodeScanData(QByteArray code)
     ui->scanCode->setText(code);
 }
 
+void CabinetSet::cloneResult(bool isSuccess, QString msg)
+{
+    if(isSuccess)
+    {
+        ui->save->setEnabled(false);
+        ui->cloneMsg->setText("克隆成功");
+        ui->cloneStart->setText("确定");
+        ui->finish->show();
+        config->setCabinetId(ui->cloneId->text());
+        return;
+    }
+    ui->cloneMsg->setText(msg);
+}
+
+void CabinetSet::regResult(bool isSuccess)
+{
+    if(isSuccess)
+    {
+        QString msg = QString("ID注册成功：\n%1").arg(config->getCabinetId());
+        ui->regMsg->setText(msg);
+        ui->finish->show();
+    }
+    else
+    {
+        ui->regMsg->setText("ID注册失败");
+    }
+}
+
 void CabinetSet::on_add_left_clicked()
 {
     int i;
@@ -129,14 +159,10 @@ void CabinetSet::on_clear_clicked()
 
 void CabinetSet::on_save_clicked()
 {
-    qDebug()<<cabinet_pos.toHex();
-    config->creatCabinetConfig(cabinet_pos);
-    qDebug()<<"creat over";
-//    emit setCabinet(cabinet_pos);
     emit updateServerAddr(ui->serverAddr->text());
-    emit cabinetCreated();
-    emit winSwitch(INDEX_CAB_SHOW);
-    config->cabVoice.voicePlay(VOICE_WELCOME);
+    config->setServerAddress(ui->serverAddr->text());
+    initStep = 1;
+    return;
 }
 
 void CabinetSet::on_serverAddr_editingFinished()
@@ -222,4 +248,53 @@ void CabinetSet::on_devState_toggled(bool checked)
         ui->devState->setText("设备异常");
     else
         ui->devState->setText("设备正常");
+}
+
+void CabinetSet::on_cloneStart_clicked()
+{
+    if(ui->cloneId->text().isEmpty())
+    {
+        ui->cloneMsg->setText("克隆ID为空");
+        return;
+    }
+    if(!(initStep & (1<<1)))
+    {
+        ui->cloneMsg->setText("请先配置柜格布局");
+        return;
+    }
+    ui->regId->setEnabled(false);
+
+    emit cabinetClone(ui->cloneId->text());
+}
+
+void CabinetSet::on_regId_clicked()
+{
+    if(!(initStep & (1<<1)))
+    {
+        ui->regMsg->setText("请先配置柜格布局");
+        return;
+    }
+    emit requireCabRigster();
+}
+
+void CabinetSet::on_savePos_clicked()
+{
+    if(!(initStep & 1))
+    {
+        ui->posMsg->setText("请先配置服务器地址");
+        return;
+    }
+
+    qDebug()<<cabinet_pos.toHex();
+    config->creatCabinetConfig(cabinet_pos);
+    initStep |= (1<<1);
+    ui->posMsg->setText("保存成功");
+    qDebug()<<"creat over";
+}
+
+void CabinetSet::on_finish_clicked()
+{
+    emit cabinetCreated();
+    emit winSwitch(INDEX_CAB_SHOW);
+    config->cabVoice.voicePlay(VOICE_WELCOME);
 }

@@ -64,12 +64,14 @@ void CabinetCheckItem::paintEvent(QPaintEvent*)
 
 void CabinetCheckItem::on_minus_clicked()
 {
+    return;//不允许按钮控制
     num = (num-1)<0?0:(num-1);
     ui->num->setText(QString::number(num));
 }
 
 void CabinetCheckItem::on_add_clicked()
 {
+    return;//不允许按钮控制
     itemAdd();
 //    num += 1;
 //    ui->num->setText(QString::number(num));

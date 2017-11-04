@@ -21,7 +21,7 @@
 background-color: rgba(206, 206, 206, 80);
 }</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,20">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,10">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,12">
      <item>
@@ -128,7 +128,7 @@ QPushButton::pressed{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_0">
       <widget class="QFrame" name="network">
@@ -885,6 +885,23 @@ font:20px&quot;微软雅黑&quot;;
        </property>
        <property name="text">
         <string>重新绑定物品柜格</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="verInfo">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>30</y>
+         <width>401</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font: 75 25px &quot;微软雅黑&quot;;
+</string>
+       </property>
+       <property name="text">
+        <string>VERSION: 1.1.3.20171103_alpha</string>
        </property>
       </widget>
      </widget>

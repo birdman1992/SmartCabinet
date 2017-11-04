@@ -20,9 +20,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>180</y>
+     <y>70</y>
      <width>531</width>
-     <height>711</height>
+     <height>641</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -38,7 +38,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>20</y>
+      <y>130</y>
       <width>91</width>
       <height>61</height>
      </rect>
@@ -56,7 +56,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>20</y>
+      <y>130</y>
       <width>91</width>
       <height>61</height>
      </rect>
@@ -74,7 +74,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>20</y>
+      <y>130</y>
       <width>91</width>
       <height>61</height>
      </rect>
@@ -92,7 +92,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>120</y>
+      <y>230</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -117,7 +117,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>120</y>
+      <y>230</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -143,7 +143,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>120</y>
+      <y>230</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -168,7 +168,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>120</y>
+      <y>230</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -193,7 +193,7 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>120</y>
+      <y>230</y>
       <width>91</width>
       <height>391</height>
      </rect>
@@ -214,6 +214,65 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="savePos">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>70</y>
+      <width>91</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>保存</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>531</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 0, 0);
+color:rgb(255,255,255);
+font: 18px &quot;微软雅黑&quot;;
+</string>
+    </property>
+    <property name="text">
+     <string>3 柜格布局配置</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="posMsg">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>70</y>
+      <width>361</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QFrame" name="frame_2">
    <property name="geometry">
@@ -221,7 +280,7 @@
      <x>10</x>
      <y>10</y>
      <width>531</width>
-     <height>161</height>
+     <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -238,26 +297,30 @@ font: 18px &quot;微软雅黑&quot;;
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>91</width>
+      <x>0</x>
+      <y>0</y>
+      <width>121</width>
       <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">background-color: rgb(255, 0, 0);
+color:rgb(255,255,255);</string>
     </property>
     <property name="text">
-     <string>服务器地址</string>
+     <string>2 服务器地址</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="save">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>30</y>
-      <width>91</width>
-      <height>61</height>
+      <x>420</x>
+      <y>0</y>
+      <width>111</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -272,9 +335,9 @@ font: 18px &quot;微软雅黑&quot;;
    <widget class="QLineEdit" name="serverAddr">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>110</y>
-      <width>391</width>
+      <x>120</x>
+      <y>0</y>
+      <width>301</width>
       <height>41</height>
      </rect>
     </property>
@@ -283,25 +346,6 @@ font: 18px &quot;微软雅黑&quot;;
     </property>
     <property name="text">
      <string>120.77.159.8:8080</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>381</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
-    </property>
-    <property name="text">
-     <string>保存将退出当前界面，请先完成硬件测试</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
   </widget>
@@ -868,10 +912,11 @@ font: 18px &quot;微软雅黑&quot;;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(161, 161, 161);</string>
+     <string notr="true">background-color: rgb(255, 0, 0);
+color:rgb(255,255,255);</string>
     </property>
     <property name="text">
-     <string>网络配置</string>
+     <string>1 网络配置</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1189,6 +1234,192 @@ background-color: rgb(255, 255, 255);
      <bool>false</bool>
     </property>
    </widget>
+  </widget>
+  <widget class="QFrame" name="frame_7">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>730</y>
+     <width>531</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel{
+font: 18px &quot;微软雅黑&quot;;
+}
+QLineEdit{
+font: 18px &quot;微软雅黑&quot;;
+}
+QPushButton{
+font: 18px &quot;微软雅黑&quot;;
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QLabel" name="label_18">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>531</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 0, 0);
+color:rgb(255,255,255);</string>
+    </property>
+    <property name="text">
+     <string>4 获取智能柜ID(克隆或自动获取请二选一)</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="cloneId">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>70</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_19">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>70</y>
+      <width>51</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>柜号</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cloneMsg">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>151</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="cloneStart">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>110</y>
+      <width>80</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>开始克隆</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="regId">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>70</y>
+      <width>80</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>自动获取</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="regMsg">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>70</y>
+      <width>141</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="label_20">
+   <property name="geometry">
+    <rect>
+     <x>880</x>
+     <y>500</y>
+     <width>551</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel{
+font: 22px &quot;微软雅黑&quot;;
+background-color: rgb(255, 0, 0);
+color:rgb(255,255,255);
+}</string>
+   </property>
+   <property name="text">
+    <string>编号1，2，3，4为必要配置步骤，请按顺序完成</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="finish">
+   <property name="geometry">
+    <rect>
+     <x>880</x>
+     <y>570</y>
+     <width>551</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QPushButton{
+	background-color: rgb(62, 155, 255);
+	border:50px outset gray;
+	font: 100px &quot;微软雅黑&quot;;
+}
+QPushButton::pressed{
+	border:50px inset gray;
+}</string>
+   </property>
+   <property name="text">
+    <string>配置完成</string>
+   </property>
   </widget>
  </widget>
  <resources/>

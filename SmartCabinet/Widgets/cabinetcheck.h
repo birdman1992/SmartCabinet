@@ -32,6 +32,7 @@ private slots:
 
 signals:
     void checkCase(QList<CabinetCheckItem*>,CaseAddress);
+    void checkCase(QStringList, CaseAddress);
 
 private:
     Ui::CabinetCheck *ui;

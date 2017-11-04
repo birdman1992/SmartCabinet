@@ -58,7 +58,10 @@ void CabinetCheck::checkScan(QString scanId, QString fullId)
                 codeAppendCancel();
             }
             else
+            {
+                list_item.at(i)->list_fullId<<fullId;
                 checkRst("添加成功");
+            }
             return;
         }
     }
@@ -137,5 +140,6 @@ void CabinetCheck::on_pushButton_clicked()
 void CabinetCheck::on_ok_clicked()
 {
     ui->msg->setText("正在提交");
+//    emit checkCase(list_code, curAddr);
     emit checkCase(list_item, curAddr);
 }

@@ -27,8 +27,10 @@
         <file>image/code_test.png</file>
         <file>image/rfid.png</file>
         <file>image/scanner.png</file>
+        <file>image/volume.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>
+        <file>styleSheet/SliderBar.qss</file>
     </qresource>
 </RCC>
