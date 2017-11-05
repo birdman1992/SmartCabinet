@@ -27,6 +27,7 @@
 #define CAB_CASE_2_NUM 8
 
 #define MSG_EMPTY ""
+#define MSG_FULL "此柜格已满，请选择其他柜格"
 #define MSG_SCAN_LIST "请扫描送货单条码"
 #define MSG_LIST_ERROR "无效的送货单"
 #define MSG_STORE "请扫描待存放物品条形码"

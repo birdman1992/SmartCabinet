@@ -64,7 +64,7 @@ void Cabinet::checkCase(int index)
 
 void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol:是否使用双列显示
 {
-    if(list_case.count()>=caseNum)
+    if(caseIndex>=caseNum)
     {
         qDebug()<<"[addCase]"<<"case is full"<<seqNum<<caseNum;
         return;
@@ -125,6 +125,21 @@ void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
         list_case[caseIndex]->ctrlIndex = index[caseIndex];
 
     qDebug()<<list_case[caseIndex]->ctrlSeq<<list_case[caseIndex]->ctrlIndex;
+}
+
+int Cabinet::getMaxshowNum(int caseIndex)
+{
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
+    return lab->maxShowNum();
+}
+
+bool Cabinet::haveEmptyPos(int caseIndex)
+{
+    qDebug()<<"haveEmptyPos"<<list_case[caseIndex]->list_goods.count()<<getMaxshowNum(caseIndex);
+    if(list_case[caseIndex]->list_goods.count() < getMaxshowNum(caseIndex))
+        return true;
+    else
+        return false;
 }
 
 int Cabinet::getIndexByName(QString findName)

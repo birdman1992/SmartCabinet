@@ -167,7 +167,8 @@ void CabinetConfig::setSysVolem(int vol)
     settings.sync();
     QString cmd;
     QStringList params;
-    vol++;
+    if(vol)
+        vol++;
 #ifdef SIMULATE_ON
     cmd = "amixer";
     params<<"cset"<<"name=\'Master Playback Volume\'"<<QString::number(volTodB(vol));
@@ -382,7 +383,7 @@ void CabinetConfig::readCabinetConfig()
             info->packageId = settings.value("packageId").toString();
             info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->goodsType = getGoodsType(info->packageId);
-//            qDebug()<<"[getGoodsType]"<<info->packageId<<info->goodsType;
+            qDebug()<<"[getGoodsType]"<<info->packageId<<info->goodsType;
             list_cabinet[0]->addCase(info,j,(cabNum == 3));//qDebug()<<"[read conf]"<<j;
             list_cabinet[0]->setCtrlWord(j, ctrlSeq, ctrlIndex);
         }

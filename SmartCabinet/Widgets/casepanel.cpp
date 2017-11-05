@@ -82,6 +82,18 @@ int CasePanel::labWidth()
     return ui->left->width();
 }
 
+int CasePanel::maxShowNum()
+{
+    if(showDoubleCol)
+    {
+        return (getMaxLine()-1)*2;
+    }
+    else
+    {
+        return getMaxLine()-1;
+    }
+}
+
 QString CasePanel::geteElidedText(QFont _font, QString str, int MaxWidth)
 {
     QFontMetrics fontWidth(_font);

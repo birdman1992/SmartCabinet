@@ -29,6 +29,8 @@ public:
     void addCase(GoodsInfo *info, int caseIndex, bool doubleCol);//用于读取配置信息添加到信息列表尾部
     void updateCase(int caseIndex);
     void setCtrlWord(int caseIndex, QByteArray seq, QByteArray index);
+    int getMaxshowNum(int caseIndex);
+    bool haveEmptyPos(int caseIndex);
 
     int getIndexByName(QString findName);//根据药品名检索柜格下标
     void consumableIn(CaseAddress addr, int num=1);//药品存放

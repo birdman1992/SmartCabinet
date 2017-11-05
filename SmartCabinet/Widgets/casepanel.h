@@ -23,6 +23,7 @@ public:
     void setText(QList<GoodsInfo*> list);
     QFont caseFont();
     int labWidth();
+    int maxShowNum();
 
 private:
     Ui::CasePanel *ui;

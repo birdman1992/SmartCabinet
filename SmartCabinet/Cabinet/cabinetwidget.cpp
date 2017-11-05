@@ -330,6 +330,14 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //        }
         if(curGoods == NULL)
             return;
+
+        if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
+        {qDebug("case is full");
+            caseUnlock();
+            config->list_cabinet[0]->showMsg(MSG_FULL, 0);
+            return;
+        }
+        qDebug("case not full");
 //        GoodsInfo info;
         bindInfo.abbName = curGoods->abbName;
         bindInfo.name = curGoods->name;
