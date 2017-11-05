@@ -6,9 +6,9 @@
 #define CAB_CACHE "/home/config/cache.ini"
 
 //超时时间配置
-#define TIMEOUT_FETCH 10
+#define TIMEOUT_FETCH 3
 #define TIMEOUT_CHECK 0
-#define TIMEOUT_BASE 10
+#define TIMEOUT_BASE 3
 
 
 /*模拟无服务器状态*/
@@ -32,7 +32,7 @@
 #define MSG_STORE "请扫描待存放物品条形码"
 #define MSG_STORE_SELECT "请选择绑定位置"
 #define MSG_STORE_SELECT_REPEAT "选择的位置被占用 请重新选择"
-#define MSG_FETCH "请选择要取出的物品 柜门打开后请扫描条形码取出"
+#define MSG_FETCH "请点击物品所在柜格，开门后取出物品，扫描条码，完成领用"
 #define MSG_FETCH_SCAN "请扫描条形码取出物品 取用完毕请点击此处并关闭柜门"
 #define MSG_FETCH_EMPTY "没有库存了 请关好柜门 点击此处退出"
 #define MSG_CHECK  "请点击柜格开始盘点"

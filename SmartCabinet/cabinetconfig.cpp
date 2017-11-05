@@ -114,15 +114,22 @@ void CabinetConfig::syncGoods(GoodsInfo *info, int row, int col)
         return;
 
     QList<GoodsInfo*> targetList = list_cabinet[col]->list_case[row]->list_goods;
-    GoodsInfo* target;
+    GoodsInfo* target = NULL;
+
+    if(targetList.isEmpty())
+    {
+        list_cabinet[col]->setCaseName(*info, row);//插入新物品项
+        list_cabinet[col]->updateCase(row);
+        return;
+    }
 
     int i = 0;
-    for(i=0; ; i++)
+    for(i=0; i<targetList.count(); i++)
     {
         target = targetList[i];
         if(target->packageId == info->packageId)
             break;
-        if(i == targetList.count())//未找到匹配项
+        if(i == (targetList.count()-1))//未找到匹配项
         {
             qDebug()<<"[syncGoods]"<<"new goods"<<info->packageId;
             list_cabinet[col]->setCaseName(*info, row);//插入新物品项
@@ -789,6 +796,12 @@ void CabinetConfig::restart()
     QProcess::startDetached(qApp->applicationFilePath(),args);
 #endif
 
+}
+
+void CabinetConfig::reboot()
+{
+    qDebug()<<"[Everyday reboot]";
+    system("reboot");
 }
 
 UserInfo* CabinetConfig::checkUserLocal(QString userId)

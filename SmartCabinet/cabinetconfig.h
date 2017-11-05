@@ -45,6 +45,7 @@ public:
     void clearConfig();
     void clearCabinet();
     void wakeUp(int minutes);//唤醒
+    void reboot();
     void clearTimeoutFlag();
     int getSleepFlag();
     void setCardReaderState(bool ok);
@@ -98,6 +99,7 @@ private:
     void readCabinetConfig();//读取柜子配置
     void addNewUser(UserInfo* info);
     void restart();//重启自身
+
 public slots:
 
 

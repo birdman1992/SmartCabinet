@@ -170,6 +170,7 @@ void CabinetWidget::initVolum()
     volume->resize(48, 240);
     volume->setMaximum(100);
     volume->setValue(config->getSysVolem());
+    config->setSysVolem(config->getSysVolem());
 
     connect(volume, SIGNAL(sliderPressed()), this, SLOT(vol_pressed()));
     connect(volume, SIGNAL(sliderReleased()), this, SLOT(vol_released()));
@@ -382,7 +383,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         casePos.caseIndex = caseIndex;
         win_refund->refundStart(casePos);
         clickLock = false;
-//        emit requireOpenCase(cabSeqNum, caseIndex);
+        emit requireOpenCase(cabSeqNum, caseIndex);
 
 //        waitForCodeScan = true;
 //        clickLock = true;
@@ -393,6 +394,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     }
     else if(config->state == STATE_CHECK)
     {
+        emit requireOpenCase(cabSeqNum, caseIndex);
         casePos.cabinetSeqNum = cabSeqNum;
         casePos.caseIndex = caseIndex;
         win_check->checkStart(casePos);
@@ -1060,6 +1062,10 @@ void CabinetWidget::accessFailedMsg(QString msg)
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0))
+    {
+        config->reboot();
+    }
 }
 
 void CabinetWidget::updateId()

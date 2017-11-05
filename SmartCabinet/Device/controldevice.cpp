@@ -328,6 +328,7 @@ void ControlDevice::readCodeScanData(QByteArray qba)
 //    qba = (index==-1)?qba:qba.left(index);
 //    qDebug()<<"[readCodeScanData]"<<qba;
 //    emit codeScanData(qba);
+    config->clearTimeoutFlag();
     qDebug()<<"[readCodeScanData]"<<qba;
     emit codeScanData(qba);
 }
