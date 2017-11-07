@@ -682,6 +682,7 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
         clearMenuState();
         ui->refund->setChecked(true);
         waitForCodeScan = true;
+        waitForGoodsListCode = false;
         config->wakeUp(TIMEOUT_FETCH);
     }
     else
@@ -718,6 +719,7 @@ void CabinetWidget::on_cut_clicked()
     config->state = STATE_FETCH;
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
     waitForCodeScan = true;
+    waitForGoodsListCode = false;
     win_cab_list_view->setNetState(ui->netState->isChecked());
     win_cab_list_view->show();
     config->wakeUp(TIMEOUT_BASE);
@@ -729,6 +731,7 @@ void CabinetWidget::on_check_clicked(bool checked)
     {
         config->state = STATE_CHECK;
         waitForCodeScan = true;
+        waitForGoodsListCode = false;
         config->list_cabinet[0]->showMsg(MSG_CHECK,false);
         clickLock = false;
         clearMenuState();

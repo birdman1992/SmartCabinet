@@ -627,7 +627,7 @@ color: rgb(255, 255, 255);
              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="button_stackedWidgetPage1">
              <layout class="QVBoxLayout" name="verticalLayout_5">
