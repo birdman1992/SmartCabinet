@@ -28,6 +28,7 @@
         <file>image/rfid.png</file>
         <file>image/scanner.png</file>
         <file>image/volume.png</file>
+        <file>image/warning.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

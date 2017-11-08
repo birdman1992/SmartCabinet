@@ -44,7 +44,8 @@ void QHid::run()
         {
             if(ev[i].hid && (ev[i].hid)!=0x280000)
             {
-                if(((ev[i].hid)>>16)<41)
+//                printf("%c:%d\n",((ev[i].hid)>>16),((ev[i].hid)>>16));
+                if(((ev[i].hid)>>16)<45)
                     id[j++] = tab[((ev[i].hid)>>16)];
                 else
                     id[j++] = ((ev[i].hid)>>16);

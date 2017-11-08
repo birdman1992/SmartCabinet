@@ -632,7 +632,7 @@ color: rgb(255, 255, 255);
             <widget class="QWidget" name="button_stackedWidgetPage1">
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,1,1">
+               <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,1,1,0">
                 <property name="spacing">
                  <number>10</number>
                 </property>
@@ -759,6 +759,9 @@ border-image: url(:/image/image/btn_out_sel.png);
                     <height>87</height>
                    </size>
                   </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::NoFocus</enum>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#check:checked{
 	border-image: url(:/image/image/btn_check_normal.png);
@@ -837,6 +840,9 @@ border-image: url(:/image/image/btn_out_sel.png);
                     <height>87</height>
                    </size>
                   </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::NoFocus</enum>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#search{
 	border-image: url(:/image/image/btn_search_normal.png);
@@ -851,12 +857,42 @@ border-image: url(:/image/image/btn_out_sel.png);
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="quit">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>230</width>
+                    <height>87</height>
+                   </size>
+                  </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::NoFocus</enum>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#quit{
+	border-image: url(:/image/image/btn_quit_normal.png);
+}
+#quit:pressed{
+	border-image: url(:/image/image/btn_quit_sel.png);
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="verticalSpacer">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>
                   </property>
                   <property name="sizeType">
-                   <enum>QSizePolicy::Preferred</enum>
+                   <enum>QSizePolicy::Expanding</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>

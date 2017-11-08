@@ -39,7 +39,7 @@ public:
     void updateCabinetCase(CaseAddress addr);
     int cabinetPosNum();//获取位置编号
     void clearSelectState(int row);//清除选中状态
-    void showMsg(QString msg, bool showBigCharacter);
+    void showMsg(QString msg, bool iswarnning);
     void setCaseName(GoodsInfo info, int index);//设置柜格存放物品名
     bool isInLeft();//true:柜子在主柜左边 false:柜子在主柜右边
     void searchByPinyin(QString ch);

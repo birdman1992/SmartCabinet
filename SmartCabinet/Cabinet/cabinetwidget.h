@@ -102,6 +102,8 @@ private slots:
     void vol_pressed();
     void syncMsgTimeout();
 
+    void on_quit_clicked();
+
 protected:
     bool eventFilter(QObject *, QEvent *);
 

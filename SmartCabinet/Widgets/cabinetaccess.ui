@@ -98,6 +98,9 @@ font: 20px &quot;微软雅黑&quot;;</string>
         <height>70</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="styleSheet">
        <string notr="true">#cancel{
 	color: rgb(255, 255, 255);
@@ -123,6 +126,9 @@ font: 20px &quot;微软雅黑&quot;;</string>
         <height>51</height>
        </rect>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
       <property name="styleSheet">
        <string notr="true">#onekey{
 	color: rgb(255, 255, 255);
@@ -146,6 +152,9 @@ font: 20px &quot;微软雅黑&quot;;</string>
         <width>160</width>
         <height>70</height>
        </rect>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="styleSheet">
        <string notr="true">#ok{

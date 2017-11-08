@@ -246,11 +246,12 @@ void Cabinet::clearSelectState(int row)
     ui->tableWidget->setItemSelected(ui->tableWidget->item(row,0), false);
 }
 
-void Cabinet::showMsg(QString msg, bool showBigCharacter)
+void Cabinet::showMsg(QString msg, bool iswarnning)
 {
     logo->setText(msg);
-    if(showBigCharacter)
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
+    logo->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+    if(iswarnning)
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";image:url(:/image/image/warning.png);image-position:top left");
     else
         logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 20px \"Sans Serif\";");
 }

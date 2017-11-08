@@ -56,6 +56,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->cut->hide();
     ui->check->hide();
     ui->search->hide();
+    ui->quit->hide();
     ui->menuWidget->setCurrentIndex(0);
 
 //#ifndef SIMULATE_ON
@@ -102,6 +103,7 @@ void CabinetWidget::cabLock()
     ui->refund->hide();
     ui->check->hide();
     ui->search->hide();
+    ui->quit->hide();
     win_access->hide();
     curStoreList = NULL;
     config->state = STATE_NO;
@@ -332,12 +334,11 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
             return;
 
         if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
-        {qDebug("case is full");
+        {
             caseUnlock();
-            config->list_cabinet[0]->showMsg(MSG_FULL, 0);
+            config->list_cabinet[0]->showMsg(MSG_FULL, 1);
             return;
         }
-        qDebug("case not full");
 //        GoodsInfo info;
         bindInfo.abbName = curGoods->abbName;
         bindInfo.name = curGoods->name;
@@ -412,6 +413,13 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     else if(config->state == STATE_REBIND)
     {
         emit requireOpenCase(cabSeqNum, caseIndex);
+
+        if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
+        {
+            caseUnlock();
+            config->list_cabinet[0]->showMsg(MSG_FULL, 1);
+            return;
+        }
 
         if(rebindGoods == NULL)
         {
@@ -501,6 +509,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         if(addr.cabinetSeqNum == -1)
         {
             qDebug()<<"[fetch]"<<"scan data not find";
+            config->list_cabinet[0]->showMsg(MSG_GOODS_NOT_FIND,1);
             return;
         }
         if(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
@@ -857,6 +866,7 @@ void CabinetWidget::setPowerState(int power)
     ui->cut->hide();
     ui->check->hide();
     ui->search->show();
+    ui->quit->hide();
 
     if(ui->netState->isChecked())
     {
@@ -892,6 +902,7 @@ void CabinetWidget::setPowerState(int power)
 
         case 4://医院员工:|退出|
             ui->cut->show();
+            ui->quit->show();
             //        ui->service->show();
             break;
 
@@ -919,6 +930,7 @@ void CabinetWidget::setPowerState(int power)
 
         case 3://医院员工:
             ui->cut->show();
+            ui->quit->show();
             //        ui->service->show();
             break;
         default:
@@ -954,7 +966,7 @@ void CabinetWidget::recvListInfo(GoodsList *l)
     qDebug("recv");
     if(l->list_goods.count() == 0)
     {
-        config->list_cabinet[0]->showMsg(MSG_LIST_ERROR, false);
+        config->list_cabinet[0]->showMsg(MSG_LIST_ERROR, 1);
         return;
     }
 
@@ -1127,6 +1139,7 @@ void CabinetWidget::setMenuHide(bool ishide)
         ui->refund->hide();
         ui->check->hide();
         ui->search->hide();
+        ui->quit->hide();
     }
     else
     {
@@ -1136,6 +1149,7 @@ void CabinetWidget::setMenuHide(bool ishide)
         ui->refund->show();
         ui->check->show();
         ui->search->show();
+        ui->quit->show();
     }
 }
 
@@ -1281,4 +1295,9 @@ bool CabinetWidget::eventFilter(QObject *w, QEvent *e)
         }
     }
     return QWidget::eventFilter(w, e);
+}
+
+void CabinetWidget::on_quit_clicked()
+{
+    cabLock();
 }
