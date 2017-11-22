@@ -309,9 +309,10 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
         emit bindRst(false);
         return;
     }
+    QString optId = config->getOptId();
     QString caseId = QString::number(config->getLockId(seqNum, index));
     QString cabinetId = config->getCabinetId();
-    QByteArray qba = QString("{\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"cabinetRow\":%4,\"cabinetCol\":%5}").arg(goodsId).arg(cabinetId).arg(caseId).arg(index).arg(seqNum).toUtf8();
+    QByteArray qba = QString("{\"optName\":\"%6\",\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"cabinetRow\":%4,\"cabinetCol\":%5}").arg(goodsId).arg(cabinetId).arg(caseId).arg(index).arg(seqNum).arg(optId).toUtf8();
 //    QByteArray qba = QString("{\"goodId\":\"%1\",\"chesetCode\":\"%2\",\"caseId\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CAB_BIND)+"?"+qba.toBase64();
     qDebug()<<"[cabinetBind]"<<nUrl<<"\n"<<qba;
@@ -324,17 +325,18 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
 {qDebug()<<addr.cabinetSeqNum<<id<<num<<optType;
     QString caseId = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex));
     QString cabinetId = config->getCabinetId();
+    QString optName = config->getOptId();
     QByteArray qba;
 
     if(optType == 2)
-        qba = QString("{\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5,\"barcode\":\"%6\"}]}")
-             .arg(id).arg(cabinetId).arg(caseId).arg(2).arg(num).arg(barCode).toUtf8();
+        qba = QString("{\"optName\":\"%7\",\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5,\"barcode\":\"%6\"}]}")
+             .arg(id).arg(cabinetId).arg(caseId).arg(2).arg(num).arg(barCode).arg(optName).toUtf8();
     else if(optType == 1)
-        qba = QString("{\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}]}")
-             .arg(id).arg(cabinetId).arg(caseId).arg(1).arg(num).toUtf8();
+        qba = QString("{\"optName\":\"%6\",\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}]}")
+             .arg(id).arg(cabinetId).arg(caseId).arg(1).arg(num).arg(optName).toUtf8();
     else if(optType == 3)
-        qba = QString("{\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}]}")
-             .arg(id).arg(cabinetId).arg(caseId).arg(3).arg(num).toUtf8();
+        qba = QString("{\"optName\":\"%6\",\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}]}")
+             .arg(id).arg(cabinetId).arg(caseId).arg(3).arg(num).arg(optName).toUtf8();
 
     QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
     qDebug()<<"[goodsAccess]"<<nUrl;
@@ -383,6 +385,8 @@ void CabinetServer::listAccess(QStringList list, int optType)
         cJSON_AddItemToArray(jlist, obj);
     }
     cJSON_AddItemToObject(json, "li",jlist);
+    QByteArray optId = config->getOptId().toLocal8Bit();
+    cJSON_AddItemToObject(json,"optName", cJSON_CreateString(optId.data()));
     char* buff = cJSON_Print(json);
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
@@ -395,7 +399,7 @@ void CabinetServer::listAccess(QStringList list, int optType)
     else
     {
         QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
-        qDebug()<<"[goodsAccess]"<<nUrl;
+        qDebug()<<"[listAccess]"<<nUrl;
         qDebug()<<qba;
         replyCheck(reply_goods_access);
         reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
@@ -438,6 +442,9 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
         cJSON_AddItemToArray(packageList, package);
     }
     cJSON_AddItemToObject(json, "packageList",packageList);
+    QByteArray optId = config->getOptId().toLocal8Bit();
+    cJSON_AddItemToObject(json,"optName", cJSON_CreateString(optId.data()));
+
     char* buff = cJSON_Print(json);
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
@@ -456,6 +463,9 @@ void CabinetServer::goodsCheck(QStringList l, CaseAddress)
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();
     int i = 0;
+
+    QByteArray optId = config->getOptId().toLocal8Bit();
+    cJSON_AddItemToObject(json,"optName", cJSON_CreateString(optId.data()));
 
     QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
     cJSON_AddItemToObject(json, "departCode", cJSON_CreateString(chesetCode.data()));
@@ -513,6 +523,10 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
         cJSON_AddItemToArray(jlist, obj);
     }
     cJSON_AddItemToObject(json, "li",jlist);
+
+    QByteArray optId = config->getOptId().toLocal8Bit();
+    cJSON_AddItemToObject(json,"optName", cJSON_CreateString(optId.data()));
+
     char* buff = cJSON_Print(json);
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);

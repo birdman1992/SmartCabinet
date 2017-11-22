@@ -97,6 +97,7 @@ void CabinetWidget::cabLock()
     curStoreList = NULL;
     msgBox = NULL;
     config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
+    config->clearOptId();
     ui->store->hide();
     ui->service->hide();
     ui->cut->hide();
@@ -952,6 +953,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
     }
 //    waitForCardReader = false;
 //    optUser = QString(qba);
+
     if(!needWaitForServer())
     {
         waitForServer = false;
@@ -1191,6 +1193,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     waitForServer = false;
     msgClear();
     optUser = info;
+    config->setOptId(info->cardId);
     qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
     config->state = STATE_FETCH;
     ui->userInfo->setText(QString("您好！%1").arg(optUser->name));

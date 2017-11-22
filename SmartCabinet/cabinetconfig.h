@@ -33,6 +33,9 @@ public:
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
     int getGoodsType(QString packageId);
+    void clearOptId();//清除操作者记录
+    void setOptId(QString id);//设置操作者id
+    QString getOptId();//获取操作者卡号
     QString getPyCh(QString str);
     QString getCabinetId();
     QString getServerAddress();
@@ -45,7 +48,7 @@ public:
     void clearConfig();
     void clearCabinet();
     void wakeUp(int minutes);//唤醒
-    void reboot();
+    int reboot();
     void clearTimeoutFlag();
     int getSleepFlag();
     void setCardReaderState(bool ok);
@@ -94,6 +97,7 @@ private:
 //    QString cabId;
     QString cabinetId;
     QString serverAddr;
+    QString optName;//操作者卡号
 
     void readUserConfig();//读取用户配置
     void readCabinetConfig();//读取柜子配置

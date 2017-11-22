@@ -21,6 +21,7 @@ CabinetConfig::CabinetConfig()
     cabinetId.clear();
     list_user.clear();
     list_cabinet.clear();
+    clearOptId();
     //    qDebug()<<list_cabinet.count();
     if(!QDir("/home/config").exists())
     {
@@ -799,10 +800,10 @@ void CabinetConfig::restart()
 
 }
 
-void CabinetConfig::reboot()
+int CabinetConfig::reboot()
 {
     qDebug()<<"[Everyday reboot]";
-    system("reboot");
+    return system("reboot");
 }
 
 UserInfo* CabinetConfig::checkUserLocal(QString userId)
@@ -849,6 +850,21 @@ int CabinetConfig::getGoodsType(QString packageId)
         return 1;
 
     return packageId.right(packageId.size()-index-1).toInt();
+}
+
+void CabinetConfig::clearOptId()
+{
+    optName = QString();
+}
+
+void CabinetConfig::setOptId(QString id)
+{
+    optName = id;
+}
+
+QString CabinetConfig::getOptId()
+{
+    return optName;
 }
 
 QString CabinetConfig::getPyCh(QString str)
