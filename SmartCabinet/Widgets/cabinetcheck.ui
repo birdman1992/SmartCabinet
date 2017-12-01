@@ -130,6 +130,9 @@ color: rgb(255, 53, 53);</string>
              <height>50</height>
             </size>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="styleSheet">
             <string notr="true">font: 18px &quot;微软雅黑&quot;;
 background-color: rgb(36, 221, 149);
@@ -153,6 +156,9 @@ color: rgb(255, 255, 255);</string>
              <width>0</width>
              <height>50</height>
             </size>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="styleSheet">
             <string notr="true">font: 18px &quot;微软雅黑&quot;;
