@@ -82,7 +82,7 @@ void DeviceSimulate::initGroup()
     group_drug.addButton(ui->pushButton_23,18);
     group_drug.addButton(ui->pushButton_24,19);
     connect(&group_drug, SIGNAL(buttonClicked(int)), this, SLOT(group_drug_clicked(int)));
-    initBtnText();
+//    initBtnText();
 }
 
 void DeviceSimulate::initBtnText()

@@ -34,18 +34,19 @@ QString CabinetCheckItem::itemId()
 
 bool CabinetCheckItem::itemAdd()
 {
-    if(num >= maxNum)
-    {
-        num = maxNum;
-        ui->num->setText(QString::number(num));
-        return false;
-    }
-    else
-    {
+    //取消了盘点数量限制
+//    if(num >= maxNum)
+//    {
+//        num = maxNum;
+//        ui->num->setText(QString::number(num));
+//        return false;
+//    }
+//    else
+//    {
         num++;
         ui->num->setText(QString::number(num));
         return true;
-    }
+//    }
 }
 
 void CabinetCheckItem::paintEvent(QPaintEvent*)

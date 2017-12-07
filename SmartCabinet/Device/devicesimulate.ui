@@ -72,7 +72,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>006B4CF1CA</string>
+        <string>00D8766565</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_2">
@@ -241,7 +241,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>2017-E0601002673-01-1</string>
+        <string>20170804-B0218001106-100-6134</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_6">
@@ -257,7 +257,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string/>
+        <string>20170804-B0218001106-100-9560</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_7">
@@ -273,7 +273,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string/>
+        <string>20170804-B0218001106-100-4753</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_8">
@@ -289,7 +289,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string/>
+        <string>20170804-B0218001106-100-9524</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_9">
@@ -305,7 +305,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string/>
+        <string>20170804-B0218001106-100-4111</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_10">
