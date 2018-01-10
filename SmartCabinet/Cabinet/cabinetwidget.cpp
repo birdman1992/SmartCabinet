@@ -1087,10 +1087,10 @@ void CabinetWidget::accessFailedMsg(QString msg)
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
-    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0))
-    {
-        config->reboot();
-    }
+//    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0))
+//    {
+//        config->reboot();
+//    }
 }
 
 void CabinetWidget::updateId()
