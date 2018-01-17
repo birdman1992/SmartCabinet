@@ -30,7 +30,6 @@ void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
     {
         cabType = 0;
         caseNum = CAB_CASE_0_NUM;
-        ui->logo->hide();
         ui->tableWidget->setRowCount(caseNum);
         return;
     }
@@ -42,7 +41,6 @@ void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
         logo = new QLabel(this);
         logo->setWordWrap(true);
         logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
-        ui->logo->hide();
         ui->tableWidget->setCellWidget(1,0,logo);
     }
 }

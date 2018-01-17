@@ -35,7 +35,7 @@
    <string notr="true">background-color: rgba(0, 0, 0, 0);
 font: 15px &quot;微软雅黑&quot;;</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="2,4">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="4">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -51,43 +51,6 @@ font: 15px &quot;微软雅黑&quot;;</string>
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <widget class="QLabel" name="logo">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>微软雅黑</family>
-       <pointsize>-1</pointsize>
-       <weight>50</weight>
-       <italic>false</italic>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(0, 0, 0, 0);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item>
     <widget class="QTableWidget" name="tableWidget">
      <property name="sizePolicy">

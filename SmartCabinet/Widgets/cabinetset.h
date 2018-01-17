@@ -5,9 +5,11 @@
 #include <QList>
 #include <QLabel>
 #include <QByteArray>
+#include <QStringList>
 #include "cabinetconfig.h"
 #include "Device/Network/qnetinterface.h"
 #include <QButtonGroup>
+#include <QTableWidget>
 #include "Device/controldevice.h"
 
 namespace Ui {
@@ -30,13 +32,12 @@ public slots:
     void regResult(bool isSuccess);
 
 private slots:
-    void on_add_left_clicked();
     void on_add_right_clicked();
     void on_clear_clicked();
     void on_save_clicked();
     void on_serverAddr_editingFinished();
     void on_lock_test_clicked();
-    void on_lock_group_clicked(int id);
+//    void on_lock_group_clicked(int id);
 
     void on_pushButton_clicked();
 
@@ -54,6 +55,10 @@ private slots:
 
     void on_finish_clicked();
 
+    void on_cabType_currentIndexChanged(int index);
+
+    void on_tabExp_clicked(const QModelIndex &index);
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
@@ -70,13 +75,21 @@ signals:
 private:
     Ui::CabinetSet *ui;
     int initStep;
+    QStringList cabTypeList;
     QNetInterface* dev_network;
     CabinetConfig* config;
     QByteArray cabinet_pos;
-    QList<QLabel*> list_cabinet;
+    QList<QTableWidget*> list_cabinet;
     QButtonGroup group_lock;
-    void checkDevice();
+    QStringList list_layout;
+    QPoint screenPos;
+    bool needSelScreen;
 
+    inline void checkDevice();
+    void initCabType();
+    void cabSplit(QString scale, QTableWidget* table);
+    int getBaseCount(QString scale);
+    void warningSelScreen(bool waringOn);
 };
 
 #endif // CABINETSET_H

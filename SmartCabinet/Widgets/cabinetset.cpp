@@ -2,6 +2,7 @@
 #include "ui_cabinetset.h"
 #include "defines.h"
 #include <QDebug>
+#include <QHeaderView>
 
 CabinetSet::CabinetSet(QWidget *parent) :
     QWidget(parent),
@@ -13,8 +14,12 @@ CabinetSet::CabinetSet(QWidget *parent) :
     initStep = 0;
     ui->finish->hide();
     dev_network = NULL;
+    needSelScreen = true;
+    screenPos = QPoint(-1,-1);
+    //初始化柜格类型
+    initCabType();
+
 //    ui->save->hide();
-    list_cabinet<< ui->label_0 << ui->label_1<< ui->label_2 << ui->label_3 << ui->label_4;
 #ifdef SIMULATE_ON
     dev_network = new QNetInterface("eth0");
 #else
@@ -22,10 +27,6 @@ CabinetSet::CabinetSet(QWidget *parent) :
 #endif
     dev_network->initNetwork();
 
-    ui->label_1->hide();
-    ui->label_2->hide();
-    ui->label_3->hide();
-    ui->label_4->hide();
     ui->devState->setEnabled(false);
 
     group_lock.addButton(ui->lock_test_2 , 0);
@@ -105,56 +106,69 @@ void CabinetSet::regResult(bool isSuccess)
     }
 }
 
-void CabinetSet::on_add_left_clicked()
-{
-    int i;
-    int j;
+//void CabinetSet::on_add_left_clicked()
+//{
+//    int i;
+//    int j;
 
-    for(i=1 ;i<list_cabinet.count(); i+=2)
-    {
-        if(list_cabinet.at(i)->isHidden())
-        {
-            j = 1;
-            while(cabinet_pos[j]) j++;
-            cabinet_pos[j] = i;
-            list_cabinet.at(i)->show();
-            break;
-        }
-    }
-    if((i+2)>=list_cabinet.count())
-        ui->add_left->setEnabled(false);
-}
+//    for(i=1 ;i<list_cabinet.count(); i+=2)
+//    {
+//        if(list_cabinet.at(i)->isHidden())
+//        {
+//            j = 1;
+//            while(cabinet_pos[j]) j++;
+//            cabinet_pos[j] = i;
+//            list_cabinet.at(i)->show();
+//            break;
+//        }
+//    }
+//}
 
 void CabinetSet::on_add_right_clicked()
 {
-    int i;
-    int j;
+    QTableWidget* tab = new QTableWidget();
+    tab->setSelectionMode(QAbstractItemView::NoSelection);
+    tab->resize(10,ui->cabs->geometry().height()-12);
 
-    for(i=2 ;i<list_cabinet.count(); i+=2)
+    ui->cabs->layout()->addWidget(tab);
+    cabSplit(ui->cabType->currentText(), tab);
+    list_layout<<ui->cabType->currentText();
+    list_cabinet<<tab;
+
+    if((screenPos.y() >= 0) && needSelScreen)//已经选择了屏幕位置
     {
-        if(list_cabinet.at(i)->isHidden())
-        {
-            j = 1;
-            while(cabinet_pos[j]) j++;
-            cabinet_pos[j] = i;
-            list_cabinet.at(i)->show();
-            break;
-        }
+        needSelScreen = false;
+        screenPos.setX(list_layout.count()-1);
+        qDebug()<<"[screen]"<<screenPos.y();
+        QTableWidgetItem* item = new QTableWidgetItem();
+        item->setBackgroundColor(QColor(62, 155, 255));
+        tab->setItem(screenPos.y(),0,item);
+        ui->tabExp->clearSelection();
+        warningSelScreen(false);
     }
-    if((i+2)>=list_cabinet.count())
-        ui->add_right->setEnabled(false);
 }
 
 void CabinetSet::on_clear_clicked()
 {
-    cabinet_pos.clear();
-    cabinet_pos[0] = 0;
-    ui->label_1->hide();
-    ui->label_2->hide();
-    ui->label_3->hide();
-    ui->label_4->hide();
-    ui->add_left->setEnabled(true);
-    ui->add_right->setEnabled(true);
+    if(list_cabinet.isEmpty() || list_layout.isEmpty())
+        return;
+
+    QTableWidget* tab = list_cabinet.takeLast();
+    ui->cabs->layout()->removeWidget(tab);
+    delete tab;
+    tab = NULL;
+    list_layout.removeLast();
+    if(list_cabinet.count() <= screenPos.x())
+    {
+        needSelScreen = true;
+        screenPos.setX(-1);
+        screenPos.setY(-1);
+        warningSelScreen(true);
+    }
+
+//    cabinet_pos.clear();
+//    cabinet_pos[0] = 0;
+//    ui->add_right->setEnabled(true);
 }
 
 void CabinetSet::on_save_clicked()
@@ -186,10 +200,10 @@ void CabinetSet::on_lock_test_clicked()
     emit lockTest();
 }
 
-void CabinetSet::on_lock_group_clicked(int id)
-{
-    emit requireOpenCase(ui->comboBox->currentIndex(), id);
-}
+//void CabinetSet::on_lock_group_clicked(int id)
+//{
+//    emit requireOpenCase(ui->comboBox->currentIndex(), id);
+//}
 
 void CabinetSet::on_pushButton_clicked()
 {
@@ -240,6 +254,58 @@ void CabinetSet::checkDevice()
         ui->devState->setChecked(false);//设备正常
     else
         ui->devState->setChecked(true);//设备异常
+}
+
+void CabinetSet::initCabType()
+{
+    cabTypeList<<"331111"<<"31111111"<<"1111";
+    ui->cabType->addItems(cabTypeList);
+}
+
+void CabinetSet::cabSplit(QString scale, QTableWidget *table)
+{
+    if(scale.isEmpty()||(table == NULL))
+    {
+        return;
+    }
+    int rowCount = scale.length();
+    int baseCount = getBaseCount(scale);
+    int baseHeight = table->geometry().height()/baseCount;
+    int i = 0;
+    table->setRowCount(rowCount);
+    table->setColumnCount(1);
+
+    table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+    table->verticalHeader()->setVisible(false);
+    table->horizontalHeader()->setVisible(false);
+    table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    qDebug()<<table->geometry().height()<<baseCount<<baseHeight;
+    for(i=0; i<rowCount; i++)
+    {
+        table->setRowHeight(i,baseHeight*(scale.mid(i,1).toInt()));
+    }
+
+}
+
+int CabinetSet::getBaseCount(QString scale)
+{
+    int i = 0;
+    int ret = 0;
+    if(scale.isEmpty())
+        return ret;
+
+    for(i=0; i<scale.length(); i++)
+    {
+        ret += scale.mid(i,1).toInt();
+    }
+    return ret;
+}
+
+void CabinetSet::warningSelScreen(bool waringOn)
+{
+    ui->screen_sel_warning->setVisible(waringOn);
 }
 
 void CabinetSet::on_devState_toggled(bool checked)
@@ -297,4 +363,30 @@ void CabinetSet::on_finish_clicked()
     emit cabinetCreated();
     emit winSwitch(INDEX_CAB_SHOW);
     config->cabVoice.voicePlay(VOICE_WELCOME);
+}
+
+void CabinetSet::on_cabType_currentIndexChanged(int)
+{
+    qDebug()<<ui->cabType->currentText();
+    cabSplit(ui->cabType->currentText(), ui->tabExp);
+}
+
+void CabinetSet::on_tabExp_clicked(const QModelIndex &index)
+{
+    qDebug()<<index.row()<<index.column();
+    if(!needSelScreen)
+    {
+        ui->tabExp->clearSelection();
+        return;
+    }
+
+    if(index.row() == screenPos.y())
+    {
+        ui->tabExp->clearSelection();
+        screenPos.setY(-1);
+        screenPos.setX(-1);
+        return;
+    }
+
+    screenPos.setY(index.row());
 }
