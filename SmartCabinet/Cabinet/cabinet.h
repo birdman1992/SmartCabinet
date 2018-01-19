@@ -23,8 +23,10 @@ public:
     ~Cabinet();
 
     void CabinetInit(int _width, int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
+    void CabinetInit(QString cLayout, int seq, int sPos=-1);
     void setCabPos(int pos);
-    void setCabType(int _type);
+    int getScreenPos();
+//    void setCabType(int _type);
     void checkCase(int index);
     void addCase(GoodsInfo *info, int caseIndex, bool doubleCol);//用于读取配置信息添加到信息列表尾部
     void updateCase(int caseIndex);
@@ -58,15 +60,17 @@ private:
     Ui::Cabinet *ui;
     int state;
     int caseWidth;
+    int screenPos;//屏幕位置
+    QString cabLayout;//柜格布局
     bool isMainCabinet;//是否为主柜
     int seqNum;//顺序编号
     int posNum;//位置编号
     int caseNum;//柜格数
-    int cabType;//柜子型号:0：副柜，1：单列主柜，2：双列主柜
+//    int cabType;//柜子型号:0：副柜，1：单列主柜，2：双列主柜
     QLabel* logo;
 
     void caseDraw(int _type);
-    void setCase(CabinetInfo* info);
+//    void setCase(CabinetInfo* info);
     void setCaseState(int index, int numState);//设置柜格状态
     int getCaseState();
     QString cellStyle(QColor rgb);
@@ -74,6 +78,8 @@ private:
     bool eventFilter(QObject *obj, QEvent *event);
     void resizeEvent(QResizeEvent* event);
     void paintEvent(QPaintEvent *);
+    void cabSplit(QString scale, QTableWidget *table);
+    int getBaseCount(QString scale);
 };
 
 #endif // CABINET_H

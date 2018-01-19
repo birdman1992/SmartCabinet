@@ -271,27 +271,16 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     qDebug()<<"index"<<index;
 
     ui->cabinet_layout->addStretch();
-
-    for(; index>0; index--)
+    for(i=0; i<cabinets.count(); i++)
     {
-        if(cabinets.at(index)->isInLeft())
-            ui->cabinet_layout->addWidget(cabinets.at(index));
-    }
-    ui->cabinet_layout->addWidget(cabinets.at(0));
-    connect(cabinets.at(0), SIGNAL(logoClicked()), this, SLOT(logoClicked()));
-
-    index = 1;
-    for(; index<(cabinets.count()); index++)
-    {
-        if(!cabinets.at(index)->isInLeft())
-            ui->cabinet_layout->addWidget(cabinets.at(index));
+        ui->cabinet_layout->addWidget(cabinets.at(i));
+        connect(cabinets.at(i), SIGNAL(caseSelect(int,int)), this, SLOT(caseClicked(int,int)));
+//        if(cabinets.at(i)->getScreenPos() > 0)//点击logo触发动作，暂无用，屏蔽
+//        {
+//            connect(cabinets.at(i), SIGNAL(logoClicked()), this, SLOT(logoClicked()));
+//        }
     }
     ui->cabinet_layout->addStretch();
-
-    for(index=0; index<cabinets.count(); index++)
-    {
-        connect(cabinets.at(index), SIGNAL(caseSelect(int,int)), this, SLOT(caseClicked(int,int)));
-    }
     win_cab_list_view->setCabView(ui->frame_6);
 }
 

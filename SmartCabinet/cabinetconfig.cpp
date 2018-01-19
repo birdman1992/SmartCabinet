@@ -353,14 +353,45 @@ void CabinetConfig::readCabinetConfig()
         list_cabinet.clear();
     }
 
-    for(i=0; i<cabNum; i++)
+    if((settings.value(QString("Cab0PosNum"), -1).toInt()) != -1)//旧格式，有位置信息
     {
-        Cabinet* cab = new Cabinet();
-        int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-        cab->CabinetInit(caseWidth, i, pos, CAB_CASE_0_NUM,(i==0));
-        list_cabinet<<cab;
-    }
+        QString cLayout = settings.value("cabLayout",QString()).toString();
+        if(cLayout.isEmpty())//无布局信息
+        {
+            QString curLayout;//固定布局信息
+            settings.setValue("screenPos", QString("0,1"));
+            for(i=0; i<cabNum; i++)
+            {
+                if(i == 0)
+                {
+                    curLayout = "331111";
+                    Cabinet* cab = new Cabinet();
+                    int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
+//                    cab->CabinetInit(caseWidth, i, pos, CAB_CASE_0_NUM,(i==0));
+                    cab->CabinetInit(curLayout,i,);
+                }
+                else
+                    curLayout = "31111111";
 
+                list_cabinet<<cab;
+            }
+        }
+        else
+        {
+
+        }
+        for(i=0; i<cabNum; i++)
+        {
+            Cabinet* cab = new Cabinet();
+            int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
+            cab->CabinetInit(caseWidth, i, pos, CAB_CASE_0_NUM,(i==0));
+            list_cabinet<<cab;
+        }
+    }
+    else//新格式，使用布局信息
+    {
+
+    }
     settings.beginGroup("Cabinet0");
     QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray()).toByteArray();
     QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray()).toByteArray();
@@ -474,6 +505,44 @@ void CabinetConfig::creatCabinetConfig(QByteArray qba)
         }
         settings.endGroup();
 //        settings.endArray();
+    }
+    settings.sync();
+
+    readCabinetConfig();
+}
+
+void CabinetConfig::creatCabinetConfig(QStringList cabLayout, QPoint screenPos)
+{
+    int i = 0;
+    int j = 0;
+    if(cabLayout.isEmpty() || screenPos.x()<0 || screenPos.y()<0)
+        return;
+
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+
+    settings.setValue("CabNum",cabLayout.count());
+    settings.setValue("CabinetId",cabinetId);
+    settings.setValue("cabLayout",cabLayout.join("#"));
+
+//    qDebug()<<"[creatCabinetConfig]:cabLayout"<<cabLayout.join("#");
+
+    for(i=0; i<cabLayout.count(); i++)
+    {
+        settings.beginGroup(QString("Cabinet%1").arg(i));
+        settings.setValue("cabinetSize",QVariant(cabLayout.at(i).length()));
+
+        for(j=0; j<cabLayout.at(i).length(); j++)
+        {
+            settings.beginWriteArray(QString("case%1").arg(j));
+            settings.setArrayIndex(0);
+            settings.setValue("name",QVariant(QString()));
+            settings.setValue("num", QVariant(0));
+            settings.setValue("unit",QVariant(QString()));
+            settings.setValue("id",QVariant(QString()));
+            settings.setValue("packageId",QVariant(QString()));
+            settings.endArray();
+        }
+        settings.endGroup();
     }
     settings.sync();
 
@@ -797,6 +866,11 @@ void CabinetConfig::restart()
     args.append("-qws");
     QProcess::startDetached(qApp->applicationFilePath(),args);
 #endif
+
+}
+
+void CabinetConfig::listSeqTrans(QList<Cabinet *> &list, QByteArray qba)
+{
 
 }
 

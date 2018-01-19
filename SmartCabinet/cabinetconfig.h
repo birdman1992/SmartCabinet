@@ -62,6 +62,7 @@ public:
     UserInfo* checkUserLocal(QString userId);//本地用户校验
     bool checkManagers(QString userId);//管理员校验
     void creatCabinetConfig(QByteArray);//创建智能柜配置文件
+    void creatCabinetConfig(QStringList cabLayout, QPoint screenPos);
 //    void writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo* info);
     CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置,如未搜索到，返回坐标为-1
     CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
@@ -103,6 +104,7 @@ private:
     void readCabinetConfig();//读取柜子配置
     void addNewUser(UserInfo* info);
     void restart();//重启自身
+    void listSeqTrans(QList<Cabinet*>& list ,QByteArray qba);//链表顺序转换
 
 public slots:
 

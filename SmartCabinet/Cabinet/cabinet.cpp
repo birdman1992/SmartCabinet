@@ -45,15 +45,83 @@ void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
     }
 }
 
+void Cabinet::CabinetInit(QString cLayout, int seq, int sPos)
+{
+    seqNum = seq;
+    caseNum = cLayout.length();
+    screenPos = sPos;
+    isMainCabinet = (screenPos>=0);
+
+    if(!isMainCabinet)
+    {
+        cabSplit(cLayout, ui->tableWidget);
+        return;
+    }
+    else
+    {
+        cabSplit(cLayout, ui->tableWidget);
+        logo = new QLabel(this);
+        logo->setWordWrap(true);
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
+        ui->tableWidget->setCellWidget(sPos,0,logo);
+    }
+}
+
+void Cabinet::cabSplit(QString scale, QTableWidget *table)
+{
+    if(scale.isEmpty()||(table == NULL))
+    {
+        return;
+    }
+    int rowCount = scale.length();
+    int baseCount = getBaseCount(scale);
+    int baseHeight = table->geometry().height()/baseCount;
+    int i = 0;
+    table->setRowCount(rowCount);
+    table->setColumnCount(1);
+
+    table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+    table->verticalHeader()->setVisible(false);
+    table->horizontalHeader()->setVisible(false);
+    table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+//    qDebug()<<table->geometry().height()<<baseCount<<baseHeight;
+    for(i=0; i<rowCount; i++)
+    {
+        table->setRowHeight(i,baseHeight*(scale.mid(i,1).toInt()));
+    }
+
+}
+
+int Cabinet::getBaseCount(QString scale)
+{
+    int i = 0;
+    int ret = 0;
+    if(scale.isEmpty())
+        return ret;
+
+    for(i=0; i<scale.length(); i++)
+    {
+        ret += scale.mid(i,1).toInt();
+    }
+    return ret;
+}
+
 void Cabinet::setCabPos(int pos)
 {
     posNum = pos;
 }
 
-void Cabinet::setCabType(int _type)
+int Cabinet::getScreenPos()
 {
-    cabType = _type;
+    return screenPos;
 }
+
+//void Cabinet::setCabType(int _type)
+//{
+//    cabType = _type;
+//}
 
 void Cabinet::checkCase(int index)
 {
