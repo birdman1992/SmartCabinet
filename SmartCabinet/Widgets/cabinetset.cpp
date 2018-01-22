@@ -258,7 +258,7 @@ void CabinetSet::checkDevice()
 
 void CabinetSet::initCabType()
 {
-    cabTypeList<<"331111"<<"31111111"<<"1111";
+    cabTypeList<<"331111"<<"31111111"<<"21111112"<<"2211112"<<"1111";
     ui->cabType->addItems(cabTypeList);
 }
 

@@ -11,6 +11,7 @@ Cabinet::Cabinet(QWidget *parent) :
     ui(new Ui::Cabinet)
 {
     ui->setupUi(this);
+    posType = 1;
 }
 
 Cabinet::~Cabinet()

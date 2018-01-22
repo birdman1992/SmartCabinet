@@ -385,6 +385,7 @@ void CabinetConfig::readCabinetConfig()
                     int pos = settings.value(QString("Cab0PosNum")).toInt();
                     cab->CabinetInit(curLayout,i,1);
                     cab->setCabPos(pos);
+                    cab->setPosType(0);
                     list_cabinet<<cab;
                     layoutList<<curLayout;
                 }
@@ -396,6 +397,7 @@ void CabinetConfig::readCabinetConfig()
                     cab->CabinetInit(curLayout,i);
                     cab->setCabPos(pos);
                     list_cabinet<<cab;
+                    cab->setPosType(0);
                     layoutList<<curLayout;
                 }
             }
@@ -424,6 +426,7 @@ void CabinetConfig::readCabinetConfig()
                     int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
                     cab->CabinetInit(layoutList.at(i),i);
                     cab->setCabPos(pos);
+                    cab->setPosType(0);
                     list_cabinet<<cab;
                 }
                 list_cabinet[sPos.x()]->setScreenPos(sPos.y());
@@ -453,6 +456,7 @@ void CabinetConfig::readCabinetConfig()
             Cabinet* cab = new Cabinet();
             cab->CabinetInit(layoutList.at(i),i);
             cab->setCabPos(i);
+            cab->setPosType(1);
             list_cabinet<<cab;
         }
         list_cabinet[sPos.x()]->setScreenPos(sPos.y());
