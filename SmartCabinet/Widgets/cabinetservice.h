@@ -14,6 +14,8 @@
 #include "cabinetconfig.h"
 #include "Widgets/cabinetctrlconfig.h"
 
+bool posSort(Cabinet *A, Cabinet *B);
+
 namespace Ui {
 class CabinetService;
 }

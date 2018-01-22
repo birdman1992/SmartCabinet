@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QTableWidget>
 #include "Structs/cabinetinfo.h"
 #include "Structs/caseaddress.h"
 #include "Widgets/casepanel.h"
@@ -25,7 +26,13 @@ public:
     void CabinetInit(int _width, int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
     void CabinetInit(QString cLayout, int seq, int sPos=-1);
     void setCabPos(int pos);
+    int getCabPos();
+    int getSeqNum();
+    QString getLayout();
+    void setPosType(bool _postype);
+    void setScreenPos(int pos);
     int getScreenPos();
+    int getCaseNum();
 //    void setCabType(int _type);
     void checkCase(int index);
     void addCase(GoodsInfo *info, int caseIndex, bool doubleCol);//用于读取配置信息添加到信息列表尾部
@@ -63,6 +70,7 @@ private:
     int screenPos;//屏幕位置
     QString cabLayout;//柜格布局
     bool isMainCabinet;//是否为主柜
+    bool posType;//0:old  1:new
     int seqNum;//顺序编号
     int posNum;//位置编号
     int caseNum;//柜格数
@@ -80,6 +88,7 @@ private:
     void paintEvent(QPaintEvent *);
     void cabSplit(QString scale, QTableWidget *table);
     int getBaseCount(QString scale);
+    int realPos(int pos);
 };
 
 #endif // CABINET_H

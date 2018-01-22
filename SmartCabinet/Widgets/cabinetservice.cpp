@@ -76,6 +76,7 @@ void CabinetService::showEvent(QShowEvent *)
     initNetwork();
     creatCtrlConfig();
     ui->server_addr->setText(config->getServerAddress());
+    qDebug()<<ui->server_addr->text();
 }
 
 bool CabinetService::eventFilter(QObject *w, QEvent *e)
@@ -168,8 +169,31 @@ void CabinetService::creatCtrlConfig()
     int i = 0;
     int j = 0;
 
-    i = config->list_cabinet.count() - 1;
-    qDebug()<<"[creatCtrlConfig]:"<<i;
+//    i = config->list_cabinet.count() - 1;
+    qDebug()<<"[creatCtrlConfig]:"<<config->list_cabinet.count();
+    QList<Cabinet*> list_temp = config->list_cabinet;
+    qSort(list_temp.begin(), list_temp.end(), posSort);
+
+    for(i=0; i<list_temp.count(); i++)
+    {
+        QVBoxLayout* layout = new QVBoxLayout();
+
+        for(j=0; j<list_temp[i]->list_case.count(); j++)
+        {
+            QString layoutStrech = list_temp.at(i)->getLayout();
+            QPushButton* btn = new QPushButton(this);
+            btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+            btn->setMaximumWidth(400);
+            QString str = QString("序号：%1\nIO号：%2").arg(list_temp.at(i)->list_case.at(j)->ctrlSeq).arg(list_temp.at(i)->list_case.at(j)->ctrlIndex);
+            btn->setText(str);
+            layout->addWidget(btn);
+            l_lock_conf.addButton(btn,((list_temp.at(i)->getSeqNum()<<8)+j));
+            layout->setStretch(j,QString(layoutStrech.at(j)).toInt());
+        }
+        cfg_layout->addLayout(layout);
+    }
+    connect(&l_lock_conf, SIGNAL(buttonClicked(int)), this, SLOT(ctrl_conf(int)));
+    return;
 
     for(; i>=0; i--)
     {
@@ -387,7 +411,7 @@ void CabinetService::ctrl_conf(int id)
 {
     curId = id;
     win_ctrl_config->configStart(id>>8, id&0xff);
-    //    qDebug()<<(id>>8)<<(id&0xff);
+//        qDebug()<<(id>>8)<<(id&0xff);
 }
 
 void CabinetService::updateBtn()
@@ -436,3 +460,5 @@ void CabinetService::on_server_addr_editingFinished()
         ui->server_addr->setText(str);
     }
 }
+
+

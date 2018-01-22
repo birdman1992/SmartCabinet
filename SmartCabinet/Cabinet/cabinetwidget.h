@@ -21,6 +21,8 @@
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
 
+bool posSort(Cabinet* A, Cabinet* B);
+
 namespace Ui {
 class CabinetWidget;
 }

@@ -32,6 +32,8 @@ public:
     void saveFetchList(QByteArray _data);
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
+    void setScreenPos(int col, int row);
+    void showMsg(QString msg, bool iswarnning);
     int getGoodsType(QString packageId);
     void clearOptId();//清除操作者记录
     void setOptId(QString id);//设置操作者id
@@ -94,6 +96,7 @@ private:
     int sleepFlag;//休眠标志
     int timeoutFlag;//超时标志
     int userNum;//用户数量
+    QPoint screenPos;
     int caseWidth;
 //    QString cabId;
     QString cabinetId;

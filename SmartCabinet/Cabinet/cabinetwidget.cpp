@@ -96,7 +96,7 @@ void CabinetWidget::cabLock()
     waitForCardReader = true;
     curStoreList = NULL;
     msgBox = NULL;
-    config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
+    config->showMsg(MSG_EMPTY,false);
     config->clearOptId();
     ui->store->hide();
     ui->service->hide();
@@ -212,7 +212,7 @@ void CabinetWidget::rebindRecover()
     rebindGoods = NULL;
     rebind_new_addr.clear();
     rebind_old_addr.clear();
-    config->list_cabinet[0]->showMsg(MSG_REBIND_SCAN,0);
+    config->showMsg(MSG_REBIND_SCAN,0);
 }
 
 void CabinetWidget::rebindOver()
@@ -224,7 +224,7 @@ void CabinetWidget::rebindOver()
     rebindGoods = NULL;
     rebind_new_addr.clear();
     rebind_old_addr.clear();
-    config->list_cabinet[0]->showMsg(MSG_REBIND_SCAN,0);
+    config->showMsg(MSG_REBIND_SCAN,0);
 }
 
 void CabinetWidget::clearCheckState()
@@ -243,6 +243,11 @@ void CabinetWidget::clearMenuState()
 void CabinetWidget::volumTest()
 {
     config->cabVoice.voicePlay("vol.wav");
+}
+
+bool posSort(Cabinet *A, Cabinet *B)
+{
+    return A->getCabPos() < B->getCabPos();
 }
 
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
@@ -268,7 +273,9 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     qDebug("[panel_init]");
     waitForInit = false;
     int index = cabinets.count()-1;
+    int i=0;
     qDebug()<<"index"<<index;
+    qSort(cabinets.begin(),cabinets.end(),posSort);
 
     ui->cabinet_layout->addStretch();
     for(i=0; i<cabinets.count(); i++)
@@ -316,7 +323,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     {
 //        if(clickRepeat)
 //        {
-//            config->list_cabinet[0]->showMsg(MSG_STORE_SELECT_REPEAT, false);
+//            config->showMsg(MSG_STORE_SELECT_REPEAT, false);
 //            clickLock = false;
 //            return;
 //        }
@@ -326,7 +333,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
         {
             caseUnlock();
-            config->list_cabinet[0]->showMsg(MSG_FULL, 1);
+            config->showMsg(MSG_FULL, 1);
             return;
         }
 //        GoodsInfo info;
@@ -343,10 +350,10 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         qDebug()<<"[pinyin]"<<bindInfo.Py;
 //        cabInfoBind(selectCab, selectCase, info);
         emit requireCaseBind(bindCab, bindCase, bindInfo.packageId);
-        config->list_cabinet[0]->showMsg(MSG_EMPTY,0);
+        config->showMsg(MSG_EMPTY,0);
 //        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
 //        config->list_cabinet[selectCab]->consumableIn(selectCase);
-//        config->list_cabinet[0]->showMsg(MSG_STORE, false);
+//        config->showMsg(MSG_STORE, false);
 //        win_access->clickOpen(curGoods->goodsId);
     }
     else if(config->state == STATE_FETCH)
@@ -361,7 +368,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         //打开对应柜门
         if(!ui->netState->isChecked())//离线状态只能批量取货
         {
-            config->list_cabinet[0]->showMsg(MSG_OFFLINE,0);
+            config->showMsg(MSG_OFFLINE,0);
             return;
         }
 
@@ -374,7 +381,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
         win_access->setAccessModel(false);
         win_access->clickOpen(info);
-//        config->list_cabinet[0]->showMsg(MSG_FETCH_SCAN, false);
+//        config->showMsg(MSG_FETCH_SCAN, false);
     }
     else if(config->state == STATE_REFUN)
     {
@@ -407,7 +414,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
         {
             caseUnlock();
-            config->list_cabinet[0]->showMsg(MSG_FULL, 1);
+            config->showMsg(MSG_FULL, 1);
             return;
         }
 
@@ -472,7 +479,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
             clickLock = false;
             win_access->save();
             win_access->hide();
-            config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);
+            config->showMsg(MSG_STORE_SELECT, false);
         }
         else
         {
@@ -488,7 +495,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
                 emit goodsAccess(addr,fullScanInfo, 1, 2);
             }
 //            storeNum++;
-//            config->list_cabinet[0]->showMsg(MSG_STORE+
+//            config->showMsg(MSG_STORE+
 //                                             QString("\n已放入\n%1 ×%2").arg(config->list_cabinet[casePos.cabinetSeqNUM]->list_case[casePos.caseIndex]->name).arg(storeNum), false);
 //            config->list_cabinet[casePos.cabinetSeqNUM]->consumableIn(casePos.caseIndex);
         }
@@ -499,7 +506,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         if(addr.cabinetSeqNum == -1)
         {
             qDebug()<<"[fetch]"<<"scan data not find";
-            config->list_cabinet[0]->showMsg(MSG_GOODS_NOT_FIND,1);
+            config->showMsg(MSG_GOODS_NOT_FIND,1);
             return;
         }
         if(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
@@ -542,7 +549,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         if(rebind_old_addr.cabinetSeqNum == -1)
             return;
 
-        config->list_cabinet[0]->showMsg(MSG_REBIND_SELECT, 0);
+        config->showMsg(MSG_REBIND_SELECT, 0);
         rebindGoods = config->list_cabinet[rebind_old_addr.cabinetSeqNum]->list_case[rebind_old_addr.caseIndex]->list_goods.takeAt(rebind_old_addr.goodsIndex);
         waitForCodeScan = false;
 
@@ -585,14 +592,14 @@ void CabinetWidget::showEvent(QShowEvent *)
     if(config->state == STATE_STORE)
     {
         waitForCodeScan = true;
-        config->list_cabinet[0]->showMsg(MSG_STORE, false);
+        config->showMsg(MSG_STORE, false);
     }
     else if(config->state == STATE_FETCH)
     {
         clickLock = false;
         selectCab = -1;
         selectCase = -1;
-        config->list_cabinet[0]->showMsg(MSG_FETCH, false);
+        config->showMsg(MSG_FETCH, false);
     }
 }
 
@@ -661,7 +668,7 @@ void CabinetWidget::on_service_clicked(bool checked)
         clearMenuState();
         ui->service->setChecked(true);
         config->state = STATE_FETCH;
-        config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
+        config->showMsg(MSG_EMPTY,false);
         config->wakeUp(TIMEOUT_BASE);
     }
     else
@@ -677,7 +684,7 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
         qDebug()<<"[REFUND]";
         clickLock = false;
         config->state = STATE_REFUN;
-        config->list_cabinet[0]->showMsg(MSG_REFUND,false);
+        config->showMsg(MSG_REFUND,false);
         clearMenuState();
         ui->refund->setChecked(true);
         waitForCodeScan = true;
@@ -697,7 +704,7 @@ void CabinetWidget::on_store_clicked(bool checked)
         waitForCardReader = false;
         clickLock = true;
         config->state = STATE_STORE;
-        config->list_cabinet[0]->showMsg(MSG_SCAN_LIST, false);
+        config->showMsg(MSG_SCAN_LIST, false);
         waitForCodeScan = true;
         waitForGoodsListCode = true;
         win_access->setAccessModel(true);
@@ -716,7 +723,7 @@ void CabinetWidget::on_cut_clicked()
 {
     clearMenuState();
     config->state = STATE_FETCH;
-    config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
+    config->showMsg(MSG_EMPTY,false);
     waitForCodeScan = true;
     waitForGoodsListCode = false;
     win_cab_list_view->setNetState(ui->netState->isChecked());
@@ -731,7 +738,7 @@ void CabinetWidget::on_check_clicked(bool checked)
         config->state = STATE_CHECK;
         waitForCodeScan = true;
         waitForGoodsListCode = false;
-        config->list_cabinet[0]->showMsg(MSG_CHECK,false);
+        config->showMsg(MSG_CHECK,false);
         clickLock = false;
         clearMenuState();
         ui->check->setChecked(true);
@@ -781,9 +788,9 @@ void CabinetWidget::saveStore(Goods *goods, int num)
     curStoreList->goodsIn(goods->packageBarcode, num);
 
     if(curStoreList->isFinished())
-        config->list_cabinet[0]->showMsg(MSG_EMPTY, false);
+        config->showMsg(MSG_EMPTY, false);
     else
-        config->list_cabinet[0]->showMsg(MSG_STORE, false);
+        config->showMsg(MSG_STORE, false);
 //    initAccessState();
 }
 
@@ -957,7 +964,7 @@ void CabinetWidget::recvListInfo(GoodsList *l)
     qDebug("recv");
     if(l->list_goods.count() == 0)
     {
-        config->list_cabinet[0]->showMsg(MSG_LIST_ERROR, 1);
+        config->showMsg(MSG_LIST_ERROR, 1);
         return;
     }
 
@@ -972,7 +979,7 @@ void CabinetWidget::recvListInfo(GoodsList *l)
     return;
 
     win_access->setStoreList(l);
-    config->list_cabinet[0]->showMsg(MSG_STORE, false);
+    config->showMsg(MSG_STORE, false);
     waitForCodeScan = true;
     waitForGoodsListCode = false;
 }
@@ -1011,7 +1018,7 @@ void CabinetWidget::recvBindRst(bool rst)
             win_store_list->bindMsg("绑定失败");
     //        win_access->save();
     //        win_access->hide();
-            config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);
+            config->showMsg(MSG_STORE_SELECT, false);
         }
     }
 
@@ -1150,7 +1157,7 @@ void CabinetWidget::cabinetBind(Goods *goods)
     clickLock = false;
     setMenuHide(true);
     win_store_list->hide();
-    config->list_cabinet[0]->showMsg(MSG_STORE_SELECT, false);
+    config->showMsg(MSG_STORE_SELECT, false);
 }
 
 void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)
@@ -1198,7 +1205,7 @@ void CabinetWidget::on_search_clicked()
     clearMenuState();
     config->wakeUp(TIMEOUT_BASE);
     config->state = STATE_FETCH;
-    config->list_cabinet[0]->showMsg(MSG_EMPTY,false);
+    config->showMsg(MSG_EMPTY,false);
     ui->menuWidget->setCurrentIndex(1);
 }
 

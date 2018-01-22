@@ -357,6 +357,7 @@ void CabinetSet::on_savePos_clicked()
     }
 
     qDebug()<<cabinet_pos.toHex();
+    config->setScreenPos(screenPos.x(),screenPos.y());
 //    config->creatCabinetConfig(cabinet_pos);
     config->creatCabinetConfig(list_layout, screenPos);
     initStep |= (1<<1);
@@ -396,3 +397,4 @@ void CabinetSet::on_tabExp_clicked(const QModelIndex &index)
 
     screenPos.setY(index.row());
 }
+

@@ -28,14 +28,14 @@ void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
 
     if(!isMainCabinet)
     {
-        cabType = 0;
+//        cabType = 0;
         caseNum = CAB_CASE_0_NUM;
         ui->tableWidget->setRowCount(caseNum);
         return;
     }
     else
     {
-        cabType = 1;
+//        cabType = 1;
         caseNum = CAB_CASE_1_NUM;
         ui->tableWidget->setRowCount(caseNum);
         logo = new QLabel(this);
@@ -50,6 +50,7 @@ void Cabinet::CabinetInit(QString cLayout, int seq, int sPos)
     seqNum = seq;
     caseNum = cLayout.length();
     screenPos = sPos;
+    cabLayout = cLayout;
     isMainCabinet = (screenPos>=0);
 
     if(!isMainCabinet)
@@ -71,6 +72,7 @@ void Cabinet::cabSplit(QString scale, QTableWidget *table)
 {
     if(scale.isEmpty()||(table == NULL))
     {
+        qDebug()<<scale;
         return;
     }
     int rowCount = scale.length();
@@ -86,12 +88,11 @@ void Cabinet::cabSplit(QString scale, QTableWidget *table)
     table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-//    qDebug()<<table->geometry().height()<<baseCount<<baseHeight;
+//    qDebug()<<"cabSplit"<<table->geometry().height()<<baseCount<<baseHeight;
     for(i=0; i<rowCount; i++)
     {
         table->setRowHeight(i,baseHeight*(scale.mid(i,1).toInt()));
     }
-
 }
 
 int Cabinet::getBaseCount(QString scale)
@@ -113,9 +114,59 @@ void Cabinet::setCabPos(int pos)
     posNum = pos;
 }
 
+int Cabinet::getCabPos()
+{
+    if(posType)//新布局规则
+        return posNum;
+    else
+        return realPos(posNum);
+}
+
+int Cabinet::getSeqNum()
+{
+    return seqNum;
+}
+
+QString Cabinet::getLayout()
+{
+    return cabLayout;
+}
+
+//4,2,0,1,3  -->  -2,-1,0,1,2
+int Cabinet::realPos(int pos)
+{
+    if(pos%2)
+        return -(pos+1)/2;
+    else
+        return pos/2;
+}
+
+void Cabinet::setPosType(bool _postype)
+{
+    posType = _postype;
+}
+
+void Cabinet::setScreenPos(int pos)
+{
+    screenPos = pos;
+    isMainCabinet = (screenPos>=0);
+    if(isMainCabinet)
+    {
+        logo = new QLabel(this);
+        logo->setWordWrap(true);
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
+        ui->tableWidget->setCellWidget(pos,0,logo);
+    }
+}
+
 int Cabinet::getScreenPos()
 {
     return screenPos;
+}
+
+int Cabinet::getCaseNum()
+{
+    return caseNum;
 }
 
 //void Cabinet::setCabType(int _type)
@@ -512,7 +563,9 @@ bool Cabinet::eventFilter(QObject *obj, QEvent *event)
 
 void Cabinet::resizeEvent(QResizeEvent*)
 {
-    caseDraw(cabType);
+//    caseDraw(cabType);
+//    qDebug("resize");
+    cabSplit(cabLayout,ui->tableWidget);
 }
 
 void Cabinet::paintEvent(QPaintEvent*)

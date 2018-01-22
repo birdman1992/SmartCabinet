@@ -90,6 +90,20 @@ void CabinetConfig::setCabinetId(QString id)
     //    qDebug()<<"[setCabinetId]"<<cabId<<&cabId<<&id;
 }
 
+void CabinetConfig::setScreenPos(int col, int row)
+{
+    screenPos.setX(col);
+    screenPos.setY(row);
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("screenPos",QString("%1,%2").arg(col).arg(row));
+    settings.sync();
+}
+
+void CabinetConfig::showMsg(QString msg, bool iswarnning)
+{
+    list_cabinet[screenPos.x()]->showMsg(msg, iswarnning);
+}
+
 QString CabinetConfig::getCabinetId()
 {
     qDebug()<<"[getCabinetId]"<<cabinetId<<&cabinetId;
@@ -356,81 +370,129 @@ void CabinetConfig::readCabinetConfig()
     if((settings.value(QString("Cab0PosNum"), -1).toInt()) != -1)//旧格式，有位置信息
     {
         QString cLayout = settings.value("cabLayout",QString()).toString();
-        if(cLayout.isEmpty())//无布局信息
+        if(cLayout.isEmpty())//无布局信息,使用默认布局
         {
             QString curLayout;//固定布局信息
+            QStringList layoutList;
             settings.setValue("screenPos", QString("0,1"));
+            setScreenPos(0,1);
             for(i=0; i<cabNum; i++)
             {
                 if(i == 0)
                 {
                     curLayout = "331111";
                     Cabinet* cab = new Cabinet();
-                    int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-//                    cab->CabinetInit(caseWidth, i, pos, CAB_CASE_0_NUM,(i==0));
-                    cab->CabinetInit(curLayout,i,);
+                    int pos = settings.value(QString("Cab0PosNum")).toInt();
+                    cab->CabinetInit(curLayout,i,1);
+                    cab->setCabPos(pos);
+                    list_cabinet<<cab;
+                    layoutList<<curLayout;
                 }
                 else
+                {
                     curLayout = "31111111";
-
-                list_cabinet<<cab;
+                    Cabinet* cab = new Cabinet();
+                    int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
+                    cab->CabinetInit(curLayout,i);
+                    cab->setCabPos(pos);
+                    list_cabinet<<cab;
+                    layoutList<<curLayout;
+                }
             }
+            settings.setValue("cabLayout", layoutList.join("#"));//补全布局信息
         }
-        else
+        else//有布局信息
         {
+            QStringList layoutList = cLayout.split("#");
+            QPoint sPos;
 
-        }
-        for(i=0; i<cabNum; i++)
-        {
-            Cabinet* cab = new Cabinet();
-            int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-            cab->CabinetInit(caseWidth, i, pos, CAB_CASE_0_NUM,(i==0));
-            list_cabinet<<cab;
+            if(layoutList.count() != cabNum)
+            {
+                qDebug()<<"[readCabinetConfig]:layout fomat error.";
+                return;
+            }
+
+            QString posInfo = settings.value("screenPos").toString();
+            sPos.setX(posInfo.split(",").at(0).toInt());
+            sPos.setY(posInfo.split(",").at(1).toInt());
+
+            for(i=0; i<cabNum; i++)
+            {
+                for(i=0; i<cabNum; i++)
+                {
+                    Cabinet* cab = new Cabinet();
+                    int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
+                    cab->CabinetInit(layoutList.at(i),i);
+                    cab->setCabPos(pos);
+                    list_cabinet<<cab;
+                }
+                list_cabinet[sPos.x()]->setScreenPos(sPos.y());
+            }
+            list_cabinet[sPos.x()]->setScreenPos(sPos.y());
         }
     }
     else//新格式，使用布局信息
     {
+        QString cLayout = settings.value("cabLayout",QString()).toString();
+        QStringList layoutList = cLayout.split("#");
+        QPoint sPos;
 
-    }
-    settings.beginGroup("Cabinet0");
-    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray()).toByteArray();
-    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray()).toByteArray();
-
-    for(j=0; j<CAB_CASE_1_NUM; j++)
-    {
-//        if(j == 1)
-//            continue;
-        int arr_size = settings.beginReadArray(QString("case%1").arg(j));
-
-        for(k=0; k<arr_size; k++)
+        if(layoutList.count() != cabNum)
         {
-            settings.setArrayIndex(k);
-            GoodsInfo* info = new GoodsInfo;
-            info->abbName = settings.value("abbName", QString()).toString();
-            info->name = settings.value("name").toString();
-            info->num = settings.value("num").toInt();
-            info->outNum = 0;
-            info->id = settings.value("id").toString();
-            info->unit = settings.value("unit").toString();
-            info->packageId = settings.value("packageId").toString();
-            info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-            info->goodsType = getGoodsType(info->packageId);
-            qDebug()<<"[getGoodsType]"<<info->packageId<<info->goodsType;
-            list_cabinet[0]->addCase(info,j,(cabNum == 3));//qDebug()<<"[read conf]"<<j;
-            list_cabinet[0]->setCtrlWord(j, ctrlSeq, ctrlIndex);
+            qDebug()<<"[readCabinetConfig]:layout fomat error.";
+            return;
         }
-        settings.endArray();
+
+        QString posInfo = settings.value("screenPos").toString();
+        sPos.setX(posInfo.split(",").at(0).toInt());
+        sPos.setY(posInfo.split(",").at(1).toInt());
+        setScreenPos(sPos.x(), sPos.y());
+
+        for(i=0; i<cabNum; i++)
+        {
+            Cabinet* cab = new Cabinet();
+            cab->CabinetInit(layoutList.at(i),i);
+            cab->setCabPos(i);
+            list_cabinet<<cab;
+        }
+        list_cabinet[sPos.x()]->setScreenPos(sPos.y());
     }
-    settings.endGroup();
-//    settings.endArray();
-    for(i=1; i<cabNum; i++)
+//    settings.beginGroup("Cabinet0");
+//    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray()).toByteArray();
+//    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray()).toByteArray();
+
+//    for(j=0; j<CAB_CASE_1_NUM; j++)
+//    {
+//        int arr_size = settings.beginReadArray(QString("case%1").arg(j));
+
+//        for(k=0; k<arr_size; k++)
+//        {
+//            settings.setArrayIndex(k);
+//            GoodsInfo* info = new GoodsInfo;
+//            info->abbName = settings.value("abbName", QString()).toString();
+//            info->name = settings.value("name").toString();
+//            info->num = settings.value("num").toInt();
+//            info->outNum = 0;
+//            info->id = settings.value("id").toString();
+//            info->unit = settings.value("unit").toString();
+//            info->packageId = settings.value("packageId").toString();
+//            info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
+//            info->goodsType = getGoodsType(info->packageId);
+//            qDebug()<<"[getGoodsType]"<<info->packageId<<info->goodsType;
+//            list_cabinet[0]->addCase(info,j,(cabNum <= 3));//qDebug()<<"[read conf]"<<j;
+//            list_cabinet[0]->setCtrlWord(j, ctrlSeq, ctrlIndex);
+//        }
+//        settings.endArray();
+//    }
+//    settings.endGroup();
+
+    for(i=0; i<cabNum; i++)
     {
         settings.beginGroup(QString("Cabinet%1").arg(i));
         QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
         QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
 
-//        settings.beginReadArray(QString("Cabinet%1").arg(i));
-        for(j=0; j<CAB_CASE_0_NUM; j++)
+        for(j=0; j<list_cabinet.at(i)->getCaseNum(); j++)
         {
             int arr_size = settings.beginReadArray(QString("case%1").arg(j));
 
@@ -440,13 +502,14 @@ void CabinetConfig::readCabinetConfig()
                 GoodsInfo* info = new GoodsInfo;
                 info->abbName = settings.value("abbName", QString()).toString();
                 info->name = settings.value("name").toString();
+                info->outNum = 0;
                 info->num = settings.value("num").toInt();
                 info->id = settings.value("id").toString();
                 info->unit = settings.value("unit").toString();
                 info->packageId = settings.value("packageId").toString();
                 info->goodsType = getGoodsType(info->packageId);
                 info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-                list_cabinet[i]->addCase(info,j,(cabNum == 3));
+                list_cabinet[i]->addCase(info,j,(cabNum <= 3));
                 list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
             }
             settings.endArray();
