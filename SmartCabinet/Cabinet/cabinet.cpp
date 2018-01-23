@@ -187,7 +187,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
         qDebug()<<"[addCase]"<<"case is full"<<seqNum<<caseNum;
         return;
     }
-//    qDebug()<<"[addCase]"<<info->name<<info->num;
+//    qDebug()<<"[addCase]"<<caseIndex;//<<info->name<<info->num;
     info->outNum = 0;
 
     if(caseIndex<list_case.count())
@@ -401,9 +401,9 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     settings.sync();
 
     GoodsInfo* gInfo = new GoodsInfo(info);
-    list_case.at(index)->list_goods<<gInfo;
-    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
-    lab->setText(list_case.at(index)->list_goods);
+    list_case.at(index)->list_goods<<gInfo;qDebug("1");
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);qDebug()<<lab->labWidth();
+    lab->setText(list_case.at(index)->list_goods);qDebug("3");
 //    ui->tableWidget->item(index,0)->setText(list_case.at(index)->caseShowStr());
 //    list_case.at(index)->name = info.name;
 //    list_case.at(index)->id = info.id;

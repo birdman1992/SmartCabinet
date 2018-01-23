@@ -8,9 +8,13 @@ QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
     devName = name;
 
     if(!interface.isValid())
+    {
         qDebug()<<"[QNetInterface]"<<name<<"open failed";
+        return;
+    }
     else
         getNetworkInfo();
+    qDebug()<<"[QNetInterface]"<<devName<<"open success.";
     qDebug()<<"[MAC address]"<<macAddress();
 }
 
@@ -190,6 +194,7 @@ QNetworkInterface QNetInterface::getNetworkInterface(QString name)
 void QNetInterface::getNetworkInfo()
 {
     interface = getNetworkInterface(devName);
+
     if(!interface.isValid())
         return;
 

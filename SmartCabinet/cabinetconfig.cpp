@@ -117,6 +117,12 @@ QString CabinetConfig::getServerAddress()
 
 void CabinetConfig::insertGoods(GoodsInfo *info, int row, int col)
 {
+    if((screenPos.x() == col) && (screenPos.y() == row))
+        return;
+    if(col>=list_cabinet.count())
+        return;
+    if(row>=list_cabinet[col]->list_case.count())
+        return;
     qDebug()<<"[insertGoods]"<<row<<col;
     list_cabinet[col]->setCaseName(*info, row);//  addCase(info,row,(list_cabinet.count() == 3));
 }
@@ -524,59 +530,56 @@ void CabinetConfig::readCabinetConfig()
 }
 
 //创建柜子配置文件  qba:柜子位置信息
-void CabinetConfig::creatCabinetConfig(QByteArray qba)
-{
-    int i = 0;
-    int j = 0;
-    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+//void CabinetConfig::creatCabinetConfig(QByteArray qba)
+//{
+//    int i = 0;
+//    int j = 0;
+//    QSettings settings(CONF_CABINET, QSettings::IniFormat);
 
-    settings.setValue("CabNum",qba.size());
-    settings.setValue("CabinetId",cabinetId);
-    for(i=0; i<qba.size(); i++)//保存柜子位置编号
-    {
-        settings.setValue(QString("Cab%1PosNum").arg(i),QVariant(qba[i]));
-    }
+//    settings.setValue("CabNum",qba.size());
+//    settings.setValue("CabinetId",cabinetId);
+//    for(i=0; i<qba.size(); i++)//保存柜子位置编号
+//    {
+//        settings.setValue(QString("Cab%1PosNum").arg(i),QVariant(qba[i]));
+//    }
 
-    settings.beginGroup("Cabinet0");
-    settings.setValue("cabinetSize",QVariant(CAB_CASE_1_NUM));
-//    settings.beginWriteArray(QString("Cabinet0"));
-    for(j=0; j<CAB_CASE_1_NUM; j++)
-    {
-        settings.beginWriteArray(QString("case%1").arg(j));
-        settings.setArrayIndex(0);
-        settings.setValue("name",QVariant(QString()));
-        settings.setValue("num", QVariant(0));
-        settings.setValue("unit",QVariant(QString()));
-        settings.setValue("id",QVariant(QString()));
-        settings.setValue("packageId",QVariant(QString()));
-        settings.endArray();
-    }
-    settings.endGroup();
-//    settings.endArray();
+//    settings.beginGroup("Cabinet0");
+//    settings.setValue("cabinetSize",QVariant(CAB_CASE_1_NUM));
 
-    for(i=1; i<qba.size(); i++)
-    {
-        settings.beginGroup(QString("Cabinet%1").arg(i));
-        settings.setValue("cabinetSize",QVariant(CAB_CASE_0_NUM));
-//        settings.beginWriteArray(QString("Cabinet%1").arg(i));
-        for(j=0; j<CAB_CASE_0_NUM; j++)
-        {
-            settings.beginWriteArray(QString("case%1").arg(j));
-            settings.setArrayIndex(0);
-            settings.setValue("name",QVariant(QString()));
-            settings.setValue("num", QVariant(0));
-            settings.setValue("unit",QVariant(QString()));
-            settings.setValue("id",QVariant(QString()));
-            settings.setValue("packageId",QVariant(QString()));
-            settings.endArray();
-        }
-        settings.endGroup();
+//    for(j=0; j<CAB_CASE_1_NUM; j++)
+//    {
+//        settings.beginWriteArray(QString("case%1").arg(j));
+//        settings.setArrayIndex(0);
+//        settings.setValue("name",QVariant(QString()));
+//        settings.setValue("num", QVariant(0));
+//        settings.setValue("unit",QVariant(QString()));
+//        settings.setValue("id",QVariant(QString()));
+//        settings.setValue("packageId",QVariant(QString()));
 //        settings.endArray();
-    }
-    settings.sync();
+//    }
+//    settings.endGroup();
 
-    readCabinetConfig();
-}
+//    for(i=1; i<qba.size(); i++)
+//    {
+//        settings.beginGroup(QString("Cabinet%1").arg(i));
+//        settings.setValue("cabinetSize",QVariant(CAB_CASE_0_NUM));
+//        for(j=0; j<CAB_CASE_0_NUM; j++)
+//        {
+//            settings.beginWriteArray(QString("case%1").arg(j));
+//            settings.setArrayIndex(0);
+//            settings.setValue("name",QVariant(QString()));
+//            settings.setValue("num", QVariant(0));
+//            settings.setValue("unit",QVariant(QString()));
+//            settings.setValue("id",QVariant(QString()));
+//            settings.setValue("packageId",QVariant(QString()));
+//            settings.endArray();
+//        }
+//        settings.endGroup();
+//    }
+//    settings.sync();
+
+//    readCabinetConfig();
+//}
 
 void CabinetConfig::creatCabinetConfig(QStringList cabLayout, QPoint screenPos)
 {
@@ -590,8 +593,6 @@ void CabinetConfig::creatCabinetConfig(QStringList cabLayout, QPoint screenPos)
     settings.setValue("CabNum",cabLayout.count());
     settings.setValue("CabinetId",cabinetId);
     settings.setValue("cabLayout",cabLayout.join("#"));
-
-//    qDebug()<<"[creatCabinetConfig]:cabLayout"<<cabLayout.join("#");
 
     for(i=0; i<cabLayout.count(); i++)
     {
@@ -933,11 +934,6 @@ void CabinetConfig::restart()
     args.append("-qws");
     QProcess::startDetached(qApp->applicationFilePath(),args);
 #endif
-
-}
-
-void CabinetConfig::listSeqTrans(QList<Cabinet *> &list, QByteArray qba)
-{
 
 }
 

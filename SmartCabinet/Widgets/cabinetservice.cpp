@@ -90,6 +90,7 @@ bool CabinetService::eventFilter(QObject *w, QEvent *e)
 
 void CabinetService::updateNetInfo()
 {
+    qDebug()<<"updateNetInfo1";
     dev_ip = dev_network->ip();
     dev_gateway = dev_network->gateway();
     dev_netmask = dev_network->netmask();
@@ -97,6 +98,7 @@ void CabinetService::updateNetInfo()
     ui->addr->setText(dev_ip);
     ui->netmask->setText(dev_netmask);
     ui->gateway->setText(dev_gateway);
+    qDebug()<<"updateNetInfo2";
 }
 
 void CabinetService::initStack()

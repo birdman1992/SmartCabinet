@@ -5,6 +5,7 @@
 #include <QShowEvent>
 #include "cabinetconfig.h"
 #include "Device/Network/qnetinterface.h"
+#include "Device/controldevice.h"
 
 namespace Ui {
 class NetworkSet;

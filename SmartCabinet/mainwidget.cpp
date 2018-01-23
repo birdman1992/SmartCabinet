@@ -693,7 +693,7 @@ void MainWidget::init_huangpo()
         cabinetConf->cabVoice.voicePlay(VOICE_WELCOME);
     }
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
-    qDebug()<<cabinetConf->list_cabinet.count();
+//    qDebug()<<cabinetConf->list_cabinet.count();
 }
 
 MainWidget::~MainWidget()
