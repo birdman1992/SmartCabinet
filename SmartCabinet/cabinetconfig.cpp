@@ -129,6 +129,8 @@ void CabinetConfig::insertGoods(GoodsInfo *info, int row, int col)
 
 void CabinetConfig::syncGoods(GoodsInfo *info, int row, int col)
 {
+    if((screenPos.x() == col) && (screenPos.y() == row))
+        return;
     if((col >= list_cabinet.count()))
         return;
     if(row >= list_cabinet[col]->list_case.count())
