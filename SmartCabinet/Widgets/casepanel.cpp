@@ -25,8 +25,10 @@ void CasePanel::setCheckState(bool checked)
 {
     if(checked)
     {
-        ui->right->setStyleSheet("image: url(:/image/image/icon_check.png);\
-                                 image-position:top right");
+        if(showDoubleCol)
+            ui->right->setStyleSheet("image: url(:/image/image/icon_check.png);image-position:top right");
+        else
+            ui->left->setStyleSheet("image: url(:/image/image/icon_check.png);image-position:top right");
     }
     else
     {

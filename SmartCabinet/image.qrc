@@ -30,6 +30,7 @@
         <file>image/volume.png</file>
         <file>image/warning.png</file>
         <file>image/bg_main_new.png</file>
+        <file>image/bg_main_noname.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>
