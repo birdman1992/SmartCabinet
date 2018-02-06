@@ -405,6 +405,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         casePos.caseIndex = caseIndex;
         win_check->checkStart(casePos);
         config->list_cabinet[cabSeqNum]->checkCase(caseIndex);
+        qDebug()<<"[check]"<<caseIndex;
         clickLock = false;
     }
     else if(config->state == STATE_REBIND)
