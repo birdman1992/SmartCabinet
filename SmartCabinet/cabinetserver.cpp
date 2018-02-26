@@ -338,11 +338,16 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
         qba = QString("{\"optName\":\"%6\",\"li\":[{\"packageBarcode\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"optType\":%4,\"optCount\":%5}]}")
              .arg(id).arg(cabinetId).arg(caseId).arg(3).arg(num).arg(optName).toUtf8();
 
-    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+//    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS);
     qDebug()<<"[goodsAccess]"<<nUrl;
     qDebug()<<qba;
     replyCheck(reply_goods_access);
-    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setUrl(nUrl);
+//    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_goods_access = manager->post(request, qba.toBase64());
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
 
 }
@@ -398,11 +403,16 @@ void CabinetServer::listAccess(QStringList list, int optType)
     }
     else
     {
-        QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+//        QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+        QString nUrl = ApiAddress+QString(API_GOODS_ACCESS);
         qDebug()<<"[listAccess]"<<nUrl;
         qDebug()<<qba;
         replyCheck(reply_goods_access);
-        reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+        QNetworkRequest request;
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+        request.setUrl(nUrl);
+//        reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+        reply_goods_access = manager->post(request, qba.toBase64());
         connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
         free(buff);
     //    qDebug()<<"[list fetch]"<<cJSON_Print(json);
@@ -449,11 +459,15 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
 
-    QString nUrl = ApiAddress+QString(API_GOODS_CHECK)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_GOODS_CHECK);
     qDebug()<<"[goodsCheck]"<<nUrl;
     qDebug()<<qba;
     replyCheck(reply_goods_check);
-    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+//    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setUrl(nUrl);
+    reply_goods_check = manager->post(request, qba.toBase64());
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvGoodsCheck()));
     free(buff);
 }
@@ -480,11 +494,15 @@ void CabinetServer::goodsCheck(QStringList l, CaseAddress)
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
 
-    QString nUrl = ApiAddress+QString(API_GOODS_CHECK)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_GOODS_CHECK);
     qDebug()<<"[goodsCheck]"<<nUrl;
     qDebug()<<qba;
     replyCheck(reply_goods_check);
-    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setUrl(nUrl);
+    reply_goods_check = manager->post(request, qba.toBase64());
+//    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvGoodsCheck()));
     free(buff);
 }
@@ -531,11 +549,16 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
 
-    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
-    qDebug()<<"[goodsAccess]"<<nUrl;
+//    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS);
+    qDebug()<<"[goodsListStore]"<<nUrl;
     qDebug()<<qba;
     replyCheck(reply_goods_access);
-    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setUrl(nUrl);
+//    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_goods_access = manager->post(request, qba.toBase64());
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
     free(buff);
 }

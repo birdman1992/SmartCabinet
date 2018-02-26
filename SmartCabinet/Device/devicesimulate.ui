@@ -254,7 +254,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>20170804-E0601003140-05-6134</string>
+        <string>20170804-A0202006424-10-6134</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_6">
@@ -414,7 +414,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>20170804-E0601003140-05-6134</string>
+        <string>20170804-A0219000247-01-6134</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_16">

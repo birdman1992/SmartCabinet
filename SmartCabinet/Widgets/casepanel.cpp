@@ -32,7 +32,10 @@ void CasePanel::setCheckState(bool checked)
     }
     else
     {
-        ui->right->setStyleSheet("");
+        if(showDoubleCol)
+            ui->right->setStyleSheet("");
+        else
+             ui->left->setStyleSheet("");
     }
 }
 
