@@ -9,7 +9,7 @@ CasePanel::CasePanel(bool doubleCol, QWidget *parent) :
 {
     ui->setupUi(this);
     font = new QFont("微软雅黑");
-    font->setPixelSize(15);
+    font->setPixelSize(14);
     this->setFont(*font);
     list_show.clear();
     showDoubleCol = doubleCol;
