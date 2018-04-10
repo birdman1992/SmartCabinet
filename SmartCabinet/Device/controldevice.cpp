@@ -194,7 +194,7 @@ void ControlDevice::openCase(int seqNum, int index)
 {
     if((seqNum<0) || (seqNum>=config->list_cabinet.count()))
         return;
-    if((index<0) || (seqNum>=config->list_cabinet[seqNum]->list_case.count()))
+    if((index<0) || (index>=config->list_cabinet[seqNum]->list_case.count()))
         return;
 
     int ctrl_seqNum = config->list_cabinet[seqNum]->list_case[index]->ctrlSeq;
