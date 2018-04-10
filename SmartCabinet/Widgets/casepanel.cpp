@@ -8,8 +8,8 @@ CasePanel::CasePanel(bool doubleCol, QWidget *parent) :
     ui(new Ui::CasePanel)
 {
     ui->setupUi(this);
-    font = new QFont("微软雅黑");
-    font->setPixelSize(14);
+    font = new QFont("msyh");
+    font->setPixelSize(12);//另外需要修改cabinet.ui style sheet
     this->setFont(*font);
     list_show.clear();
     showDoubleCol = doubleCol;
@@ -124,6 +124,7 @@ void CasePanel::updatePanel()
     QString right;
     int i = 0;
     int maxLine = getMaxLine()-1;
+    qDebug()<<"[getMaxLine]"<<maxLine;
 
     if(showDoubleCol)
     {

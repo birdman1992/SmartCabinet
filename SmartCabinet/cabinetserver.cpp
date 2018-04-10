@@ -23,6 +23,8 @@
 #define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
 //#define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //盘点接口
 #define API_GOODS_CHECK    "/spd-web/work/Cheset/checkCheset/"      //盘点接口
+#define API_CHECK_CREAT     "/spd-web/work/TakeStock/create/"       //创建盘点
+#define API_CHECK_END       "/spd-web/work/TakeStock/end/"          //结束盘点
 #define API_CHECK_TIME "/spd-web/mapper/Time/query/"
 #define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
 #define API_LIST_CHECK_NEW "/spd-web/work/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW

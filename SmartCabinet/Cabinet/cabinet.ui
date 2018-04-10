@@ -33,7 +33,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgba(0, 0, 0, 0);
-font: 15px &quot;微软雅黑&quot;;</string>
+font: 12px &quot;微软雅黑&quot;;</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="4">
    <property name="spacing">
@@ -67,7 +67,6 @@ font: 15px &quot;微软雅黑&quot;;</string>
      </property>
      <property name="styleSheet">
       <string notr="true">QTableWidget{
-                                   font-size: 5px;
                                        color: rgb(255, 255, 255);    /*前景色：文字颜色*/
                                        border:0px solid gray;  /*边框线的宽度、颜色*/
                                    }</string>

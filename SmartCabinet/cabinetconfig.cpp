@@ -199,7 +199,6 @@ void CabinetConfig::setSysVolem(int vol)
     cmd = "amixer";
     params<<"cset"<<"name=\'Headphone Volume\'"<<QString::number(volTodB(vol));
 #endif
-
     QProcess pro;
     qDebug()<<cmd<<params;
     pro.start(cmd, params);

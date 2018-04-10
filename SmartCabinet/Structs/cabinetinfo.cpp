@@ -140,7 +140,7 @@ void GoodsInfo::resetInfo(GoodsInfo &info)
 
 QString GoodsInfo::nameWithType()
 {
-    return QString(name + QString("(%1)").arg(goodsType));
+    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(goodsType));
 }
 
 GoodsInfo& GoodsInfo::operator=(GoodsInfo &info)
