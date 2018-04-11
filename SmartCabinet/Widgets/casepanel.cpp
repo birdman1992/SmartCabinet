@@ -128,9 +128,12 @@ void CasePanel::updatePanel()
 
     if(showDoubleCol)
     {
+//        if(list_show.count() > maxLine)
         ui->right->show();
+//        else
+//            ui->right->hide();
         for(i=0; i<list_show.count(); i++)
-        {
+        {qDebug()<<maxLine<<i;
             if(i<maxLine)
             {
                 left += getShowStr(list_show.at(i));
@@ -184,5 +187,5 @@ QString CasePanel::getShowStr(GoodsInfo *info)
 int CasePanel::getMaxLine()
 {
     QFontMetrics fontWidth(*font);
-    return ui->left->height()/fontWidth.height();
+    return ui->left->height()/(fontWidth.height()-5);
 }

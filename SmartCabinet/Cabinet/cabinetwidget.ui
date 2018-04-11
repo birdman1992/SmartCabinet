@@ -1886,7 +1886,7 @@ background-color: rgb(36, 221, 149);
         <item>
          <layout class="QHBoxLayout" name="cabinet_layout">
           <property name="spacing">
-           <number>10</number>
+           <number>4</number>
           </property>
           <property name="leftMargin">
            <number>0</number>

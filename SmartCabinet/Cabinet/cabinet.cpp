@@ -533,8 +533,8 @@ QString Cabinet::cellStyle(QColor rgb)
 {
     QString ret = QString("color:rgb(255,255,255);\
                           background-color: rgb(%1, %2, %3);\
-            margin-top:5px;\
-            margin-bottom:5px;").arg(rgb.red()).arg(rgb.green()).arg(rgb.blue());
+            margin-top:2px;\
+            margin-bottom:2px;").arg(rgb.red()).arg(rgb.green()).arg(rgb.blue());
             return ret;
 }
 

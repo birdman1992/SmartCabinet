@@ -436,7 +436,7 @@ void CabinetService::updateBtn()
 void CabinetService::on_rebind_clicked()
 {
     config->state = STATE_REBIND;
-    config->list_cabinet[0]->showMsg(MSG_REBIND_SCAN,0);
+    config->showMsg(MSG_REBIND_SCAN,0);
     emit winSwitch(INDEX_CAB_SHOW);
 }
 

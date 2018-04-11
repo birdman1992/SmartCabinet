@@ -412,12 +412,12 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     {
         emit requireOpenCase(cabSeqNum, caseIndex);
 
-        if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
-        {
-            caseUnlock();
-            config->showMsg(MSG_FULL, 1);
-            return;
-        }
+//        if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
+//        {
+//            caseUnlock();
+//            config->showMsg(MSG_FULL, 1);
+//            return;
+//        }
 
         if(rebindGoods == NULL)
         {
