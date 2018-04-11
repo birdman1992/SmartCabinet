@@ -269,6 +269,14 @@ bool CabinetConfig::getCodeScanState()
     return codeScanIsOk;
 }
 
+bool CabinetConfig::isScreen(int seq, int _index)
+{
+    if((seq == screenPos.x()) && (_index == screenPos.y()))
+        return true;
+    else
+        return false;
+}
+
 bool CabinetConfig::sleepFlagTimeout()
 {
     if(sleepFlag == 0)

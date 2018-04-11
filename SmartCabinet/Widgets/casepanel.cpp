@@ -124,7 +124,7 @@ void CasePanel::updatePanel()
     QString right;
     int i = 0;
     int maxLine = getMaxLine()-1;
-    qDebug()<<"[getMaxLine]"<<maxLine;
+//    qDebug()<<"[getMaxLine]"<<maxLine;
 
     if(showDoubleCol)
     {
@@ -133,7 +133,7 @@ void CasePanel::updatePanel()
 //        else
 //            ui->right->hide();
         for(i=0; i<list_show.count(); i++)
-        {qDebug()<<maxLine<<i;
+        {
             if(i<maxLine)
             {
                 left += getShowStr(list_show.at(i));

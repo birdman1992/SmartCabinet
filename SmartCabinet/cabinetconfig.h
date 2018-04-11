@@ -57,6 +57,7 @@ public:
     bool getCardReaderState();
     void setCodeScanState(bool ok);
     bool getCodeScanState();
+    bool isScreen(int seq, int _index);
     bool sleepFlagTimeout();//唤醒超时检查
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户

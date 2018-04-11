@@ -901,7 +901,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.2.6.20180411_beta</string>
+        <string>VERSION: 1.2.7.20180411_beta</string>
        </property>
       </widget>
       <widget class="QFrame" name="frame_6">

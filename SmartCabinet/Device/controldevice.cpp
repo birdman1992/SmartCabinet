@@ -192,6 +192,7 @@ void ControlDevice::comRfidInit(int baudRate, int dataBits, int Parity, int stop
 
 void ControlDevice::openCase(int seqNum, int index)
 {
+    qDebug()<<"openCase"<<seqNum<<index;
     if((seqNum<0) || (seqNum>=config->list_cabinet.count()))
         return;
     if((index<0) || (index>=config->list_cabinet[seqNum]->list_case.count()))

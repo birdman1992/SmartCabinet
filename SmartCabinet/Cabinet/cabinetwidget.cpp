@@ -298,7 +298,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     config->wakeUp(TIMEOUT_BASE);
 //    qDebug()<<config->getCabinetId();
 //    emit requireOpenCase(cabSeqNum, caseIndex);
-    if((cabSeqNum == 0) && (caseIndex == 1))
+    if(config->isScreen(cabSeqNum, caseIndex))
         return;
     if(clickLock && (config->state != STATE_REBIND))//锁定状态下点击无效
     {
