@@ -62,6 +62,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     win_ctrl_config->installGlobalConfig(config);
+    ui->insert_pos->setMaximum(config->list_cabinet.count()-1);
     return true;
 }
 
@@ -247,6 +248,11 @@ void CabinetService::showVerInfo()
     printf("************************************\n\n\n");
     printf("%s\n",info.data());
     printf("\n\n************************************\n");
+}
+
+void CabinetService::inserCol(int pos, int num)
+{
+
 }
 
 void CabinetService::initNetwork()
@@ -463,4 +469,17 @@ void CabinetService::on_server_addr_editingFinished()
     }
 }
 
+void CabinetService::on_insert_clicked()
+{
+    inserCol(ui->insert_pos->value(), ui->insert_num->value());
+}
 
+void CabinetService::on_insert_pos_valueChanged(int arg1)
+{
+    ui->insert_num->setMaximum(config->list_cabinet.count() - arg1);
+}
+
+void CabinetService::on_insert_num_valueChanged(int arg1)
+{
+    ui->insert_pos->setMaximum(config->list_cabinet.count() - arg1);
+}

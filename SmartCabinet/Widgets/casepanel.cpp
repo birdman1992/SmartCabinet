@@ -128,10 +128,10 @@ void CasePanel::updatePanel()
 
     if(showDoubleCol)
     {
-//        if(list_show.count() > maxLine)
-        ui->right->show();
-//        else
-//            ui->right->hide();
+        if(list_show.count() > maxLine)
+            ui->right->show();
+        else
+            ui->right->hide();
         for(i=0; i<list_show.count(); i++)
         {
             if(i<maxLine)

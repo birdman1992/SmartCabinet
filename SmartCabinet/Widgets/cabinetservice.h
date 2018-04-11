@@ -55,6 +55,12 @@ private slots:
 
     void on_server_addr_editingFinished();
 
+    void on_insert_clicked();
+
+    void on_insert_pos_valueChanged(int arg1);
+
+    void on_insert_num_valueChanged(int arg1);
+
 public slots:
     void ctrl_boardcast();//广播控制
 
@@ -78,6 +84,7 @@ private:
     void initGroup();
     void creatCtrlConfig();
     void showVerInfo();
+    void inserCol(int pos, int num);
 
     void showEvent(QShowEvent*);
     bool eventFilter(QObject *w, QEvent *e);

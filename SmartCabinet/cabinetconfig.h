@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QList>
+#include <QTime>
 #include "Structs/userinfo.h"
 #include "Structs/cabinetinfo.h"
 #include "Structs/caseaddress.h"

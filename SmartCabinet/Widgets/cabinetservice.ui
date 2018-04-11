@@ -18,7 +18,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#CabinetService{
-background-color: rgba(206, 206, 206, 80);
+background-color: rgb(206, 206, 206);
 }</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,10">
@@ -901,7 +901,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.2.7.20180411_beta</string>
+        <string>VERSION: 1.2.8.20180411_beta</string>
        </property>
       </widget>
       <widget class="QFrame" name="frame_6">

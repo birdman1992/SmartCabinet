@@ -180,7 +180,7 @@ void CabinetConfig::setServerAddress(QString addr)
 int CabinetConfig::getSysVolem()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    return settings.value("vol", QVariant(90)).toInt();
+    return settings.value("vol", QVariant(100)).toInt();
 }
 
 void CabinetConfig::setSysVolem(int vol)
@@ -284,6 +284,7 @@ bool CabinetConfig::sleepFlagTimeout()
 
     timeoutFlag++;
     qDebug()<<"[sleepFlagTimeout]"<<timeoutFlag<<sleepFlag;
+    qDebug()<<QTime::currentTime().toString("hh:mm:ss");
 
     return (timeoutFlag >= sleepFlag);//超时
 }
