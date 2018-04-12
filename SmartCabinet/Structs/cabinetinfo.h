@@ -28,6 +28,7 @@ class CabinetInfo//单个柜格的耗材信息
 {
 public:
     CabinetInfo();
+    void clearList();
     int caseSearch(QString name);
     int barcodeSearch(QString id);
     int goodsIdSearch(QString id);

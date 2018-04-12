@@ -252,7 +252,7 @@ void CabinetService::showVerInfo()
 
 void CabinetService::inserCol(int pos, int num)
 {
-
+    emit requireInsertCol(pos, num);
 }
 
 void CabinetService::initNetwork()
@@ -379,6 +379,19 @@ void CabinetService::ctrl_boardcast()
     }
 }
 
+void CabinetService::recvInsertColResult(bool success)
+{
+    ui->insert->setEnabled(true);
+    if(success)
+    {
+        ui->insert->setText("插入\n成功");
+    }
+    else
+    {
+        ui->insert->setText("插入\n失败");
+    }
+}
+
 void CabinetService::on_clear_clicked()
 {
     emit requireClear();
@@ -471,7 +484,17 @@ void CabinetService::on_server_addr_editingFinished()
 
 void CabinetService::on_insert_clicked()
 {
-    inserCol(ui->insert_pos->value(), ui->insert_num->value());
+    if(ui->insert->text().indexOf("插入") != -1)
+    {
+        ui->insert->setText("确定");
+        return;
+    }
+    else
+    {
+        ui->insert->setText("正在插入");
+        ui->insert->setEnabled(false);
+        inserCol(ui->insert_pos->value(), ui->insert_num->value());
+    }
 }
 
 void CabinetService::on_insert_pos_valueChanged(int arg1)

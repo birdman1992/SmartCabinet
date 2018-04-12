@@ -137,13 +137,13 @@ void CasePanel::updatePanel()
             if(i<maxLine)
             {
                 left += getShowStr(list_show.at(i));
-                if(i<maxLine-1)
+                if(i<(maxLine-1)&&(i<list_show.count()-1))
                     left += "\n";
             }
             else if(i<(2*maxLine))
             {
                 right += getShowStr(list_show.at(i));
-                if(i<(2*maxLine-1))
+                if(i<(2*maxLine-1)&&(i<list_show.count()-1))
                     right += "\n";
             }
             else
@@ -160,7 +160,7 @@ void CasePanel::updatePanel()
             if(i<maxLine)
             {
                 left += getShowStr(list_show.at(i));
-                if(i<maxLine-1)
+                if((i<maxLine-1) && (i<list_show.count()-1))
                     left += "\n";
             }
             else

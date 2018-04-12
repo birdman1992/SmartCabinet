@@ -10,6 +10,14 @@ CabinetInfo::CabinetInfo()
     ctrlSeq = 0;
 }
 
+void CabinetInfo::clearList()
+{
+    if(list_goods.isEmpty())
+        return;
+    qDeleteAll(list_goods.begin(),list_goods.end());
+    list_goods.clear();
+}
+
 int CabinetInfo::caseSearch(QString name)
 {
     int i = 0;

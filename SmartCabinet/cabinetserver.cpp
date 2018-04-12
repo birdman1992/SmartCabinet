@@ -16,6 +16,7 @@
 #define API_INFO_REQ "/spd-web/mapper/SmartCheset/query/"      //柜子信息查询接口
 #define API_CLONE_REQ "/spd-web/work/Cheset/syncCheset/"     //柜子克隆请求接口
 #define API_CLONE_SYNC  ""      //柜子克隆数据同步接口
+#define API_INSERT_COL "/spd-web/work/Cheset/doUpdateChesetCol/"//列插入接口
 #define API_LOGIN "/spd-web/mapper/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/spd-web/work/OutStorage/query/goods/" //送货单检查接口
 #define API_LIST_STORE "/spd-web/mapper/OutStorage/query/"      //存入完毕销单接口
@@ -46,6 +47,8 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_list_state = NULL;
     reply_cabinet_info = NULL;
     reply_cabinet_clone = NULL;
+    reply_update_col = NULL;
+    needClearBeforeClone = false;
     list_access_cache.clear();
     apiState = 0;
     needReqCar = true;
@@ -302,6 +305,17 @@ void CabinetServer::cabInfoSync()
     reply_cabinet_clone = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_clone, SIGNAL(finished()), this, SLOT(recvCabSync()));
     qDebug()<<"[cabInfoSync]"<<nUrl<<qba;
+}
+
+void CabinetServer::cabColInsert(int pos, int num)
+{
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"dapartCode\":\"105342\",\"col\":[\"%1\",\"%2\"]}").arg(pos).arg(num).toUtf8();
+    QString nUrl = ApiAddress+QString(API_INSERT_COL)+"?"+qba.toBase64();
+    replyCheck(reply_update_col);
+    reply_update_col = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_update_col, SIGNAL(finished()), this, SLOT(recvColInsert()));
+    qDebug()<<"[cabColInsert]"<<nUrl<<qba;
 }
 
 void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
@@ -1116,6 +1130,12 @@ void CabinetServer::recvCabSync()
             cJSON_Delete(json);
             return;
         }
+        if(needClearBeforeClone)
+        {
+            needClearBeforeClone = false;
+            config->clearGoodsConfig();
+            emit insertRst(true);
+        }
         int listSize = cJSON_GetArraySize(json_data);
         int i = 0;
 
@@ -1155,6 +1175,34 @@ void CabinetServer::recvCabSync()
     }
     emit cabSyncResult(true);
     cJSON_Delete(json);
+}
+
+void CabinetServer::recvColInsert()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_update_col->readAll());
+    reply_update_col->deleteLater();
+    reply_update_col = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvColInsert]"<<cJSON_Print(json);
+//    return;
+    if(!json)
+    {
+        cJSON_Delete(json);
+        return;
+    }
+    netFlag = true;
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+//        config->clearGoodsConfig();
+        needClearBeforeClone = true;
+        cabInfoSync();
+    }
+    else
+    {
+        emit insertRst(false);
+    }
 }
 
 void CabinetServer::netTimeout()

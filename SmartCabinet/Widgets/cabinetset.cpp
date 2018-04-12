@@ -360,6 +360,7 @@ void CabinetSet::on_savePos_clicked()
     config->setScreenPos(screenPos.x(),screenPos.y());
 //    config->creatCabinetConfig(cabinet_pos);
     config->creatCabinetConfig(list_layout, screenPos);
+    config->readCabinetConfig();
     initStep |= (1<<1);
     ui->posMsg->setText("保存成功");
     qDebug()<<"creat over";

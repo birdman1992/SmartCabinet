@@ -30,6 +30,7 @@ public:
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 signals:
+    void requireInsertCol(int, int);
     void winSwitch(int);
     void requireOpenLock(int seqNum, int lockId);
     void requireClear();
@@ -63,6 +64,7 @@ private slots:
 
 public slots:
     void ctrl_boardcast();//广播控制
+    void recvInsertColResult(bool success);
 
 private:
     Ui::CabinetService *ui;

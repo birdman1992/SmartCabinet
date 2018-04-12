@@ -31,6 +31,7 @@ public:
     CabinetConfig();
     ~CabinetConfig();
     void saveFetchList(QByteArray _data);
+    void readCabinetConfig();//读取柜子配置
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
     void setScreenPos(int col, int row);
@@ -67,6 +68,7 @@ public:
     bool checkManagers(QString userId);//管理员校验
 //    void creatCabinetConfig(QByteArray);//创建智能柜配置文件
     void creatCabinetConfig(QStringList cabLayout, QPoint screenPos);
+    void clearGoodsConfig();
 //    void writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo* info);
     CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置,如未搜索到，返回坐标为-1
     CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
@@ -106,7 +108,7 @@ private:
     QString optName;//操作者卡号
 
     void readUserConfig();//读取用户配置
-    void readCabinetConfig();//读取柜子配置
+
     void addNewUser(UserInfo* info);
     void restart();//重启自身
 

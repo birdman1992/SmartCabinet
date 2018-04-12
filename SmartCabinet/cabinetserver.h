@@ -41,6 +41,7 @@ private:
     QNetworkReply* reply_list_state;
     QNetworkReply* reply_cabinet_info;
     QNetworkReply* reply_cabinet_clone;
+    QNetworkReply* reply_update_col;
     QString regId;
     QString logId;
     QString barCode;
@@ -48,6 +49,7 @@ private:
     bool timeIsChecked;
     bool needReqCar;
     bool needSaveAddress;
+    bool needClearBeforeClone;
     bool networkState;
     bool netFlag;
     QTimer sysClock;
@@ -86,6 +88,7 @@ signals:
     void newGoodsCar(GoodsCar);
     void netState(bool);//true:连接  false:断开
     void sysLock();//锁定系统
+    void insertRst(bool success);
 
 public slots:
     void cabRegister();
@@ -96,6 +99,7 @@ public slots:
     void cabInfoReq();//柜子信息查询
     void cabCloneReq(QString oldCabinetId);//柜子克隆请求
     void cabInfoSync();//柜子数据同步
+    void cabColInsert(int pos, int num);
     void cabinetBind(int, int, QString);
     void goodsAccess(CaseAddress, QString, int, int optType);
     void listAccess(QStringList list, int optType);
@@ -122,6 +126,7 @@ private slots:
     void recvInfoUploadResult();
     void recvCabClone();
     void recvCabSync();
+    void recvColInsert();
     void netTimeout();
     int watchdogTimeout();
 };

@@ -53,6 +53,7 @@ public:
     bool isInLeft();//true:柜子在主柜左边 false:柜子在主柜右边
     void searchByPinyin(QString ch);
     void clearSearch();
+    void clearGoods();
 
     QList<CabinetInfo*> list_case;//柜格列表
 

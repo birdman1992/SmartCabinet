@@ -521,12 +521,12 @@ void CabinetConfig::readCabinetConfig()
                 settings.setArrayIndex(k);
                 GoodsInfo* info = new GoodsInfo;
                 info->abbName = settings.value("abbName", QString()).toString();
-                info->name = settings.value("name").toString();
+                info->name = settings.value("name", QString()).toString();
                 info->outNum = 0;
-                info->num = settings.value("num").toInt();
-                info->id = settings.value("id").toString();
-                info->unit = settings.value("unit").toString();
-                info->packageId = settings.value("packageId").toString();
+                info->num = settings.value("num", 0).toInt();
+                info->id = settings.value("id", QString()).toString();
+                info->unit = settings.value("unit", QString()).toString();
+                info->packageId = settings.value("packageId",QString()).toString();
                 info->goodsType = getGoodsType(info->packageId);
                 info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
                 list_cabinet[i]->addCase(info,j,(cabNum <= 5));
@@ -624,7 +624,26 @@ void CabinetConfig::creatCabinetConfig(QStringList cabLayout, QPoint screenPos)
     }
     settings.sync();
 
-    readCabinetConfig();
+//    readCabinetConfig();
+}
+
+void CabinetConfig::clearGoodsConfig()
+{
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    QStringList groups = settings.childGroups();
+    foreach(QString str, groups)
+    {
+        if(str.indexOf("Cabinet") != -1)
+        {
+            settings.remove(str);
+        }
+    }
+    foreach(Cabinet* cab, list_cabinet)
+    {
+        cab->clearGoods();
+    }
+    creatCabinetConfig(settings.value("cabLayout").toString().split("#", QString::SkipEmptyParts), screenPos);
+    qDebug()<<"[clearGoodsConfig]"<<list_cabinet.count()<<list_cabinet[0]->list_case.count();
 }
 
 //void CabinetConfig::writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo *info)
