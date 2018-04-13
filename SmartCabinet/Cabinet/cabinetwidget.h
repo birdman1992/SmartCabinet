@@ -58,6 +58,7 @@ public slots:
     void readyGoodsList(QString listCode);
     void sysLock();
     void recvCabSyncResult(bool);
+    void recvCheckRst(bool);
 
 signals:
     void winSwitch(int);
@@ -76,6 +77,8 @@ signals:
     void storeList(QList<CabinetStoreListItem*>);
     void requireTimeout();
     void requireCabSync();
+    void requireGoodsCheck();
+    void goodsCheckFinish();
 
 private slots:
     void setMenuHide(bool ishide);

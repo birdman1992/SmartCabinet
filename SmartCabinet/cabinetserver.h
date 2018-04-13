@@ -59,6 +59,7 @@ private:
     UserInfo* cur_manager;
     int apiState;
     int fWatchdog;
+    int checkId;//盘点返回id
     QList<QByteArray> list_access_cache;
 
 
@@ -83,6 +84,7 @@ signals:
     void regResult(bool);
     void cloneResult(bool, QString);
     void cabSyncResult(bool);
+    void checkCreatRst(bool);
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);
@@ -103,6 +105,8 @@ public slots:
     void cabinetBind(int, int, QString);
     void goodsAccess(CaseAddress, QString, int, int optType);
     void listAccess(QStringList list, int optType);
+    void goodsCheckReq();
+    void goodsCheckFinish();
     void goodsBack(QString);//退货
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
     void goodsCheck(QStringList l, CaseAddress);
@@ -119,6 +123,8 @@ private slots:
     void recvGoodsAccess();
     void recvListAccess();
     void recvGoodsCheck();
+    void recvCheckCreat();
+    void recvCheckFinish();
     void recvGoodsBack();
     void recvDateTime();
     void recvDateTimeError(QNetworkReply::NetworkError code);

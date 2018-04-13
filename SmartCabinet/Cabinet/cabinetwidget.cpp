@@ -736,19 +736,21 @@ void CabinetWidget::on_check_clicked(bool checked)
 {
     if(checked)
     {
-        config->state = STATE_CHECK;
-        waitForCodeScan = true;
-        waitForGoodsListCode = false;
-        config->showMsg(MSG_CHECK,false);
-        clickLock = false;
-        clearMenuState();
-        ui->check->setChecked(true);
-        config->wakeUp(TIMEOUT_CHECK);
+//        config->state = STATE_CHECK;
+//        waitForCodeScan = true;
+//        waitForGoodsListCode = false;
+        config->showMsg(MSG_CHECK_CREAT,false);
+        emit requireGoodsCheck();
+//        clickLock = false;
+//        clearMenuState();
+//        ui->check->setChecked(true);
+//        config->wakeUp(TIMEOUT_CHECK);
     }
     else
     {
         config->clearSearch();//重置单元格状态
         cabLock();
+        emit goodsCheckFinish();
     }
 }
 
@@ -1126,6 +1128,28 @@ void CabinetWidget::recvCabSyncResult(bool rst)
         ui->syncMsg->setText("智能柜数据同步失败");
 
     QTimer::singleShot(3000, this, SLOT(syncMsgTimeout()));
+}
+
+void CabinetWidget::recvCheckRst(bool success)
+{
+    if(success)
+    {
+        if(!ui->check->isChecked())
+            return;
+        config->state = STATE_CHECK;
+        waitForCodeScan = true;
+        waitForGoodsListCode = false;
+        config->showMsg(MSG_CHECK,false);
+        clickLock = false;
+        clearMenuState();
+        ui->check->setChecked(true);
+        config->wakeUp(TIMEOUT_CHECK);
+    }
+    else
+    {
+        config->showMsg(MSG_CHECK_CREAT_FAILED,false);
+        ui->check->setChecked(false);
+    }
 }
 
 void CabinetWidget::setMenuHide(bool ishide)

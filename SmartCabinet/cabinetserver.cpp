@@ -55,6 +55,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     needReqCar = true;
     needSaveAddress = false;
     fWatchdog = -1;
+    checkId = -1;
 #ifndef SIMULATE_ON
     watchdogStart();
 #endif
@@ -435,6 +436,30 @@ void CabinetServer::listAccess(QStringList list, int optType)
         free(buff);
     //    qDebug()<<"[list fetch]"<<cJSON_Print(json);
     }
+}
+
+void CabinetServer::goodsCheckReq()
+{
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
+    QString nUrl = ApiAddress+QString(API_CHECK_CREAT)+"?"+qba.toBase64();
+    replyCheck(reply_goods_check);
+    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvCheckCreat()));
+    qDebug()<<"[goodsCheckCreat]"<<nUrl<<qba;
+}
+
+void CabinetServer::goodsCheckFinish()
+{
+    if(checkId == -1)
+        return;
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"id\":\"%1\"}").arg(checkId).toUtf8();
+    QString nUrl = ApiAddress+QString(API_CHECK_END)+"?"+qba.toBase64();
+    replyCheck(reply_goods_check);
+    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvCheckFinish()));
+    qDebug()<<"[goodsCheckFinish]"<<nUrl<<qba;
 }
 
 void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
@@ -920,7 +945,7 @@ void CabinetServer::recvGoodsCheck()
     reply_goods_check = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<cJSON_Print(json);
+    qDebug()<<"[recvGoodsCheck]"<<cJSON_Print(json);
     if(!json)
         return;
 
@@ -932,6 +957,57 @@ void CabinetServer::recvGoodsCheck()
     else
     {
         emit goodsCheckRst(QString(cJSON_GetObjectItem(json, "msg")->valuestring));
+    }
+
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvCheckCreat()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_goods_check->readAll());
+    reply_goods_check->deleteLater();
+    reply_goods_check = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvCheckCreat]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        emit checkCreatRst(true);
+        cJSON* jData = cJSON_GetObjectItem(json, "data");
+        checkId = cJSON_GetObjectItem(jData,"id")->valueint;
+    }
+    else
+    {
+        emit checkCreatRst(false);
+    }
+
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvCheckFinish()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_goods_check->readAll());
+    reply_goods_check->deleteLater();
+    reply_goods_check = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvCheckFinish]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        qDebug()<<"check finished.";
+    }
+    else
+    {
+        qDebug()<<"check not finished, resend after 30s.";
+        QTimer::singleShot(3000, this, SLOT(goodsCheckReq()));
     }
 
     cJSON_Delete(json);
