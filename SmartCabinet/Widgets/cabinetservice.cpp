@@ -500,9 +500,10 @@ void CabinetService::on_insert_clicked()
 void CabinetService::on_insert_pos_valueChanged(int arg1)
 {
     ui->insert_num->setMaximum(config->list_cabinet.count() - arg1);
+    ui->insert_num->setMinimum(arg1-config->list_cabinet.count());
 }
 
 void CabinetService::on_insert_num_valueChanged(int arg1)
 {
-    ui->insert_pos->setMaximum(config->list_cabinet.count() - arg1);
+    ui->insert_pos->setMaximum(config->list_cabinet.count() - qAbs(arg1));
 }

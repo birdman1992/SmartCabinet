@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "defines.h"
 #include "Device/controldevice.h"
+//#define RECV_DEBUG
 
 //#define SERVER_ADDR "http://175.11.185.181"
 #define SERVER_ADDR "http://120.77.159.8:8080"
@@ -310,7 +311,7 @@ void CabinetServer::cabInfoSync()
 void CabinetServer::cabColInsert(int pos, int num)
 {
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"dapartCode\":\"105342\",\"col\":[\"%1\",\"%2\"]}").arg(pos).arg(num).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\",\"col\":[\"%2\",\"%3\"]}").arg(cabId).arg(pos).arg(num).toUtf8();
     QString nUrl = ApiAddress+QString(API_INSERT_COL)+"?"+qba.toBase64();
     replyCheck(reply_update_col);
     reply_update_col = manager->get(QNetworkRequest(QUrl(nUrl)));
@@ -409,6 +410,7 @@ void CabinetServer::listAccess(QStringList list, int optType)
     QByteArray optId = config->getOptId().toLocal8Bit();
     cJSON_AddItemToObject(json,"optName", cJSON_CreateString(optId.data()));
     char* buff = cJSON_Print(json);
+
     cJSON_Delete(json);
     QByteArray qba = QByteArray(buff);
 

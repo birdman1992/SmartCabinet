@@ -999,6 +999,9 @@ font:20px&quot;微软雅黑&quot;;
               </item>
               <item>
                <widget class="QSpinBox" name="insert_num">
+                <property name="minimum">
+                 <number>-2</number>
+                </property>
                 <property name="maximum">
                  <number>2</number>
                 </property>
