@@ -224,6 +224,16 @@ void Cabinet::updateCase(int caseIndex)
     lab->setText(list_case.at(caseIndex)->list_goods);
 }
 
+void Cabinet::updateCabinet()
+{
+    int i=0;
+    for(i=0; i<list_case.count(); i++)
+    {
+        if(!(isMainCabinet && (i == screenPos)))
+            updateCase(i);
+    }
+}
+
 void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
 {
     qDebug()<<"setCtrlWord"<<seqNum<<caseIndex<<seq.toHex()<<index.toHex();

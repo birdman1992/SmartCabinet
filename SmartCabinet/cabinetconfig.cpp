@@ -641,6 +641,7 @@ void CabinetConfig::clearGoodsConfig()
     foreach(Cabinet* cab, list_cabinet)
     {
         cab->clearGoods();
+        cab->updateCabinet();
     }
     creatCabinetConfig(settings.value("cabLayout").toString().split("#", QString::SkipEmptyParts), screenPos);
     qDebug()<<"[clearGoodsConfig]"<<list_cabinet.count()<<list_cabinet[0]->list_case.count();

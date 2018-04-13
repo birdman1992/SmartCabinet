@@ -250,9 +250,13 @@ void CabinetService::showVerInfo()
     printf("\n\n************************************\n");
 }
 
-void CabinetService::inserCol(int pos, int num)
+bool CabinetService::inserCol(int pos, int num)
 {
-    emit requireInsertCol(pos, num);
+    if(!(pos+num))
+        return false;
+    else
+        emit requireInsertCol(pos, num);
+    return true;
 }
 
 void CabinetService::initNetwork()
@@ -493,7 +497,11 @@ void CabinetService::on_insert_clicked()
     {
         ui->insert->setText("正在插入");
         ui->insert->setEnabled(false);
-        inserCol(ui->insert_pos->value(), ui->insert_num->value());
+        if(!inserCol(ui->insert_pos->value(), ui->insert_num->value()))
+        {
+            ui->insert->setText("确定");
+            ui->insert->setEnabled(true);
+        }
     }
 }
 

@@ -86,7 +86,7 @@ private:
     void initGroup();
     void creatCtrlConfig();
     void showVerInfo();
-    void inserCol(int pos, int num);
+    bool inserCol(int pos, int num);
 
     void showEvent(QShowEvent*);
     bool eventFilter(QObject *w, QEvent *e);

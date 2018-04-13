@@ -1114,7 +1114,7 @@ void CabinetServer::recvCabSync()
     reply_cabinet_clone = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<"[recvCabClone]"<<cJSON_Print(json);
+    qDebug()<<"[recvCabSync]"<<cJSON_Print(json);
 //    return;
     if(!json)
     {

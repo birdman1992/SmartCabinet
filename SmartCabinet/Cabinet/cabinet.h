@@ -37,6 +37,7 @@ public:
     void checkCase(int index);
     void addCase(GoodsInfo *info, int caseIndex, bool doubleCol);//用于读取配置信息添加到信息列表尾部
     void updateCase(int caseIndex);
+    void updateCabinet();
     void setCtrlWord(int caseIndex, QByteArray seq, QByteArray index);
     int getMaxshowNum(int caseIndex);
     bool haveEmptyPos(int caseIndex);
