@@ -1169,7 +1169,6 @@ void CabinetServer::recvCabClone()
 
             if(info->abbName.isEmpty())
                 info->abbName = getAbbName(info->name);
-
 //            qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->id<<info->packageId<<info->num<<info->unit;
             config->insertGoods(info, row, col);
         }

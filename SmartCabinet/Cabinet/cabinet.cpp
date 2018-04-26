@@ -386,6 +386,8 @@ void Cabinet::showMsg(QString msg, bool iswarnning)
 
 void Cabinet::setCaseName(GoodsInfo info, int index)
 {
+    if(index>=list_case.count())
+        return;
     QSettings settings(CONF_CABINET, QSettings::IniFormat);
     settings.beginGroup(QString("Cabinet%1").arg(seqNum));
     int arr_size = settings.beginReadArray(QString("case%1").arg(index));
@@ -393,7 +395,7 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     bool isEmpty = settings.value("name").toString().isEmpty();
     settings.endArray();
     settings.beginWriteArray(QString("case%1").arg(index));
-    qDebug()<<"[setCaseName]"<<"caseindex:"<<index<<"goodsindex"<<arr_size;
+    qDebug()<<"[setCaseName]"<<"seq"<<seqNum<<"caseindex:"<<index<<"goodsindex"<<arr_size;
     qDebug()<<"is empty"<<isEmpty;
     if(isEmpty)
         settings.setArrayIndex(0);
@@ -411,9 +413,9 @@ void Cabinet::setCaseName(GoodsInfo info, int index)
     settings.sync();
 
     GoodsInfo* gInfo = new GoodsInfo(info);
-    list_case.at(index)->list_goods<<gInfo;//qDebug("1");
+    list_case.at(index)->list_goods<<gInfo;
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);//qDebug()<<lab->labWidth();
-    lab->setText(list_case.at(index)->list_goods);//qDebug("3");
+    lab->setText(list_case.at(index)->list_goods);
 //    ui->tableWidget->item(index,0)->setText(list_case.at(index)->caseShowStr());
 //    list_case.at(index)->name = info.name;
 //    list_case.at(index)->id = info.id;
