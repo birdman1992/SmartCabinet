@@ -59,9 +59,9 @@ int get_dev_info(char *dev_name,USBINFO* uInfo)
 		uInfo->vid = info.vendor;
 		uInfo->pid = info.product;
      //  printf("Raw Info:\n");
-     //   printf("\tbustype: %d (%s)\n",info.bustype, bus_str(info.bustype));
-     //   printf("\tvendor: 0x%04hx\n", info.vendor);
-     //   printf("\tproduct: 0x%04hx\n", info.product);
+      //  printf("\tbustype: %d (%s)\n",info.bustype, bus_str(info.bustype));
+       // printf("\tvendor: 0x%04hx\n", info.vendor);
+        //printf("\tproduct: 0x%04hx\n", info.product);
     }
     close(fd);
     return 0;
@@ -125,6 +125,9 @@ int get_path(void)
 						snprintf(dev_path[0],20,"%s",path);
 					else if(usb_info->vid==1155 && usb_info->pid==17)	// scan
 						snprintf(dev_path[1],20,"%s",path);
+                    else if(usb_info->vid==8208 && usb_info->pid==30264)	// new scan
+						snprintf(dev_path[1],20,"%s",path);
+
 					printf("vid: %lu\t,pid: %lu\n",usb_info->vid,usb_info->pid);
 					memset(path,0x00,24);
 				}

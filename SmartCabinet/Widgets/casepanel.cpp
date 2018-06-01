@@ -136,13 +136,19 @@ void CasePanel::updatePanel()
         {
             if(i<maxLine)
             {
-                left += getShowStr(list_show.at(i));
+                QString str = getShowStr(list_show.at(i));
+                if(str.isEmpty())
+                    continue;
+                left += str;
                 if(i<(maxLine-1)&&(i<list_show.count()-1))
                     left += "\n";
             }
             else if(i<(2*maxLine))
             {
-                right += getShowStr(list_show.at(i));
+                QString str = getShowStr(list_show.at(i));
+                if(str.isEmpty())
+                    continue;
+                right += str;
                 if(i<(2*maxLine-1)&&(i<list_show.count()-1))
                     right += "\n";
             }
@@ -159,7 +165,10 @@ void CasePanel::updatePanel()
         {
             if(i<maxLine)
             {
-                left += getShowStr(list_show.at(i));
+                QString str = getShowStr(list_show.at(i));
+                if(str.isEmpty())
+                    continue;
+                left += str;
                 if((i<maxLine-1) && (i<list_show.count()-1))
                     left += "\n";
             }
@@ -172,6 +181,8 @@ void CasePanel::updatePanel()
 
 QString CasePanel::getShowStr(GoodsInfo *info)
 {
+    if(info->num == 0)
+        return QString();
     QString str = info->name;
     QString strTail = QString("×%1").arg(info->num);
 

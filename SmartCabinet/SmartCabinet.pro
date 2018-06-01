@@ -10,6 +10,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = SmartCabinet
 TEMPLATE = app
+target.path = /home
+INSTALLS += target
 
 
 SOURCES += main.cpp\
