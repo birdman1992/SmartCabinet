@@ -53,6 +53,7 @@ void Cabinet::CabinetInit(QString cLayout, int seq, int sPos)
     screenPos = sPos;
     cabLayout = cLayout;
     isMainCabinet = (screenPos>=0);
+    qDebug()<<"isMainCabinet"<<isMainCabinet<<screenPos;
 
     if(!isMainCabinet)
     {
@@ -193,6 +194,11 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
     if(caseIndex<list_case.count())
     {
         list_case.at(caseIndex)->list_goods<<info;
+        if(caseIndex == screenPos)
+        {
+            qDebug()<<"[screen pos]";
+            return;
+        }
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
 //        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(caseIndex,0);
 //        lab->setWordWrap(true);
@@ -205,7 +211,8 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
         if(!info->name.isEmpty())
             cabInfo->list_goods<<info;
         list_case<<cabInfo;
-        if(isMainCabinet && (caseIndex == 1))
+
+        if(isMainCabinet && (caseIndex == screenPos))
             return;
         CasePanel* lab = new CasePanel(doubleCol);
         lab->setText(list_case.at(caseIndex)->list_goods);//->caseShowStr(lab->caseFont(), caseWidth/2));
