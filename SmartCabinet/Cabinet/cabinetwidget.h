@@ -79,6 +79,7 @@ signals:
     void requireCabSync();
     void requireGoodsCheck();
     void goodsCheckFinish();
+    void requireCheckShow();
 
 private slots:
     void setMenuHide(bool ishide);
@@ -97,6 +98,7 @@ private slots:
     void on_refund_clicked(bool checked);
     void on_cut_clicked();
     void on_check_clicked(bool checked);
+    void on_check_toggled(bool checked);
     void on_search_clicked();
     void on_search_back_clicked();
     void on_searchClear_clicked();
@@ -106,8 +108,9 @@ private slots:
     void vol_released();
     void vol_pressed();
     void syncMsgTimeout();
-
     void on_quit_clicked();
+
+    void on_btn_check_table_clicked();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -122,6 +125,7 @@ private:
     bool waitForGoodsListCode;
     bool loginState;
     bool netCheckState;
+    bool checkFinishLock;
     bool clickLock;//点击锁,如果为true，点击无效
     int selectCab;//选中的柜子顺序编号
     int selectCase;//选中的柜格编号

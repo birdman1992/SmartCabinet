@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
+    <width>1600</width>
     <height>900</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#CabinetWidget{
-background-image: url(:/image/image/bg_main_new.png);
+border-image: url(:/image/image/bg_main_new.png);
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="140,710,50">
@@ -126,6 +126,19 @@ background-image: url(:/image/image/bg_main_new.png);
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="btn_check_table">
+           <property name="geometry">
+            <rect>
+             <x>200</x>
+             <y>40</y>
+             <width>92</width>
+             <height>28</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>历史盘点</string>
            </property>
           </widget>
          </widget>

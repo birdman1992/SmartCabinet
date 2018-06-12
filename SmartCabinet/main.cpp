@@ -69,12 +69,12 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForCStrings(codec);
     QTextCodec::setCodecForTr(codec);
-    QFont font;
-    font.setFamily(("msyh"));
-    a.setFont(font);
+//    QFont font;
+//    font.setFamily(("msyh"));
+//    a.setFont(font);
 
     MainWidget w;
-    w.show();
+    w.showFullScreen();
     a.setWidows(&w);
 
     return a.exec();

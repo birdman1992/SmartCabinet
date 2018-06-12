@@ -18,6 +18,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForCodeScan = false;
     waitForGoodsListCode = false;
     waitForServer = false;
+    checkFinishLock = false;
     waitForCardReader = true;
     waitForInit = true;
     loginState = false;
@@ -754,6 +755,19 @@ void CabinetWidget::on_check_clicked(bool checked)
     }
 }
 
+void CabinetWidget::on_check_toggled(bool checked)
+{
+    if(!checked)
+    {
+        if(checkFinishLock)
+        {
+            checkFinishLock = false;
+            return;
+        }
+        emit goodsCheckFinish();
+    }
+}
+
 void CabinetWidget::updateNetState(bool connected)
 {
     netCheckState = connected;
@@ -1148,6 +1162,7 @@ void CabinetWidget::recvCheckRst(bool success)
     else
     {
         config->showMsg(MSG_CHECK_CREAT_FAILED,false);
+        checkFinishLock = true;
         ui->check->setChecked(false);
     }
 }
@@ -1324,4 +1339,10 @@ bool CabinetWidget::eventFilter(QObject *w, QEvent *e)
 void CabinetWidget::on_quit_clicked()
 {
     cabLock();
+}
+
+
+void CabinetWidget::on_btn_check_table_clicked()
+{
+    emit requireCheckShow();
 }

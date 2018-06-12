@@ -25,20 +25,26 @@
 #define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
 //#define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //盘点接口
 #define API_GOODS_CHECK    "/spd-web/work/Cheset/checkCheset/"      //盘点接口
-#define API_CHECK_CREAT     "/spd-web/work/TakeStock/create/"       //创建盘点
-#define API_CHECK_END       "/spd-web/work/TakeStock/end/"          //结束盘点
+#define API_CHECK_CREAT     "/spd-web/work/TakeStockCheset/create/"       //创建盘点
+#define API_CHECK_END       "/spd-web/work/TakeStockCheset/end/"          //结束盘点
 #define API_CHECK_TIME "/spd-web/mapper/Time/query/"
 #define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
 #define API_LIST_CHECK_NEW "/spd-web/work/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
 #define API_NETSTATE_CHECK "/spd-web/websocket/"    //网络状态检查
+#define API_CHECK_TABLES "/spd-web/work/TakeStockCheset/query/takestockList/"    //查询盘点清单表
+#define API_CHECK_INFO "/spd-web/work/TakeStockCheset/query/takestockGoodsList/"    //查询盘点清单内容
+
 
 
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
     cur_manager = new UserInfo();
+    checkList = NULL;
     reply_register = NULL;
     reply_login = NULL;
+    reply_check_tables = NULL;
+    reply_check_table_info = NULL;
     reply_list_check = NULL;
     reply_cabinet_bind = NULL;
     reply_goods_access = NULL;
@@ -298,7 +304,7 @@ void CabinetServer::cabCloneReq(QString oldCabinetId)
     qDebug()<<"[cabCloneReq]"<<nUrl<<qba;
 }
 
-void CabinetServer::cabInfoSync()
+void CabinetServer::cabInfoSync()//同步柜子库存信息
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(cabId).toUtf8();
@@ -370,7 +376,7 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
 
 }
 
-void CabinetServer::listAccess(QStringList list, int optType)
+void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 refund:3
 {
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();
@@ -454,7 +460,7 @@ void CabinetServer::goodsCheckFinish()
     if(checkId == -1)
         return;
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"id\":\"%1\"}").arg(checkId).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CHECK_END)+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
     reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
@@ -615,10 +621,32 @@ void CabinetServer::goodsBack(QString)
 {
 //    QByteArray qba = QString("{\"barcode\":\"%1\"}").arg(goodsId).toUtf8();
 //    QString nUrl = ApiAddress+QString(API_GOODS_BACK)+'?'+qba.toBase64();
-//    qDebug()<<"[listCheck]"<<nUrl;
+//    qDebug()<<"[ck]"<<nUrl;
     return;
 //    reply_goods_back = manager->get(QNetworkRequest(QUrl(nUrl)));
 //    connect(reply_goods_back, SIGNAL(finished()), this, SLOT(recvGoodsBack()));
+}
+
+void CabinetServer::requireCheckTables(QDate start, QDate finish)
+{
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"departCode\":\"%1\",\"sTime\":\"%2 00:00:00\",\"eTime\":\"%3 23:59:59\"}").arg(cabId).arg(start.toString("yyyy-MM-dd")).arg(finish.toString("yyyy-MM-dd")).toUtf8();
+    QString nUrl = ApiAddress+QString(API_CHECK_TABLES)+"?"+qba.toBase64();
+    replyCheck(reply_check_tables);
+    reply_check_tables = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_check_tables, SIGNAL(finished()), this, SLOT(recvCheckTables()));
+    qDebug()<<"[requireCheckTables]"<<nUrl<<qba;
+}
+
+void CabinetServer::requireCheckTableInfo(QString id)
+{
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"id\":\"%1\"}").arg(id.toInt()).toUtf8();
+    QString nUrl = ApiAddress+QString(API_CHECK_INFO)+"?"+qba.toBase64();
+    replyCheck(reply_check_table_info);
+    reply_check_table_info = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_check_table_info, SIGNAL(finished()), this, SLOT(recvCheckTableInfo()));
+    qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
 
 void CabinetServer::recvCabRegister()
@@ -766,7 +794,7 @@ void CabinetServer::recvListCheck()
     reply_list_check = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<"recvListCheck";//cJSON_Print(json);
+    qDebug()<<"[recvListCheck]"<<cJSON_Print(json);
 
     if(!json)
         return;
@@ -806,7 +834,7 @@ void CabinetServer::recvListCheck()
             info->singlePrice = cJSON_GetObjectItem(json_info,"singlePrice")->valueint;
             info->size = QString::fromUtf8(cJSON_GetObjectItem(json_info,"size")->valuestring);
 //            info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
-            info->takeCount = cJSON_GetObjectItem(json_info,"packageCount")->valueint;
+            info->takeCount = cJSON_GetObjectItem(json_info,"outCount")->valueint;//packageCount
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
 
@@ -1003,11 +1031,37 @@ void CabinetServer::recvCheckFinish()
     if(json_rst->type == cJSON_True)
     {
         qDebug()<<"check finished.";
+        if(checkList != NULL)
+            delete checkList;
+        checkList = new CheckList();
+        cJSON* jData = cJSON_GetObjectItem(json,"data");
+        checkList->setCheckDateTime(QString(cJSON_GetObjectItem(jData, "strTime")->valuestring));
+        checkList->departCode = QString(cJSON_GetObjectItem(jData, "departCode")->valuestring);
+//        checkList->departCode = QString(cJSON_GetObjectItem(jData, "departCode")->valuestring);
+        cJSON* jInfo = cJSON_GetObjectItem(jData, "goodsChesetEntityList");
+        int listSize = cJSON_GetArraySize(jInfo);
+        for(int i=0; i<listSize; i++)
+        {
+            cJSON* jItem = cJSON_GetArrayItem(jInfo, i);
+            if(jItem == NULL)
+                break;
+
+            GoodsCheckInfo* info = new GoodsCheckInfo();
+            info->id = QString(cJSON_GetObjectItem(jItem, "goodsId")->valuestring);
+            info->name = QString(cJSON_GetObjectItem(jItem, "goodsName")->valuestring);
+            info->goodsSize = QString(cJSON_GetObjectItem(jItem, "size")->valuestring);
+            info->num_in = cJSON_GetObjectItem(jItem, "inCount")->valueint;
+            info->num_out = cJSON_GetObjectItem(jItem, "outCount")->valueint;
+            info->num_back = cJSON_GetObjectItem(jItem, "backCount")->valueint;
+            info->num_cur = cJSON_GetObjectItem(jItem, "currCount")->valueint;
+            checkList->addInfo(info);
+        }
+        emit curCheckList(checkList);
     }
     else
     {
-        qDebug()<<"check not finished, resend after 30s.";
-        QTimer::singleShot(3000, this, SLOT(goodsCheckReq()));
+//        qDebug()<<"check not finished, resend after 30s.";
+//        QTimer::singleShot(3000, this, SLOT(goodsCheckFinish()));
     }
 
     cJSON_Delete(json);
@@ -1280,6 +1334,99 @@ void CabinetServer::recvColInsert()
     {
         emit insertRst(false);
     }
+}
+
+void CabinetServer::recvCheckTables()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_check_tables->readAll());
+    reply_check_tables->deleteLater();
+    reply_check_tables = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvCheckTables]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        emit checkCreatRst(true);
+        cJSON* jData = cJSON_GetObjectItem(json, "data");
+        int listSize = cJSON_GetArraySize(jData);
+        QList<CheckTableInfo*> l;
+
+        for(int i=0; i<listSize; i++)
+        {
+            cJSON* jItem = cJSON_GetArrayItem(jData, i);
+            if(jItem == NULL)
+                break;
+
+            CheckTableInfo* info = new CheckTableInfo();
+            info->id = QString::number(cJSON_GetObjectItem(jItem, "id")->valueint);
+            info->sTime = QString(cJSON_GetObjectItem(jItem, "sTime")->valuestring);
+            info->eTime = QString(cJSON_GetObjectItem(jItem, "eTime")->valuestring);
+
+            l<<info;
+        }
+        emit checkTables(l);
+    }
+    else
+    {
+
+    }
+
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvCheckTableInfo()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_check_table_info->readAll());
+    reply_check_table_info->deleteLater();
+    reply_check_table_info = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvCheckTableInfo]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        if(checkList != NULL)
+            delete checkList;
+        checkList = new CheckList();
+        cJSON* jData = cJSON_GetObjectItem(json,"data");
+//        checkList->setCheckDateTime(QString(cJSON_GetObjectItem(jData, "strTime")->valuestring));
+//        checkList->departCode = QString(cJSON_GetObjectItem(jData, "departCode")->valuestring);
+//        checkList->departCode = QString(cJSON_GetObjectItem(jData, "departCode")->valuestring);
+        cJSON* jInfo = jData;//cJSON_GetObjectItem(jData, "goodsChesetEntityList");
+        int listSize = cJSON_GetArraySize(jInfo);
+
+        for(int i=0; i<listSize; i++)
+        {
+            cJSON* jItem = cJSON_GetArrayItem(jInfo, i);
+            if(jItem == NULL)
+                break;
+
+            GoodsCheckInfo* info = new GoodsCheckInfo();
+            info->id = QString(cJSON_GetObjectItem(jItem, "goodsId")->valuestring);
+            info->name = QString(cJSON_GetObjectItem(jItem, "goodsName")->valuestring);
+            info->goodsSize = QString(cJSON_GetObjectItem(jItem, "size")->valuestring);
+            info->num_in = cJSON_GetObjectItem(jItem, "inCount")->valueint;
+            info->num_out = cJSON_GetObjectItem(jItem, "outCount")->valueint;
+            info->num_back = cJSON_GetObjectItem(jItem, "backCount")->valueint;
+            info->num_cur = cJSON_GetObjectItem(jItem, "currCount")->valueint;
+            checkList->addInfo(info);
+        }
+        emit curCheckList(checkList);
+    }
+    else
+    {
+//        qDebug()<<"check not finished, resend after 30s.";
+//        QTimer::singleShot(3000, this, SLOT(goodsCheckFinish()));
+    }
+
+    cJSON_Delete(json);
 }
 
 void CabinetServer::netTimeout()

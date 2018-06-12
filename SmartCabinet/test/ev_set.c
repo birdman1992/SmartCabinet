@@ -18,6 +18,8 @@
 #include <linux/hidraw.h>
 #include <linux/input.h>
 #include <errno.h> 
+//#define MY
+#define MC
 
 const char *bus_str(int bus);
 char dev_path[2][24] = {0};
@@ -58,10 +60,10 @@ int get_dev_info(char *dev_name,USBINFO* uInfo)
 	{
 		uInfo->vid = info.vendor;
 		uInfo->pid = info.product;
-     //  printf("Raw Info:\n");
-      //  printf("\tbustype: %d (%s)\n",info.bustype, bus_str(info.bustype));
-       // printf("\tvendor: 0x%04hx\n", info.vendor);
-        //printf("\tproduct: 0x%04hx\n", info.product);
+        printf("Raw Info:\n");
+        printf("\tbustype: %d (%s)\n",info.bustype, bus_str(info.bustype));
+        printf("\tvendor: 0x%04hx\n", info.vendor);
+        printf("\tproduct: 0x%04hx\n", info.product);
     }
     close(fd);
     return 0;
@@ -114,12 +116,43 @@ int get_path(void)
 					get_dev_info(path,usb_info);
 					if(usb_info->vid==3944 && usb_info->pid==22630)	// touch
 					{	
+#ifdef MY
 						if(strcmp(pFile->d_name,"hidraw0") == 0)
 							event = 4;
 						else if(strcmp(pFile->d_name,"hidraw1") == 0)
 							event = 5;
 						else
 							event = 6;
+#endif
+#ifdef MC
+						if(strcmp(pFile->d_name,"hidraw0") == 0)
+							event = 1;
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
+							event = 2;
+						else
+							event = 3;
+#endif
+
+					}
+					if(usb_info->vid==8746 && usb_info->pid==69)	// touch
+					{	
+#ifdef MY
+						if(strcmp(pFile->d_name,"hidraw0") == 0)
+							event = 4;
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
+							event = 5;
+						else
+							event = 6;
+#endif
+#ifdef MC
+						if(strcmp(pFile->d_name,"hidraw0") == 0)
+							event = 1;
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
+							event = 2;
+						else
+							event = 3;
+#endif
+
 					}
 					else if((usb_info->vid==2303) && (usb_info->pid==9))	// RFID
 						snprintf(dev_path[0],20,"%s",path);
@@ -178,6 +211,7 @@ int main(void)
 	pid_t pid;
     event = get_path();
 	get_local_ip("eth1",ip);
+    printf("touchscreen:event%d\n",event);
 //	printf("ip: %s\n",ip);
 	sprintf(c2,"2c export TSLIB_TSDEVICE=/dev/input/event%d",event);
 	sprintf(c10,"10c export QWS_MOUSE_PROTO=tslib:/dev/input/event%d",event);

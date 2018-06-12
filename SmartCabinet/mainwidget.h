@@ -2,6 +2,7 @@
 #define MAINWIDGET_H
 
 #include <QWidget>
+#include <QStyleFactory>
 #include <QPaintEvent>
 #include <QPainter>
 #include "Cabinet/cabinetpanel.h"
@@ -22,6 +23,7 @@
 #include "Widgets/cabinetset.h"
 #include "Widgets/coderkeyboard.h"
 #include "Widgets/cabinetservice.h"
+#include "Widgets/checktable.h"
 #include "Cabinet/cabinetwidget.h"
 
 #include "Menu/setmenu.h"
@@ -99,6 +101,7 @@ private:
     CabinetWidget* win_cabinet;//智能柜窗口
     coderKeyboard* win_coder_keyboard;//条码输入窗口
     CabinetService* win_cab_service;//服务窗口
+    CheckTable* win_check_table;//盘点表格窗口
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框

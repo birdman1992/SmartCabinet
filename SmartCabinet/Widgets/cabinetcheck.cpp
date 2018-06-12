@@ -48,6 +48,7 @@ void CabinetCheck::checkScan(QString scanId, QString fullId)
         return;
     }
 
+
     for(i=0; i<list_item.count(); i++)
     {
         if(scanId == list_item.at(i)->itemId())

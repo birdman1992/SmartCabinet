@@ -600,6 +600,13 @@ void MainWidget::init_huangpo()
     ctrlUi->installGlobalConfig(cabinetConf);
     connect(cabServer, SIGNAL(newGoodsCar(GoodsCar)), ctrlUi, SLOT(readyForNewCar(GoodsCar)));
 
+    //盘点表格窗口
+    win_check_table = new CheckTable();
+    connect(cabServer, SIGNAL(curCheckList(CheckList*)), win_check_table, SLOT(updateCheckTable(CheckList*)));
+    connect(cabServer, SIGNAL(checkTables(QList<CheckTableInfo*>)), win_check_table, SLOT(recvCheckTables(QList<CheckTableInfo*>)));
+    connect(win_check_table, SIGNAL(askCheckTables(QDate,QDate)), cabServer, SLOT(requireCheckTables(QDate,QDate)));
+    connect(win_check_table, SIGNAL(askCheckInfo(QString)), cabServer, SLOT(requireCheckTableInfo(QString)));
+
     //扫码输入面板
     win_coder_keyboard = new coderKeyboard();
     connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));
@@ -634,6 +641,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
     connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
+    connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
     connect(cabServer, SIGNAL(checkCreatRst(bool)), win_cabinet, SLOT(recvCheckRst(bool)));
     connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));
@@ -699,6 +707,8 @@ void MainWidget::init_huangpo()
     }
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
 //    qDebug()<<cabinetConf->list_cabinet.count();
+//    win_check_table->show();
+    qDebug()<<QStyleFactory::keys();
 }
 
 MainWidget::~MainWidget()

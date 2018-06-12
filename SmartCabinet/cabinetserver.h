@@ -14,6 +14,7 @@
 #include "Json/cJSON.h"
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
+#include "Structs/goodscheckinfo.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
 
@@ -37,11 +38,14 @@ private:
     QNetworkReply* reply_goods_access;
     QNetworkReply* reply_goods_back;
     QNetworkReply* reply_goods_check;
+    QNetworkReply* reply_check_tables;
+    QNetworkReply* reply_check_table_info;
     QNetworkReply* reply_datetime;
     QNetworkReply* reply_list_state;
     QNetworkReply* reply_cabinet_info;
     QNetworkReply* reply_cabinet_clone;
     QNetworkReply* reply_update_col;
+    CheckList* checkList;
     QString regId;
     QString logId;
     QString barCode;
@@ -91,6 +95,8 @@ signals:
     void netState(bool);//true:连接  false:断开
     void sysLock();//锁定系统
     void insertRst(bool success);
+    void curCheckList(CheckList* l);
+    void checkTables(QList<CheckTableInfo*>);
 
 public slots:
     void cabRegister();
@@ -114,7 +120,9 @@ public slots:
     void goodsCarScan();
     void sysTimeout();
     void updateAddress();
+    void requireCheckTables(QDate start, QDate finish);
 
+    void requireCheckTableInfo(QString id);
 private slots:
     void recvCabRegister();
     void recvUserLogin();
@@ -133,6 +141,8 @@ private slots:
     void recvCabClone();
     void recvCabSync();
     void recvColInsert();
+    void recvCheckTables();
+    void recvCheckTableInfo();
     void netTimeout();
     int watchdogTimeout();
 };

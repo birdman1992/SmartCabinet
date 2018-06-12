@@ -540,7 +540,7 @@ void Cabinet::setCaseState(int index, int numState)
     {
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setCheckState(true);
-//        lab->setStyleSheet(cellStyle(QColor(36, 221, 149))+checkStyle());
+        lab->setStyleSheet(cellStyle(QColor(36, 221, 149))+checkStyle());
     }
 }
 
