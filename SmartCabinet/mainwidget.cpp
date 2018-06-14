@@ -591,9 +591,20 @@ void MainWidget::init_huangpo()
     //智能柜配置
     cabinetConf = new CabinetConfig();
 
+#ifdef TCP_API
+    //tcp通信类
+    cabServer = new tcpServer(this);
+    cabServer->installGlobalConfig(cabinetConf);
+#else
     //http通信类
     cabServer = new CabinetServer(this);
     cabServer->installGlobalConfig(cabinetConf);
+#endif
+
+//    //tcp通信类
+//    tcpApi = new tcpServer(this);
+//    tcpApi->installGlobalConfig(cabinetConf);
+//    tcpApi->setServer(QHostAddress("120.78.144.255"), 8088);
 
     //仿真控制台
     ctrlUi = new ControlDevice;
@@ -673,9 +684,9 @@ void MainWidget::init_huangpo()
     win_cabinet_set->installGlobalConfig(cabinetConf);
     connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
-    connect(win_cabinet_set, SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
     connect(win_cabinet_set, SIGNAL(lockTest()), win_cab_service, SLOT(ctrl_boardcast()));
     connect(win_cabinet_set, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
+    connect(win_cabinet_set, SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
     connect(win_cabinet_set, SIGNAL(cabinetClone(QString)), cabServer, SLOT(cabCloneReq(QString)));
     connect(win_cabinet_set, SIGNAL(requireCabRigster()), cabServer, SLOT(cabRegister()));
     connect(cabServer, SIGNAL(regResult(bool)), win_cabinet_set, SLOT(regResult(bool)));

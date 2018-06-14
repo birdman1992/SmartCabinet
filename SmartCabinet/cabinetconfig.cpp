@@ -962,7 +962,7 @@ void CabinetConfig::addNewUser(UserInfo *info)
 
 void CabinetConfig::restart()
 {
-        qApp->closeAllWindows();
+    qApp->closeAllWindows();
 #ifdef SIMULATE_ON
     QProcess::startDetached(qApp->applicationFilePath(), QStringList());
 #else

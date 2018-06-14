@@ -74,7 +74,11 @@ int main(int argc, char *argv[])
 //    a.setFont(font);
 
     MainWidget w;
+#ifdef SIMULATE_ON
+    w.show();
+#else
     w.showFullScreen();
+#endif
     a.setWidows(&w);
 
     return a.exec();

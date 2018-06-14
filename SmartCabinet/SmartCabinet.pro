@@ -13,6 +13,7 @@ TEMPLATE = app
 target.path = /home
 INSTALLS += target
 
+LIBS += -L$$PWD/Crypto/x64 -lcrypto
 
 SOURCES += main.cpp\
         mainwidget.cpp \
@@ -66,7 +67,9 @@ SOURCES += main.cpp\
     Device/Network/networkset.cpp \
     Device/QDeviceWatcher/qdevicewatcher.cpp \
     Widgets/checktable.cpp \
-    Structs/goodscheckinfo.cpp
+    Structs/goodscheckinfo.cpp \
+    tcpserver.cpp \
+    Crypto/qaes.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -122,7 +125,11 @@ HEADERS  += mainwidget.h \
     Device/Network/networkset.h \
     Device/QDeviceWatcher/qdevicewatcher.h \
     Widgets/checktable.h \
-    Structs/goodscheckinfo.h
+    Structs/goodscheckinfo.h \
+    tcpserver.h \
+    Crypto/opensslconf.h \
+    Crypto/aes.h \
+    Crypto/qaes.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -158,4 +165,7 @@ RESOURCES += \
     image.qrc
 
 DISTFILES += \
-    Jsoncpp/sconscript
+    Jsoncpp/sconscript \
+    Crypto/libcrypto.so.1.1 \
+    Crypto/libcrypto.so
+

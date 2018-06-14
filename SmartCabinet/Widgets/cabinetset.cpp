@@ -94,6 +94,7 @@ void CabinetSet::cloneResult(bool isSuccess, QString msg)
 
 void CabinetSet::regResult(bool isSuccess)
 {
+    ui->regId->setEnabled(true);
     if(isSuccess)
     {
         QString msg = QString("ID注册成功：\n%1").arg(config->getCabinetId());
@@ -340,6 +341,7 @@ void CabinetSet::on_regId_clicked()
         ui->regMsg->setText("请先配置柜格布局");
         return;
     }
+    ui->regId->setEnabled(false);
     emit requireCabRigster();
 }
 
