@@ -12,7 +12,7 @@
 //#include "Device/SerialPort/qserialport.h"
 #include "Structs/goodscar.h"
 
-#define SIMULATE_ON  //打开仿真
+//#define SIMULATE_ON  //打开仿真
 //#define LOG_ON //打开日志
 #define TCP_API  //使用新的api
 

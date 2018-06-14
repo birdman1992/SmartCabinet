@@ -12,8 +12,7 @@ TARGET = SmartCabinet
 TEMPLATE = app
 target.path = /home
 INSTALLS += target
-
-LIBS += -L$$PWD/Crypto/x64 -lcrypto
+LIBS += -L$$PWD/Crypto/mc -L$$PWD/Crypto/x64 -lcrypto
 
 SOURCES += main.cpp\
         mainwidget.cpp \
@@ -164,8 +163,8 @@ FORMS    += mainwidget.ui \
 RESOURCES += \
     image.qrc
 
-DISTFILES += \
-    Jsoncpp/sconscript \
-    Crypto/libcrypto.so.1.1 \
-    Crypto/libcrypto.so
+#DISTFILES += \
+#    Jsoncpp/sconscript \
+#    Crypto/libcrypto.so.1.1 \
+#    Crypto/libcrypto.so
 
