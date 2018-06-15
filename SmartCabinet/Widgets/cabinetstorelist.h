@@ -27,6 +27,8 @@ public:
     void setLoginState(bool login);
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
+public slots:
+    void show();
 private:
     Ui::CabinetStoreList *ui;
     void paintEvent(QPaintEvent *);

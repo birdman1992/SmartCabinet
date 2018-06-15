@@ -58,7 +58,8 @@ void CabinetAccess::clickOpen(QString goodsId)
 //        storeGoods->curNum++;
         QString info = QString("已存入%1%2   共需存入存入%3%4").arg(storeGoods->curNum).arg(storeGoods->unit).arg(storeGoods->totalNum).arg(storeGoods->unit);
         ui->name->setText(storeGoods->name);
-        ui->tip->setText("请扫码存入");
+//        ui->tip->setText("请扫码存入");
+        showTips("请扫码存入", false);
         ui->info->setText(info);
         ui->onekey->hide();
         if(this->isHidden())
@@ -77,7 +78,8 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
 
         curCab = info;
         ui->name->setText(QString());
-        ui->tip->setText("请取货并扫描条形码");
+//        ui->tip->setText("请取货并扫描条形码");
+        showTips("请取货并扫描条形码", false);
 
         if(this->isHidden())
             this->show();
@@ -91,7 +93,8 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
 
         curCab = info;
         ui->name->setText(QString());
-        ui->tip->setText("请扫描条码退货");
+//        ui->tip->setText("请扫描条码退货");
+        showTips("请扫描条码退货", false);
 
         if(this->isHidden())
             this->show();
@@ -157,12 +160,14 @@ void CabinetAccess::scanOpen(QString goodsId)
         if(storeGoods->curNum >= storeGoods->totalNum)
         {
             storeGoods->curNum = storeGoods->totalNum;
-            ui->tip->setText("提示：已全部存入");
+//            ui->tip->setText("提示：已全部存入");
+            showTips("提示：已全部存入",false);
         }
         else
         {
             storeGoods->curNum++;
-            ui->tip->setText("正在存入");
+//            ui->tip->setText("正在存入");
+            showTips("正在存入", false);
         }
         ui->name->setText(storeGoods->name);
 
@@ -177,14 +182,16 @@ void CabinetAccess::scanOpen(QString goodsId)
         config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
         qDebug()<<"fetch outnum"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         ui->name->setText(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->name);
-        ui->tip->setText("正在取出");
+//        ui->tip->setText("正在取出");
+        showTips("正在取出", false);
     }
     else if(config->state == STATE_REFUN)
     {
         addr = config->checkCabinetByBarCode(goodsId);
         config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
         ui->name->setText(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->name);
-        ui->tip->setText("正在退货");
+//        ui->tip->setText("正在退货");
+        showTips("正在退货", false);
     }
 }
 
@@ -214,7 +221,7 @@ void CabinetAccess::save()
 void CabinetAccess::storeFailed(QString msg)
 {
     curGoods->curNum--;
-    ui->tip->setText(msg);
+    showTips(msg, true);
 }
 
 void CabinetAccess::fetchFailed(QString msg)
@@ -224,7 +231,7 @@ void CabinetAccess::fetchFailed(QString msg)
         qDebug()<<"fetchFailed outnum"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
 //    else
 //        config->list_cabinet[addr.cabinetSeqNUM]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum = 0;
-    ui->tip->setText(msg);
+    showTips(msg, true);
 }
 
 void CabinetAccess::paintEvent(QPaintEvent*)
@@ -241,12 +248,30 @@ void CabinetAccess::showEvent(QShowEvent *)
     keyBoard->move(this->geometry().x()+this->geometry().width()+10, this->geometry().y());
 }
 
+void CabinetAccess::showTips(QString msg, bool isDangerous)
+{
+    if(isDangerous)
+    {
+        ui->tip->setStyleSheet("font: 20px \"微软雅黑\";\
+                               color: rgb(215,26,33);\
+                               background-color: rgb(255, 255, 255);");
+    }
+    else
+    {
+        ui->tip->setStyleSheet("font: 20px \"微软雅黑\";\
+                               color: rgb(40, 122, 35);\
+                               background-color: rgb(255, 255, 255);");
+    }
+    ui->tip->setText(msg);
+}
+
 void CabinetAccess::on_onekey_clicked()
 {
     curGoods->curNum = curGoods->totalNum;
     QString info = QString("已存入%1%2   共需存入存入%3%4").arg(curGoods->curNum).arg(curGoods->unit).arg(curGoods->totalNum).arg(curGoods->unit);
     ui->name->setText(curGoods->name);
-    ui->tip->setText("提示：已全部存入");
+//    ui->tip->setText("提示：已全部存入");
+    showTips("提示：已全部存入", false);
     ui->info->setText(info);
 }
 
@@ -310,7 +335,8 @@ void CabinetAccess::recvOptGoodsNum(int num)
     if(config->state == STATE_STORE)
     {
         ui->info->clear();
-        ui->tip->setText("存入成功");
+//        ui->tip->setText("存入成功");
+        showTips("存入成功", false);
         QString info = QString("已存入%1%2   共需存入存入%3%4").arg(curGoods->curNum).arg(curGoods->unit).arg(curGoods->totalNum).arg(curGoods->unit);
         ui->info->setText(info);
 //        this->hide();
@@ -323,14 +349,21 @@ void CabinetAccess::recvOptGoodsNum(int num)
         QString unit = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
         int goodsType = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
         ui->info->setText(QString("已取出%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
-        ui->tip->setText("取出成功");
+//        ui->tip->setText("取出成功");
+        showTips("取出成功", false);
     }
     else if(config->state == STATE_REFUN)
     {
         int outNum = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         int goodsType = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
         QString unit = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
-        ui->info->setText(QString("已退%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
-        ui->tip->setText("退货成功");
+//        ui->info->setText(QString("已退%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
+//        ui->tip->setText("退货成功");
+        showTips("退货成功", false);
     }
+}
+
+void CabinetAccess::show()
+{
+    this->showFullScreen();
 }

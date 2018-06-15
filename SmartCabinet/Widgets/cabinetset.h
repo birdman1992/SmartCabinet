@@ -31,6 +31,7 @@ public slots:
     void cloneResult(bool isSuccess, QString msg=QString());
     void regResult(bool isSuccess);
 
+    void show();
 private slots:
     void on_add_right_clicked();
     void on_clear_clicked();
