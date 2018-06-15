@@ -45,6 +45,11 @@ bool CabinetListView::installGlobalConfig(CabinetConfig *globalConfig)
     return true;
 }
 
+void CabinetListView::show()
+{
+    this->showFullScreen();
+}
+
 void CabinetListView::setCabView(QFrame *cab)
 {
     cabFrame = cab;

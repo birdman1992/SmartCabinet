@@ -58,6 +58,11 @@ CabinetSet::~CabinetSet()
         delete dev_network;
 }
 
+void CabinetSet::show()
+{
+    this->showFullScreen();
+}
+
 bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
 {
     if(globalConfig == NULL)

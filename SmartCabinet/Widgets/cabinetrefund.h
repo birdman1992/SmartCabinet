@@ -25,6 +25,8 @@ public:
     void refundRst(QString msg);
     void refundScan(QString scanId, QString fullId);
 
+public slots:
+    void show();
 private slots:
     void on_pushButton_clicked();
     void on_ok_clicked();

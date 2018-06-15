@@ -29,6 +29,11 @@ CabinetStoreList::~CabinetStoreList()
     delete ui;
 }
 
+void CabinetStoreList::show()
+{
+    this->showFullScreen();
+}
+
 void CabinetStoreList::storeStart(GoodsList *l)
 {
     clearList();

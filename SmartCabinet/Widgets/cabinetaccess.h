@@ -42,6 +42,7 @@ private slots:
 
 public slots:
     void recvOptGoodsNum(int num);//接收操作物品数量
+    void show();
 
 signals:
     void saveStore(Goods* goods,int num);
@@ -61,6 +62,7 @@ private:
     CaseAddress addr;
     void paintEvent(QPaintEvent *);
     void showEvent(QShowEvent*);
+    void showTips(QString msg, bool isDangerous);
 };
 
 #endif // CABINETACCESS_H

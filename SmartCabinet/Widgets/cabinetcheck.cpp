@@ -37,6 +37,11 @@ void CabinetCheck::checkRst(QString msg)
     ui->msg->setText(msg);
 }
 
+void CabinetCheck::show()
+{
+    this->showFullScreen();
+}
+
 void CabinetCheck::checkScan(QString scanId, QString fullId)
 {
     int i = 0;

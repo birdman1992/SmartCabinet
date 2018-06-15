@@ -30,6 +30,11 @@ bool CabinetRefund::installGlobalConfig(CabinetConfig *globalConfig)
     return true;
 }
 
+void CabinetRefund::show()
+{
+    this->showFullScreen();
+}
+
 void CabinetRefund::refundRst(QString msg)
 {
     ui->msg->setText(msg);

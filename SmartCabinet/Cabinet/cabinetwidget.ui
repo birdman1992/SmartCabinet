@@ -50,21 +50,9 @@ border-image: url(:/image/image/bg_main_new.png);
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,0,1,1">
+       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,0,1">
         <item>
          <widget class="QLabel" name="msk1">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>400</width>
-            <height>0</height>
-           </size>
-          </property>
           <property name="styleSheet">
            <string notr="true">background-color: rgb(70, 197, 255);</string>
           </property>
@@ -78,6 +66,9 @@ border-image: url(:/image/image/bg_main_new.png);
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>5</width>
@@ -87,85 +78,144 @@ border-image: url(:/image/image/bg_main_new.png);
          </spacer>
         </item>
         <item>
-         <widget class="QFrame" name="frame_7">
-          <property name="minimumSize">
-           <size>
-            <width>300</width>
-            <height>120</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>300</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="focusPolicy">
-           <enum>Qt::ClickFocus</enum>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <widget class="QLabel" name="syncMsg">
-           <property name="geometry">
-            <rect>
-             <x>80</x>
-             <y>67</y>
-             <width>201</width>
-             <height>41</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="btn_check_table">
-           <property name="geometry">
-            <rect>
-             <x>200</x>
-             <y>40</y>
-             <width>92</width>
-             <height>28</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>历史盘点</string>
-           </property>
-          </widget>
-         </widget>
-        </item>
-        <item>
          <widget class="QFrame" name="horizontalFrame">
           <property name="minimumSize">
            <size>
-            <width>550</width>
+            <width>600</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>500</width>
+            <width>900</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="focusPolicy">
            <enum>Qt::StrongFocus</enum>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,4,6">
-           <property name="leftMargin">
-            <number>10</number>
-           </property>
+          <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0,0">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <spacer name="horizontalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QFrame" name="frame_check_history">
+                 <property name="maximumSize">
+                  <size>
+                   <width>140</width>
+                   <height>48</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(18, 112, 161);</string>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label">
+                    <property name="minimumSize">
+                     <size>
+                      <width>30</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>30</width>
+                      <height>30</height>
+                     </size>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">border-image: url(:/image/image/check_history.png);</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btn_check_table">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="focusPolicy">
+                     <enum>Qt::NoFocus</enum>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:0px solid grey;
+font: 75 20px &quot;微软雅黑&quot;;
+color: rgb(255, 255, 255);</string>
+                    </property>
+                    <property name="text">
+                     <string>历史盘点</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="syncMsg">
+               <property name="minimumSize">
+                <size>
+                 <width>300</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_3">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetFixedSize</enum>
+             </property>
              <item>
               <widget class="QPushButton" name="volCtrl">
                <property name="sizePolicy">
@@ -184,7 +234,7 @@ border-image: url(:/image/image/bg_main_new.png);
                 <enum>Qt::NoFocus</enum>
                </property>
                <property name="styleSheet">
-                <string notr="true">image: url(:/image/image/volume.png);
+                <string notr="true">image: url(:/image/image/icon_volume.png);
 background-color:#1270a1;
 border:0px solid #1270a1;</string>
                </property>
@@ -210,6 +260,9 @@ border:0px solid #1270a1;</string>
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_10">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetFixedSize</enum>
+             </property>
              <item>
               <widget class="QFrame" name="frame_5">
                <property name="sizePolicy">
@@ -377,6 +430,9 @@ color: rgb(255, 255, 255);</string>
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0,0">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetFixedSize</enum>
+             </property>
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -423,7 +479,7 @@ color: rgb(255, 255, 255);</string>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>40</width>
+                    <width>0</width>
                     <height>20</height>
                    </size>
                   </property>

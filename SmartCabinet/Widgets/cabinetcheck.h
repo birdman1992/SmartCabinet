@@ -26,6 +26,8 @@ public:
     void checkRst(QString msg);
     void checkScan(QString scanId, QString fullId);
 
+public slots:
+    void show();
 private slots:
     void on_pushButton_clicked();
     void on_ok_clicked();

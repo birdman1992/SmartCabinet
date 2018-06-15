@@ -43,6 +43,7 @@ private slots:
 public slots:
     void recvScanData(QByteArray qba);
 
+    void show();
 signals:
     void requireAccessList(QStringList list, int optType);
     void requireOpenCase(int seqNum, int index);
