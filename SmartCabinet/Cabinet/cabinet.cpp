@@ -468,7 +468,7 @@ void Cabinet::clearSearch()
 
     for(i=0; i<list_case.count(); i++)
     {
-        if((i==1)&&isMainCabinet)
+        if((i==screenPos)&&isMainCabinet)
             continue;
         setCaseState(i,0);
     }

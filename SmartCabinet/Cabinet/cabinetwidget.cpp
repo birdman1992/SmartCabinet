@@ -1123,7 +1123,7 @@ void CabinetWidget::readyGoodsList(QString listCode)
 }
 
 void CabinetWidget::sysLock()
-{
+{qDebug("sysLock");
     ui->store->setChecked(false);
     ui->service->setChecked(false);
     ui->cut->setChecked(false);
@@ -1131,6 +1131,7 @@ void CabinetWidget::sysLock()
     ui->check->setChecked(false);
     ui->search->setChecked(false);
     this->show();
+    qDebug("1");
     cabLock();
 }
 
