@@ -10,15 +10,23 @@ QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
     if(!interface.isValid())
     {
         qDebug()<<"[QNetInterface]"<<name<<"open failed";
-        if(name == "eth0")
-            name = "eth1";
+
+        if(name == "eth1")
+            devName = "eth0";
         else
-            name = "eth0";
-        interface = getNetworkInterface(name);
-        devName = name;
+            devName = "eth1";
+
+        interface = getNetworkInterface(devName);
+
         if(!interface.isValid())
-            qDebug()<<"[QNetInterface]"<<name<<"open failed";
-        return;
+        {
+            qDebug()<<"[QNetInterface reopen]"<<devName<<"open failed";
+            return;
+        }
+        else
+        {
+            getNetworkInfo();
+        }
     }
     else
         getNetworkInfo();

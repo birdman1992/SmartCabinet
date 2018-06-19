@@ -47,7 +47,7 @@ CabinetSet::CabinetSet(QWidget *parent) :
     group_lock.addButton(ui->lock_test_17 , 15);
 
 
-    connect(&group_lock, SIGNAL(buttonClicked(int)), this, SLOT(on_lock_group_clicked(int)));
+//    connect(&group_lock, SIGNAL(buttonClicked(int)), this, SLOT(on_lock_group_clicked(int)));
     on_netUpdate_clicked();
 }
 
