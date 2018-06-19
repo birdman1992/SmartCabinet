@@ -12,7 +12,8 @@ TARGET = SmartCabinet
 TEMPLATE = app
 target.path = /home
 INSTALLS += target
-LIBS += -L$$PWD/Crypto/mc -L$$PWD/Crypto/x64 -lcrypto
+LIBS += -L$$PWD/Crypto/x64 -lcrypto
+#LIBS += -L$$PWD/Crypto/mc -lcrypto
 
 SOURCES += main.cpp\
         mainwidget.cpp \
