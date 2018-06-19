@@ -80,6 +80,7 @@ signals:
     void requireGoodsCheck();
     void goodsCheckFinish();
     void requireCheckShow();
+    void requireSearchShow();
 
 private slots:
     void setMenuHide(bool ishide);

@@ -33,6 +33,7 @@
 #define API_NETSTATE_CHECK "/spd-web/websocket/"    //网络状态检查
 #define API_CHECK_TABLES "/spd-web/work/TakeStockCheset/query/takestockList/"    //查询盘点清单表
 #define API_CHECK_INFO "/spd-web/work/TakeStockCheset/query/takestockGoodsList/"    //查询盘点清单内容
+#define API_SEARCH_SPELL "/spd-web/work/Cheset/query/chesetGoods/"     //首字母搜索物品
 
 
 
@@ -55,6 +56,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_cabinet_info = NULL;
     reply_cabinet_clone = NULL;
     reply_update_col = NULL;
+    reply_search_spell = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
     apiState = 0;
@@ -647,6 +649,16 @@ void CabinetServer::requireCheckTableInfo(QString id)
     reply_check_table_info = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_check_table_info, SIGNAL(finished()), this, SLOT(recvCheckTableInfo()));
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
+}
+
+void CabinetServer::searchSpell(QString spell)
+{
+    QByteArray qba = QString("{\"spell\":\"%1\", \"departCode\":\"%2\"}").arg(spell).arg(config->getCabinetId()).toLocal8Bit();
+    QString nUrl = ApiAddress+QString(API_SEARCH_SPELL)+"?"+qba.toBase64();
+    replyCheck(reply_search_spell);
+    reply_search_spell = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_search_spell, SIGNAL(finished()), this, SLOT(recvSearchSpell()));
+    qDebug()<<"[searchSpell]"<<nUrl<<qba;
 }
 
 void CabinetServer::recvCabRegister()
@@ -1425,6 +1437,19 @@ void CabinetServer::recvCheckTableInfo()
 //        qDebug()<<"check not finished, resend after 30s.";
 //        QTimer::singleShot(3000, this, SLOT(goodsCheckFinish()));
     }
+
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvSearchSpell()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_search_spell->readAll());
+    reply_search_spell->deleteLater();
+    reply_search_spell = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvSearchSpell]"<<cJSON_Print(json);
+    if(!json)
+        return;
 
     cJSON_Delete(json);
 }

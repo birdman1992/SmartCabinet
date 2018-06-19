@@ -45,6 +45,7 @@ private:
     QNetworkReply* reply_cabinet_info;
     QNetworkReply* reply_cabinet_clone;
     QNetworkReply* reply_update_col;
+    QNetworkReply* reply_search_spell;
     CheckList* checkList;
     QString regId;
     QString logId;
@@ -121,6 +122,7 @@ public slots:
     void sysTimeout();
     void updateAddress();
     void requireCheckTables(QDate start, QDate finish);
+    void searchSpell(QString);
 
     void requireCheckTableInfo(QString id);
 private slots:
@@ -143,6 +145,7 @@ private slots:
     void recvColInsert();
     void recvCheckTables();
     void recvCheckTableInfo();
+    void recvSearchSpell();
     void netTimeout();
     int watchdogTimeout();
 };

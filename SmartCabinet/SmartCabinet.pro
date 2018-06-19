@@ -66,7 +66,9 @@ SOURCES += main.cpp\
     Device/Network/networkset.cpp \
     Device/QDeviceWatcher/qdevicewatcher.cpp \
     Widgets/checktable.cpp \
-    Structs/goodscheckinfo.cpp
+    Structs/goodscheckinfo.cpp \
+    Widgets/goodsapply.cpp \
+    Structs/goodssearchinfo.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -122,7 +124,9 @@ HEADERS  += mainwidget.h \
     Device/Network/networkset.h \
     Device/QDeviceWatcher/qdevicewatcher.h \
     Widgets/checktable.h \
-    Structs/goodscheckinfo.h
+    Structs/goodscheckinfo.h \
+    Widgets/goodsapply.h \
+    Structs/goodssearchinfo.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -152,7 +156,8 @@ FORMS    += mainwidget.ui \
     Widgets/cabinetctrlconfig.ui \
     Widgets/casepanel.ui \
     Device/Network/networkset.ui \
-    Widgets/checktable.ui
+    Widgets/checktable.ui \
+    Widgets/goodsapply.ui
 
 RESOURCES += \
     image.qrc

@@ -607,6 +607,10 @@ void MainWidget::init_huangpo()
     connect(win_check_table, SIGNAL(askCheckTables(QDate,QDate)), cabServer, SLOT(requireCheckTables(QDate,QDate)));
     connect(win_check_table, SIGNAL(askCheckInfo(QString)), cabServer, SLOT(requireCheckTableInfo(QString)));
 
+    //请货窗口
+    win_goods_apply = new GoodsApply();
+    connect(win_goods_apply, SIGNAL(searchRequire(QString)), cabServer, SLOT(searchSpell(QString)));
+
     //扫码输入面板
     win_coder_keyboard = new coderKeyboard();
     connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));
@@ -642,6 +646,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
     connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
+    connect(win_cabinet, SIGNAL(requireSearchShow()), win_goods_apply, SLOT(show()));
     connect(cabServer, SIGNAL(checkCreatRst(bool)), win_cabinet, SLOT(recvCheckRst(bool)));
     connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));
