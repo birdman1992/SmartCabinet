@@ -58,6 +58,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->check->hide();
     ui->search->hide();
     ui->quit->hide();
+    ui->btn_check_table->hide();
     ui->menuWidget->setCurrentIndex(0);
 
 //#ifndef SIMULATE_ON
@@ -106,6 +107,7 @@ void CabinetWidget::cabLock()
     ui->check->hide();
     ui->search->hide();
     ui->quit->hide();
+    ui->btn_check_table->hide();
     win_access->hide();
     curStoreList = NULL;
     config->state = STATE_NO;
@@ -881,6 +883,7 @@ void CabinetWidget::setPowerState(int power)
     ui->check->hide();
     ui->search->show();
     ui->quit->hide();
+    ui->btn_check_table->show();
 
     if(ui->netState->isChecked())
     {
@@ -1345,6 +1348,6 @@ void CabinetWidget::on_quit_clicked()
 
 void CabinetWidget::on_btn_check_table_clicked()
 {
-//    emit requireCheckShow();
-    requireSearchShow();
+    emit requireCheckShow();
+//  emit requireSearchShow();
 }

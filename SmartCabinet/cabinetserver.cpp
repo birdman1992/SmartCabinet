@@ -370,7 +370,7 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
     qDebug()<<qba;
     replyCheck(reply_goods_access);
     QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setUrl(nUrl);
 //    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     reply_goods_access = manager->post(request, qba.toBase64());
@@ -436,7 +436,7 @@ void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 
         qDebug()<<qba;
         replyCheck(reply_goods_access);
         QNetworkRequest request;
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
         request.setUrl(nUrl);
 //        reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
         reply_goods_access = manager->post(request, qba.toBase64());
@@ -516,7 +516,7 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     replyCheck(reply_goods_check);
 //    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setUrl(nUrl);
     reply_goods_check = manager->post(request, qba.toBase64());
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvGoodsCheck()));
@@ -550,7 +550,7 @@ void CabinetServer::goodsCheck(QStringList l, CaseAddress)
     qDebug()<<qba;
     replyCheck(reply_goods_check);
     QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setUrl(nUrl);
     reply_goods_check = manager->post(request, qba.toBase64());
 //    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
@@ -606,7 +606,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     qDebug()<<qba;
     replyCheck(reply_goods_access);
     QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setUrl(nUrl);
 //    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     reply_goods_access = manager->post(request, qba.toBase64());
