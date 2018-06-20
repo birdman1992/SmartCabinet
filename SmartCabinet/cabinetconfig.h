@@ -32,6 +32,9 @@ public:
     ~CabinetConfig();
     void saveFetchList(QByteArray _data);
     void readCabinetConfig();//读取柜子配置
+    QString getCabinetLayout();
+    QString getCabinetColMap();
+    QPoint getScreenPos();
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
     void setScreenPos(int col, int row);
@@ -111,6 +114,7 @@ private:
 
     void addNewUser(UserInfo* info);
     void restart();//重启自身
+    QString initColMap(int cabNum);
 
 public slots:
 

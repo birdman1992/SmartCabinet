@@ -546,6 +546,25 @@ void CabinetConfig::readCabinetConfig()
     creatCabinetJson();
 }
 
+QString CabinetConfig::getCabinetLayout()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString cLayout = settings.value("cabLayout",QString()).toString();
+    return cLayout;
+}
+
+QString CabinetConfig::getCabinetColMap()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString ColMap = settings.value("ColMap",QString()).toString();
+    return ColMap;
+}
+
+QPoint CabinetConfig::getScreenPos()
+{
+    return screenPos;
+}
+
 //创建柜子配置文件  qba:柜子位置信息
 //void CabinetConfig::creatCabinetConfig(QByteArray qba)
 //{
@@ -610,6 +629,7 @@ void CabinetConfig::creatCabinetConfig(QStringList cabLayout, QPoint screenPos)
     settings.setValue("CabNum",cabLayout.count());
     settings.setValue("CabinetId",cabinetId);
     settings.setValue("cabLayout",cabLayout.join("#"));
+    settings.setValue("ColMap", initColMap(cabLayout.count()));
 
     for(i=0; i<cabLayout.count(); i++)
     {
@@ -972,6 +992,18 @@ void CabinetConfig::restart()
     QProcess::startDetached(qApp->applicationFilePath(),args);
 #endif
 
+}
+
+QString CabinetConfig::initColMap(int cabNum)
+{
+    QByteArray qba;
+    char z = '0';
+    for(int i=0; i<cabNum; i++)
+    {
+        qba.append(z+i);
+    }
+    qDebug()<<"initColMap"<<qba;
+    return QString(qba);
 }
 
 int CabinetConfig::reboot()

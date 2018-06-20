@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QProcess>
+#include <QString>
 #include "cabinetconfig.h"
 #include "Crypto/qaes.h"
 
@@ -60,6 +61,9 @@ private:
     void login();
 
     QByteArray jLogin(QString id, QString aesId, int jType);//登录(1)和注册(2)  json
+    QByteArray jRegist(QString id, QString aesId);
+    QString apiSign(QStringList params, QString secret);
+    QString nonceString();
 
     void checkSysTime(QDateTime _time);
 private slots:

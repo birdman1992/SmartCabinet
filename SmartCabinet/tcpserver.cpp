@@ -3,7 +3,7 @@
 #include <QTime>
 
 #include "Json/cJSON.h"
-#define TCP_SERVER_PORT 8088
+#define TCP_SERVER_PORT 8888
 
 tcpServer::tcpServer(QObject *parent) : QObject(parent)
 {
@@ -72,7 +72,7 @@ void tcpServer::regist()
     QString aesId = QString(aesCodec->aes_ecb(regId.toLocal8Bit()).toBase64());
     qDebug()<<"[regist]"<<regId;
     tcpState = regState;
-    pushTcpReq(jLogin(regId, aesId, 2));
+    pushTcpReq(jRegist(regId, aesId));
 }
 
 void tcpServer::login()
@@ -92,7 +92,51 @@ QByteArray tcpServer::jLogin(QString id, QString aesId, int jType)
                     \"aes_device_id\": \"%2\",\
                     \"type\": %3\
                 }\
-            }").arg(id).arg(aesId).arg(jType).toLocal8Bit();
+}").arg(id).arg(aesId).arg(jType).toLocal8Bit();
+}
+
+/*
+    cabinet_type: 1(cabinet) | 2(rfid cabinet)
+*/
+QByteArray tcpServer::jRegist(QString id, QString aesId)
+{
+    QString device_id = id;
+    QString aes_device_id = aesId;
+    QString layout = config->getCabinetLayout();
+    QString col_map = config->getCabinetColMap();
+    QPoint screenPos = config->getScreenPos();
+
+
+    QString retJ = QString("{\
+            \"c\": \"verify\",\
+            \"data\": {\
+                \"device_id\": \"%1\",\
+                \"aes_device_id\": \"%2\",\
+                \"type\": 2,\
+                \"cabinet_type\": 1,\
+                \"layout\": \"%3\",\
+                \"col_map\": \"%4\",\
+                \"screen_pos\": {\
+                    \"row\": %5,\
+                    \"col\": %6\
+                }\
+            }\
+        }").arg(device_id).arg(aes_device_id).arg(layout).arg(col_map).arg(screenPos.x()).arg(screenPos.y());
+
+//    qDebug()<<"jRegist:"<<retJ;
+return retJ.toLocal8Bit();
+}
+
+QString tcpServer::apiSign(QStringList params, QString secret)
+{
+
+}
+
+QString s = QString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789");
+
+QString tcpServer::nonceString()
+{
+
 }
 
 void tcpServer::readData()
