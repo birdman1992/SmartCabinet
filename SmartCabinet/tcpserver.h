@@ -62,8 +62,9 @@ private:
 
     QByteArray jLogin(QString id, QString aesId, int jType);//登录(1)和注册(2)  json
     QByteArray jRegist(QString id, QString aesId);
+    QByteArray apiJson(QStringList params, QString secret);
     QString apiSign(QStringList params, QString secret);
-    QString nonceString();
+    QString nonceString(int len=16);
 
     void checkSysTime(QDateTime _time);
 private slots:

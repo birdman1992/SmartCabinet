@@ -1,10 +1,27 @@
 #include "tcpserver.h"
 #include <QDebug>
 #include <QTime>
+#include <QCryptographicHash>
 
 #include "Json/cJSON.h"
 #define TCP_SERVER_PORT 8888
 
+/*
+app_id=dc52853b3264e67f7237263927266613
+card_no=11111
+delivery_note_no=CK20180417000001
+nonce_str=ibuaiVcKdpRxkhJA
+timestamp=1529391684
+app_secret=8f3eedb6e9155bddcd3f5b945b09b61c
+    QStringList params;
+    params<<"app_id=dc52853b3264e67f7237263927266613";
+    params<<"card_no=11111";
+    params<<"delivery_note_no=CK20180417000001";
+    params<<"nonce_str=ibuaiVcKdpRxkhJA";
+    params<<"timestamp=1529391684";
+    params<<"grid=[{\"number\": 1,\"status\": 1}]";
+    apiJson(params, "8f3eedb6e9155bddcd3f5b945b09b61c");
+*/
 tcpServer::tcpServer(QObject *parent) : QObject(parent)
 {
     tcpState = noState;
@@ -127,16 +144,40 @@ QByteArray tcpServer::jRegist(QString id, QString aesId)
 return retJ.toLocal8Bit();
 }
 
+QByteArray tcpServer::apiJson(QStringList params, QString secret)
+{
+    params<<"sign="+apiSign(params, secret);
+    QString jsonStr = "{\"" + params.join("\",\"") + "\"}";
+    jsonStr.replace("=","\":\"");
+    jsonStr.replace("\"[","[");
+    jsonStr.replace("]\"","]");
+//    qDebug()<<"[apiJson]"<<jsonStr;
+    return jsonStr.toLocal8Bit();
+}
+
 QString tcpServer::apiSign(QStringList params, QString secret)
 {
-
+    params.sort();
+    QString stringA = params.join("&");
+    QString stringSignTemp = stringA + "&app_secret=" + secret;
+    QByteArray qba = stringSignTemp.toLocal8Bit();
+    QString stringSha1 = QCryptographicHash::hash(qba, QCryptographicHash::Sha1).toHex();
+//    qDebug()<<"[apiSign]"<<stringSha1.toUpper();
+    return stringSha1.toUpper();
 }
 
 QString s = QString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789");
 
-QString tcpServer::nonceString()
+QString tcpServer::nonceString(int len)
 {
-
+    QString ret = QString();
+    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
+    for(int i=0; i<len; i++)
+    {
+        ret.append(s.at(qrand()%s.length()));
+    }
+    qDebug()<<"[nonceString]"<<ret;;
+    return ret;
 }
 
 void tcpServer::readData()
