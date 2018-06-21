@@ -2,6 +2,7 @@
 #include "ui_cabinetaccess.h"
 #include <QDesktopWidget>
 #include <QDebug>
+#include "defines.h"
 
 CabinetAccess::CabinetAccess(QWidget *parent) :
     QWidget(parent),

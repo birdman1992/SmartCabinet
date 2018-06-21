@@ -5,6 +5,9 @@
 #define CONF_CABINET "/home/config/cabinet.ini"
 #define CAB_CACHE "/home/config/cache.ini"
 
+//全屏显示  unuse
+#define SHOW_FULLSCREEN
+
 //超时时间配置
 #define TIMEOUT_FETCH 3
 #define TIMEOUT_CHECK 0
