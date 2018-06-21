@@ -46,6 +46,7 @@ private:
     QNetworkReply* reply_cabinet_clone;
     QNetworkReply* reply_update_col;
     QNetworkReply* reply_search_spell;
+    QNetworkReply* reply_goods_reply;
     CheckList* checkList;
     QString regId;
     QString logId;
@@ -97,7 +98,9 @@ signals:
     void sysLock();//锁定系统
     void insertRst(bool success);
     void curCheckList(CheckList* l);
+    void curSearchList(CheckList* l);
     void checkTables(QList<CheckTableInfo*>);
+    void goodsReplyRst(bool success, QString msg);
 
 public slots:
     void cabRegister();
@@ -123,7 +126,7 @@ public slots:
     void updateAddress();
     void requireCheckTables(QDate start, QDate finish);
     void searchSpell(QString);
-
+    void replyRequire(QList<GoodsCheckInfo *> l);
     void requireCheckTableInfo(QString id);
 private slots:
     void recvCabRegister();
@@ -146,6 +149,7 @@ private slots:
     void recvCheckTables();
     void recvCheckTableInfo();
     void recvSearchSpell();
+    void recvGoodsReply();
     void netTimeout();
     int watchdogTimeout();
 };

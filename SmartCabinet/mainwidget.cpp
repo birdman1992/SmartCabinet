@@ -610,6 +610,9 @@ void MainWidget::init_huangpo()
     //请货窗口
     win_goods_apply = new GoodsApply();
     connect(win_goods_apply, SIGNAL(searchRequire(QString)), cabServer, SLOT(searchSpell(QString)));
+    connect(win_goods_apply, SIGNAL(replyRequire(QList<GoodsCheckInfo*>)), cabServer, SLOT(replyRequire(QList<GoodsCheckInfo*>)));
+    connect(cabServer, SIGNAL(curSearchList(CheckList*)), win_goods_apply, SLOT(recvSearchRst(CheckList*)));
+    connect(cabServer, SIGNAL(goodsReplyRst(bool,QString)), win_goods_apply, SLOT(recvReplyRst(bool,QString)));
 
     //扫码输入面板
     win_coder_keyboard = new coderKeyboard();

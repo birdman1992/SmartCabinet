@@ -12,29 +12,29 @@
 
 //#define SERVER_ADDR "http://175.11.185.181"
 #define SERVER_ADDR "http://120.77.159.8:8080"
-#define API_REG "/spd-web/mapper/SmartCheset/saveOrUpdate/"   //注册接口
+#define API_REG "/spd-web/sarkApi/SmartCheset/saveOrUpdate/"   //注册接口
 #define API_INFO_UPLOAD ""    //柜子信息上传接口
-#define API_INFO_REQ "/spd-web/mapper/SmartCheset/query/"      //柜子信息查询接口
-#define API_CLONE_REQ "/spd-web/work/Cheset/syncCheset/"     //柜子克隆请求接口
+#define API_INFO_REQ "/spd-web/sarkApi/SmartCheset/query/"      //柜子信息查询接口
+#define API_CLONE_REQ "/spd-web/sarkApi/Cheset/syncCheset/"     //柜子克隆请求接口
 #define API_CLONE_SYNC  ""      //柜子克隆数据同步接口
-#define API_INSERT_COL "/spd-web/work/Cheset/doUpdateChesetCol/"//列插入接口
-#define API_LOGIN "/spd-web/mapper/UserInfo/query/"  //登录接口
-#define API_LIST_CHECK "/spd-web/work/OutStorage/query/goods/" //送货单检查接口
-#define API_LIST_STORE "/spd-web/mapper/OutStorage/query/"      //存入完毕销单接口
-#define API_CAB_BIND "/spd-web/work/Cheset/register/"     //柜格物品绑定接口
-#define API_GOODS_ACCESS  "/spd-web/work/Cheset/doGoods/"
-//#define API_GOODS_CHECK  "/spd-web/work/Cheset/doUpdataGoods/"     //盘点接口
-#define API_GOODS_CHECK    "/spd-web/work/Cheset/checkCheset/"      //盘点接口
-#define API_CHECK_CREAT     "/spd-web/work/TakeStockCheset/create/"       //创建盘点
-#define API_CHECK_END       "/spd-web/work/TakeStockCheset/end/"          //结束盘点
-#define API_CHECK_TIME "/spd-web/mapper/Time/query/"
-#define API_REQ_LIST "/spd-web/work/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
-#define API_LIST_CHECK_NEW "/spd-web/work/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
+#define API_INSERT_COL "/spd-web/sarkApi/Cheset/doUpdateChesetCol/"//列插入接口
+#define API_LOGIN "/spd-web/sarkApi/UserInfo/query/"  //登录接口
+#define API_LIST_CHECK "/spd-web/sarkApi/OutStorage/query/goods/" //送货单检查接口
+#define API_LIST_STORE "/spd-web/sarkApi/OutStorage/query/"      //存入完毕销单接口
+#define API_CAB_BIND "/spd-web/sarkApi/Cheset/register/"     //柜格物品绑定接口
+#define API_GOODS_ACCESS  "/spd-web/sarkApi/Cheset/doGoods/"
+//#define API_GOODS_CHECK  "/spd-web/sarkApi/Cheset/doUpdataGoods/"     //盘点接口
+#define API_GOODS_CHECK    "/spd-web/sarkApi/Cheset/checkCheset/"      //盘点接口
+#define API_CHECK_CREAT     "/spd-web/sarkApi/TakeStockCheset/create/"       //创建盘点
+#define API_CHECK_END       "/spd-web/sarkApi/TakeStockCheset/end/"          //结束盘点
+#define API_CHECK_TIME "/spd-web/sarkApi/Time/query/"
+#define API_REQ_LIST "/spd-web/sarkApi/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
+#define API_LIST_CHECK_NEW "/spd-web/sarkApi/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
 #define API_NETSTATE_CHECK "/spd-web/websocket/"    //网络状态检查
-#define API_CHECK_TABLES "/spd-web/work/TakeStockCheset/query/takestockList/"    //查询盘点清单表
-#define API_CHECK_INFO "/spd-web/work/TakeStockCheset/query/takestockGoodsList/"    //查询盘点清单内容
-#define API_SEARCH_SPELL "/spd-web/work/Cheset/query/chesetGoods/"     //首字母搜索物品
-
+#define API_CHECK_TABLES "/spd-web/sarkApi/TakeStockCheset/query/takestockList/"    //查询盘点清单表
+#define API_CHECK_INFO "/spd-web/sarkApi/TakeStockCheset/query/takestockGoodsList/"    //查询盘点清单内容
+#define API_SEARCH_SPELL "/spd-web/sarkApi/Cheset/query/chesetGoods/"     //首字母搜索物品
+#define API_GOODS_REPLY "/spd-web/sarkApi/Cheset/doPleaseGoods/"  //请货
 
 
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
@@ -51,6 +51,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_goods_access = NULL;
     reply_goods_back = NULL;
     reply_goods_check = NULL;
+    reply_goods_reply = NULL;
     reply_datetime = NULL;
     reply_list_state = NULL;
     reply_cabinet_info = NULL;
@@ -659,6 +660,33 @@ void CabinetServer::searchSpell(QString spell)
     reply_search_spell = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_search_spell, SIGNAL(finished()), this, SLOT(recvSearchSpell()));
     qDebug()<<"[searchSpell]"<<nUrl<<qba;
+}
+
+void CabinetServer::replyRequire(QList<GoodsCheckInfo *> l)
+{
+    QByteArray optName = cur_user->cardId.toLocal8Bit();
+    QByteArray departCode = config->getCabinetId().toLocal8Bit();
+
+    cJSON* json = cJSON_CreateObject();
+    cJSON_AddItemToObject(json, "optName", cJSON_CreateString(optName.data()));
+    cJSON_AddItemToObject(json, "departCode", cJSON_CreateString(departCode.data()));
+    cJSON* StoreGoodsModel = cJSON_CreateArray();
+    foreach(GoodsCheckInfo* info, l)
+    {
+        cJSON* goods = cJSON_CreateObject();
+        cJSON_AddItemToObject(goods, "goodsId", cJSON_CreateString(info->id.toLocal8Bit()));
+        cJSON_AddItemToObject(goods, "goodsCount", cJSON_CreateNumber(info->num_pack*info->type));
+        cJSON_AddItemToArray(StoreGoodsModel, goods);
+    }
+    cJSON_AddItemToObject(json, "li", StoreGoodsModel);
+    QByteArray qba = QByteArray(cJSON_Print(json));
+    cJSON_Delete(json);
+    qDeleteAll(l.begin(), l.end());
+    QString nUrl = ApiAddress+QString(API_GOODS_REPLY)+"?"+qba.toBase64();
+    replyCheck(reply_goods_reply);
+    reply_goods_reply = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_goods_reply, SIGNAL(finished()), this, SLOT(recvGoodsReply()));
+    qDebug()<<"[replyRequire]"<<nUrl<<qba;
 }
 
 void CabinetServer::recvCabRegister()
@@ -1450,6 +1478,62 @@ void CabinetServer::recvSearchSpell()
     qDebug()<<"[recvSearchSpell]"<<cJSON_Print(json);
     if(!json)
         return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        if(checkList != NULL)
+            delete checkList;
+        checkList = new CheckList();
+        cJSON* jData = cJSON_GetObjectItem(json,"data");
+        cJSON* jInfo = jData;
+        int listSize = cJSON_GetArraySize(jInfo);
+
+        for(int i=0; i<listSize; i++)
+        {
+            cJSON* jItem = cJSON_GetArrayItem(jInfo, i);
+            if(jItem == NULL)
+                break;
+
+            GoodsCheckInfo* info = new GoodsCheckInfo();
+            info->id = QString(cJSON_GetObjectItem(jItem, "b2bNum")->valuestring);//物品ID
+            info->name = QString(cJSON_GetObjectItem(jItem, "name")->valuestring);//物品名
+            info->goodsSize = QString(cJSON_GetObjectItem(jItem, "size")->valuestring);//规格
+            info->num_cur = cJSON_GetObjectItem(jItem, "goodsCount")->valueint;//库存
+            info->unit = cJSON_GetObjectItem(jItem, "unit")->valueint;//单位
+            info->producerName = cJSON_GetObjectItem(jItem, "producerName")->valuestring;//生产商
+            info->type = QString(cJSON_GetObjectItem(jItem, "packageType")->valuestring).toInt();//type
+            checkList->addInfo(info);
+        }
+        emit curSearchList(checkList);
+    }
+    else
+    {
+
+    }
+
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvGoodsReply()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_goods_reply->readAll());
+    reply_goods_reply->deleteLater();
+    reply_goods_reply = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvGoodsReply]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    if(json_rst->type == cJSON_True)
+    {
+        emit goodsReplyRst(true, "请货成功");
+    }
+    else
+    {
+        emit goodsReplyRst(false, QString(cJSON_GetObjectItem(json, "msg")->valuestring));
+    }
 
     cJSON_Delete(json);
 }
