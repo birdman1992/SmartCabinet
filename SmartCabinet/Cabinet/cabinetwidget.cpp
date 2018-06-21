@@ -1348,6 +1348,6 @@ void CabinetWidget::on_quit_clicked()
 
 void CabinetWidget::on_btn_check_table_clicked()
 {
-    emit requireCheckShow();
-//  emit requireSearchShow();
+//    emit requireCheckShow();
+  emit requireSearchShow();
 }

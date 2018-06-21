@@ -75,6 +75,7 @@ void KeyBoard::onKeysClicked(int val)
     else if(val == 12)
     {
         emit key(Qt::Key_Enter);
+        this->hide();
     }
 }
 
@@ -95,6 +96,7 @@ void KeyBoard::onKeysPressed(int val)
     else if(val == 12)
     {
         emit keyPress(Qt::Key_Enter);
+        this->hide();
     }
 }
 
