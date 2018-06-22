@@ -1206,6 +1206,7 @@ void CabinetWidget::setMenuHide(bool ishide)
         ui->service->hide();
         ui->cut->hide();
         ui->refund->hide();
+        ui->reply->hide();
         ui->check->hide();
         ui->search->hide();
         ui->quit->hide();
@@ -1215,6 +1216,7 @@ void CabinetWidget::setMenuHide(bool ishide)
         ui->store->show();
         ui->service->show();
         ui->cut->show();
+        ui->reply->show();
         ui->refund->show();
         ui->check->show();
         ui->search->show();

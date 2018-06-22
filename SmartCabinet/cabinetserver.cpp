@@ -731,6 +731,7 @@ void CabinetServer::recvUserLogin()
 
     if(!json)
         return;
+    apiState = 0;
     netFlag = true;
     emit netState(true);
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");

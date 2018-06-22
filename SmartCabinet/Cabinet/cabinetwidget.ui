@@ -18,7 +18,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">#CabinetWidget{
-border-image: url(:/image/image/bg_main_new.png);
+	border-image: url(:/image/image/bg_main.png);
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="140,710,50">
