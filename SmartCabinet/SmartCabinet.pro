@@ -69,7 +69,8 @@ SOURCES += main.cpp\
     Structs/goodscheckinfo.cpp \
     Widgets/goodsapply.cpp \
     Structs/goodssearchinfo.cpp \
-    Widgets/keyboad.cpp
+    Widgets/keyboad.cpp \
+    Widgets/checkwarning.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -128,7 +129,8 @@ HEADERS  += mainwidget.h \
     Structs/goodscheckinfo.h \
     Widgets/goodsapply.h \
     Structs/goodssearchinfo.h \
-    Widgets/keyboad.h
+    Widgets/keyboad.h \
+    Widgets/checkwarning.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -160,7 +162,8 @@ FORMS    += mainwidget.ui \
     Device/Network/networkset.ui \
     Widgets/checktable.ui \
     Widgets/goodsapply.ui \
-    Widgets/keyboad.ui
+    Widgets/keyboad.ui \
+    Widgets/checkwarning.ui
 
 RESOURCES += \
     image.qrc

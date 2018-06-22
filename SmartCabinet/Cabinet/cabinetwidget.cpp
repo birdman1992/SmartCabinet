@@ -33,6 +33,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_store_list = new CabinetStoreList();
     win_refund = new CabinetRefund();
     win_net_set = new NetworkSet();
+    win_check_warnning = new CheckWarning();
+    connect(win_check_warnning, SIGNAL(pushCheck()), this, SLOT(checkPush()));
     initVolum();
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -75,6 +77,7 @@ CabinetWidget::~CabinetWidget()
     delete win_cab_list_view;
     delete win_check;
     delete win_store_list;
+    delete win_check_warnning;
     delete ui;
 }
 
@@ -765,13 +768,17 @@ void CabinetWidget::on_check_clicked(bool checked)
         config->showMsg(MSG_CHECK_CREAT,false);
         clearMenuState();
         emit requireGoodsCheck();
-        ui->check->setChecked(false);
     }
     else
     {
-        config->clearSearch();//重置单元格状态
-        cabLock();
-        emit goodsCheckFinish();
+        ui->check->setChecked(true);
+        int uckNum = config->getUncheckCaseNum();
+        QString msg;
+        if(uckNum)
+            msg = QString("还有%1个柜格未盘点，无法提交").arg(uckNum);
+        else
+            msg = QString("柜格已全部盘点，可以提交");
+        win_check_warnning->warnningMsg(msg, (uckNum==0));
     }
 }
 
@@ -1171,9 +1178,6 @@ void CabinetWidget::recvCheckRst(bool success)
 {
     if(success)
     {
-        if(!ui->check->isChecked())
-            return;
-
         checkStart();
     }
     else
@@ -1189,8 +1193,8 @@ void CabinetWidget::recvCheckFinish(bool success)
     if(success)
     {
         ui->check->setChecked(false);
-        config->clearSearch();//重置单元格状态
         cabLock();
+        win_check_warnning->close();
     }
 }
 
@@ -1249,6 +1253,11 @@ void CabinetWidget::checkOneCase(QStringList l, CaseAddress addr)
 //        config->list_cabinet[addr.cabinetSeqNum]->updateGoodsNum(addr, l[i]->itemNum());
 //    }
     emit checkCase(l, addr);
+}
+
+void CabinetWidget::checkPush()
+{
+    emit goodsCheckFinish();
 }
 
 void CabinetWidget::recvUserCheckRst(UserInfo* info)

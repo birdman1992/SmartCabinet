@@ -46,6 +46,7 @@ public:
     void insertGoods(GoodsInfo* info, int row, int col);
     void syncGoods(GoodsInfo* info, int row, int col);
     void setServerAddress(QString addr);
+    int getUncheckCaseNum();
     int getSysVolem();
     void setSysVolem(int vol);
     int volTodB(int vol);//音量转分贝

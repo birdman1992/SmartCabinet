@@ -81,6 +81,7 @@ void Cabinet::cabSplit(QString scale, QTableWidget *table)
     int baseCount = getBaseCount(scale);
     int baseHeight = table->geometry().height()/baseCount;
     int i = 0;
+    checkFlag = QByteArray(rowCount, 0);
     table->setRowCount(rowCount);
     table->setColumnCount(1);
 
@@ -114,6 +115,19 @@ int Cabinet::getBaseCount(QString scale)
 void Cabinet::setCabPos(int pos)
 {
     posNum = pos;
+}
+
+int Cabinet::getUnCheckNum()
+{
+    int ret = 0;
+    for(int i=0; i<checkFlag.size(); i++)
+    {
+        if(!checkFlag[i])
+            ret++;
+    }
+    if(screenPos>=0)
+        ret--;
+    return ret;
 }
 
 int Cabinet::getCabPos()
@@ -527,6 +541,7 @@ void Cabinet::setCaseState(int index, int numState)
         return;
 //    qDebug()<<"setCaseState"<<index<<numState;
     state = numState;
+    checkFlag[index] = numState;
 
 //    if(isMainCabinet && index)
 //        index++;

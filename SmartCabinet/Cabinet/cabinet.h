@@ -26,6 +26,7 @@ public:
     void CabinetInit(int _width, int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
     void CabinetInit(QString cLayout, int seq, int sPos=-1);
     void setCabPos(int pos);
+    int getUnCheckNum();
     int getCabPos();
     int getSeqNum();
     QString getLayout();
@@ -69,6 +70,7 @@ private:
     Ui::Cabinet *ui;
     int state;
     int caseWidth;
+    QByteArray checkFlag;//盘点标志
     int screenPos;//屏幕位置
     QString cabLayout;//柜格布局
     bool isMainCabinet;//是否为主柜

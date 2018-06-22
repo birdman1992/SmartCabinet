@@ -184,6 +184,16 @@ void CabinetConfig::setServerAddress(QString addr)
     //    restart();
 }
 
+int CabinetConfig::getUncheckCaseNum()
+{
+    int ret = 0;
+    foreach(Cabinet* cab, list_cabinet)
+    {
+        ret += cab->getUnCheckNum();
+    }
+    return ret;
+}
+
 int CabinetConfig::getSysVolem()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);

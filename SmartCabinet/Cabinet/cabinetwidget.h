@@ -15,6 +15,7 @@
 #include "Widgets/cabinetcheck.h"
 #include "Widgets/cabinetstorelist.h"
 #include "Widgets/cabinetrefund.h"
+#include "Widgets/checkwarning.h"
 #include "Device/Network/networkset.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
@@ -88,6 +89,7 @@ private slots:
     void cabinetBind(Goods* goods);
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
     void checkOneCase(QStringList l, CaseAddress addr);
+    void checkPush();
     //    void on_fetch_clicked();
     void wait_timeout();
     void saveStore(Goods* goods, int num);
@@ -111,9 +113,7 @@ private slots:
     void vol_pressed();
     void syncMsgTimeout();
     void on_quit_clicked();
-
     void on_btn_check_table_clicked();
-
     void on_reply_clicked();
 
 protected:
@@ -122,6 +122,7 @@ protected:
 private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;
+    CheckWarning* win_check_warnning;
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件
     bool volPressed;
