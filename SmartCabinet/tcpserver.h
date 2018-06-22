@@ -99,7 +99,7 @@ signals:
 public slots:
     void cabRegister();
     void getServerAddr(QString addr);
-    void userLogin(QString);
+    void userLogin(QString userId);
     void listCheck(QString);//送货单信息校验
     void cabInfoUpload();//柜子信息上传
     void cabInfoReq();//柜子信息查询

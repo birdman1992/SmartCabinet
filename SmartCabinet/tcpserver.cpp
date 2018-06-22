@@ -6,6 +6,8 @@
 #include "Json/cJSON.h"
 #define TCP_SERVER_PORT 8888
 
+#define API_LOGIN "/api/card/"
+
 /*
 app_id=dc52853b3264e67f7237263927266613
 card_no=11111
@@ -329,7 +331,7 @@ void tcpServer::getServerAddr(QString addr)
     setServer(address, port);//connect & checktime
 }
 
-void tcpServer::userLogin(QString)
+void tcpServer::userLogin(QString userId)
 {
 
 }
