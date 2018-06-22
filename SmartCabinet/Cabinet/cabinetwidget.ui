@@ -692,7 +692,7 @@ color: rgb(255, 255, 255);
          <number>0</number>
         </property>
         <property name="bottomMargin">
-         <number>10</number>
+         <number>0</number>
         </property>
         <item>
          <layout class="QHBoxLayout" name="main_button_layout" stretch="0">
@@ -706,8 +706,11 @@ color: rgb(255, 255, 255);
             </property>
             <widget class="QWidget" name="button_stackedWidgetPage1">
              <layout class="QVBoxLayout" name="verticalLayout_5">
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,1,1,0">
+               <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1,1,1,1,1,0">
                 <property name="spacing">
                  <number>10</number>
                 </property>
@@ -821,6 +824,33 @@ border-image: url(:/image/image/btn_out_sel.png);
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="reply">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>230</width>
+                    <height>87</height>
+                   </size>
+                  </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::NoFocus</enum>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#reply{border-image: url(:/image/image/btn_notice_normal.png);}
+#reply:pressed{
+border-image: url(:/image/image/btn_notice_sel.png);}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="check">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -839,7 +869,7 @@ border-image: url(:/image/image/btn_out_sel.png);
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#check:checked{
-	border-image: url(:/image/image/btn_check_normal.png);
+	border-image: url(:/image/image/btn_check_over_sel.png);
 }
 #check{
 	border-image: url(:/image/image/btn_check_sel.png);
@@ -972,7 +1002,7 @@ border-image: url(:/image/image/btn_out_sel.png);
                   <property name="sizeHint" stdset="0">
                    <size>
                     <width>20</width>
-                    <height>40</height>
+                    <height>10</height>
                    </size>
                   </property>
                  </spacer>

@@ -99,6 +99,7 @@ signals:
     void insertRst(bool success);
     void curCheckList(CheckList* l);
     void curSearchList(CheckList* l);
+    void checkFinish(bool success);
     void checkTables(QList<CheckTableInfo*>);
     void goodsReplyRst(bool success, QString msg);
 

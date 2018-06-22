@@ -59,6 +59,7 @@ public slots:
     void sysLock();
     void recvCabSyncResult(bool);
     void recvCheckRst(bool);
+    void recvCheckFinish(bool);
 
 signals:
     void winSwitch(int);
@@ -99,7 +100,7 @@ private slots:
     void on_refund_clicked(bool checked);
     void on_cut_clicked();
     void on_check_clicked(bool checked);
-    void on_check_toggled(bool checked);
+//    void on_check_toggled(bool checked);
     void on_search_clicked();
     void on_search_back_clicked();
     void on_searchClear_clicked();
@@ -112,6 +113,8 @@ private slots:
     void on_quit_clicked();
 
     void on_btn_check_table_clicked();
+
+    void on_reply_clicked();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -174,6 +177,7 @@ private:
     void clearCheckState();
     void clearMenuState();
     void volumTest();
+    void checkStart();//盘点开始
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

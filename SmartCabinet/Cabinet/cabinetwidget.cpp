@@ -57,6 +57,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->cut->hide();
     ui->check->hide();
     ui->search->hide();
+    ui->reply->hide();
     ui->quit->hide();
     ui->frame_check_history->hide();
     ui->menuWidget->setCurrentIndex(0);
@@ -106,6 +107,7 @@ void CabinetWidget::cabLock()
     ui->refund->hide();
     ui->check->hide();
     ui->search->hide();
+    ui->reply->hide();
     ui->quit->hide();
     ui->frame_check_history->hide();
     win_access->hide();
@@ -246,6 +248,27 @@ void CabinetWidget::clearMenuState()
 void CabinetWidget::volumTest()
 {
     config->cabVoice.voicePlay("vol.wav");
+}
+
+void CabinetWidget::checkStart()
+{
+    config->state = STATE_CHECK;
+    waitForCodeScan = true;
+    waitForGoodsListCode = false;
+    config->showMsg(MSG_CHECK,false);
+    clickLock = false;
+    clearMenuState();
+    ui->check->setChecked(true);
+    config->wakeUp(TIMEOUT_CHECK);
+
+    ui->store->hide();
+    ui->service->hide();
+    ui->cut->hide();
+    ui->refund->hide();
+//    ui->check->hide();
+    ui->search->hide();
+    ui->reply->hide();
+    ui->quit->hide();
 }
 
 bool posSort(Cabinet *A, Cabinet *B)
@@ -739,15 +762,10 @@ void CabinetWidget::on_check_clicked(bool checked)
 {
     if(checked)
     {
-//        config->state = STATE_CHECK;
-//        waitForCodeScan = true;
-//        waitForGoodsListCode = false;
         config->showMsg(MSG_CHECK_CREAT,false);
+        clearMenuState();
         emit requireGoodsCheck();
-//        clickLock = false;
-//        clearMenuState();
-//        ui->check->setChecked(true);
-//        config->wakeUp(TIMEOUT_CHECK);
+        ui->check->setChecked(false);
     }
     else
     {
@@ -757,18 +775,18 @@ void CabinetWidget::on_check_clicked(bool checked)
     }
 }
 
-void CabinetWidget::on_check_toggled(bool checked)
-{
-    if(!checked)
-    {
-        if(checkFinishLock)
-        {
-            checkFinishLock = false;
-            return;
-        }
-        emit goodsCheckFinish();
-    }
-}
+//void CabinetWidget::on_check_toggled(bool checked)
+//{
+//    if(!checked)
+//    {
+//        if(checkFinishLock)
+//        {
+//            checkFinishLock = false;
+//            return;
+//        }
+//        emit goodsCheckFinish();
+//    }
+//}
 
 void CabinetWidget::updateNetState(bool connected)
 {
@@ -882,6 +900,7 @@ void CabinetWidget::setPowerState(int power)
     ui->cut->hide();
     ui->check->hide();
     ui->search->show();
+    ui->reply->show();
     ui->quit->hide();
     ui->frame_check_history->show();
 
@@ -1154,20 +1173,24 @@ void CabinetWidget::recvCheckRst(bool success)
     {
         if(!ui->check->isChecked())
             return;
-        config->state = STATE_CHECK;
-        waitForCodeScan = true;
-        waitForGoodsListCode = false;
-        config->showMsg(MSG_CHECK,false);
-        clickLock = false;
-        clearMenuState();
-        ui->check->setChecked(true);
-        config->wakeUp(TIMEOUT_CHECK);
+
+        checkStart();
     }
     else
     {
         config->showMsg(MSG_CHECK_CREAT_FAILED,false);
         checkFinishLock = true;
         ui->check->setChecked(false);
+    }
+}
+
+void CabinetWidget::recvCheckFinish(bool success)
+{
+    if(success)
+    {
+        ui->check->setChecked(false);
+        config->clearSearch();//重置单元格状态
+        cabLock();
     }
 }
 
@@ -1348,6 +1371,16 @@ void CabinetWidget::on_quit_clicked()
 
 void CabinetWidget::on_btn_check_table_clicked()
 {
-//    emit requireCheckShow();
-  emit requireSearchShow();
+    emit requireCheckShow();
+}
+
+void CabinetWidget::on_reply_clicked()
+{
+    waitForCodeScan = false;
+    waitForGoodsListCode = false;
+    waitForCardReader = true;
+    clearMenuState();
+    config->showMsg(MSG_EMPTY,false);
+    config->state = STATE_NO;
+    emit requireSearchShow();
 }

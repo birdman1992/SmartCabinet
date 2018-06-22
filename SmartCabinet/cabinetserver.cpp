@@ -1097,9 +1097,11 @@ void CabinetServer::recvCheckFinish()
             checkList->addInfo(info);
         }
         emit curCheckList(checkList);
+        checkFinish(true);
     }
     else
     {
+        checkFinish(false);
 //        qDebug()<<"check not finished, resend after 30s.";
 //        QTimer::singleShot(3000, this, SLOT(goodsCheckFinish()));
     }
