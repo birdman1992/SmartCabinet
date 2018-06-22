@@ -312,6 +312,7 @@ void CabinetServer::cabInfoSync()//同步柜子库存信息
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(cabId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CLONE_REQ)+"?"+qba.toBase64();
+    needClearBeforeClone = true;
     replyCheck(reply_cabinet_clone);
     reply_cabinet_clone = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_clone, SIGNAL(finished()), this, SLOT(recvCabSync()));
