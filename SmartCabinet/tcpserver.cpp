@@ -28,6 +28,8 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
 {
     tcpState = noState;
     needReg = false;
+    cabManager = CabinetManager::manager();
+    userManager = UserManager::manager();
     socket = new QTcpSocket();
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectChanged(QAbstractSocket::SocketState)));
@@ -62,6 +64,32 @@ int tcpServer::pushTcpReq(QByteArray qba)
 {
     QTimer::singleShot(2000, this, SLOT(tcpReqTimeout()));
     return socket->write(qba);
+}
+
+void tcpServer::parCabInfo(cJSON *json)
+{
+    QString col_map = QString(cJSON_GetObjectItem(json, "col_map")->valuestring);
+    QString layout = QString(cJSON_GetObjectItem(json, "layout")->valuestring);
+
+    cJSON* hospital = cJSON_GetObjectItem(json, "hospital");
+    QString hospital_department_name = QString(cJSON_GetObjectItem(hospital, "hospital_department_name")->valuestring);
+    QString hospital_name = QString(cJSON_GetObjectItem(hospital, "hospital_name")->valuestring);
+
+    cJSON* screen_pos = QString(cJSON_GetObjectItem(json, "screen_pos")->valuestring);
+    QPoint pos;
+    pos.setX(cJSON_GetObjectItem(screen_pos, "col")->valueint);
+    pos.setY(cJSON_GetObjectItem(screen_pos, "row")->valueint);
+
+    cabManager->setCabLayout(layout);
+    cabManager->setCabMap(col_map);
+    cabManager->setDepartName(hospital_department_name);
+    cabManager->setHospitalName(hospital_name);
+    cabManager->setScrPos(pos);
+}
+
+void tcpServer::parUserInfo(cJSON *json)
+{
+
 }
 
 void tcpServer::setServer(QHostAddress _address, quint16 _port)

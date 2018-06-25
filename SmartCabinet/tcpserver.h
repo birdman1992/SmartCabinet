@@ -19,6 +19,8 @@
 #include "Structs/goodscheckinfo.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
+#include "manager/cabinetmanager.h"
+#include "manager/usermanager.h"
 
 
 class tcpServer : public QObject
@@ -38,6 +40,8 @@ public:
 
 private:
     CabinetConfig* config;
+    CabinetManager* cabManager;
+    UserManager* userManager;
     QString regId;
     bool needReg;
     bool needSaveAddress;
@@ -51,6 +55,10 @@ private:
     QTimer* beatTimer;
     QHostAddress address;
     quint16 port;
+
+    void parCabInfo(cJSON* json);//cabinet info
+    void parUserInfo(cJSON* json);//user info
+
 //    bool needReg;
 
     //HTTP
