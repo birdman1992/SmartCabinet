@@ -30,6 +30,7 @@ public:
     void save();
     void storeFailed(QString msg);
     void fetchFailed(QString msg);
+    void showTips(QString msg, bool isDangerous);
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 private slots:
@@ -43,6 +44,7 @@ private slots:
 public slots:
     void recvOptGoodsNum(int num);//接收操作物品数量
     void show();
+    void setPrice(float single, float total);
 
 signals:
     void saveStore(Goods* goods,int num);
@@ -62,7 +64,6 @@ private:
     CaseAddress addr;
     void paintEvent(QPaintEvent *);
     void showEvent(QShowEvent*);
-    void showTips(QString msg, bool isDangerous);
 };
 
 #endif // CABINETACCESS_H

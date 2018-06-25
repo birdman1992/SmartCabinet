@@ -9,11 +9,12 @@ CabinetAccess::CabinetAccess(QWidget *parent) :
     ui(new Ui::CabinetAccess)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     QDesktopWidget* desktop = QApplication::desktop(); // =qApp->desktop();也可以
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
     isStore = false;//默认为取模式
+    ui->frame_pri->hide();
 
     keyBoard = new NumKeyboard();
     connect(keyBoard, SIGNAL(key(int)), this, SLOT(input(int)));
@@ -70,6 +71,7 @@ void CabinetAccess::clickOpen(QString goodsId)
 
 void CabinetAccess::clickOpen(CabinetInfo *info)
 {
+    ui->frame_pri->hide();
     if(config->state == STATE_FETCH)
     {
         ui->cancel->hide();
@@ -144,6 +146,7 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
 
 void CabinetAccess::scanOpen(QString goodsId)
 {
+    ui->frame_pri->hide();
     if(config->state == STATE_STORE)
     {
         if(curGoods != NULL)
@@ -328,11 +331,14 @@ void CabinetAccess::backspace()
 void CabinetAccess::clearAll()
 {
     ui->info->clear();
+    ui->pri_single->clear();
+    ui->pri_total->clear();
 }
 
 void CabinetAccess::recvOptGoodsNum(int num)
 {
     qDebug()<<"[recvOptGoodsNum]"<<config->state<<num;
+    ui->frame_pri->hide();
     if(config->state == STATE_STORE)
     {
         ui->info->clear();
@@ -351,7 +357,7 @@ void CabinetAccess::recvOptGoodsNum(int num)
         int goodsType = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
         ui->info->setText(QString("已取出%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
 //        ui->tip->setText("取出成功");
-        showTips("取出成功", false);
+//        showTips("取出成功", false);
     }
     else if(config->state == STATE_REFUN)
     {
@@ -366,5 +372,13 @@ void CabinetAccess::recvOptGoodsNum(int num)
 
 void CabinetAccess::show()
 {
+//    this->showMaximized();
     this->showFullScreen();
+}
+
+void CabinetAccess::setPrice(float single, float total)
+{
+    ui->frame_pri->show();
+    ui->pri_single->setText(QString("%1 元").arg(QString::number(single,'f',2)));
+    ui->pri_total->setText(QString("%1 元").arg(QString::number(total,'f',2)));
 }

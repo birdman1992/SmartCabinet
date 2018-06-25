@@ -53,6 +53,8 @@ public slots:
     void recvGoodsCheckRst(QString msg);
     void recvGoodsNumInfo(QString goodsId, int num);
     void accessFailedMsg(QString msg);
+    void accessSuccessMsg(QString msg);
+    void updateFetchPrice(float, float);
     void updateTime();
     void updateId();
     void newGoodsList(QString listCode, QString rfidCode);

@@ -1126,6 +1126,20 @@ void CabinetWidget::accessFailedMsg(QString msg)
     qDebug()<<msg;
 }
 
+void CabinetWidget::accessSuccessMsg(QString msg)
+{
+    qDebug()<<"[accessSuccessMsg]"<<msg;
+    if(config->state == STATE_FETCH)
+    {
+        win_access->showTips(msg, false);
+    }
+}
+
+void CabinetWidget::updateFetchPrice(float single, float total)
+{
+    win_access->setPrice(single, total);
+}
+
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));

@@ -989,6 +989,7 @@ void CabinetServer::recvListAccess()
             QString goodsId = QString::fromUtf8(cJSON_GetObjectItem(item,"goodsId")->valuestring);
             int goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             int goodsNum = cJSON_GetObjectItem(item, "packageCount")->valueint;
+            float goodsPrice = cJSON_GetObjectItem(item, "price")->valuedouble;
 
             if(goodsType<10)
                 goodsId += "-0"+QString::number(goodsType);
@@ -997,6 +998,8 @@ void CabinetServer::recvListAccess()
 
             qDebug()<<goodsId<<goodsNum;
             emit goodsNumChanged(goodsId, goodsNum);
+            emit accessSuccess(QString(cJSON_GetObjectItem(item,"msg")->valuestring));
+            emit updateGoodsPrice(goodsPrice, goodsPrice*goodsType);
         }
     }
     else

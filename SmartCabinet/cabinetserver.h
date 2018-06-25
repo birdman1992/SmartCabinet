@@ -84,7 +84,9 @@ signals:
     void listRst(GoodsList*);
     void bindRst(bool);
     void goodsNumChanged(QString goodsId, int goodsNum);
+    void updateGoodsPrice(float single, float total);
     void accessFailed(QString msg);
+    void accessSuccess(QString msg);
     void timeUpdate();
     void idUpdate();
     void regResult(bool);
