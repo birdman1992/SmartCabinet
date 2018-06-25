@@ -736,21 +736,21 @@ void CabinetWidget::on_check_clicked(bool checked)
 {
     if(checked)
     {
-//        config->state = STATE_CHECK;
-//        waitForCodeScan = true;
-//        waitForGoodsListCode = false;
-        config->showMsg(MSG_CHECK_CREAT,false);
-        emit requireGoodsCheck();
-//        clickLock = false;
-//        clearMenuState();
-//        ui->check->setChecked(true);
-//        config->wakeUp(TIMEOUT_CHECK);
+        config->state = STATE_CHECK;
+        waitForCodeScan = true;
+        waitForGoodsListCode = false;
+//        config->showMsg(MSG_CHECK_CREAT,false);
+//        emit requireGoodsCheck();
+        clickLock = false;
+        clearMenuState();
+        ui->check->setChecked(true);
+        config->wakeUp(TIMEOUT_CHECK);
     }
     else
     {
         config->clearSearch();//重置单元格状态
         cabLock();
-        emit goodsCheckFinish();
+//        emit goodsCheckFinish();
     }
 }
 
