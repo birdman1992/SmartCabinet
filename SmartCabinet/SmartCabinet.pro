@@ -70,7 +70,8 @@ SOURCES += main.cpp\
     Structs/goodscheckinfo.cpp \
     tcpserver.cpp \
     Crypto/qaes.cpp \
-    manager/usermanager.cpp
+    manager/usermanager.cpp \
+    manager/cabinetmanager.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -131,7 +132,8 @@ HEADERS  += mainwidget.h \
     Crypto/opensslconf.h \
     Crypto/aes.h \
     Crypto/qaes.h \
-    manager/usermanager.h
+    manager/usermanager.h \
+    manager/cabinetmanager.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

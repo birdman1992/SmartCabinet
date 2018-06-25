@@ -1,8 +1,10 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-#define CONF_USER "/home/config/cabinet.ini"
-#define CONF_CABINET "/home/config/cabinet.ini"
+#define CONF_USER "/home/config/cabinet.ini"  //原接口
+#define CONF_USER_INFO  "/home/config/user.ini"   //new_api
+#define CONF_CABINET "/home/config/cabinet.ini"   //共用
+#define CONF_CABINET_INFO  "/home/config/cabinfo.ini" //new_api
 #define CAB_CACHE "/home/config/cache.ini"
 
 //超时时间配置

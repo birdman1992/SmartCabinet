@@ -2,13 +2,22 @@
 #define USERMANAGER_H
 
 #include <QObject>
+class UserInfo
+{
+public:
+    QString name;
+
+};
+
 
 class UserManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit UserManager(QObject *parent = nullptr);
-
+    static UserManager* manager();
+private:
+    explicit UserManager(QObject *parent = NULL);
+    static UserManager* m;
 signals:
 
 public slots:
