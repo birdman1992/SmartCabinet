@@ -6,7 +6,7 @@
 #include "Json/cJSON.h"
 #define TCP_SERVER_PORT 8888
 
-#define API_LOGIN "/api/card/"
+#define API_LOGIN "/api/card"
 
 /*
 app_id=dc52853b3264e67f7237263927266613
@@ -28,8 +28,10 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
 {
     tcpState = noState;
     needReg = false;
+    reply_login = NULL;
     cabManager = CabinetManager::manager();
     userManager = UserManager::manager();
+    manager = new QNetworkAccessManager(this);
     socket = new QTcpSocket();
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectChanged(QAbstractSocket::SocketState)));
@@ -38,6 +40,13 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     beatTimer = new QTimer(this);
     connect(beatTimer, SIGNAL(timeout()), this, SLOT(heartBeat()));
 //    qDebug()<<"[aesCodec]"<<aesCodec->aes_ecb(QByteArray("1234567")).toBase64();
+    QStringList params;
+    params<<"delivery_note_no=CK20180417000001";
+    params<<"app_id=dc52853b3264e67f7237263927266613";
+    params<<"card_no=11111";
+    params<<"nonce_str=ibuaiVcKdpRxkhJA";
+    params<<"timestamp=1529391684";
+    apiJson(params, "8f3eedb6e9155bddcd3f5b945b09b61c");
 }
 
 tcpServer::~tcpServer()
@@ -60,6 +69,12 @@ bool tcpServer::installGlobalConfig(CabinetConfig *globalConfig)
     return true;
 }
 
+void tcpServer::replyCheck(QNetworkReply *reply)
+{
+    if(reply != NULL)
+        reply->deleteLater();
+}
+
 int tcpServer::pushTcpReq(QByteArray qba)
 {
     QTimer::singleShot(2000, this, SLOT(tcpReqTimeout()));
@@ -75,7 +90,7 @@ void tcpServer::parCabInfo(cJSON *json)
     QString hospital_department_name = QString(cJSON_GetObjectItem(hospital, "hospital_department_name")->valuestring);
     QString hospital_name = QString(cJSON_GetObjectItem(hospital, "hospital_name")->valuestring);
 
-    cJSON* screen_pos = QString(cJSON_GetObjectItem(json, "screen_pos")->valuestring);
+    cJSON* screen_pos = cJSON_GetObjectItem(json, "screen_pos");
     QPoint pos;
     pos.setX(cJSON_GetObjectItem(screen_pos, "col")->valueint);
     pos.setY(cJSON_GetObjectItem(screen_pos, "row")->valueint);
@@ -89,7 +104,58 @@ void tcpServer::parCabInfo(cJSON *json)
 
 void tcpServer::parUserInfo(cJSON *json)
 {
+    int userCount = cJSON_GetArraySize(json);
+    for(int i=0; i<userCount; i++)
+    {
+        cJSON* jInfo = cJSON_GetArrayItem(json, i);
+        NUserInfo* uInfo = new NUserInfo();
+        uInfo->card_no = QString(cJSON_GetObjectItem(jInfo, "card_no")->valuestring);
+        uInfo->real_name = QString(cJSON_GetObjectItem(jInfo, "real_name")->valuestring);
+        uInfo->role_id = QString(cJSON_GetObjectItem(jInfo, "role_id")->valuestring);
+        uInfo->role_name = QString(cJSON_GetObjectItem(jInfo, "role_name")->valuestring);
+        userManager->setUserInfo(uInfo);
+        delete uInfo;
+    }
+}
 
+void tcpServer::parGoodsInfo(cJSON *json)
+{
+    int userCount = cJSON_GetArraySize(json);
+    for(int i=0; i<userCount; i++)
+    {
+        cJSON* item = cJSON_GetArrayItem(json, i);
+        GoodsInfo* info = new GoodsInfo();
+        int row = cJSON_GetObjectItem(item, "row")->valueint;
+        int col = cJSON_GetObjectItem(item, "col")->valueint;
+        info->abbName = QString(cJSON_GetObjectItem(item, "shortening")->valuestring);
+        info->name = QString(cJSON_GetObjectItem(item, "goods_name")->valuestring);
+        info->num = cJSON_GetObjectItem(item,"store_num")->valueint;
+        info->outNum = 0;
+        info->id = QString(cJSON_GetObjectItem(item, "goods_id")->valuestring);
+        info->goodsType = cJSON_GetObjectItem(item, "package_type")->valueint;
+        info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
+        info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
+        info->packageId = info->id;
+
+        if(info->goodsType<10)
+            info->packageId += "-0"+QString::number(info->goodsType);
+        else
+            info->packageId += "-"+QString::number(info->goodsType);
+
+        if(info->abbName.isEmpty())
+//            info->abbName = getAbbName(info->name);
+            info->abbName = info->name;
+
+        qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->id<<info->packageId<<info->num<<info->unit;
+        config->syncGoods(info, row, col);
+    }
+}
+
+void tcpServer::parApp(cJSON *json)
+{
+    app_id = QString(cJSON_GetObjectItem(json,"app_id")->valuestring);
+    app_secret = QString(cJSON_GetObjectItem(json,"app_secret")->valuestring);
+    qDebug()<<"parApp"<<app_secret;
 }
 
 void tcpServer::setServer(QHostAddress _address, quint16 _port)
@@ -185,6 +251,12 @@ QByteArray tcpServer::apiJson(QStringList params, QString secret)
     return jsonStr.toLocal8Bit();
 }
 
+QString tcpServer::apiString(QStringList params, QString secret)
+{
+    params<<"sign="+apiSign(params, secret);
+    return params.join("&");
+}
+
 QString tcpServer::apiSign(QStringList params, QString secret)
 {
     params.sort();
@@ -192,8 +264,50 @@ QString tcpServer::apiSign(QStringList params, QString secret)
     QString stringSignTemp = stringA + "&app_secret=" + secret;
     QByteArray qba = stringSignTemp.toLocal8Bit();
     QString stringSha1 = QCryptographicHash::hash(qba, QCryptographicHash::Sha1).toHex();
-//    qDebug()<<"[apiSign]"<<stringSha1.toUpper();
+    qDebug()<<"[apiSign]"<<qba<<stringSha1.toUpper();
     return stringSha1.toUpper();
+}
+
+void tcpServer::apiPost(QString uil, QNetworkReply **reply, QByteArray data, QObject* receiver,const char *slot)
+{
+    QString nUrl = config->getServerAddress()+uil;
+    qDebug()<<"[apiSend]"<<nUrl<<data;
+
+    QNetworkRequest request;
+    request.setUrl(nUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
+    replyCheck(*reply);
+
+    *reply = manager->post(request, data);
+    connect(*reply, SIGNAL(finished()), receiver, slot);
+}
+
+#include <QNetworkRequest>
+void tcpServer::apiGet(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot)
+{
+    QString nUrl = config->getServerAddress()+uil+"?"+data;
+    qDebug()<<"[apiSend]"<<nUrl;
+
+    QNetworkRequest request;
+    request.setUrl(nUrl);
+//    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
+    qDebug()<<request.rawHeader("Accep");
+    replyCheck(*reply);
+
+    *reply = manager->get(request);
+    connect(*reply, SIGNAL(finished()), receiver, slot);
+}
+
+QStringList tcpServer::paramsBase()
+{
+    QStringList ret;
+    ret<<QString("%1=%2").arg("app_id").arg(app_id);
+    ret<<QString("%1=%2").arg("nonce_str").arg(nonceString());
+    ret<<QString("%1=%2").arg("timestamp").arg(timeStamp());
+    ret<<QString("%1=%2").arg("card_no").arg(userId);
+    return ret;
 }
 
 QString s = QString("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789");
@@ -208,6 +322,11 @@ QString tcpServer::nonceString(int len)
     }
     qDebug()<<"[nonceString]"<<ret;;
     return ret;
+}
+
+qint64 tcpServer::timeStamp()
+{
+    return QDateTime::currentMSecsSinceEpoch()/1000;
 }
 
 void tcpServer::readData()
@@ -236,6 +355,14 @@ void tcpServer::readData()
             qDebug()<<"[verify success]";
 //            getTimeStamp();
             beatTimer->start(5000);
+            cJSON* cabJson = cJSON_GetObjectItem(json, "data");
+            cJSON* usrJson = cJSON_GetObjectItem(cabJson, "users");
+            cJSON* goodsJson = cJSON_GetObjectItem(cabJson, "goods_packages");
+            cJSON* appJson = cJSON_GetObjectItem(cabJson, "app");
+            parCabInfo(cabJson);
+            parUserInfo(usrJson);
+            parGoodsInfo(goodsJson);
+            parApp(appJson);
         }
         else
         {
@@ -284,6 +411,18 @@ void tcpServer::recvDateTimeError()
     qDebug()<<"[recvDateTimeError]";
     config->clearConfig();
     waitTimeRst = false;
+}
+
+void tcpServer::recvUserLogin()
+{
+    qDebug()<<"[recvUserLogin]"<<reply_login->readAll();
+    int statusCode = reply_login->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_login->deleteLater();
+    reply_login = NULL;
+    if(statusCode == 200)
+    {
+
+    }
 }
 
 void tcpServer::tcpReqTimeout()
@@ -359,9 +498,15 @@ void tcpServer::getServerAddr(QString addr)
     setServer(address, port);//connect & checktime
 }
 
-void tcpServer::userLogin(QString userId)
+void tcpServer::userLogin(QString id)
 {
+    userId = id;
+    QString nUrl = config->getServerAddress()+QString(API_LOGIN);
+    QStringList params = paramsBase();
+    QString param = apiString(params, app_secret);
 
+    qDebug()<<"[userLogin]";
+    apiGet(API_LOGIN, &reply_login, param, this, SLOT(recvUserLogin()));
 }
 
 void tcpServer::listCheck(QString)

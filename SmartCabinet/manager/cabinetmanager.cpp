@@ -3,6 +3,8 @@
 #include <QVariant>
 #include <QRegExp>
 #include <QStringList>
+#include <QSettings>
+#include <QDebug>
 
 CabinetManager* CabinetManager::m = new CabinetManager;
 

@@ -8,6 +8,9 @@
 #include <QDateTime>
 #include <QProcess>
 #include <QString>
+#include <QVariant>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
 #include "cabinetconfig.h"
 #include "Crypto/qaes.h"
 
@@ -43,6 +46,7 @@ private:
     CabinetManager* cabManager;
     UserManager* userManager;
     QString regId;
+    QString userId;
     bool needReg;
     bool needSaveAddress;
     bool waitTimeRst;
@@ -55,14 +59,21 @@ private:
     QTimer* beatTimer;
     QHostAddress address;
     quint16 port;
+    QString app_id;
+    QString app_secret;
 
     void parCabInfo(cJSON* json);//cabinet info
     void parUserInfo(cJSON* json);//user info
+    void parGoodsInfo(cJSON* json);//goods info
+    void parApp(cJSON* json);//app info
 
 //    bool needReg;
 
     //HTTP
     QString ApiAddress;
+
+    QNetworkAccessManager* manager;
+    QNetworkReply* reply_login;
 
     void getTimeStamp();
     void regist();
@@ -71,10 +82,16 @@ private:
     QByteArray jLogin(QString id, QString aesId, int jType);//登录(1)和注册(2)  json
     QByteArray jRegist(QString id, QString aesId);
     QByteArray apiJson(QStringList params, QString secret);
+    QString apiString(QStringList params, QString secret);
     QString apiSign(QStringList params, QString secret);
+    void apiPost(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
+    void apiGet(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot);
+    QStringList paramsBase();
     QString nonceString(int len=16);
+    qint64 timeStamp();
 
     void checkSysTime(QDateTime _time);
+    void replyCheck(QNetworkReply *reply);
 private slots:
     void readData();
     void connectChanged(QAbstractSocket::SocketState);
@@ -82,6 +99,7 @@ private slots:
     void reconnect();
 
     void recvDateTimeError();
+    void recvUserLogin();
     void tcpReqTimeout();//tcp requst timeout
 signals:
     void loginRst(UserInfo*);
@@ -107,7 +125,7 @@ signals:
 public slots:
     void cabRegister();
     void getServerAddr(QString addr);
-    void userLogin(QString userId);
+    void userLogin(QString id);
     void listCheck(QString);//送货单信息校验
     void cabInfoUpload();//柜子信息上传
     void cabInfoReq();//柜子信息查询

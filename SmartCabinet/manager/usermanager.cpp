@@ -10,9 +10,9 @@ UserManager *UserManager::manager()
     return m;
 }
 
-UserInfo *UserManager::getUserInfo(QString card_no)
+NUserInfo *UserManager::getUserInfo(QString card_no)
 {
-    UserInfo* info = new UserInfo();
+    NUserInfo* info = new NUserInfo();
 
     QString groupName = card_no;
     getConfig(groupName+"/"+"card_no", QString()).toString();
@@ -21,7 +21,7 @@ UserInfo *UserManager::getUserInfo(QString card_no)
     getConfig(groupName+"/"+"role_name", QString()).toString();
 }
 
-void UserManager::setUserInfo(UserInfo *info)
+void UserManager::setUserInfo(NUserInfo *info)
 {
     if(info == NULL)
         return;
@@ -35,7 +35,7 @@ void UserManager::setUserInfo(UserInfo *info)
 
 UserManager::UserManager(QObject *parent) : QObject(parent)
 {
-
+    configPath = CONF_USER_INFO;
 }
 
 /********base functions*******/
@@ -64,3 +64,8 @@ void UserManager::removeConfig(QString path)
     settings.remove(path);
 }
 /********base functions end*******/
+
+NUserInfo::NUserInfo()
+{
+
+}

@@ -8,7 +8,7 @@ class CabinetManager : public QObject
 {
     Q_OBJECT
 public:
-    CabinetManager* manager();
+    static CabinetManager* manager();
     /*SETS*/
     void setCabMap(QString map);
     void setCabLayout(QString layout);

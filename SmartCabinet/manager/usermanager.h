@@ -6,10 +6,10 @@
 #include <QSettings>
 #include <QStringList>
 
-class UserInfo
+class NUserInfo
 {
 public:
-    UserInfo();
+    NUserInfo();
     QString card_no;
     QString real_name;
     QString role_id;
@@ -23,14 +23,15 @@ class UserManager : public QObject
 public:
     static UserManager* manager();
     /*GETS*/
-    UserInfo* getUserInfo(QString card_no);
+    NUserInfo* getUserInfo(QString card_no);
 
     /*SETS*/
-    void setUserInfo(UserInfo* info);
+    void setUserInfo(NUserInfo* info);
 
 private:
     explicit UserManager(QObject *parent = NULL);
     static UserManager* m;
+    QString configPath;
 
     void removeConfig(QString path);
     QVariant getConfig(QString key, QVariant defaultRet);
