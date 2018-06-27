@@ -66,6 +66,8 @@ private:
     void parUserInfo(cJSON* json);//user info
     void parGoodsInfo(cJSON* json);//goods info
     void parApp(cJSON* json);//app info
+    NUserInfo* parOneUser(cJSON* json);
+    UserInfo* nUserToUser(NUserInfo* nInfo);//NUserInfo->UserInfo
 
 //    bool needReg;
 

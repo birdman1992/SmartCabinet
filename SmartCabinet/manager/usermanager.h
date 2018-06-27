@@ -12,7 +12,7 @@ public:
     NUserInfo();
     QString card_no;
     QString real_name;
-    QString role_id;
+    int role_id;//1 仓库管理，2 普通管理， 3 护士长， 4 护士
     QString role_name;
 };
 

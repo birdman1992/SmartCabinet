@@ -726,7 +726,7 @@ MainWidget::~MainWidget()
 {
     delete ui;
     //--写入配置信息
-    writeSettings();
+//    writeSettings();
 }
 
 void MainWidget::paintEvent(QPaintEvent*)

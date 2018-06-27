@@ -108,11 +108,7 @@ void tcpServer::parUserInfo(cJSON *json)
     for(int i=0; i<userCount; i++)
     {
         cJSON* jInfo = cJSON_GetArrayItem(json, i);
-        NUserInfo* uInfo = new NUserInfo();
-        uInfo->card_no = QString(cJSON_GetObjectItem(jInfo, "card_no")->valuestring);
-        uInfo->real_name = QString(cJSON_GetObjectItem(jInfo, "real_name")->valuestring);
-        uInfo->role_id = QString(cJSON_GetObjectItem(jInfo, "role_id")->valuestring);
-        uInfo->role_name = QString(cJSON_GetObjectItem(jInfo, "role_name")->valuestring);
+        NUserInfo* uInfo = parOneUser(jInfo);
         userManager->setUserInfo(uInfo);
         delete uInfo;
     }
@@ -155,7 +151,29 @@ void tcpServer::parApp(cJSON *json)
 {
     app_id = QString(cJSON_GetObjectItem(json,"app_id")->valuestring);
     app_secret = QString(cJSON_GetObjectItem(json,"app_secret")->valuestring);
-    qDebug()<<"parApp"<<app_secret;
+    //    qDebug()<<"parApp"<<app_secret;
+}
+
+NUserInfo *tcpServer::parOneUser(cJSON *json)
+{
+    cJSON* jInfo = json;
+    NUserInfo* uInfo = new NUserInfo();
+    uInfo->card_no = QString(cJSON_GetObjectItem(jInfo, "card_no")->valuestring);
+    uInfo->real_name = QString(cJSON_GetObjectItem(jInfo, "real_name")->valuestring);
+    uInfo->role_id = cJSON_GetObjectItem(jInfo, "role_id")->valueint;
+    uInfo->role_name = QString(cJSON_GetObjectItem(jInfo, "role_name")->valuestring);
+    return uInfo;
+}
+//UserInfo:0 超级管理员, 1 仓库员工, 2 医院管理, 3 护士长, 4 护士
+//NUserInfo:1 仓库管理，2 普通管理， 3 护士长， 4 护士
+UserInfo *tcpServer::nUserToUser(NUserInfo *nInfo)
+{
+    UserInfo* ret = new UserInfo;
+    ret->cardId = nInfo->card_no;
+    ret->name = nInfo->real_name;
+    ret->power = (nInfo->role_id==1)?0:(nInfo->role_id);
+    return ret;
+//    nInfo->role_name;
 }
 
 void tcpServer::setServer(QHostAddress _address, quint16 _port)
@@ -415,13 +433,25 @@ void tcpServer::recvDateTimeError()
 
 void tcpServer::recvUserLogin()
 {
-    qDebug()<<"[recvUserLogin]"<<reply_login->readAll();
+    QByteArray qba = reply_login->readAll();
+    qDebug()<<"[recvUserLogin]"<<qba;
+
     int statusCode = reply_login->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_login->deleteLater();
     reply_login = NULL;
+
     if(statusCode == 200)
     {
+        cJSON* json = cJSON_Parse(qba.data());
+        if(json == NULL)
+            return;
 
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+
+        NUserInfo* nInfo = parOneUser(data);
+        UserInfo* uInfo = nUserToUser(nInfo);
+        delete nInfo;
+        emit loginRst(uInfo);
     }
 }
 
