@@ -2,11 +2,22 @@
 #include <QDebug>
 #include <QTime>
 #include <QCryptographicHash>
+#include <QNetworkRequest>
 
+#include "defines.h"
 #include "Json/cJSON.h"
 #define TCP_SERVER_PORT 8888
 
 #define API_LOGIN "/api/card"
+#define API_CHECK_STORE_LIST "/api/delivery_note"
+#define API_STORE_LIST "/api/delivery_note"
+#define API_BIND_CASE "/api/grid_goods"
+#define API_REBIND_CASE "/api/grid_goods"
+#define API_FETCH "/api/package_code"
+#define API_REFUND "/api/refund/package_codes"
+#define API_CHECK_CREAT "/api/stocktaking"
+#define API_CHECK "/api/stocktaking/package_codes"
+#define API_CHECK_FINISH "/api/stocktaking"
 
 /*
 app_id=dc52853b3264e67f7237263927266613
@@ -29,6 +40,7 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     tcpState = noState;
     needReg = false;
     reply_login = NULL;
+    reply_check_store_list = NULL;
     cabManager = CabinetManager::manager();
     userManager = UserManager::manager();
     manager = new QNetworkAccessManager(this);
@@ -301,7 +313,36 @@ void tcpServer::apiPost(QString uil, QNetworkReply **reply, QByteArray data, QOb
     connect(*reply, SIGNAL(finished()), receiver, slot);
 }
 
-#include <QNetworkRequest>
+void tcpServer::apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObject* receiver,const char *slot)
+{
+    QString nUrl = config->getServerAddress()+uil;
+    qDebug()<<"[apiSend]"<<nUrl<<data;
+
+    QNetworkRequest request;
+    request.setUrl(nUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
+    replyCheck(*reply);
+
+    *reply = manager->put(request, data);
+    connect(*reply, SIGNAL(finished()), receiver, slot);
+}
+
+//void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QByteArray data, QObject* receiver,const char *slot)
+//{
+//    QString nUrl = config->getServerAddress()+uil;
+//    qDebug()<<"[apiSend]"<<nUrl<<data;
+
+//    QNetworkRequest request;
+//    request.setUrl(nUrl);
+//    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+//    request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
+//    replyCheck(*reply);
+
+//    *reply = manager->deleteResource(request, data);
+//    connect(*reply, SIGNAL(finished()), receiver, slot);
+//}
+
 void tcpServer::apiGet(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot)
 {
     QString nUrl = config->getServerAddress()+uil+"?"+data;
@@ -311,7 +352,6 @@ void tcpServer::apiGet(QString uil, QNetworkReply **reply, QString data, QObject
     request.setUrl(nUrl);
 //    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
-    qDebug()<<request.rawHeader("Accep");
     replyCheck(*reply);
 
     *reply = manager->get(request);
@@ -450,9 +490,22 @@ void tcpServer::recvUserLogin()
 
         NUserInfo* nInfo = parOneUser(data);
         UserInfo* uInfo = nUserToUser(nInfo);
+        qDebug()<<"pow"<<uInfo->power;
         delete nInfo;
         emit loginRst(uInfo);
+        config->addUser(uInfo);
+        config->wakeUp(TIMEOUT_BASE);
     }
+}
+
+void tcpServer::recvListCheck()
+{
+    QByteArray qba = reply_check_store_list->readAll();
+    qDebug()<<"[recvListCheck]"<<qba;
+
+    int statusCode = reply_check_store_list->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_check_store_list->deleteLater();
+    reply_check_store_list = NULL;
 }
 
 void tcpServer::tcpReqTimeout()
@@ -481,11 +534,13 @@ void tcpServer::connectChanged(QAbstractSocket::SocketState state)
     if(state == QAbstractSocket::ConnectedState)
     {
         getTimeStamp();
+        emit netState(true);
     }
     else if(state == QAbstractSocket::UnconnectedState)
     {
         QTimer::singleShot(10000, this, SLOT(reconnect()));
         beatTimer->stop();
+        emit netState(false);
     }
 }
 
@@ -531,7 +586,6 @@ void tcpServer::getServerAddr(QString addr)
 void tcpServer::userLogin(QString id)
 {
     userId = id;
-    QString nUrl = config->getServerAddress()+QString(API_LOGIN);
     QStringList params = paramsBase();
     QString param = apiString(params, app_secret);
 
@@ -539,9 +593,14 @@ void tcpServer::userLogin(QString id)
     apiGet(API_LOGIN, &reply_login, param, this, SLOT(recvUserLogin()));
 }
 
-void tcpServer::listCheck(QString)
+void tcpServer::listCheck(QString listCode)
 {
+    QStringList params = paramsBase();
+    params<<"delivery_note_no="+listCode;
+    QString param = apiString(params, app_secret);
 
+    qDebug()<<"[listCheck]";
+    apiGet(API_CHECK_STORE_LIST, &reply_check_store_list, param, this, SLOT(recvListCheck()));
 }
 
 void tcpServer::cabInfoUpload()
@@ -569,9 +628,34 @@ void tcpServer::cabColInsert(int pos, int num)
 
 }
 
-void tcpServer::cabinetBind(int, int, QString)
+void tcpServer::cabinetBind(int col, int row, QString goodsId)
 {
+    QStringList params = paramsBase();
+    QStringList idInfo = goodsId.split("-", QString::SkipEmptyParts);
+    QString goods_id = idInfo.at(0);
+    int package_type = idInfo.at(1).toInt();
+    params<<QString("goods_id=%1").arg(goods_id);
+    params<<QString("package_type=%1").arg(package_type);
+    params<<QString("col=%1").arg(col);
+    params<<QString("row=%1").arg(row);
+    QByteArray param = apiJson(params, app_secret);
+    qDebug()<<"[cabinetBind]";
+    apiPost(API_BIND_CASE, reply_check_store_list, param, this, SLOT(recvListCheck()));
+}
 
+void tcpServer::cabinetRebind(int col, int row, QString goodsId)
+{
+    QStringList params = paramsBase();
+    QStringList idInfo = goodsId.split("-", QString::SkipEmptyParts);
+    QString goods_id = idInfo.at(0);
+    int package_type = idInfo.at(1).toInt();
+    params<<QString("goods_id=%1").arg(goods_id);
+    params<<QString("package_type=%1").arg(package_type);
+    params<<QString("col=%1").arg(col);
+    params<<QString("row=%1").arg(row);
+    QByteArray param = apiJson(params, app_secret);
+    qDebug()<<"[cabinetRebind]";
+    apiPut(API_BIND_CASE, reply_check_store_list, param, this, SLOT(recvListCheck()));
 }
 
 void tcpServer::goodsAccess(CaseAddress, QString, int, int optType)

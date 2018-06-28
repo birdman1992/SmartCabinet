@@ -76,6 +76,7 @@ private:
 
     QNetworkAccessManager* manager;
     QNetworkReply* reply_login;
+    QNetworkReply* reply_check_store_list;
 
     void getTimeStamp();
     void regist();
@@ -88,6 +89,7 @@ private:
     QString apiSign(QStringList params, QString secret);
     void apiPost(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
     void apiGet(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot);
+    void apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
     QStringList paramsBase();
     QString nonceString(int len=16);
     qint64 timeStamp();
@@ -102,6 +104,7 @@ private slots:
 
     void recvDateTimeError();
     void recvUserLogin();
+    void recvListCheck();
     void tcpReqTimeout();//tcp requst timeout
 signals:
     void loginRst(UserInfo*);
@@ -134,7 +137,8 @@ public slots:
     void cabCloneReq(QString oldCabinetId);//柜子克隆请求
     void cabInfoSync();//柜子数据同步
     void cabColInsert(int pos, int num);
-    void cabinetBind(int, int, QString);
+    void cabinetBind(int col, int row, QString goodsId);
+    void cabinetRebind(int col, int row, QString goodsId);
     void goodsAccess(CaseAddress, QString, int, int optType);
     void listAccess(QStringList list, int optType);
     void goodsCheckReq();
@@ -149,6 +153,7 @@ public slots:
     void requireCheckTables(QDate start, QDate finish);
 
     void requireCheckTableInfo(QString id);
+
 };
 
 #endif // TCPSERVER_H
