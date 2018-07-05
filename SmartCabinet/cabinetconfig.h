@@ -32,6 +32,8 @@ public:
     ~CabinetConfig();
     void saveFetchList(QByteArray _data);
     void readCabinetConfig();//读取柜子配置
+    QString getSecondUser();
+    void setSecondUser(QString userId);
     QString getCabinetLayout();
     QString getCabinetColMap();
     QPoint getScreenPos();
@@ -109,6 +111,7 @@ private:
     QString cabinetId;
     QString serverAddr;
     QString optName;//操作者卡号
+    QString secOpt;//第二操作人
 
     void readUserConfig();//读取用户配置
 

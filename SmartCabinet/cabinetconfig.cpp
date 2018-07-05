@@ -17,6 +17,7 @@ CabinetConfig::CabinetConfig()
     sleepFlag = 0;
     cardReaderIsOk = false;
     codeScanIsOk = false;
+    secOpt = QString();
     //    cabId.clear();
     cabinetId.clear();
     list_user.clear();
@@ -544,6 +545,18 @@ void CabinetConfig::readCabinetConfig()
         settings.endGroup();
     }
     creatCabinetJson();
+}
+
+QString CabinetConfig::getSecondUser()
+{
+    QString ret = secOpt;
+    secOpt.clear();
+    return ret;
+}
+
+void CabinetConfig::setSecondUser(QString userId)
+{
+    secOpt = userId;
 }
 
 QString CabinetConfig::getCabinetLayout()

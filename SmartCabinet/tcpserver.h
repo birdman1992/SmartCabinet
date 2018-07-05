@@ -65,6 +65,7 @@ private:
     void parCabInfo(cJSON* json);//cabinet info
     void parUserInfo(cJSON* json);//user info
     void parGoodsInfo(cJSON* json);//goods info
+    Goods* parGoods(cJSON* json);//Goods
     void parApp(cJSON* json);//app info
     NUserInfo* parOneUser(cJSON* json);
     UserInfo* nUserToUser(NUserInfo* nInfo);//NUserInfo->UserInfo
@@ -77,6 +78,10 @@ private:
     QNetworkAccessManager* manager;
     QNetworkReply* reply_login;
     QNetworkReply* reply_check_store_list;
+    QNetworkReply* reply_goods_access;
+    QNetworkReply* reply_bind_case;
+    QNetworkReply* reply_refund;
+    QNetworkReply* reply_check;
 
     void getTimeStamp();
     void regist();
@@ -90,12 +95,15 @@ private:
     void apiPost(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
     void apiGet(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot);
     void apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
+    void apiDelete(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
     QStringList paramsBase();
     QString nonceString(int len=16);
     qint64 timeStamp();
 
     void checkSysTime(QDateTime _time);
     void replyCheck(QNetworkReply *reply);
+    void goodsFetch(QString goodsCode);
+    void goodsRefund(QString goodsCode);
 private slots:
     void readData();
     void connectChanged(QAbstractSocket::SocketState);
@@ -105,7 +113,15 @@ private slots:
     void recvDateTimeError();
     void recvUserLogin();
     void recvListCheck();
+    void recvGoodsAccess();
+    void recvRebindCase();
+    void recvBindCase();
+    void recvGoodsRefund();
+    void recvCheckCreate();
+    void recvCheckFinish();
     void tcpReqTimeout();//tcp requst timeout
+
+    void recvGoodsCheck();
 signals:
     void loginRst(UserInfo*);
     void listRst(GoodsList*);
@@ -139,7 +155,7 @@ public slots:
     void cabColInsert(int pos, int num);
     void cabinetBind(int col, int row, QString goodsId);
     void cabinetRebind(int col, int row, QString goodsId);
-    void goodsAccess(CaseAddress, QString, int, int optType);
+    void goodsAccess(CaseAddress, QString, int, int optType);//1取货2存货3退货
     void listAccess(QStringList list, int optType);
     void goodsCheckReq();
     void goodsCheckFinish();
