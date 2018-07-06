@@ -775,10 +775,10 @@ void CabinetWidget::on_check_clicked(bool checked)
         int uckNum = config->getUncheckCaseNum();
         QString msg;
         if(uckNum)
-            msg = QString("还有%1个柜格未盘点，无法提交").arg(uckNum);
+            msg = QString("还有%1个柜格未盘点").arg(uckNum);
         else
             msg = QString("柜格已全部盘点，可以提交");
-        win_check_warnning->warnningMsg(msg, (uckNum==0));
+        win_check_warnning->warnningMsg(msg, true);
     }
 }
 
