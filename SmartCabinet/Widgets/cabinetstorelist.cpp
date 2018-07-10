@@ -49,7 +49,7 @@ void CabinetStoreList::storeStart(GoodsList *l)
     for(i=0; i<list_store->list_goods.count(); i++)
     {
         Goods* goods = l->list_goods.at(i);
-        qDebug()<<"storeStart"<<goods->abbName;
+        qDebug()<<"storeStart"<<goods->abbName<<goods->pos;
         CaseAddress addr;
         addr.setAddress(goods->pos);
 //        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);

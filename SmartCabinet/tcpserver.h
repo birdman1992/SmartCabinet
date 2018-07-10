@@ -47,6 +47,7 @@ private:
     UserManager* userManager;
     QString regId;
     QString userId;
+    QString storeListCode;
     bool needReg;
     bool needSaveAddress;
     bool waitTimeRst;
@@ -114,6 +115,7 @@ private slots:
     void recvUserLogin();
     void recvListCheck();
     void recvGoodsAccess();
+    void recvGoodsStoreList();
     void recvRebindCase();
     void recvBindCase();
     void recvGoodsRefund();

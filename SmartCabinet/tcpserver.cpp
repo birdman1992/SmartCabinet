@@ -184,6 +184,9 @@ Goods *tcpServer::parGoods(cJSON *json)
 
     cJSON* codeList = cJSON_GetObjectItem(json, "package_codes");
     int listSize = cJSON_GetArraySize(codeList);
+    cJSON* position = cJSON_GetObjectItem(json, "position");
+    ret->pos.setX(cJSON_GetObjectItem(position,"col")->valueint);
+    ret->pos.setY(cJSON_GetObjectItem(position,"row")->valueint);
 
     for(int i=0; i<listSize; i++)
     {
@@ -317,6 +320,12 @@ QByteArray tcpServer::apiJson(QStringList params, QString secret)
     return jsonStr.toLocal8Bit();
 }
 
+//QByteArray tcpServer::jsonStr2Int(QByteArray qba, QString key)
+//{
+//    int pos_base = qba.indexOf("key");
+//    int
+//}
+
 QString tcpServer::apiString(QStringList params, QString secret)
 {
     params<<"sign="+apiSign(params, secret);
@@ -341,7 +350,7 @@ void tcpServer::apiPost(QString uil, QNetworkReply **reply, QByteArray data, QOb
 
     QNetworkRequest request;
     request.setUrl(nUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
     replyCheck(*reply);
 
@@ -356,7 +365,7 @@ void tcpServer::apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObj
 
     QNetworkRequest request;
     request.setUrl(nUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
     replyCheck(*reply);
 
@@ -371,7 +380,7 @@ void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QByteArray data, Q
 
     QNetworkRequest request;
     request.setUrl(nUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
     replyCheck(*reply);
     QBuffer buffer;
@@ -582,6 +591,27 @@ void tcpServer::recvGoodsAccess()
 
 }
 
+void tcpServer::recvGoodsStoreList()
+{
+    QByteArray qba = reply_goods_access->readAll();
+    qDebug()<<"[recvGoodsStoreList]"<<qba;
+    int statusCode = reply_goods_access->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_goods_access->deleteLater();
+    reply_goods_access = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvGoodsStoreList]";
+
+    if(statusCode == 200)
+    {
+        login();
+    }
+    else
+    {
+        emit accessFailed(QString(cJSON_GetObjectItem(json, "message")->valuestring));
+    }
+}
+
 void tcpServer::recvRebindCase()
 {
     QByteArray qba = reply_bind_case->readAll();
@@ -725,6 +755,7 @@ void tcpServer::listCheck(QString listCode)
 {
     QStringList params = paramsBase();
     params<<"delivery_note_no="+listCode;
+    storeListCode = listCode;
     QString param = apiString(params, app_secret);
 
     qDebug()<<"[listCheck]";
@@ -891,9 +922,16 @@ void tcpServer::goodsCheck(QStringList l, CaseAddress)//未使用
     cJSON_Delete(package_codes);
 }
 
-void tcpServer::goodsListStore(QList<CabinetStoreListItem *> l)
+void tcpServer::goodsListStore(QList<CabinetStoreListItem *> )
 {
+    if(storeListCode.isEmpty())
+        return;
 
+    QStringList params = paramsBase();
+    params<<QString("delivery_note_no=%1").arg(storeListCode);
+    QByteArray param = apiJson(params, app_secret);
+    qDebug()<<"[goodsListStore]";
+    apiPost(API_STORE_LIST, &reply_goods_access, param, this, SLOT(recvGoodsStoreList()));
 }
 
 void tcpServer::goodsCarScan()

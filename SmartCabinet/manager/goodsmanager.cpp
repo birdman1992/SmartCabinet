@@ -10,7 +10,10 @@ GoodsManager *GoodsManager::manager()
 
 void GoodsManager::addGoodsCodes(QString goodsId, QStringList codes)
 {
-    setConfig(QString("%1/codes").arg(goodsId), codes);
+    QStringList srcCodes = getConfig(QString("%1/codes").arg(goodsId), QStringList()).toStringList();
+    srcCodes<<codes;
+    srcCodes.removeDuplicates();
+    setConfig(QString("%1/codes").arg(goodsId), srcCodes);
 }
 
 QStringList GoodsManager::getGoodsCodes(QString goodsId)
@@ -32,7 +35,7 @@ QStringList GoodsManager::getGoodsList()
 void GoodsManager::removeCode(QString code)
 {
     QString goodsId = getGoodsByCode(code);
-    QStringList codes = getConfig(QString("%1/codes").arg(goodsId), QStringList());
+    QStringList codes = getConfig(QString("%1/codes").arg(goodsId), QStringList()).toStringList();
     codes.removeOne(code);
     setConfig(QString("%1/codes").arg(goodsId), codes);
 }
