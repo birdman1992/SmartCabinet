@@ -169,12 +169,30 @@ void tcpServer::parGoodsInfo(cJSON *json)
 Goods *tcpServer::parGoods(cJSON *json)
 {
     Goods* ret = new Goods();
-    QString(cJSON_GetObjectItem(json, "goods_name")->valuestring);
-    QString(cJSON_GetObjectItem(json, "shortening")->valuestring);
-    QString(cJSON_GetObjectItem(json, "specifications")->valuestring);
-    QString(cJSON_GetObjectItem(json, "unit")->valuestring);
-    QString(cJSON_GetObjectItem(json, "unit")->valuestring);
-    QString(cJSON_GetObjectItem(json, "unit")->valuestring);
+    ret->name = QString(cJSON_GetObjectItem(json, "goods_name")->valuestring);
+    ret->abbName = QString(cJSON_GetObjectItem(json, "shortening")->valuestring);
+    ret->size = QString(cJSON_GetObjectItem(json, "specifications")->valuestring);
+    ret->unit = QString(cJSON_GetObjectItem(json, "unit")->valuestring);
+    ret->goodsId = QString(cJSON_GetObjectItem(json, "goods_id")->valuestring);
+    ret->packageType = cJSON_GetObjectItem(json, "package_type")->valueint;
+    ret->takeCount = cJSON_GetObjectItem(json,"count")->valueint;//packageCount
+    ret->totalNum = ret->takeCount;
+    if(ret->packageType<10)
+        ret->packageBarcode = ret->goodsId + "-0" + QString::number(ret->packageType);
+    else
+        ret->packageBarcode = ret->goodsId + "-" + QString::number(ret->packageType);
+
+    cJSON* codeList = cJSON_GetObjectItem(json, "package_codes");
+    int listSize = cJSON_GetArraySize(codeList);
+
+    for(int i=0; i<listSize; i++)
+    {
+        cJSON* item = cJSON_GetArrayItem(codeList, i);
+        ret->codes<<QString(cJSON_GetObjectItem(item, "package_code")->valuestring);
+    }
+    qDebug()<<ret->name<<ret->codes;
+
+    return ret;
 }
 
 void tcpServer::parApp(cJSON *json)
@@ -527,7 +545,8 @@ void tcpServer::recvListCheck()
     int statusCode = reply_check_store_list->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_check_store_list->deleteLater();
     reply_check_store_list = NULL;
-    if(statusCode == 201)
+
+    if(statusCode == 200)
     {
         cJSON* json = cJSON_Parse(qba.data());
         cJSON* data = cJSON_GetObjectItem(json, "data");
@@ -537,8 +556,15 @@ void tcpServer::recvListCheck()
         for(int i=0; i<itemNum; i++)
         {
             cJSON* item = cJSON_GetArrayItem(data, i);
-
+            info = parGoods(item);
+            list->addGoods(info);
         }
+        emit listRst(list);
+        cJSON_Delete(json);
+    }
+    else
+    {
+        emit listRst(new GoodsList);
     }
 }
 
@@ -572,6 +598,15 @@ void tcpServer::recvBindCase()
     int statusCode = reply_bind_case->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_bind_case->deleteLater();
     reply_bind_case = NULL;
+
+    if(statusCode == 200)
+    {
+        emit bindRst(true);
+    }
+    else
+    {
+        emit bindRst(false);
+    }
 }
 
 void tcpServer::recvCheckCreate()
@@ -733,7 +768,7 @@ void tcpServer::cabinetBind(int col, int row, QString goodsId)
     params<<QString("row=%1").arg(row);
     QByteArray param = apiJson(params, app_secret);
     qDebug()<<"[cabinetBind]";
-    apiPost(API_BIND_CASE, &reply_bind_case, param, this, SLOT(recvListCheck()));
+    apiPost(API_BIND_CASE, &reply_bind_case, param, this, SLOT(recvBindCase()));
 }
 
 void tcpServer::cabinetRebind(int col, int row, QString goodsId)

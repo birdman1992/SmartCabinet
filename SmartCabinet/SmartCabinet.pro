@@ -71,7 +71,8 @@ SOURCES += main.cpp\
     tcpserver.cpp \
     Crypto/qaes.cpp \
     manager/usermanager.cpp \
-    manager/cabinetmanager.cpp
+    manager/cabinetmanager.cpp \
+    manager/goodsmanager.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -133,7 +134,8 @@ HEADERS  += mainwidget.h \
     Crypto/aes.h \
     Crypto/qaes.h \
     manager/usermanager.h \
-    manager/cabinetmanager.h
+    manager/cabinetmanager.h \
+    manager/goodsmanager.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

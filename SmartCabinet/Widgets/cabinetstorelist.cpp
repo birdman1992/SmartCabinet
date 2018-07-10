@@ -14,6 +14,7 @@ CabinetStoreList::CabinetStoreList(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     bindItem = NULL;
+    manager = GoodsManager::manager();
     loginState = false;
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
@@ -49,7 +50,9 @@ void CabinetStoreList::storeStart(GoodsList *l)
     {
         Goods* goods = l->list_goods.at(i);
         qDebug()<<"storeStart"<<goods->abbName;
-        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
+        CaseAddress addr;
+        addr.setAddress(goods->pos);
+//        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
         item = new CabinetStoreListItem(goods, addr);
         connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
         connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
@@ -60,6 +63,7 @@ void CabinetStoreList::storeStart(GoodsList *l)
 
 void CabinetStoreList::storeFinish()
 {
+    saveList();
     clearList();
 }
 
@@ -129,6 +133,14 @@ void CabinetStoreList::clearList()
     list_store = NULL;
     ui->storeTable->clear();
     ui->storeTable->setRowCount(0);
+}
+
+void CabinetStoreList::saveList()
+{
+    foreach(Goods* goods, list_store->list_goods)
+    {
+        manager->addGoodsCodes(goods->goodsId, goods->codes);
+    }
 }
 
 //test function

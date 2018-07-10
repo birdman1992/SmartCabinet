@@ -5,6 +5,7 @@
 #define CONF_USER_INFO  "/home/config/user.ini"   //new_api
 #define CONF_CABINET "/home/config/cabinet.ini"   //共用
 #define CONF_CABINET_INFO  "/home/config/cabinfo.ini" //new_api
+#define CONF_GOODS_INFO  "/home/config/goodsinfo.ini"
 #define CAB_CACHE "/home/config/cache.ini"
 
 //超时时间配置

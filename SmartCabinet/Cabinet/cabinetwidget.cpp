@@ -978,7 +978,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 
 void CabinetWidget::recvListInfo(GoodsList *l)
 {
-    qDebug("recv");
+    qDebug("[recvListInfo]");
     if(l->list_goods.count() == 0)
     {
         config->showMsg(MSG_LIST_ERROR, 1);
