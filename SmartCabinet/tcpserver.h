@@ -45,6 +45,7 @@ private:
     CabinetConfig* config;
     CabinetManager* cabManager;
     UserManager* userManager;
+    QList<CabinetStoreListItem *> storeList;
     QString regId;
     QString userId;
     QString storeListCode;

@@ -588,7 +588,15 @@ void tcpServer::recvGoodsRefund()
 
 void tcpServer::recvGoodsAccess()
 {
+    QByteArray qba = reply_goods_access->readAll();
+    qDebug()<<"[recvGoodsAccess]"<<qba;
+    int statusCode = reply_goods_access->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_goods_access->deleteLater();
+    reply_goods_access = NULL;
+    if(statusCode == 200)
+    {
 
+    }
 }
 
 void tcpServer::recvGoodsStoreList()
@@ -605,6 +613,10 @@ void tcpServer::recvGoodsStoreList()
     if(statusCode == 200)
     {
         login();
+        foreach(CabinetStoreListItem* item, storeList)
+        {
+            emit goodsNumChanged(item->itemId(), item->itemNum());
+        }
     }
     else
     {
@@ -922,11 +934,12 @@ void tcpServer::goodsCheck(QStringList l, CaseAddress)//未使用
     cJSON_Delete(package_codes);
 }
 
-void tcpServer::goodsListStore(QList<CabinetStoreListItem *> )
+void tcpServer::goodsListStore(QList<CabinetStoreListItem *> l)
 {
     if(storeListCode.isEmpty())
         return;
 
+    storeList = l;
     QStringList params = paramsBase();
     params<<QString("delivery_note_no=%1").arg(storeListCode);
     QByteArray param = apiJson(params, app_secret);
