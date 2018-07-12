@@ -21,89 +21,97 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
-    <number>480</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>250</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>480</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>250</number>
+    <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="frame">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">#frame{
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QFrame" name="frame">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>480</width>
+         <height>400</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">#frame{
 background-color: rgb(255, 255, 255);
 }</string>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <widget class="QLabel" name="tip">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>170</y>
-        <width>431</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 20px &quot;微软雅黑&quot;;
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QLabel" name="tip">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>170</y>
+          <width>431</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 20px &quot;微软雅黑&quot;;
 color: rgb(40, 122, 35);
 background-color: rgb(255, 255, 255);</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="info">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>110</y>
-        <width>441</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-image: url(:/image/image/bg_input_normal.png);
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="info">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>110</y>
+          <width>441</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-image: url(:/image/image/bg_input_normal.png);
 padding-left:10px;
 font: 20px &quot;微软雅黑&quot;;</string>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="cancel">
-      <property name="geometry">
-       <rect>
-        <x>120</x>
-        <y>290</y>
-        <width>160</width>
-        <height>70</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">#cancel{
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="cancel">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>290</y>
+          <width>160</width>
+          <height>70</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#cancel{
 	color: rgb(255, 255, 255);
 	font: 75 26px &quot;微软雅黑&quot;;
 	background-color: rgb(238, 128, 61);
@@ -113,25 +121,25 @@ font: 20px &quot;微软雅黑&quot;;</string>
 	background-color: rgb(8, 182, 114);
 	background-color: rgb(224, 95, 17);
 }</string>
-      </property>
-      <property name="text">
-       <string>取消</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="onekey">
-      <property name="geometry">
-       <rect>
-        <x>330</x>
-        <y>210</y>
-        <width>121</width>
-        <height>51</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">#onekey{
+        </property>
+        <property name="text">
+         <string>取消</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="onekey">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>210</y>
+          <width>121</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#onekey{
 	color: rgb(255, 255, 255);
 	font: 75 20px &quot;微软雅黑&quot;;
 	background-color: rgb(36, 221, 149);
@@ -140,25 +148,25 @@ font: 20px &quot;微软雅黑&quot;;</string>
 	font: 75 20px &quot;微软雅黑&quot;;
 	background-color: rgb(8, 182, 114);
 }</string>
-      </property>
-      <property name="text">
-       <string>一键存入</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="ok">
-      <property name="geometry">
-       <rect>
-        <x>290</x>
-        <y>290</y>
-        <width>160</width>
-        <height>70</height>
-       </rect>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">#ok{
+        </property>
+        <property name="text">
+         <string>一键存入</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="ok">
+        <property name="geometry">
+         <rect>
+          <x>290</x>
+          <y>290</y>
+          <width>160</width>
+          <height>70</height>
+         </rect>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">#ok{
 	color: rgb(255, 255, 255);
 	font: 75 26px &quot;微软雅黑&quot;;
 	background-color: rgb(36, 221, 149);
@@ -167,37 +175,39 @@ font: 20px &quot;微软雅黑&quot;;</string>
 	font: 75 26px &quot;微软雅黑&quot;;
 	background-color: rgb(8, 182, 114);
 }</string>
-      </property>
-      <property name="text">
-       <string>确定</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="name">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>441</width>
-        <height>71</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 75 25px &quot;微软雅黑&quot;;</string>
-      </property>
-      <property name="text">
-       <string>医用棉签</string>
-      </property>
-      <property name="scaledContents">
-       <bool>false</bool>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </widget>
+        </property>
+        <property name="text">
+         <string>确定</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="name">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>441</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 75 25px &quot;微软雅黑&quot;;</string>
+        </property>
+        <property name="text">
+         <string>医用棉签</string>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

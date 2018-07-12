@@ -724,6 +724,8 @@ CaseAddress CabinetConfig::checkCabinetByBarCode(QString id)
     int j = 0;
     int goodsIndex = 0;
     CaseAddress ret;
+    if(id.isEmpty())
+        return ret;
 
     for(i=0; i<list_cabinet.count(); i++)
     {

@@ -512,6 +512,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         {
             qDebug()<<"[fetch]"<<"scan data not find";
             config->showMsg(MSG_GOODS_NOT_FIND,1);
+            win_access->fetchFailed(MSG_GOODS_NOT_FIND);
             return;
         }
         if(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
@@ -525,7 +526,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_REFUN)
     {
-        win_refund->refundScan(scanInfo,fullScanInfo);
+        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
+        win_refund->refundScan(scanGoodsId,fullScanInfo);
 //        CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
 //        if(addr.cabinetSeqNUM == -1)
 //        {

@@ -14,7 +14,7 @@
 #define API_BIND_CASE "/api/grid_goods"
 #define API_REBIND_CASE "/api/grid_goods"
 #define API_FETCH "/api/package_code"
-#define API_REFUND "/api/refund/package_codes"
+#define API_REFUND "/api/refund/package_code"
 #define API_CHECK_CREAT "/api/stocktaking"
 #define API_CHECK "/api/stocktaking/package_codes"
 #define API_CHECK_FINISH "/api/stocktaking"
@@ -395,7 +395,6 @@ void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QString data, QObj
     request.setUrl(nUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
-//    *reply = manager->post(request, data);
     *reply = manager->deleteResource(request);
     connect(*reply, SIGNAL(finished()), receiver, slot);
 }
@@ -446,7 +445,7 @@ qint64 tcpServer::timeStamp()
 #include <unistd.h>
 void tcpServer::readData()
 {
-    usleep(100000);
+    usleep(300000);
     QByteArray qba = socket->readAll();
     qDebug()<<"[TCP DATA]:"<<qba;
     cJSON* json = cJSON_Parse(qba.data());
@@ -594,6 +593,27 @@ void tcpServer::recvGoodsRefund()
     int statusCode = reply_refund->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_refund->deleteLater();
     reply_refund = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    if(statusCode == 200)
+    {
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        QString goodsId = QString(cJSON_GetObjectItem(data, "goods_id")->valuestring);
+        int goodsType = cJSON_GetObjectItem(data, "package_type")->valueint;
+        QString code = QString(cJSON_GetObjectItem(data, "package_code")->valuestring);
+        goodsId = getPackageId(goodsId, goodsType);
+        goodsManager->removeCode(code);
+        emit goodsNumChanged(goodsId, -1);
+    }
+    else
+    {
+        emit accessFailed(QString(cJSON_GetObjectItem(json, "message")->valuestring));
+    }
+
+    cJSON_Delete(json);
 }
 
 void tcpServer::recvGoodsAccess()
@@ -861,6 +881,10 @@ void tcpServer::goodsAccess(CaseAddress, QString goodsCode, int, int optType)
     {
         goodsFetch(goodsCode);
     }
+    else if(optType == 3)
+    {
+        goodsRefund(goodsCode);
+    }
 }
 
 void tcpServer::goodsFetch(QString goodsCode)
@@ -879,13 +903,30 @@ void tcpServer::goodsRefund(QString goodsCode)
     params<<QString("package_code=%1").arg(goodsCode);
 
     QByteArray param = apiJson(params, app_secret);
-    apiDelete(API_REFUND, &reply_refund, param, this, SLOT(recvGoodsRefund()));
-    qDebug()<<"[goodsRefund]"<<param;
+    qDebug()<<"[goodsRefund]";
+    apiPost(API_REFUND, &reply_refund, param, this, SLOT(recvGoodsRefund()));
 }
-
+#include <QApplication>
 void tcpServer::listAccess(QStringList list, int optType)
 {
-
+    int flag = 100;
+    foreach(QString code, list)
+    {
+        while(flag--)
+        {
+            if(reply_refund == NULL)
+            {
+                flag = 100;
+                goodsAccess(CaseAddress(), code, 1, optType);
+                break;
+            }
+            else
+            {
+                usleep(100000);
+                QApplication::exec();
+            }
+        }
+    }
 }
 
 void tcpServer::goodsCheckReq()
