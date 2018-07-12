@@ -139,7 +139,7 @@ void CabinetStoreList::saveList()
 {
     foreach(Goods* goods, list_store->list_goods)
     {
-        manager->addGoodsCodes(goods->goodsId, goods->codes);
+        manager->addGoodsCodes(goods->packageBarcode, goods->codes);
     }
 }
 

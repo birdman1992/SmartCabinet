@@ -24,6 +24,7 @@
 #include "Widgets/cabinetstorelistitem.h"
 #include "manager/cabinetmanager.h"
 #include "manager/usermanager.h"
+#include "manager/goodsmanager.h"
 
 
 class tcpServer : public QObject
@@ -45,6 +46,7 @@ private:
     CabinetConfig* config;
     CabinetManager* cabManager;
     UserManager* userManager;
+    GoodsManager* goodsManager;
     QList<CabinetStoreListItem *> storeList;
     QString regId;
     QString userId;
@@ -69,6 +71,7 @@ private:
     void parGoodsInfo(cJSON* json);//goods info
     Goods* parGoods(cJSON* json);//Goods
     void parApp(cJSON* json);//app info
+    QString getPackageId(QString goodsId, int goodsType);
     NUserInfo* parOneUser(cJSON* json);
     UserInfo* nUserToUser(NUserInfo* nInfo);//NUserInfo->UserInfo
 
@@ -97,7 +100,7 @@ private:
     void apiPost(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
     void apiGet(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot);
     void apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
-    void apiDelete(QString uil, QNetworkReply **reply, QByteArray data, QObject *receiver, const char *slot);
+    void apiDelete(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot);
     QStringList paramsBase();
     QString nonceString(int len=16);
     qint64 timeStamp();

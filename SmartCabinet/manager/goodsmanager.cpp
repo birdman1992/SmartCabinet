@@ -5,6 +5,7 @@ GoodsManager* GoodsManager::m = new GoodsManager;
 
 GoodsManager *GoodsManager::manager()
 {
+    m->updateCodeMap();
     return m;
 }
 
@@ -47,10 +48,8 @@ GoodsManager::GoodsManager(QObject *parent) : QObject(parent)
 
 void GoodsManager::updateCodeMap()
 {
-    if(codeMap.isEmpty())
-        return;
-
-    codeMap.clear();
+    if(!codeMap.isEmpty())
+        codeMap.clear();
 
     QStringList goodsList = getGoodsList();
     foreach(QString id, goodsList)

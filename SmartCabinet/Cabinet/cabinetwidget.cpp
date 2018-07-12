@@ -33,6 +33,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_store_list = new CabinetStoreList();
     win_refund = new CabinetRefund();
     win_net_set = new NetworkSet();
+    goodsManager = GoodsManager::manager();
     initVolum();
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -254,14 +255,15 @@ bool posSort(Cabinet *A, Cabinet *B)
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
 {
     int index = code.indexOf("-");
+    QByteArray ret = code;
     if(index == -1)
-        return code;
+        return ret;
 
     code = code.right(code.size()-index-1);
 
     index = code.lastIndexOf("-");
     if(index == -1)
-        return code;
+        return ret;
 
     return code.left(index);
 }
@@ -504,7 +506,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_FETCH)
     {/*qDebug("fetch");*/
-        CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
+        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
+        CaseAddress addr = config->checkCabinetByBarCode(scanGoodsId);
         if(addr.cabinetSeqNum == -1)
         {
             qDebug()<<"[fetch]"<<"scan data not find";
@@ -515,7 +518,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         {
             if(!needWaitForServer())
             {
-                win_access->scanOpen(scanInfo);
+                win_access->scanOpen(scanGoodsId);
                 emit goodsAccess(addr,fullScanInfo, 1, 1);
             }
         }
@@ -1053,6 +1056,10 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
 {
     CaseAddress addr = config->checkCabinetByBarCode(goodsId);
     waitForServer = false;
+    if(num == -1)
+    {
+        num = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num - 1;
+    }
     qDebug()<<goodsId<<num<<config->state<<addr.cabinetSeqNum;
     if(addr.cabinetSeqNum == -1)
         return;

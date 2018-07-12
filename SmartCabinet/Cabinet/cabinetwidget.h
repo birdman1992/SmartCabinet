@@ -20,6 +20,7 @@
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
+#include "manager/goodsmanager.h"
 
 bool posSort(Cabinet* A, Cabinet* B);
 
@@ -132,6 +133,7 @@ private:
     int bindCab;
     int bindCase;
     GoodsInfo bindInfo;
+    GoodsManager* goodsManager;
 
     int storeNum;
     bool waitForCodeScan;

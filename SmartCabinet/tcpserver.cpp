@@ -47,6 +47,7 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     reply_check = NULL;
     cabManager = CabinetManager::manager();
     userManager = UserManager::manager();
+    goodsManager = GoodsManager::manager();
     manager = new QNetworkAccessManager(this);
     socket = new QTcpSocket();
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
@@ -203,6 +204,18 @@ void tcpServer::parApp(cJSON *json)
     app_id = QString(cJSON_GetObjectItem(json,"app_id")->valuestring);
     app_secret = QString(cJSON_GetObjectItem(json,"app_secret")->valuestring);
     //    qDebug()<<"parApp"<<app_secret;
+}
+
+QString tcpServer::getPackageId(QString goodsId, int goodsType)
+{
+    QString ret;
+
+    if(goodsType<10)
+        ret = goodsId + "-0" + QString::number(goodsType);
+    else
+        ret = goodsId + "-" + QString::number(goodsType);
+
+    return ret;
 }
 
 NUserInfo *tcpServer::parOneUser(cJSON *json)
@@ -372,22 +385,18 @@ void tcpServer::apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObj
     *reply = manager->put(request, data);
     connect(*reply, SIGNAL(finished()), receiver, slot);
 }
-#include <QBuffer>
-void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QByteArray data, QObject* receiver,const char *slot)
+
+void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QString data, QObject* receiver,const char *slot)
 {
-    QString nUrl = config->getServerAddress()+uil;
+    QString nUrl = config->getServerAddress()+uil+"?"+data;
     qDebug()<<"[apiSend]"<<nUrl<<data;
 
     QNetworkRequest request;
     request.setUrl(nUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
-    replyCheck(*reply);
-    QBuffer buffer;
-    buffer.open(QBuffer::ReadWrite);
-    buffer.write(data);
-    buffer.seek(0);
-    *reply = manager->sendCustomRequest(request, "DELETE", &buffer);
+//    *reply = manager->post(request, data);
+    *reply = manager->deleteResource(request);
     connect(*reply, SIGNAL(finished()), receiver, slot);
 }
 
@@ -434,9 +443,10 @@ qint64 tcpServer::timeStamp()
 {
     return QDateTime::currentMSecsSinceEpoch()/1000;
 }
-
+#include <unistd.h>
 void tcpServer::readData()
 {
+    usleep(100000);
     QByteArray qba = socket->readAll();
     qDebug()<<"[TCP DATA]:"<<qba;
     cJSON* json = cJSON_Parse(qba.data());
@@ -593,10 +603,26 @@ void tcpServer::recvGoodsAccess()
     int statusCode = reply_goods_access->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_goods_access->deleteLater();
     reply_goods_access = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
     if(statusCode == 200)
     {
-
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        QString goodsId = QString(cJSON_GetObjectItem(data, "goods_id")->valuestring);
+        int goodsType = cJSON_GetObjectItem(data, "package_type")->valueint;
+        QString code = QString(cJSON_GetObjectItem(data, "package_code")->valuestring);
+        goodsId = getPackageId(goodsId, goodsType);
+        goodsManager->removeCode(code);
+        emit goodsNumChanged(goodsId, -1);
     }
+    else
+    {
+        emit accessFailed(QString(cJSON_GetObjectItem(json, "message")->valuestring));
+    }
+
+    cJSON_Delete(json);
 }
 
 void tcpServer::recvGoodsStoreList()
@@ -612,7 +638,7 @@ void tcpServer::recvGoodsStoreList()
 
     if(statusCode == 200)
     {
-        login();
+//        login();
         foreach(CabinetStoreListItem* item, storeList)
         {
             emit goodsNumChanged(item->itemId(), item->itemNum());
@@ -842,9 +868,9 @@ void tcpServer::goodsFetch(QString goodsCode)
     QStringList params = paramsBase();
     params<<QString("package_code=%1").arg(goodsCode);
 
-    QByteArray param = apiJson(params, app_secret);
+    QString param = apiString(params, app_secret);
+    qDebug()<<"[goodsFetch]";
     apiDelete(API_FETCH, &reply_goods_access, param, this, SLOT(recvGoodsAccess()));
-    qDebug()<<"[goodsFetch]"<<param;
 }
 
 void tcpServer::goodsRefund(QString goodsCode)
