@@ -85,7 +85,7 @@ void GoodsApply::setTableSearch(QList<GoodsCheckInfo *> l)
 
     for(int i=0; i<l.count(); i++)
     {
-        ui->searchRst->setItem(i, 0, new QTableWidgetItem(l.at(i)->name));
+        ui->searchRst->setItem(i, 0, new QTableWidgetItem(QString("%1 ×%2").arg(l.at(i)->name).arg(l.at(i)->type)));
     }
 }
 
@@ -116,7 +116,7 @@ void GoodsApply::updatePushTableRow(int row, GoodsCheckInfo *info)
     {
         ui->replyTable->setRowCount(row+1);
         info->num_in = 0;
-        ui->replyTable->setItem(row, 0, new QTableWidgetItem(info->name));
+        ui->replyTable->setItem(row, 0, new QTableWidgetItem(QString("%1 ×%2").arg(info->name).arg(info->type)));
         ui->replyTable->setItem(row, 1, new QTableWidgetItem(info->id));
         ui->replyTable->setItem(row, 2, new QTableWidgetItem(info->goodsSize));
         ui->replyTable->setItem(row, 3, new QTableWidgetItem(info->producerName));
@@ -142,7 +142,7 @@ bool GoodsApply::isRepeat(QList<GoodsCheckInfo *> l, GoodsCheckInfo *info)
 {
     foreach(GoodsCheckInfo* i, l)
     {
-        if(i->id == info->id)
+        if(i->packageBarCode == info->packageBarCode)
             return true;
     }
     return false;
@@ -218,5 +218,6 @@ void GoodsApply::on_pushButton_clicked(bool checked)
 
 void GoodsApply::on_close_clicked()
 {
+    keyboad->hide();
     this->hide();
 }

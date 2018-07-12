@@ -15,6 +15,7 @@ public:
     QString name;//耗材名
     QString id;//耗材id
     QString unit;//计数单位
+    QString packageBarCode;
     QString goodsSize;
     QString producerName;
     int type;

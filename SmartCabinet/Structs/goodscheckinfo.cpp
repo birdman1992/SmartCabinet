@@ -13,6 +13,7 @@ GoodsCheckInfo::GoodsCheckInfo(GoodsCheckInfo &info)
     unit = info.unit;
     goodsSize = info.goodsSize;
     producerName = info.producerName;
+    packageBarCode = info.packageBarCode;
     num_in = info.num_in;
     num_out = info.num_out;
     num_back = info.num_back;

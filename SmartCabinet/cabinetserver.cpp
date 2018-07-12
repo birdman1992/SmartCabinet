@@ -677,6 +677,7 @@ void CabinetServer::replyRequire(QList<GoodsCheckInfo *> l)
         cJSON* goods = cJSON_CreateObject();
         cJSON_AddItemToObject(goods, "goodsId", cJSON_CreateString(info->id.toLocal8Bit()));
         cJSON_AddItemToObject(goods, "goodsCount", cJSON_CreateNumber(info->num_pack*info->type));
+        cJSON_AddItemToObject(goods, "packageBarcode", cJSON_CreateString(info->packageBarCode.toLocal8Bit()));
         cJSON_AddItemToArray(StoreGoodsModel, goods);
     }
     cJSON_AddItemToObject(json, "li", StoreGoodsModel);
@@ -1504,6 +1505,7 @@ void CabinetServer::recvSearchSpell()
 
             GoodsCheckInfo* info = new GoodsCheckInfo();
             info->id = QString(cJSON_GetObjectItem(jItem, "b2bNum")->valuestring);//物品ID
+            info->packageBarCode = QString(cJSON_GetObjectItem(jItem, "packageBarcode")->valuestring);
             info->name = QString(cJSON_GetObjectItem(jItem, "name")->valuestring);//物品名
             info->goodsSize = QString(cJSON_GetObjectItem(jItem, "size")->valuestring);//规格
             info->num_cur = cJSON_GetObjectItem(jItem, "goodsCount")->valueint;//库存
