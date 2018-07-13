@@ -67,6 +67,7 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     params<<"A1"<<"A2"<<"A3"<<"A4"<<"A5";
     CaseAddress a;
     goodsCheck(params, a);
+//    qDebug()<<"[getBarCode]"<<getBarCode("定数包DS1-18-3已经回库");
 }
 
 tcpServer::~tcpServer()
@@ -99,6 +100,19 @@ int tcpServer::pushTcpReq(QByteArray qba)
 {
     QTimer::singleShot(2000, this, SLOT(tcpReqTimeout()));
     return socket->write(qba);
+}
+#include <QRegExp>
+QString tcpServer::getBarCode(QString str)
+{
+//    QRegExp rx("[0-9a-zA-Z-]+");
+    QRegExp rx("定数包(.+)已经回库");
+    int index = rx.indexIn(str);
+    qDebug()<<index;
+    if(index == -1)
+        return QString();
+
+    qDebug()<<rx.capturedTexts();
+    return rx.cap(1);
 }
 
 void tcpServer::parCabInfo(cJSON *json)
@@ -610,10 +624,22 @@ void tcpServer::recvGoodsRefund()
     }
     else
     {
-        emit accessFailed(QString(cJSON_GetObjectItem(json, "message")->valuestring));
+        QString msg = QString(cJSON_GetObjectItem(json, "message")->valuestring);
+        QString code = getBarCode(msg);
+        if(!code.isEmpty())
+        {
+            qDebug()<<"[remove BarCode]"<<code;
+            goodsManager->removeCode(code);
+        }
+        emit accessFailed(msg);
     }
 
     cJSON_Delete(json);
+
+    if(!accessList.isEmpty())
+    {
+        listAccess(accessList, 3);
+    }
 }
 
 void tcpServer::recvGoodsAccess()
@@ -909,23 +935,15 @@ void tcpServer::goodsRefund(QString goodsCode)
 #include <QApplication>
 void tcpServer::listAccess(QStringList list, int optType)
 {
-    int flag = 100;
-    foreach(QString code, list)
+    if(list.isEmpty())
+        return;
+
+    accessList = list;
+
+    if(optType == 3)//refund
     {
-        while(flag--)
-        {
-            if(reply_refund == NULL)
-            {
-                flag = 100;
-                goodsAccess(CaseAddress(), code, 1, optType);
-                break;
-            }
-            else
-            {
-                usleep(100000);
-                QApplication::exec();
-            }
-        }
+        QString refundCode = accessList.takeFirst();
+        goodsAccess(CaseAddress(), refundCode, 1, optType);
     }
 }
 

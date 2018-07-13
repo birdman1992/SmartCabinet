@@ -55,8 +55,10 @@ private:
     bool needSaveAddress;
     bool waitTimeRst;
     TcpReqState tcpState;
+    QStringList accessList;
 
     int pushTcpReq(QByteArray qba);
+    QString getBarCode(QString str);
     //TCP
     QTcpSocket* socket;
     QAes* aesCodec;
