@@ -863,7 +863,7 @@ void tcpServer::cabCloneReq(QString oldCabinetId)
 
 void tcpServer::cabInfoSync()
 {
-
+    login();
 }
 
 void tcpServer::cabColInsert(int pos, int num)
