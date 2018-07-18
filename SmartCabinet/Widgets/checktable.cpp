@@ -137,7 +137,7 @@ void CheckTable::on_check_clicked()
     emit askCheckTables(ui->date_start->date(), ui->date_finish->date());
 }
 
-void CheckTable::on_list_table_id_cellClicked(int row, int column)
+void CheckTable::on_list_table_id_cellClicked(int row, int)
 {
     if(listCheckTables.isEmpty())
         return;
