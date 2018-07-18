@@ -18,8 +18,9 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForCodeScan = false;
     waitForGoodsListCode = false;
     waitForServer = false;
-    checkFinishLock = false;
     waitForCardReader = true;
+    waitForSecondaryCard = false;
+    waitForCheckFinish = false;
     waitForInit = true;
     loginState = false;
     rebindGoods = NULL;
@@ -245,6 +246,12 @@ void CabinetWidget::clearMenuState()
 void CabinetWidget::volumTest()
 {
     config->cabVoice.voicePlay("vol.wav");
+}
+
+void CabinetWidget::creatCheck()
+{
+    config->showMsg(MSG_CHECK_CREAT,false);
+    emit requireGoodsCheck();
 }
 
 bool posSort(Cabinet *A, Cabinet *B)
@@ -548,18 +555,19 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_CHECK)
     {
-        win_check->checkScan(scanInfo,fullScanInfo);
+        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
+        win_check->checkScan(scanGoodsId,fullScanInfo);
     }
     else if(config->state == STATE_REBIND)
     {
-        rebind_old_addr = config->checkCabinetByBarCode(scanInfo);
+        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
+        rebind_old_addr = config->checkCabinetByBarCode(scanGoodsId);
         if(rebind_old_addr.cabinetSeqNum == -1)
             return;
 
         config->showMsg(MSG_REBIND_SELECT, 0);
         rebindGoods = config->list_cabinet[rebind_old_addr.cabinetSeqNum]->list_case[rebind_old_addr.caseIndex]->list_goods.takeAt(rebind_old_addr.goodsIndex);
         waitForCodeScan = false;
-
 //        config->removeConfig(rebind_old_addr);
     }
 
@@ -742,36 +750,39 @@ void CabinetWidget::on_check_clicked(bool checked)
 {
     if(checked)
     {
-//        config->state = STATE_CHECK;
-//        waitForCodeScan = true;
-//        waitForGoodsListCode = false;
-        config->showMsg(MSG_CHECK_CREAT,false);
-        emit requireGoodsCheck();
-//        clickLock = false;
-//        clearMenuState();
-//        ui->check->setChecked(true);
-//        config->wakeUp(TIMEOUT_CHECK);
+        if(msgBox != NULL)
+            delete msgBox;
+
+        waitForSecondaryCard = true;
+        waitForCheckFinish = false;
+        waitForCardReader = true;
+        msgBox = new QMessageBox(QMessageBox::Information, "正在创建盘点", "请护士长刷卡", QMessageBox::Ok, this);
+        msgBox->setModal(false);
+        msgBox->show();
     }
     else
     {
-        config->clearSearch();//重置单元格状态
-        cabLock();
-        emit goodsCheckFinish();
+        waitForSecondaryCard = true;
+        waitForCheckFinish = true;
+        waitForCardReader = true;
+        msgBox = new QMessageBox(QMessageBox::Information, "正在创建盘点", "请护士长刷卡", QMessageBox::Ok, this);
+        msgBox->setModal(false);
+        msgBox->show();
     }
 }
 
-void CabinetWidget::on_check_toggled(bool checked)
-{
-    if(!checked)
-    {
-        if(checkFinishLock)
-        {
-            checkFinishLock = false;
-            return;
-        }
-        emit goodsCheckFinish();
-    }
-}
+//void CabinetWidget::on_check_toggled(bool checked)
+//{
+//    if(!checked)
+//    {
+//        if(checkFinishLock)
+//        {
+//            checkFinishLock = false;
+//            return;
+//        }
+//        emit goodsCheckFinish();
+//    }
+//}
 
 void CabinetWidget::updateNetState(bool connected)
 {
@@ -971,6 +982,27 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
     }
 //    waitForCardReader = false;
 //    optUser = QString(qba);
+    if(waitForSecondaryCard)
+    {
+        waitForSecondaryCard = false;
+        config->setSecondUser(QString(qba));
+        if(msgBox != NULL)
+        {
+            msgBox->close();
+            delete msgBox;
+            msgBox = NULL;
+        }
+        if(waitForCheckFinish)
+        {
+            emit goodsCheckFinish();
+        }
+        else
+        {
+            creatCheck();
+        }
+
+        return;
+    }
 
     if(!needWaitForServer())
     {
@@ -1154,7 +1186,7 @@ void CabinetWidget::recvCabSyncResult(bool rst)
     QTimer::singleShot(3000, this, SLOT(syncMsgTimeout()));
 }
 
-void CabinetWidget::recvCheckRst(bool success)
+void CabinetWidget::recvCheckCreatRst(bool success, QString msg)
 {
     if(success)
     {
@@ -1171,9 +1203,25 @@ void CabinetWidget::recvCheckRst(bool success)
     }
     else
     {
-        config->showMsg(MSG_CHECK_CREAT_FAILED,false);
-        checkFinishLock = true;
+        config->showMsg(msg,false);
+//        checkFinishLock = true;
         ui->check->setChecked(false);
+    }
+}
+
+void CabinetWidget::recvCheckFinishRst(bool success, QString msg)
+{
+    if(success)
+    {
+        waitForCheckFinish = false;
+        ui->check->setChecked(false);
+        config->clearSearch();//重置单元格状态
+        cabLock();
+    }
+    else
+    {
+        config->showMsg(msg,false);
+        ui->check->setChecked(true);
     }
 }
 

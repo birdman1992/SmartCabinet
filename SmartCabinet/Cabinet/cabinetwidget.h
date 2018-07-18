@@ -59,7 +59,8 @@ public slots:
     void readyGoodsList(QString listCode);
     void sysLock();
     void recvCabSyncResult(bool);
-    void recvCheckRst(bool);
+    void recvCheckCreatRst(bool, QString msg);
+    void recvCheckFinishRst(bool, QString msg);
 
 signals:
     void winSwitch(int);
@@ -99,7 +100,7 @@ private slots:
     void on_refund_clicked(bool checked);
     void on_cut_clicked();
     void on_check_clicked(bool checked);
-    void on_check_toggled(bool checked);
+//    void on_check_toggled(bool checked);
     void on_search_clicked();
     void on_search_back_clicked();
     void on_searchClear_clicked();
@@ -126,7 +127,7 @@ private:
     bool waitForGoodsListCode;
     bool loginState;
     bool netCheckState;
-    bool checkFinishLock;
+    bool waitForCheckFinish;
     bool clickLock;//点击锁,如果为true，点击无效
     int selectCab;//选中的柜子顺序编号
     int selectCase;//选中的柜格编号
@@ -139,6 +140,7 @@ private:
     bool waitForCodeScan;
     bool waitForInit;
     bool waitForServer;
+    bool waitForSecondaryCard;
     bool checkMask;
     QString scanInfo;
     QString fullScanInfo;
@@ -175,6 +177,7 @@ private:
     void clearCheckState();
     void clearMenuState();
     void volumTest();
+    void creatCheck();
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

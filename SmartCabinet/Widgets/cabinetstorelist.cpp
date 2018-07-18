@@ -137,6 +137,8 @@ void CabinetStoreList::clearList()
 
 void CabinetStoreList::saveList()
 {
+    if(list_store == NULL)
+        return;
     foreach(Goods* goods, list_store->list_goods)
     {
         manager->addGoodsCodes(goods->packageBarcode, goods->codes);

@@ -141,7 +141,8 @@ signals:
     void regResult(bool);
     void cloneResult(bool, QString);
     void cabSyncResult(bool);
-    void checkCreatRst(bool);
+    void checkCreatRst(bool, QString msg=QString());
+    void checkFinishRst(bool, QString msg=QString());
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);

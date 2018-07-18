@@ -41,7 +41,7 @@
 #define MSG_FETCH_SCAN "请扫描条形码取出物品 取用完毕请点击此处并关闭柜门"
 #define MSG_FETCH_EMPTY "没有库存了 请关好柜门 点击此处退出"
 #define MSG_CHECK_CREAT "正在申请盘点"
-#define MSG_CHECK_CREAT_FAILED  "有未存入送货单 无法开始盘点"
+#define MSG_CHECK_CREAT_FAILED  "创建盘点失败"
 #define MSG_CHECK  "请点击柜格开始盘点"
 #define MSG_REFUND  "点击柜格扫码退货"
 #define MSG_OFFLINE  "当前为离线状态，请点击 切换 按钮批量取货"

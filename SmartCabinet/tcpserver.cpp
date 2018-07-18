@@ -202,6 +202,7 @@ Goods *tcpServer::parGoods(cJSON *json)
     cJSON* position = cJSON_GetObjectItem(json, "position");
     ret->pos.setX(cJSON_GetObjectItem(position,"col")->valueint);
     ret->pos.setY(cJSON_GetObjectItem(position,"row")->valueint);
+    qDebug()<<"retpos"<<ret->pos;
 
     for(int i=0; i<listSize; i++)
     {
@@ -680,7 +681,6 @@ void tcpServer::recvGoodsStoreList()
     reply_goods_access = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<"[recvGoodsStoreList]";
 
     if(statusCode == 200)
     {
@@ -730,6 +730,26 @@ void tcpServer::recvCheckCreate()
     int statusCode = reply_check->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_check->deleteLater();
     reply_check = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    if(statusCode == 200)
+    {
+        emit checkCreatRst(true);
+    }
+    else
+    {
+        QString msg = QString(cJSON_GetObjectItem(json, "message")->valuestring);
+        QRegExp rx("上一次(.+)开始的盘点还未结束");
+        int index = rx.indexIn(msg);
+        if(index == -1)
+            emit checkCreatRst(false, msg);
+        else
+            emit checkCreatRst(true);
+    }
+    cJSON_Delete(json);
 }
 
 void tcpServer::recvGoodsCheck()
@@ -739,6 +759,13 @@ void tcpServer::recvGoodsCheck()
     int statusCode = reply_check->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_check->deleteLater();
     reply_check = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    QString msg = QString(cJSON_GetObjectItem(json, "message")->valuestring);
+
+    emit goodsCheckRst(msg);
 }
 
 void tcpServer::recvCheckFinish()
@@ -748,6 +775,19 @@ void tcpServer::recvCheckFinish()
     int statusCode = reply_check->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_check->deleteLater();
     reply_check = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    if(statusCode == 200)
+    {
+        emit checkFinishRst(true);
+    }
+    else
+    {
+        emit checkFinishRst(false, QString(cJSON_GetObjectItem(json, "message")->valuestring));
+    }
+    cJSON_Delete(json);
 }
 
 void tcpServer::tcpReqTimeout()
@@ -1001,7 +1041,7 @@ void tcpServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     params<<QString("row=%1").arg(addr.caseIndex);
     QByteArray param = apiJson(params, app_secret);
     qDebug()<<"[goodsCheck]";
-    apiPost(API_CHECK_CREAT, &reply_check, param, this, SLOT(recvGoodsCheck()));
+    apiPost(API_CHECK, &reply_check, param, this, SLOT(recvGoodsCheck()));
 }
 
 void tcpServer::goodsCheck(QStringList l, CaseAddress)//未使用

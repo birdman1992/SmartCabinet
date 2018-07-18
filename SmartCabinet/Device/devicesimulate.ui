@@ -239,7 +239,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>CK20180709000001</string>
+        <string>CK20180710000001</string>
        </property>
       </widget>
       <widget class="QPushButton" name="listcode">
