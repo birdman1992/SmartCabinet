@@ -622,6 +622,20 @@ void MainWidget::init_huangpo()
     win_coder_keyboard = new coderKeyboard();
     connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));
 
+    //盘点表格窗口
+    win_check_table = new CheckTable();
+    connect(cabServer, SIGNAL(curCheckList(CheckList*)), win_check_table, SLOT(updateCheckTable(CheckList*)));
+    connect(cabServer, SIGNAL(checkTables(QList<CheckTableInfo*>)), win_check_table, SLOT(recvCheckTables(QList<CheckTableInfo*>)));
+    connect(win_check_table, SIGNAL(askCheckTables(QDate,QDate)), cabServer, SLOT(requireCheckTables(QDate,QDate)));
+    connect(win_check_table, SIGNAL(askCheckInfo(QString)), cabServer, SLOT(requireCheckTableInfo(QString)));
+
+    //请货窗口
+    win_goods_apply = new GoodsApply();
+    connect(win_goods_apply, SIGNAL(searchRequire(QString)), cabServer, SLOT(searchSpell(QString)));
+    connect(win_goods_apply, SIGNAL(replyRequire(QList<GoodsCheckInfo*>)), cabServer, SLOT(replyRequire(QList<GoodsCheckInfo*>)));
+    connect(cabServer, SIGNAL(curSearchList(CheckList*)), win_goods_apply, SLOT(recvSearchRst(CheckList*)));
+    connect(cabServer, SIGNAL(goodsReplyRst(bool,QString)), win_goods_apply, SLOT(recvReplyRst(bool,QString)));
+
     //服务界面
     win_cab_service = new CabinetService();
     win_cab_service->installGlobalConfig(cabinetConf);
@@ -653,6 +667,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
     connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
+    connect(win_cabinet, SIGNAL(requireApplyShow()), win_goods_apply, SLOT(show()));
     connect(cabServer, SIGNAL(checkCreatRst(bool, QString)), win_cabinet, SLOT(recvCheckCreatRst(bool, QString)));
     connect(cabServer, SIGNAL(checkFinishRst(bool, QString)), win_cabinet, SLOT(recvCheckFinishRst(bool, QString)));
     connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));

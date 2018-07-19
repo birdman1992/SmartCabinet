@@ -25,6 +25,7 @@
 #include "Widgets/coderkeyboard.h"
 #include "Widgets/cabinetservice.h"
 #include "Widgets/checktable.h"
+#include "Widgets/goodsapply.h"
 #include "Cabinet/cabinetwidget.h"
 
 #include "Menu/setmenu.h"
@@ -108,6 +109,7 @@ private:
     coderKeyboard* win_coder_keyboard;//条码输入窗口
     CabinetService* win_cab_service;//服务窗口
     CheckTable* win_check_table;//盘点表格窗口
+    GoodsApply* win_goods_apply;//请货窗口
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框

@@ -72,7 +72,9 @@ SOURCES += main.cpp\
     Crypto/qaes.cpp \
     manager/usermanager.cpp \
     manager/cabinetmanager.cpp \
-    manager/goodsmanager.cpp
+    manager/goodsmanager.cpp \
+    Widgets/keyboad.cpp \
+    Widgets/goodsapply.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -135,7 +137,9 @@ HEADERS  += mainwidget.h \
     Crypto/qaes.h \
     manager/usermanager.h \
     manager/cabinetmanager.h \
-    manager/goodsmanager.h
+    manager/goodsmanager.h \
+    Widgets/keyboad.h \
+    Widgets/goodsapply.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -165,7 +169,9 @@ FORMS    += mainwidget.ui \
     Widgets/cabinetctrlconfig.ui \
     Widgets/casepanel.ui \
     Device/Network/networkset.ui \
-    Widgets/checktable.ui
+    Widgets/checktable.ui \
+    Widgets/keyboad.ui \
+    Widgets/goodsapply.ui
 
 RESOURCES += \
     image.qrc

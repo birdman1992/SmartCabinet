@@ -82,6 +82,7 @@ signals:
     void requireGoodsCheck();
     void goodsCheckFinish();
     void requireCheckShow();
+    void requireApplyShow();
 
 private slots:
     void setMenuHide(bool ishide);
