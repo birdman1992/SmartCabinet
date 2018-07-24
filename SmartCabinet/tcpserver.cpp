@@ -18,6 +18,9 @@
 #define API_CHECK_CREAT "/api/stocktaking"
 #define API_CHECK "/api/stocktaking/package_codes"
 #define API_CHECK_FINISH "/api/stocktaking"
+#define API_CHECK_HISTORY "/api/stocktakings"
+#define API_CHECK_REQ "/api/stocktaking"
+#define API_APPLY_REQ "/api/outstorage_goods"
 
 /*
 app_id=dc52853b3264e67f7237263927266613
@@ -45,6 +48,7 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     reply_bind_case = NULL;
     reply_refund = NULL;
     reply_check = NULL;
+    reply_apply = NULL;
     cabManager = CabinetManager::manager();
     userManager = UserManager::manager();
     goodsManager = GoodsManager::manager();
@@ -210,6 +214,37 @@ Goods *tcpServer::parGoods(cJSON *json)
         ret->codes<<QString(cJSON_GetObjectItem(item, "package_code")->valuestring);
     }
     qDebug()<<ret->name<<ret->codes;
+
+    return ret;
+}
+
+CheckTableInfo *tcpServer::parCheckTableInfo(cJSON *json)
+{
+    if(json == NULL)
+        return NULL;
+
+    CheckTableInfo* ret = new CheckTableInfo;
+
+    ret->id = QString::number(cJSON_GetObjectItem(json, "id")->valueint);
+    ret->sTime = QDateTime::fromMSecsSinceEpoch(cJSON_GetObjectItem(json, "start_time")->valuedouble*1000).toString("yyyyMMddhhmmss");
+    ret->eTime = QDateTime::fromMSecsSinceEpoch(cJSON_GetObjectItem(json, "end_time")->valuedouble*1000).toString("yyyyMMddhhmmss");
+
+    return ret;
+}
+
+GoodsCheckInfo* tcpServer::parGoodsCheckInfo(cJSON *json)
+{
+    if(json == NULL)
+        return NULL;
+
+    GoodsCheckInfo* ret = new GoodsCheckInfo;
+    ret->id = QString(cJSON_GetObjectItem(json, "goods_id")->valuestring);
+    ret->name = QString(cJSON_GetObjectItem(json, "goods_name")->valuestring);
+    ret->goodsSize = QString(cJSON_GetObjectItem(json, "specifications")->valuestring);
+    ret->num_in = cJSON_GetObjectItem(json, "in_count")->valueint;
+    ret->num_out = cJSON_GetObjectItem(json, "take_consume_count")->valueint;
+    ret->num_back = cJSON_GetObjectItem(json, "refund_num")->valueint;
+    ret->num_cur = cJSON_GetObjectItem(json, "need_consume_count")->valueint;
 
     return ret;
 }
@@ -790,6 +825,99 @@ void tcpServer::recvCheckFinish()
     cJSON_Delete(json);
 }
 
+void tcpServer::recvCheckHistory()
+{
+    QByteArray qba = reply_check->readAll();
+    qDebug()<<"[recvCheckHistory]"<<qba;
+    int statusCode = reply_check->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_check->deleteLater();
+    reply_check = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    if(statusCode == 200)
+    {
+        QList<CheckTableInfo*> l;
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        int arraySize = cJSON_GetArraySize(json);
+        for(int i=0; i<arraySize; i++)
+        {
+            cJSON* item = cJSON_GetArrayItem(data, i);
+            CheckTableInfo* info = parCheckTableInfo(item);
+            if(info == NULL)
+                return;
+
+            l<<info;
+        }
+        emit checkTables(l);
+    }
+}
+
+void tcpServer::recvCheckTable()
+{
+    QByteArray qba = reply_check->readAll();
+    qDebug()<<"[recvCheckTable]"<<qba;
+    int statusCode = reply_check->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_check->deleteLater();
+    reply_check = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    if(statusCode == 200)
+    {
+        if(checkList != NULL)
+            delete checkList;
+        checkList = new CheckList();
+
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        int arraySize = cJSON_GetArraySize(json);
+        for(int i=0; i<arraySize; i++)
+        {
+            cJSON* item = cJSON_GetArrayItem(data, i);
+            GoodsCheckInfo* info = parGoodsCheckInfo(item);
+            if(info == NULL)
+                return;
+
+            checkList->addInfo(info);
+        }
+        emit curCheckList(checkList);
+    }
+}
+
+void tcpServer::recvSpellReq()
+{
+    QByteArray qba = reply_apply->readAll();
+    qDebug()<<"[recvCheckTable]"<<qba;
+    int statusCode = reply_apply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_apply->deleteLater();
+    reply_apply = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    if(statusCode == 200)
+    {
+        if(checkList != NULL)
+            delete checkList;
+        checkList = new CheckList();
+
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        int arraySize = cJSON_GetArraySize(json);
+        for(int i=0; i<arraySize; i++)
+        {
+            cJSON* item = cJSON_GetArrayItem(data, i);
+            GoodsCheckInfo* info = parGoodsCheckInfo(item);
+            if(info == NULL)
+                return;
+
+            checkList->addInfo(info);
+        }
+        emit curCheckList(checkList);
+    }
+}
+
 void tcpServer::tcpReqTimeout()
 {
     if(tcpState == noState)
@@ -803,7 +931,7 @@ void tcpServer::tcpReqTimeout()
     case logState:
         break;
     case checkTimeState:
-        config->clearConfig();
+//        config->clearConfig();
         break;
     default:
         break;
@@ -1089,10 +1217,43 @@ void tcpServer::updateAddress()
 
 void tcpServer::requireCheckTables(QDate start, QDate finish)
 {
+    QDateTime d_start = QDateTime(start);
+    d_start.setTime(QTime(0,0));
+    QDateTime d_finish = QDateTime(finish);
+    d_finish.setTime(QTime(23,59));
+
+    QStringList params = paramsBase();
+    params<<QString("start_time=%1").arg(d_start.toMSecsSinceEpoch()/1000);
+    params<<QString("end_time=%1").arg(d_finish.toMSecsSinceEpoch()/1000);
+    QString param = apiString(params, app_secret);
+
+    qDebug()<<"[get CheckTable]";
+    apiGet(API_CHECK_HISTORY, &reply_check, param, this, SLOT(recvCheckHistory()));
+}
+
+void tcpServer::searchSpell(QString spell)
+{
+    QStringList params = paramsBase();
+    params<<QString("keyword=%1").arg(d_start.toMSecsSinceEpoch()/1000);
+    QString param = apiString(params, app_secret);
+
+    qDebug()<<"[searchSpell]";
+    apiGet(API_CHECK_HISTORY, &reply_check, param, this, SLOT(recvCheckHistory()));
+}
+
+void tcpServer::replyRequire(QList<GoodsCheckInfo *> replyList)
+{
 
 }
 
 void tcpServer::requireCheckTableInfo(QString id)
 {
+    qDebug()<<"requireCheckTableInfo"<<id;
 
+    QStringList params = paramsBase();
+    params<<QString("stocktaking_id=%1").arg(id);
+    QString param = apiString(params, app_secret);
+
+    qDebug()<<"[get CheckTableInfo]";
+    apiGet(API_CHECK_REQ, &reply_check, param, this, SLOT(recvCheckTable()));
 }

@@ -33,6 +33,8 @@
         <file>image/bg_main_noname.png</file>
         <file>image/icon_volume.png</file>
         <file>image/check_history.png</file>
+        <file>image/btn_notice_sel.png</file>
+        <file>image/btn_notice_normal.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

@@ -60,6 +60,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->check->hide();
     ui->search->hide();
     ui->quit->hide();
+    ui->reply->hide();
+    ui->btn_check_table->hide();
     ui->menuWidget->setCurrentIndex(0);
 
 //#ifndef SIMULATE_ON
@@ -108,6 +110,8 @@ void CabinetWidget::cabLock()
     ui->check->hide();
     ui->search->hide();
     ui->quit->hide();
+    ui->reply->hide();
+    ui->btn_check_table->hide();
     win_access->hide();
     curStoreList = NULL;
     config->state = STATE_NO;
@@ -896,7 +900,10 @@ void CabinetWidget::setPowerState(int power)
     ui->cut->hide();
     ui->check->hide();
     ui->search->show();
+    ui->btn_check_table->show();
     ui->quit->hide();
+    ui->reply->hide();
+
 
     if(ui->netState->isChecked())
     {
@@ -908,6 +915,7 @@ void CabinetWidget::setPowerState(int power)
             ui->service->show();
             ui->cut->show();
             ui->check->show();
+            ui->reply->show();
             break;
 
         case 1://仓库员工:|补货|退货|退出|
@@ -915,16 +923,19 @@ void CabinetWidget::setPowerState(int power)
             ui->refund->show();
             ui->cut->show();
             ui->check->show();
+            ui->reply->show();
             break;
 
         case 2://医院管理:|补货|退货|服务|退出|
             ui->store->show();
             ui->refund->show();
             ui->cut->show();
+            ui->reply->show();
             //        ui->service->show();
             break;
 
         case 3://医院员工:|退货|退出|
+            ui->reply->show();
             ui->refund->show();
             ui->cut->show();
             //        ui->service->show();
@@ -1403,4 +1414,9 @@ void CabinetWidget::on_quit_clicked()
 void CabinetWidget::on_btn_check_table_clicked()
 {
     emit requireCheckShow();
+}
+
+void CabinetWidget::on_reply_clicked()
+{
+    emit requireApplyShow();
 }

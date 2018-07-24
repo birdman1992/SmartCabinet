@@ -611,13 +611,6 @@ void MainWidget::init_huangpo()
     ctrlUi->installGlobalConfig(cabinetConf);
     connect(cabServer, SIGNAL(newGoodsCar(GoodsCar)), ctrlUi, SLOT(readyForNewCar(GoodsCar)));
 
-    //盘点表格窗口
-    win_check_table = new CheckTable();
-    connect(cabServer, SIGNAL(curCheckList(CheckList*)), win_check_table, SLOT(updateCheckTable(CheckList*)));
-    connect(cabServer, SIGNAL(checkTables(QList<CheckTableInfo*>)), win_check_table, SLOT(recvCheckTables(QList<CheckTableInfo*>)));
-    connect(win_check_table, SIGNAL(askCheckTables(QDate,QDate)), cabServer, SLOT(requireCheckTables(QDate,QDate)));
-    connect(win_check_table, SIGNAL(askCheckInfo(QString)), cabServer, SLOT(requireCheckTableInfo(QString)));
-
     //扫码输入面板
     win_coder_keyboard = new coderKeyboard();
     connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));

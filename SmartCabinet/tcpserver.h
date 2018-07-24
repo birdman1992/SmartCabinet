@@ -72,7 +72,9 @@ private:
     void parUserInfo(cJSON* json);//user info
     void parGoodsInfo(cJSON* json);//goods info
     Goods* parGoods(cJSON* json);//Goods
+    CheckTableInfo* parCheckTableInfo(cJSON* json);
     void parApp(cJSON* json);//app info
+    GoodsCheckInfo *parGoodsCheckInfo(cJSON *json);
     QString getPackageId(QString goodsId, int goodsType);
     NUserInfo* parOneUser(cJSON* json);
     UserInfo* nUserToUser(NUserInfo* nInfo);//NUserInfo->UserInfo
@@ -89,6 +91,8 @@ private:
     QNetworkReply* reply_bind_case;
     QNetworkReply* reply_refund;
     QNetworkReply* reply_check;
+    QNetworkReply* reply_apply;
+    CheckList* checkList;
 
     void getTimeStamp();
     void regist();
@@ -111,6 +115,7 @@ private:
     void replyCheck(QNetworkReply *reply);
     void goodsFetch(QString goodsCode);
     void goodsRefund(QString goodsCode);
+
 private slots:
     void readData();
     void connectChanged(QAbstractSocket::SocketState);
@@ -127,6 +132,8 @@ private slots:
     void recvGoodsRefund();
     void recvCheckCreate();
     void recvCheckFinish();
+    void recvCheckHistory();
+    void recvCheckTable();
     void tcpReqTimeout();//tcp requst timeout
 
     void recvGoodsCheck();
@@ -151,6 +158,8 @@ signals:
     void insertRst(bool success);
     void curCheckList(CheckList* l);
     void checkTables(QList<CheckTableInfo*>);
+    void curSearchList(CheckList*);
+    void goodsReplyRst(bool,QString);
 
 public slots:
     void cabRegister();
@@ -176,7 +185,8 @@ public slots:
     void sysTimeout();
     void updateAddress();
     void requireCheckTables(QDate start, QDate finish);
-
+    void searchSpell(QString spell);
+    void replyRequire(QList<GoodsCheckInfo*> replyList);
     void requireCheckTableInfo(QString id);
 
 };

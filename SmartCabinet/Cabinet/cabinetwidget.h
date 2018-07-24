@@ -115,6 +115,8 @@ private slots:
 
     void on_btn_check_table_clicked();
 
+    void on_reply_clicked();
+
 protected:
     bool eventFilter(QObject *, QEvent *);
 
