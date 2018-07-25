@@ -434,14 +434,14 @@ QString tcpServer::apiSign(QStringList params, QString secret)
     QString stringSignTemp = stringA + "&app_secret=" + secret;
     QByteArray qba = stringSignTemp.toLocal8Bit();
     QString stringSha1 = QCryptographicHash::hash(qba, QCryptographicHash::Sha1).toHex();
-    qDebug()<<"[apiSign]"<<qba<<stringSha1.toUpper();
+//    qDebug()<<"[apiSign]"<<qba<<stringSha1.toUpper();
     return stringSha1.toUpper();
 }
 
 void tcpServer::apiPost(QString uil, QNetworkReply **reply, QByteArray data, QObject* receiver,const char *slot)
 {
     QString nUrl = config->getServerAddress()+uil;
-    qDebug()<<"[apiSend]"<<nUrl<<data;
+    qDebug()<<"[apiPost]"<<nUrl<<data;
 
     QNetworkRequest request;
     request.setUrl(nUrl);
@@ -456,7 +456,7 @@ void tcpServer::apiPost(QString uil, QNetworkReply **reply, QByteArray data, QOb
 void tcpServer::apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObject* receiver,const char *slot)
 {
     QString nUrl = config->getServerAddress()+uil;
-    qDebug()<<"[apiSend]"<<nUrl<<data;
+    qDebug()<<"[apiPut]"<<nUrl<<data;
 
     QNetworkRequest request;
     request.setUrl(nUrl);
@@ -471,7 +471,7 @@ void tcpServer::apiPut(QString uil, QNetworkReply **reply, QByteArray data, QObj
 void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QString data, QObject* receiver,const char *slot)
 {
     QString nUrl = config->getServerAddress()+uil+"?"+data;
-    qDebug()<<"[apiSend]"<<nUrl<<data;
+    qDebug()<<"[apiDelete]"<<nUrl<<data;
 
     QNetworkRequest request;
     request.setUrl(nUrl);
@@ -484,7 +484,7 @@ void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QString data, QObj
 void tcpServer::apiGet(QString uil, QNetworkReply **reply, QString data, QObject *receiver, const char *slot)
 {
     QString nUrl = config->getServerAddress()+uil+"?"+data;
-    qDebug()<<"[apiSend]"<<nUrl;
+    qDebug()<<"[apiGet]"<<nUrl;
 
     QNetworkRequest request;
     request.setUrl(nUrl);
