@@ -24,6 +24,8 @@ public:
     int num_back;
     int num_cur;
     int num_pack;
+    int num_max;
+    int num_min;
 };
 
 class CheckTableInfo

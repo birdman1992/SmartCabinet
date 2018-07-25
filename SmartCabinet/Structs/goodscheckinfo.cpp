@@ -35,10 +35,10 @@ int GoodsCheckInfo::outPackNum(int outGoodsNum)
 int GoodsCheckInfo::addPack()
 {
     num_pack++;
-    if(num_pack*type>num_cur)
+    if(num_pack>num_cur)
         num_pack--;
 //    qDebug()<<"addPack"<<num_pack<<num_pack*type;
-    return num_pack*type;
+    return num_pack;
 }
 
 int GoodsCheckInfo::redPack()
@@ -50,7 +50,7 @@ int GoodsCheckInfo::redPack()
     num_pack--;
 //    qDebug()<<num_pack*type;
 
-    return num_pack*type;
+    return num_pack;
 }
 
 CheckList::CheckList()

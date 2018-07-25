@@ -76,6 +76,7 @@ private:
     void parApp(cJSON* json);//app info
     GoodsCheckInfo *parGoodsCheckInfo(cJSON *json);
     QString getPackageId(QString goodsId, int goodsType);
+    GoodsCheckInfo *parGoodsApplyInfo(cJSON *json);
     NUserInfo* parOneUser(cJSON* json);
     UserInfo* nUserToUser(NUserInfo* nInfo);//NUserInfo->UserInfo
 
@@ -92,6 +93,7 @@ private:
     QNetworkReply* reply_refund;
     QNetworkReply* reply_check;
     QNetworkReply* reply_apply;
+    QNetworkReply* reply_spell;
     CheckList* checkList;
 
     void getTimeStamp();
@@ -134,9 +136,12 @@ private slots:
     void recvCheckFinish();
     void recvCheckHistory();
     void recvCheckTable();
+    void recvGoodsCheck();
+    void recvApplyRst();
+
     void tcpReqTimeout();//tcp requst timeout
 
-    void recvGoodsCheck();
+    void recvSpellReq();
 signals:
     void loginRst(UserInfo*);
     void listRst(GoodsList*);

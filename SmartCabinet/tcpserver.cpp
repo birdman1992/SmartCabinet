@@ -21,6 +21,7 @@
 #define API_CHECK_HISTORY "/api/stocktakings"
 #define API_CHECK_REQ "/api/stocktaking"
 #define API_APPLY_REQ "/api/outstorage_goods"
+#define API_APPLY_PUSH "/api/outstorage_goods"
 
 /*
 app_id=dc52853b3264e67f7237263927266613
@@ -49,6 +50,8 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     reply_refund = NULL;
     reply_check = NULL;
     reply_apply = NULL;
+    reply_spell = NULL;
+    checkList = NULL;
     cabManager = CabinetManager::manager();
     userManager = UserManager::manager();
     goodsManager = GoodsManager::manager();
@@ -245,6 +248,24 @@ GoodsCheckInfo* tcpServer::parGoodsCheckInfo(cJSON *json)
     ret->num_out = cJSON_GetObjectItem(json, "take_consume_count")->valueint;
     ret->num_back = cJSON_GetObjectItem(json, "refund_num")->valueint;
     ret->num_cur = cJSON_GetObjectItem(json, "need_consume_count")->valueint;
+
+    return ret;
+}
+
+GoodsCheckInfo* tcpServer::parGoodsApplyInfo(cJSON *json)
+{
+    if(json == NULL)
+        return NULL;
+
+    GoodsCheckInfo* ret = new GoodsCheckInfo;
+    ret->id = QString(cJSON_GetObjectItem(json, "goods_id")->valuestring);
+    ret->name = QString(cJSON_GetObjectItem(json, "goods_name")->valuestring);
+    ret->goodsSize = QString(cJSON_GetObjectItem(json, "specifications")->valuestring);
+    ret->type = cJSON_GetObjectItem(json, "package_type")->valueint;
+    ret->num_cur = cJSON_GetObjectItem(json, "store_num")->valueint;
+    ret->num_max = cJSON_GetObjectItem(json, "max_alert_threshold")->valueint;
+    ret->num_min = cJSON_GetObjectItem(json, "min_alert_threshold")->valueint;
+    ret->producerName = QString(cJSON_GetObjectItem(json, "producer_name")->valuestring);
 
     return ret;
 }
@@ -888,11 +909,11 @@ void tcpServer::recvCheckTable()
 
 void tcpServer::recvSpellReq()
 {
-    QByteArray qba = reply_apply->readAll();
-    qDebug()<<"[recvCheckTable]"<<qba;
-    int statusCode = reply_apply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    reply_apply->deleteLater();
-    reply_apply = NULL;
+    QByteArray qba = reply_spell->readAll();
+    qDebug()<<"[recvSpellReq]"<<qba;
+    int statusCode = reply_spell->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_spell->deleteLater();
+    reply_spell = NULL;
     cJSON* json = cJSON_Parse(qba.data());
     if(json == NULL)
         return;
@@ -908,13 +929,36 @@ void tcpServer::recvSpellReq()
         for(int i=0; i<arraySize; i++)
         {
             cJSON* item = cJSON_GetArrayItem(data, i);
-            GoodsCheckInfo* info = parGoodsCheckInfo(item);
+            GoodsCheckInfo* info = parGoodsApplyInfo(item);
             if(info == NULL)
                 return;
 
             checkList->addInfo(info);
         }
-        emit curCheckList(checkList);
+        emit curSearchList(checkList);
+    }
+}
+
+void tcpServer::recvApplyRst()
+{
+    QByteArray qba = reply_apply->readAll();
+    qDebug()<<"[recvApplyRst]"<<qba;
+    int statusCode = reply_apply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    reply_apply->deleteLater();
+    reply_apply = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
+
+    QString msg = QString(cJSON_GetObjectItem(json, "message")->valuestring);
+
+    if(statusCode == 200)
+    {
+        emit goodsReplyRst(true, msg);
+    }
+    else
+    {
+        emit goodsReplyRst(false, msg);
     }
 }
 
@@ -1234,16 +1278,37 @@ void tcpServer::requireCheckTables(QDate start, QDate finish)
 void tcpServer::searchSpell(QString spell)
 {
     QStringList params = paramsBase();
-    params<<QString("keyword=%1").arg(d_start.toMSecsSinceEpoch()/1000);
+    params<<QString("keyword=%1").arg(spell);
     QString param = apiString(params, app_secret);
 
     qDebug()<<"[searchSpell]";
-    apiGet(API_CHECK_HISTORY, &reply_check, param, this, SLOT(recvCheckHistory()));
+    apiGet(API_APPLY_REQ, &reply_spell, param, this, SLOT(recvSpellReq()));
 }
 
 void tcpServer::replyRequire(QList<GoodsCheckInfo *> replyList)
 {
+    if(replyList.isEmpty())
+        return;
 
+    cJSON* json = cJSON_CreateObject();
+    cJSON* data = cJSON_CreateArray();
+
+    foreach(GoodsCheckInfo* info, replyList)
+    {
+        cJSON* item = cJSON_CreateObject();
+        cJSON_AddItemToObject(item, "goods_id", cJSON_CreateString(info->id.toLocal8Bit()));
+        cJSON_AddItemToObject(item, "package_type", cJSON_CreateNumber(info->type));
+        cJSON_AddItemToObject(item, "package_num", cJSON_CreateNumber(info->num_pack));
+        cJSON_AddItemToArray(data, item);
+    }
+//    cJSON_AddItemToObject(json, "outstorage_goods", data);
+    QString strOutstorage = QString(cJSON_Print(data));
+    cJSON_Delete(json);
+    QStringList params = paramsBase();
+    params<<QString("outstorage_goods=%1").arg(strOutstorage);
+    QByteArray param = apiJson(params, app_secret);
+    qDebug()<<"[replyRequire]";
+    apiPost(API_APPLY_PUSH, &reply_apply, param, this, SLOT(recvApplyRst()));
 }
 
 void tcpServer::requireCheckTableInfo(QString id)

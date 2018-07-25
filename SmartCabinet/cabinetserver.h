@@ -45,6 +45,8 @@ private:
     QNetworkReply* reply_cabinet_info;
     QNetworkReply* reply_cabinet_clone;
     QNetworkReply* reply_update_col;
+    QNetworkReply* reply_search_spell;
+    QNetworkReply* reply_goods_reply;
     CheckList* checkList;
     QString regId;
     QString logId;
@@ -82,7 +84,9 @@ signals:
     void listRst(GoodsList*);
     void bindRst(bool);
     void goodsNumChanged(QString goodsId, int goodsNum);
+    void updateGoodsPrice(float single, float total);
     void accessFailed(QString msg);
+    void accessSuccess(QString msg);
     void timeUpdate();
     void idUpdate();
     void regResult(bool);
@@ -96,7 +100,10 @@ signals:
     void sysLock();//锁定系统
     void insertRst(bool success);
     void curCheckList(CheckList* l);
+    void curSearchList(CheckList* l);
+    void checkFinish(bool success);
     void checkTables(QList<CheckTableInfo*>);
+    void goodsReplyRst(bool success, QString msg);
 
 public slots:
     void cabRegister();
@@ -121,7 +128,8 @@ public slots:
     void sysTimeout();
     void updateAddress();
     void requireCheckTables(QDate start, QDate finish);
-
+    void searchSpell(QString);
+    void replyRequire(QList<GoodsCheckInfo *> l);
     void requireCheckTableInfo(QString id);
 private slots:
     void recvCabRegister();
@@ -143,6 +151,8 @@ private slots:
     void recvColInsert();
     void recvCheckTables();
     void recvCheckTableInfo();
+    void recvSearchSpell();
+    void recvGoodsReply();
     void netTimeout();
     int watchdogTimeout();
 };
