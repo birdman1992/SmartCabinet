@@ -67,7 +67,9 @@ private:
     quint16 port;
     QString app_id;
     QString app_secret;
+    QByteArray tcpCache;
 
+    bool packageIsComplete(QByteArray qba);
     void parCabInfo(cJSON* json);//cabinet info
     void parUserInfo(cJSON* json);//user info
     void parGoodsInfo(cJSON* json);//goods info

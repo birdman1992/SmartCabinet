@@ -122,6 +122,17 @@ QString tcpServer::getBarCode(QString str)
     return rx.cap(1);
 }
 
+bool tcpServer::packageIsComplete(QByteArray qba)
+{
+    int leftCount = qba.count('{');
+    int rightCount = qba.count('}');
+    qDebug()<<"packageIsComplete"<<leftCount<<rightCount;
+    if(leftCount == rightCount)
+        return true;
+    else
+        return false;
+}
+
 void tcpServer::parCabInfo(cJSON *json)
 {
     QString col_map = QString(cJSON_GetObjectItem(json, "col_map")->valuestring);
@@ -513,13 +524,19 @@ qint64 tcpServer::timeStamp()
 {
     return QDateTime::currentMSecsSinceEpoch()/1000;
 }
-#include <unistd.h>
+
 void tcpServer::readData()
 {
-    usleep(300000);
     QByteArray qba = socket->readAll();
     qDebug()<<"[TCP DATA]:"<<qba;
-    cJSON* json = cJSON_Parse(qba.data());
+    tcpCache.append(qba);
+    if(!packageIsComplete(tcpCache))
+    {
+        return;
+    }
+
+    cJSON* json = cJSON_Parse(tcpCache.data());
+    tcpCache.clear();
     if(json == NULL)
         return;
 
