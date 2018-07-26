@@ -69,6 +69,7 @@ signals:
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
     void requireCaseBind(int  seqNum, int index, QString goodsId);
+    void requireCaseRebind(int  seqNum, int index, QString goodsId);
     void goodsNumChanged(int);//报告物品数量的变化
     void checkLockState();//检查锁状态
     void scanData(QByteArray qba);

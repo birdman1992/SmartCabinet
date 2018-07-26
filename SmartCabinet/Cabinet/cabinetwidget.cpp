@@ -445,7 +445,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
 
 //        config->removeConfig(rebind_old_addr);
-        emit requireCaseBind(selectCab, selectCase, rebindGoods->packageId);
+        emit requireCaseRebind(selectCab, selectCase, rebindGoods->packageId);
 //        cabInfoBind(selectCab, selectCase, *rebindGoods);
     }
 }

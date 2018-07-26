@@ -651,6 +651,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
     connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
     connect(win_cabinet, SIGNAL(requireCaseBind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
+    connect(win_cabinet, SIGNAL(requireCaseRebind(int,int,QString)), cabServer, SLOT(cabinetRebind(int,int,QString)));
     connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,int)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,int)));
     connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
     connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));

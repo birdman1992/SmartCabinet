@@ -776,6 +776,12 @@ void tcpServer::recvRebindCase()
     int statusCode = reply_bind_case->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_bind_case->deleteLater();
     reply_bind_case = NULL;
+
+    if(statusCode == 200)
+    {
+        config->clearGoodsConfig();
+        login();
+    }
 }
 
 void tcpServer::recvBindCase()
