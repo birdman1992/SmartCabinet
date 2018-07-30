@@ -1208,7 +1208,7 @@ void tcpServer::goodsCheckFinish()
     QStringList params = paramsBase();
     params<<QString("secondary_card_no=%1").arg(secondCard);
     QByteArray param = apiJson(params, app_secret);
-    qDebug()<<"[CheckCreate]";
+    qDebug()<<"[CheckFinish]";
     apiPut(API_CHECK_FINISH, &reply_check, param, this, SLOT(recvCheckFinish()));
 }
 
