@@ -204,7 +204,7 @@ void GoodsApply::on_push_clicked()
     ui->msg->setText("正在提交");
 
     emit replyRequire(listPush);
-    emit searchRequire(ui->searchText->text());
+//    emit searchRequire(ui->searchText->text());
     listPush.clear();
 }
 

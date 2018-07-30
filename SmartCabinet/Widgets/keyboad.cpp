@@ -8,7 +8,7 @@ Keyboad::Keyboad(QWidget *parent) :
     ui(new Ui::Keyboad)
 {
     ui->setupUi(this);
-    this->setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(Qt::FramelessWindowHint);
     initKeys();
 }
 

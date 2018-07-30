@@ -277,6 +277,10 @@ GoodsCheckInfo* tcpServer::parGoodsApplyInfo(cJSON *json)
     ret->num_max = cJSON_GetObjectItem(json, "max_alert_threshold")->valueint;
     ret->num_min = cJSON_GetObjectItem(json, "min_alert_threshold")->valueint;
     ret->producerName = QString(cJSON_GetObjectItem(json, "producer_name")->valuestring);
+    if(ret->type<10)
+        ret->packageBarCode = ret->id + "-0" + QString::number(ret->type);
+    else
+        ret->packageBarCode = ret->id + "-" + QString::number(ret->type);
 
     return ret;
 }
@@ -475,7 +479,7 @@ void tcpServer::apiDelete(QString uil, QNetworkReply **reply, QString data, QObj
 
     QNetworkRequest request;
     request.setUrl(nUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
     *reply = manager->deleteResource(request);
     connect(*reply, SIGNAL(finished()), receiver, slot);
@@ -488,7 +492,7 @@ void tcpServer::apiGet(QString uil, QNetworkReply **reply, QString data, QObject
 
     QNetworkRequest request;
     request.setUrl(nUrl);
-//    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Accept","application/vnd.spd.cabinet+json");
     replyCheck(*reply);
 
@@ -632,6 +636,8 @@ void tcpServer::recvUserLogin()
             return;
 
         cJSON* data = cJSON_GetObjectItem(json, "data");
+        if(data == NULL)
+            return;
 
         NUserInfo* nInfo = parOneUser(data);
         UserInfo* uInfo = nUserToUser(nInfo);
