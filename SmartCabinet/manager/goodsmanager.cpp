@@ -12,6 +12,7 @@ GoodsManager *GoodsManager::manager()
 void GoodsManager::addGoodsCodes(QString goodsId, QStringList codes)
 {
     QStringList srcCodes = getConfig(QString("%1/codes").arg(goodsId), QStringList()).toStringList();
+    addCodeMap(goodsId, codes);
     srcCodes<<codes;
     srcCodes.removeDuplicates();
     setConfig(QString("%1/codes").arg(goodsId), srcCodes);
@@ -59,6 +60,15 @@ void GoodsManager::updateCodeMap()
         {
             codeMap.insert(code, id);
         }
+    }
+}
+
+void GoodsManager::addCodeMap(QString goodsId, QStringList codes)
+{
+    foreach(QString code, codes)
+    {
+        if(codeMap.value(code, QString()).isEmpty())
+            codeMap.insert(code, goodsId);
     }
 }
 

@@ -30,6 +30,7 @@ public:
     void save();
     void storeFailed(QString msg);
     void fetchFailed(QString msg);
+    void showTips(QString msg, bool isDangerous);
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 private slots:
@@ -62,7 +63,6 @@ private:
     CaseAddress addr;
     void paintEvent(QPaintEvent *);
     void showEvent(QShowEvent*);
-    void showTips(QString msg, bool isDangerous);
 };
 
 #endif // CABINETACCESS_H

@@ -30,6 +30,7 @@ private:
     QMap<QString, QString> codeMap;
 
     void updateCodeMap();
+    void addCodeMap(QString goodsId, QStringList codes);
 
     void setConfig(QString key, QVariant value);
     QVariant getConfig(QString key, QVariant defaultRet);
