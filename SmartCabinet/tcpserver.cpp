@@ -954,7 +954,7 @@ void tcpServer::recvSpellReq()
         checkList = new CheckList();
 
         cJSON* data = cJSON_GetObjectItem(json, "data");
-        int arraySize = cJSON_GetArraySize(json);
+        int arraySize = cJSON_GetArraySize(data);
         for(int i=0; i<arraySize; i++)
         {
             cJSON* item = cJSON_GetArrayItem(data, i);

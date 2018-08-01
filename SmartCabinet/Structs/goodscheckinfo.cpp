@@ -83,6 +83,7 @@ void CheckList::setCheckDateTime(QString str)
 void CheckList::addInfo(GoodsCheckInfo * info)
 {
     listInfo<<info;
+    qDebug()<<"[addInfo]"<<listInfo.count();
 }
 
 
