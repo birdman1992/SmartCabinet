@@ -220,7 +220,6 @@ Goods *tcpServer::parGoods(cJSON *json)
     cJSON* position = cJSON_GetObjectItem(json, "position");
     ret->pos.setX(cJSON_GetObjectItem(position,"col")->valueint);
     ret->pos.setY(cJSON_GetObjectItem(position,"row")->valueint);
-    qDebug()<<"retpos"<<ret->pos;
 
     for(int i=0; i<listSize; i++)
     {
