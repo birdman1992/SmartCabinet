@@ -763,9 +763,19 @@ void tcpServer::recvGoodsStoreList()
     if(statusCode == 200)
     {
 //        login();
+        QList<QString> list_id;
+        QList<int> list_num;
         foreach(CabinetStoreListItem* item, storeList)
         {
-            emit goodsNumChanged(item->itemId(), item->itemNum());
+            list_id<<item->itemId();
+            list_num<<item->itemNum();
+        }
+
+        int i=0;
+        foreach(QString id, list_id)
+        {
+            emit goodsNumChanged(id, list_num.at(i));
+            i++;
         }
     }
     else

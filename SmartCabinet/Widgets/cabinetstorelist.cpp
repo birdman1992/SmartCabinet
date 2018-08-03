@@ -82,7 +82,6 @@ void CabinetStoreList::bindMsg(QString msg)
 
 void CabinetStoreList::storeRst(QString msg, bool success)
 {
-    qDebug("storeRst>>>>>>>>>>>>");
     if(success)
     {
        ui->ok->setEnabled(false);

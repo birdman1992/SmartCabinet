@@ -26,7 +26,6 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
 
 CabinetStoreListItem::~CabinetStoreListItem()
 {
-    qDebug()<<"[delete]"<<name<<package_id;
     delete ui;
 }
 
