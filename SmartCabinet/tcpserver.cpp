@@ -43,6 +43,7 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
 {
     tcpState = noState;
     needReg = false;
+    syncFLag = false;
     reply_login = NULL;
     reply_check_store_list = NULL;
     reply_goods_access = NULL;
@@ -169,6 +170,13 @@ void tcpServer::parUserInfo(cJSON *json)
 void tcpServer::parGoodsInfo(cJSON *json)
 {
     int userCount = cJSON_GetArraySize(json);
+    if(syncFLag)
+    {
+        syncFLag = false;
+        config->clearGoodsConfig();
+        emit cabSyncResult(true);
+    }
+
     for(int i=0; i<userCount; i++)
     {
         cJSON* item = cJSON_GetArrayItem(json, i);
@@ -1113,6 +1121,7 @@ void tcpServer::cabCloneReq(QString oldCabinetId)
 
 void tcpServer::cabInfoSync()
 {
+    syncFLag = true;
     login();
 }
 

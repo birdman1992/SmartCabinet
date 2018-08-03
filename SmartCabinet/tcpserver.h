@@ -54,6 +54,7 @@ private:
     bool needReg;
     bool needSaveAddress;
     bool waitTimeRst;
+    bool syncFLag;
     TcpReqState tcpState;
     QStringList accessList;
 
@@ -154,7 +155,7 @@ signals:
     void idUpdate();
     void regResult(bool);
     void cloneResult(bool, QString);
-    void cabSyncResult(bool);
+    void cabSyncResult(bool);//物品信息同步信号
     void checkCreatRst(bool, QString msg=QString());
     void checkFinishRst(bool, QString msg=QString());
     void goodsCheckRst(QString msg);
