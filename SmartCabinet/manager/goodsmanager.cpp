@@ -18,6 +18,13 @@ void GoodsManager::addGoodsCodes(QString goodsId, QStringList codes)
     setConfig(QString("%1/codes").arg(goodsId), srcCodes);
 }
 
+void GoodsManager::syncGoodsCodes(QString goodsId, QStringList codes)
+{
+    removeCodeMap(goodsId);
+    addCodeMap(goodsId, codes);
+    setConfig(QString("%1/codes").arg(goodsId), codes);
+}
+
 QStringList GoodsManager::getGoodsCodes(QString goodsId)
 {
     return getConfig(QString("%1/codes").arg(goodsId), QStringList()).toStringList();
@@ -70,6 +77,11 @@ void GoodsManager::addCodeMap(QString goodsId, QStringList codes)
         if(codeMap.value(code, QString()).isEmpty())
             codeMap.insert(code, goodsId);
     }
+}
+
+void GoodsManager::removeCodeMap(QString goodsId)
+{
+    codeMap.remove(goodsId);
 }
 
 /********base functions*******/

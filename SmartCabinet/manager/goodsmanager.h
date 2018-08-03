@@ -14,6 +14,7 @@ public:
     static GoodsManager* manager();
     /*SETS*/
     void addGoodsCodes(QString goodsId, QStringList codes);
+    void syncGoodsCodes(QString goodsId, QStringList codes);
 
     /*GETS*/
     QStringList getGoodsCodes(QString goodsId);
@@ -31,6 +32,7 @@ private:
 
     void updateCodeMap();
     void addCodeMap(QString goodsId, QStringList codes);
+    void removeCodeMap(QString goodsId);
 
     void setConfig(QString key, QVariant value);
     QVariant getConfig(QString key, QVariant defaultRet);
