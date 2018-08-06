@@ -126,15 +126,15 @@ int get_path(void)
 #endif
 #ifdef MC
 						if(strcmp(pFile->d_name,"hidraw0") == 0)
-							event = 1;
-						else if(strcmp(pFile->d_name,"hidraw1") == 0)
 							event = 2;
-						else
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
 							event = 3;
+						else
+							event = 4;
 #endif
 
 					}
-					if(usb_info->vid==8746 && usb_info->pid==69)	// touch
+					else if(usb_info->vid==8746 && usb_info->pid==69)	// touch
 					{	
 #ifdef MY
 						if(strcmp(pFile->d_name,"hidraw0") == 0)
@@ -146,11 +146,11 @@ int get_path(void)
 #endif
 #ifdef MC
 						if(strcmp(pFile->d_name,"hidraw0") == 0)
-							event = 1;
-						else if(strcmp(pFile->d_name,"hidraw1") == 0)
 							event = 2;
-						else
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
 							event = 3;
+						else
+							event = 4;
 #endif
 
 					}
