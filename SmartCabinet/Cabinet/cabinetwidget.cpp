@@ -1409,3 +1409,8 @@ void CabinetWidget::on_reply_clicked()
     config->state = STATE_NO;
     emit requireSearchShow();
 }
+
+void CabinetWidget::on_consume_date_clicked()
+{
+
+}

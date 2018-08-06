@@ -119,6 +119,32 @@
                 </spacer>
                </item>
                <item>
+                <widget class="QPushButton" name="consume_date">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(18, 112, 161);
+color: rgb(255,255,255);
+border:0px solid grey;
+font: 75 20px &quot;微软雅黑&quot;;
+</string>
+                 </property>
+                 <property name="text">
+                  <string>日清单</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QFrame" name="frame_check_history">
                  <property name="maximumSize">
                   <size>
