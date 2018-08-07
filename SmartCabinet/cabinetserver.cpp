@@ -1412,7 +1412,6 @@ void CabinetServer::recvCheckTables()
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
-        emit checkCreatRst(true);
         cJSON* jData = cJSON_GetObjectItem(json, "data");
         int listSize = cJSON_GetArraySize(jData);
         QList<CheckTableInfo*> l;
