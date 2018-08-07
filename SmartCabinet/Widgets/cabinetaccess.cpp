@@ -355,9 +355,9 @@ void CabinetAccess::recvOptGoodsNum(int num)
     }
     else if(config->state == STATE_REFUN)
     {
-        int outNum = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
-        int goodsType = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
-        QString unit = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
+//        int outNum = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+//        int goodsType = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
+//        QString unit = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->unit;
 //        ui->info->setText(QString("已退%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
 //        ui->tip->setText("退货成功");
         showTips("退货成功", false);

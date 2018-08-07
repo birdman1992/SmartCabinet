@@ -858,7 +858,7 @@ void tcpServer::recvGoodsCheck()
 {
     QByteArray qba = reply_check->readAll();
     qDebug()<<"[recvGoodsCheck]"<<qba;
-    int statusCode = reply_check->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+//    int statusCode = reply_check->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     reply_check->deleteLater();
     reply_check = NULL;
     cJSON* json = cJSON_Parse(qba.data());
