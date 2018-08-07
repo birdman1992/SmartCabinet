@@ -16,6 +16,7 @@
 #include "Widgets/cabinetstorelist.h"
 #include "Widgets/cabinetrefund.h"
 #include "Widgets/checkwarning.h"
+#include "Widgets/dayreport.h"
 #include "Device/Network/networkset.h"
 #include "cabinetconfig.h"
 #include "Structs/caseaddress.h"
@@ -85,6 +86,7 @@ signals:
     void goodsCheckFinish();
     void requireCheckShow();
     void requireSearchShow();
+    void requireDayReportShow();
 
 private slots:
     void setMenuHide(bool ishide);

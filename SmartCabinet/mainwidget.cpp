@@ -587,6 +587,7 @@ void MainWidget::init_huangpo()
     qDebug("init_huangpo<<server");
     qRegisterMetaType<QList<CabinetStoreListItem*> >("QList<CabinetStoreListItem*>");
     qRegisterMetaType<QList<CabinetCheckItem*> >("QList<CabinetCheckItem*>");
+    qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
 
     //智能柜配置
     cabinetConf = new CabinetConfig();
@@ -613,6 +614,10 @@ void MainWidget::init_huangpo()
     connect(win_goods_apply, SIGNAL(replyRequire(QList<GoodsCheckInfo*>)), cabServer, SLOT(replyRequire(QList<GoodsCheckInfo*>)));
     connect(cabServer, SIGNAL(curSearchList(CheckList*)), win_goods_apply, SLOT(recvSearchRst(CheckList*)));
     connect(cabServer, SIGNAL(goodsReplyRst(bool,QString)), win_goods_apply, SLOT(recvReplyRst(bool,QString)));
+
+    win_day_report = new DayReport();
+    connect(win_day_report, SIGNAL(askListInfo(QDate,QDate)), cabServer, SLOT(requireListInfo(QDate,QDate)));
+    connect(cabServer, SIGNAL(dayReportRst(QList<DayReportInfo*>,QString)), win_day_report, SLOT(recvReportInfo(QList<DayReportInfo*>, QString)));
 
     //扫码输入面板
     win_coder_keyboard = new coderKeyboard();
@@ -650,6 +655,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
     connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
     connect(win_cabinet, SIGNAL(requireSearchShow()), win_goods_apply, SLOT(show()));
+    connect(win_cabinet, SIGNAL(requireDayReportShow()), win_day_report, SLOT(show()));
     connect(cabServer, SIGNAL(checkCreatRst(bool)), win_cabinet, SLOT(recvCheckRst(bool)));
     connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));

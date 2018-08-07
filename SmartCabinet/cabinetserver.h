@@ -15,6 +15,7 @@
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
 #include "Structs/goodscheckinfo.h"
+#include "Structs/dayreportinfo.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
 
@@ -47,6 +48,7 @@ private:
     QNetworkReply* reply_update_col;
     QNetworkReply* reply_search_spell;
     QNetworkReply* reply_goods_reply;
+    QNetworkReply* reply_day_report;
     CheckList* checkList;
     QString regId;
     QString logId;
@@ -104,6 +106,7 @@ signals:
     void checkFinish(bool success);
     void checkTables(QList<CheckTableInfo*>);
     void goodsReplyRst(bool success, QString msg);
+    void dayReportRst(QList<DayReportInfo*>, QString msg);
 
 public slots:
     void cabRegister();
@@ -131,6 +134,7 @@ public slots:
     void searchSpell(QString);
     void replyRequire(QList<GoodsCheckInfo *> l);
     void requireCheckTableInfo(QString id);
+    void requireListInfo(QDate sDate, QDate eDate);
 private slots:
     void recvCabRegister();
     void recvUserLogin();
@@ -153,6 +157,7 @@ private slots:
     void recvCheckTableInfo();
     void recvSearchSpell();
     void recvGoodsReply();
+    void recvDayReportInfo();
     void netTimeout();
     int watchdogTimeout();
 };

@@ -70,7 +70,9 @@ SOURCES += main.cpp\
     Widgets/goodsapply.cpp \
     Structs/goodssearchinfo.cpp \
     Widgets/keyboad.cpp \
-    Widgets/checkwarning.cpp
+    Widgets/checkwarning.cpp \
+    Widgets/dayreport.cpp \
+    Structs/dayreportinfo.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -130,7 +132,9 @@ HEADERS  += mainwidget.h \
     Widgets/goodsapply.h \
     Structs/goodssearchinfo.h \
     Widgets/keyboad.h \
-    Widgets/checkwarning.h
+    Widgets/checkwarning.h \
+    Widgets/dayreport.h \
+    Structs/dayreportinfo.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -163,7 +167,8 @@ FORMS    += mainwidget.ui \
     Widgets/checktable.ui \
     Widgets/goodsapply.ui \
     Widgets/keyboad.ui \
-    Widgets/checkwarning.ui
+    Widgets/checkwarning.ui \
+    Widgets/dayreport.ui
 
 RESOURCES += \
     image.qrc

@@ -62,6 +62,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->reply->hide();
     ui->quit->hide();
     ui->frame_check_history->hide();
+    ui->consume_date->hide();
     ui->menuWidget->setCurrentIndex(0);
 
 //#ifndef SIMULATE_ON
@@ -113,6 +114,7 @@ void CabinetWidget::cabLock()
     ui->reply->hide();
     ui->quit->hide();
     ui->frame_check_history->hide();
+    ui->consume_date->hide();
     win_access->hide();
     curStoreList = NULL;
     config->state = STATE_NO;
@@ -910,6 +912,7 @@ void CabinetWidget::setPowerState(int power)
     ui->reply->show();
     ui->quit->hide();
     ui->frame_check_history->show();
+    ui->consume_date->show();
 
     if(ui->netState->isChecked())
     {
@@ -1412,5 +1415,5 @@ void CabinetWidget::on_reply_clicked()
 
 void CabinetWidget::on_consume_date_clicked()
 {
-
+    emit requireDayReportShow();
 }

@@ -35,6 +35,7 @@
 #define API_CHECK_INFO "/spd-web/sarkApi/TakeStockCheset/query/takestockGoodsList/"    //查询盘点清单内容
 #define API_SEARCH_SPELL "/spd-web/sarkApi/Cheset/query/chesetGoods/"     //首字母搜索物品
 #define API_GOODS_REPLY "/spd-web/sarkApi/Cheset/doPleaseGoods/"  //请货
+#define API_DAY_REPORT "/spd-web/sarkApi/Cheset/query/consumeDate/"  //日清单
 
 
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
@@ -58,6 +59,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_cabinet_clone = NULL;
     reply_update_col = NULL;
     reply_search_spell = NULL;
+    reply_day_report = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
     apiState = 0;
@@ -650,6 +652,18 @@ void CabinetServer::requireCheckTableInfo(QString id)
     replyCheck(reply_check_table_info);
     reply_check_table_info = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_check_table_info, SIGNAL(finished()), this, SLOT(recvCheckTableInfo()));
+    qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
+}
+
+//获取日清单信息
+void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
+{
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\"}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).toUtf8();
+    QString nUrl = ApiAddress+QString(API_DAY_REPORT)+"?"+qba.toBase64();
+    replyCheck(reply_day_report);
+    reply_day_report = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_day_report, SIGNAL(finished()), this, SLOT(recvDayReportInfo()));
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
 
@@ -1542,6 +1556,52 @@ void CabinetServer::recvGoodsReply()
     else
     {
         emit goodsReplyRst(false, QString(cJSON_GetObjectItem(json, "msg")->valuestring));
+    }
+
+    cJSON_Delete(json);
+}
+
+void CabinetServer::recvDayReportInfo()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_day_report->readAll());
+    reply_day_report->deleteLater();
+    reply_day_report = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvDayReportInfo]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    QList<DayReportInfo*> rst;
+    if(json_rst->type == cJSON_True)
+    {
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        int arraySize = cJSON_GetArraySize(data);
+        for(int i=0; i<arraySize; i++)
+        {
+            cJSON* item = cJSON_GetArrayItem(data, i);
+            DayReportInfo* info = new DayReportInfo;
+            info->goodsId = QString(cJSON_GetObjectItem(item, "goodsId")->valuestring);
+            info->goodsName = QString(cJSON_GetObjectItem(item, "goodsName")->valuestring);
+            info->size = QString(cJSON_GetObjectItem(item, "size")->valuestring);
+            info->proName = QString(cJSON_GetObjectItem(item, "proName")->valuestring);
+            info->goodsCount = QString(cJSON_GetObjectItem(item, "goodsCount")->valuestring);
+            info->optTime = QString(cJSON_GetObjectItem(item, "optTime")->valuestring);
+            info->traceId = QString(cJSON_GetObjectItem(item, "traceId")->valuestring);
+            info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
+            info->batchNumber = QString(cJSON_GetObjectItem(item, "batchNumber")->valuestring);
+            info->optName = QString(cJSON_GetObjectItem(item, "optName")->valuestring);
+            info->supplyName = QString(cJSON_GetObjectItem(item, "supplyName")->valuestring);
+            info->price = cJSON_GetObjectItem(item, "price")->valuedouble;
+            info->sumCount = cJSON_GetObjectItem(item, "sumCount")->valuedouble;
+            info->state = cJSON_GetObjectItem(item, "state")->valueint;
+            rst<<info;
+        }
+        emit dayReportRst(rst, QString(cJSON_GetObjectItem(json, "msg")->valuestring));
+    }
+    else
+    {
+        emit dayReportRst(rst, QString(cJSON_GetObjectItem(json, "msg")->valuestring));
     }
 
     cJSON_Delete(json);
