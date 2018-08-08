@@ -1,6 +1,5 @@
 #include "dayreport.h"
 #include "ui_dayreport.h"
-#include <QDate>
 #include <QDebug>
 
 DayReport::DayReport(QWidget *parent) :
@@ -21,6 +20,7 @@ DayReport::DayReport(QWidget *parent) :
     ui->date_finish->installEventFilter(this);
     ui->date_finish->hide();
     ui->label_2->hide();
+    qDebug()<<"[date]"<<QDate::currentDate()<<QDateTime::currentDateTime();
 //    this->setWindowOpacity(0.7);
 
 //    setCheckTables(createDateList(QDateTime(), QDateTime::currentDateTime()));
