@@ -13,6 +13,7 @@
 #include "Device/Network/qnetinterface.h"
 #include "cabinetconfig.h"
 #include "Widgets/cabinetctrlconfig.h"
+#include "manager/cabinetmanager.h"
 
 bool posSort(Cabinet *A, Cabinet *B);
 
@@ -30,7 +31,7 @@ public:
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 signals:
-    void requireInsertCol(int, int);
+    void requireInsertCol(int pos, QString layout);
     void winSwitch(int);
     void requireOpenLock(int seqNum, int lockId);
     void requireClear();
@@ -60,7 +61,7 @@ private slots:
 
     void on_insert_pos_valueChanged(int arg1);
 
-    void on_insert_num_valueChanged(int arg1);
+    void on_col_layout_activated(const QString &arg1);
 
 public slots:
     void ctrl_boardcast();//广播控制
@@ -69,6 +70,10 @@ public slots:
 private:
     Ui::CabinetService *ui;
     QNetInterface* dev_network;
+    CabinetManager* cabManager;
+    QTableWidget* nTab;
+    QString insert_layout;
+    int insert_pos;
     QString dev_ip;
     QString dev_netmask;
     QString dev_gateway;
@@ -78,6 +83,7 @@ private:
     QButtonGroup l_lock_conf;
     CabinetCtrlConfig* win_ctrl_config;
     QHBoxLayout* cfg_layout;
+    QList<QTableWidget*> list_preview;
     int curId;
     bool lockConfigIsOk;
 
@@ -86,12 +92,16 @@ private:
     void initGroup();
     void creatCtrlConfig();
     void showVerInfo();
-    bool inserCol(int pos, int num);
+    bool inserCol(int pos, QString layout);
 
     void showEvent(QShowEvent*);
     bool eventFilter(QObject *w, QEvent *e);
     void paintEvent(QPaintEvent *event);
 
+    void cabSplit(QString scale, QTableWidget *table);
+    QList<QTableWidget*> creatPreviewList(QStringList layouts);
+    int getBaseCount(QString scale);
+    void updateCabpreview(QTableWidget *newTab, int pos);
 };
 
 #endif // CABINETSERVICE_H

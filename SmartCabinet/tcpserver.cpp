@@ -383,6 +383,21 @@ QByteArray tcpServer::jLogin(QString id, QString aesId, int jType)
 }").arg(id).arg(aesId).arg(jType).toLocal8Bit();
 }
 
+QByteArray tcpServer::jUpdate(QString layout, QString col_map, QPoint scrPos)
+{
+    return QString("{\
+                \"c\": \"update\",\
+                \"data\": {\
+                    \"layout\": \"%1\",\
+                    \"col_map\": \"%2\",\
+                    \"screen_pos\":{\
+                        \"row\":%3,\
+                        \"col\":%4\
+                    }\
+                }\
+            }").arg(layout).arg(col_map).arg(scrPos.y()).arg(scrPos.x()).toLocal8Bit();
+}
+
 /*
     cabinet_type: 1(cabinet) | 2(rfid cabinet)
 */
@@ -586,6 +601,18 @@ void tcpServer::readData()
                 tcpState = noState;
             }
             qDebug()<<"[verify failed]";
+        }
+    }
+    else if(cr == "update")
+    {
+        int code = cJSON_GetObjectItem(json, "code")->valueint;
+        if(code == 3002)
+        {
+            emit insertRst(true);
+        }
+        else
+        {
+            emit insertRst(false);
         }
     }
     else if(cr == "timestamp")
@@ -1125,9 +1152,14 @@ void tcpServer::cabInfoSync()
     login();
 }
 
-void tcpServer::cabColInsert(int pos, int num)
+void tcpServer::cabColInsert(int pos, QString layout)
 {
+    cabManager->readConfig();
+    cabManager->insertCol(pos, layout);
 
+    QByteArray qba = jUpdate(cabManager->cabLayout, cabManager->cabMap, cabManager->scrPos);
+    qDebug()<<"[cabColInsert]"<<qba;
+    pushTcpReq(qba);
 }
 
 void tcpServer::cabinetBind(int col, int row, QString goodsId)

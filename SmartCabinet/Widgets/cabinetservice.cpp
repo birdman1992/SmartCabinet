@@ -25,6 +25,7 @@ CabinetService::CabinetService(QWidget *parent) :
 
     dev_network = NULL;
     lockConfigIsOk = false;
+    cabManager = CabinetManager::manager();
     win_ctrl_config = new CabinetCtrlConfig();
     connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
     connect(win_ctrl_config, SIGNAL(updateBtn()), this,SLOT(updateBtn()));
@@ -32,6 +33,13 @@ CabinetService::CabinetService(QWidget *parent) :
     initStack();
     initGroup();
     showVerInfo();
+
+    QStringList types;
+    types<<"331111"<<"31111111"<<"21111112"<<"2211112"<<"1111";
+    ui->col_layout->addItems(types);
+    nTab = new QTableWidget;
+    nTab->setSelectionMode(QAbstractItemView::NoSelection);
+    nTab->resize(7,270-10);
 
     ui->listWidget->setCurrentRow(0);
     ui->stackedWidget->setCurrentIndex(0);
@@ -62,7 +70,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     win_ctrl_config->installGlobalConfig(config);
-    ui->insert_pos->setMaximum(config->list_cabinet.count()-1);
+    ui->insert_pos->setMaximum(config->list_cabinet.count());
     return true;
 }
 
@@ -76,6 +84,8 @@ void CabinetService::showEvent(QShowEvent *)
 {
     initNetwork();
     creatCtrlConfig();
+    list_preview = creatPreviewList(config->getCabinetLayout().split('#', QString::SkipEmptyParts));
+    updateCabpreview(NULL, 0);
     ui->server_addr->setText(config->getServerAddress());
     qDebug()<<ui->server_addr->text();
 }
@@ -250,12 +260,9 @@ void CabinetService::showVerInfo()
     printf("\n\n************************************\n");
 }
 
-bool CabinetService::inserCol(int pos, int num)
+bool CabinetService::inserCol(int pos, QString layout)
 {
-    if(!(pos+num))
-        return false;
-    else
-        emit requireInsertCol(pos, num);
+    emit requireInsertCol(pos, layout);
     return true;
 }
 
@@ -497,7 +504,7 @@ void CabinetService::on_insert_clicked()
     {
         ui->insert->setText("正在插入");
         ui->insert->setEnabled(false);
-        if(!inserCol(ui->insert_pos->value(), ui->insert_num->value()))
+        if(!inserCol(insert_pos, insert_layout))
         {
             ui->insert->setText("确定");
             ui->insert->setEnabled(true);
@@ -507,11 +514,117 @@ void CabinetService::on_insert_clicked()
 
 void CabinetService::on_insert_pos_valueChanged(int arg1)
 {
-    ui->insert_num->setMaximum(config->list_cabinet.count() - arg1);
-    ui->insert_num->setMinimum(arg1-config->list_cabinet.count());
+    cabSplit(ui->col_layout->currentText(), nTab);
+    insert_pos = arg1;
+    insert_layout = ui->col_layout->currentText();
+    updateCabpreview(nTab, arg1);
 }
 
-void CabinetService::on_insert_num_valueChanged(int arg1)
+void CabinetService::on_col_layout_activated(const QString &arg1)
 {
-    ui->insert_pos->setMaximum(config->list_cabinet.count() - qAbs(arg1));
+    cabSplit(arg1, nTab);
+    insert_pos = ui->insert_pos->value();
+    insert_layout = arg1;
+    updateCabpreview(nTab, ui->insert_pos->value());
+}
+
+void CabinetService::cabSplit(QString scale, QTableWidget *table)
+{
+    if(scale.isEmpty()||(table == NULL))
+    {
+        return;
+    }
+    int rowCount = scale.length();
+    int baseCount = getBaseCount(scale);
+    int baseHeight = table->geometry().height()/baseCount;
+    int i = 0;
+    table->setRowCount(rowCount);
+    table->setColumnCount(1);
+
+    table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+    table->verticalHeader()->setVisible(false);
+    table->horizontalHeader()->setVisible(false);
+    table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    qDebug()<<table->geometry().height()<<baseCount<<baseHeight;
+    for(i=0; i<rowCount; i++)
+    {
+        table->setRowHeight(i,baseHeight*(scale.mid(i,1).toInt()));
+    }
+
+}
+
+int CabinetService::getBaseCount(QString scale)
+{
+    int i = 0;
+    int ret = 0;
+    if(scale.isEmpty())
+        return ret;
+
+    for(i=0; i<scale.length(); i++)
+    {
+        ret += scale.mid(i,1).toInt();
+    }
+    return ret;
+}
+
+void CabinetService::updateCabpreview(QTableWidget* newTab, int pos)
+{
+    int i=0;
+    if(!ui->layout_preview->layout()->children().isEmpty())
+    {
+        foreach(QObject* obj, ui->layout_preview->layout()->children())
+        {
+            ui->layout_preview->layout()->removeWidget((QWidget*)obj);
+        }
+    }
+
+    foreach(QTableWidget* tab, list_preview)
+    {
+        if((i == pos) && (newTab != NULL))
+        {
+            ui->layout_preview->layout()->addWidget(newTab);
+            newTab->setStyleSheet("background:blue;");
+        }
+        ui->layout_preview->layout()->addWidget(tab);
+        i++;
+    }
+    if((i == pos) && (newTab != NULL))
+    {
+        ui->layout_preview->layout()->addWidget(newTab);
+        newTab->setStyleSheet("background:blue;");
+    }
+    QPoint sPos = config->getScreenPos();
+    QTableWidgetItem* item = new QTableWidgetItem();
+    item->setBackgroundColor(QColor(62, 155, 255));
+    list_preview.at(sPos.x())->setItem(sPos.y(), 0, item);
+}
+
+QList<QTableWidget *> CabinetService::creatPreviewList(QStringList layouts)
+{
+    QTableWidget* tab;
+    QList<QTableWidget*> ret;
+    qDebug()<<"[creatPreviewList]"<<layouts;
+
+    foreach(QString layout, layouts)
+    {
+        tab = new QTableWidget();
+        tab->setSelectionMode(QAbstractItemView::NoSelection);
+        tab->resize(7,270-10);
+        cabSplit(layout, tab);
+        ret<<tab;
+    }
+    return ret;
+//    if((screenPos.y() >= 0) && needSelScreen)//已经选择了屏幕位置
+//    {
+//        needSelScreen = false;
+//        screenPos.setX(list_layout.count()-1);
+//        qDebug()<<"[screen]"<<screenPos.y();
+//        QTableWidgetItem* item = new QTableWidgetItem();
+//        item->setBackgroundColor(QColor(62, 155, 255));
+//        tab->setItem(screenPos.y(),0,item);
+//        ui->tabExp->clearSelection();
+//        warningSelScreen(false);
+//    }
 }

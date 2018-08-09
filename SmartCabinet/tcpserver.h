@@ -104,6 +104,7 @@ private:
     void login();
 
     QByteArray jLogin(QString id, QString aesId, int jType);//登录(1)和注册(2)  json
+    QByteArray jUpdate(QString layout, QString col_map, QPoint scrPos);
     QByteArray jRegist(QString id, QString aesId);
     QByteArray apiJson(QStringList params, QString secret);
     QString apiString(QStringList params, QString secret);
@@ -178,7 +179,7 @@ public slots:
     void cabInfoReq();//柜子信息查询
     void cabCloneReq(QString oldCabinetId);//柜子克隆请求
     void cabInfoSync();//柜子数据同步
-    void cabColInsert(int pos, int num);
+    void cabColInsert(int pos, QString layout);
     void cabinetBind(int col, int row, QString goodsId);
     void cabinetRebind(int col, int row, QString goodsId);
     void goodsAccess(CaseAddress, QString, int, int optType);//1取货2存货3退货

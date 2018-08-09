@@ -38,6 +38,38 @@ void CabinetManager::setHospitalName(QString name)
     setConfig("hospital_name", name);
 }
 
+void CabinetManager::saveConfig()
+{
+    setCabLayout(cabLayout);
+    setCabMap(cabMap);
+    setDepartName(departName);
+    setHospitalName(hospitalName);
+    setScrPos(scrPos);
+}
+
+void CabinetManager::readConfig()
+{
+    cabLayout = getCabLayout();
+    cabMap = getCabMap();
+    departName = getDepartName();
+    hospitalName = getHospitalName();
+    scrPos = getScrPos();
+}
+
+void CabinetManager::insertCol(int colPos, QString layout)
+{
+    QStringList layouts = cabLayout.split('#', QString::SkipEmptyParts);
+    layouts.insert(colPos, layout);
+    cabLayout = layouts.join("#");
+
+    cabMap.insert(colPos, QString::number(cabMap.length()));
+
+    if(colPos <= scrPos.x())
+    {
+        scrPos.setX(scrPos.x()+1);
+    }
+}
+
 QString CabinetManager::getCabMap()
 {
     return getConfig("col_map", QString()).toString();

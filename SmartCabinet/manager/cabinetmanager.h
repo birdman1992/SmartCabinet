@@ -9,6 +9,15 @@ class CabinetManager : public QObject
     Q_OBJECT
 public:
     static CabinetManager* manager();
+    QString cabMap;
+    QString cabLayout;
+    QPoint scrPos;
+    QString departName;
+    QString hospitalName;
+    void saveConfig();
+    void readConfig();
+    void insertCol(int colPos, QString layout);
+
     /*SETS*/
     void setCabMap(QString map);
     void setCabLayout(QString layout);
