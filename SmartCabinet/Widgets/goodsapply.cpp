@@ -210,10 +210,18 @@ void GoodsApply::on_push_clicked()
 
 void GoodsApply::on_pushButton_clicked(bool checked)
 {
-    ui->searchText->clear();
-    QPoint keyboadPos = ui->searchRst->mapToGlobal(ui->searchRst->rect().topRight());
-    keyboad->move(keyboadPos);
-    keyboad->show();
+    if(checked)
+    {
+        ui->searchText->clear();
+        QPoint keyboadPos = ui->searchRst->mapToGlobal(ui->searchRst->rect().topRight());
+        keyboad->move(keyboadPos);
+        keyboad->raise();
+        keyboad->show();
+    }
+    else
+    {
+        keyboad->hide();
+    }
 }
 
 void GoodsApply::on_close_clicked()
