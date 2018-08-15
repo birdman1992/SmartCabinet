@@ -154,7 +154,7 @@ font:20px&quot;微软雅黑&quot;;
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QGridLayout" name="gridLayout" rowstretch="3,0,0,0" columnstretch="0,0">
+       <layout class="QGridLayout" name="gridLayout" rowstretch="3,0,0,0,0" columnstretch="0,0">
         <property name="topMargin">
          <number>19</number>
         </property>
@@ -171,7 +171,7 @@ font:20px&quot;微软雅黑&quot;;
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="4" column="1">
          <widget class="QFrame" name="frame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -282,6 +282,16 @@ font:20px&quot;微软雅黑&quot;;
          <widget class="QLabel" name="label_3">
           <property name="text">
            <string>网关</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="mac"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>MAC</string>
           </property>
          </widget>
         </item>
@@ -901,7 +911,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.2.9.20180426_beta</string>
+        <string>VERSION: 1.3.0.20180815_beta</string>
        </property>
       </widget>
       <widget class="QFrame" name="frame_6">

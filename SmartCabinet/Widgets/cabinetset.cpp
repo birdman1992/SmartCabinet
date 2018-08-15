@@ -229,6 +229,7 @@ void CabinetSet::on_netUpdate_clicked()
     ui->ip->setText(dev_network->ip());
     ui->netmask->setText(dev_network->netmask());
     ui->gateway->setText(dev_network->gateway());
+    ui->mac->setText(dev_network->macAddress());
 }
 
 void CabinetSet::on_netSet_clicked()

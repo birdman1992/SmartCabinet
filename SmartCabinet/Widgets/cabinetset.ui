@@ -757,7 +757,7 @@ font: 18px &quot;微软雅黑&quot;;
      <x>880</x>
      <y>10</y>
      <width>551</width>
-     <height>191</height>
+     <height>181</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -881,9 +881,9 @@ background-color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>880</x>
-     <y>210</y>
+     <y>200</y>
      <width>261</width>
-     <height>271</height>
+     <height>281</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -927,7 +927,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>60</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -943,7 +943,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>120</y>
+      <y>100</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -959,7 +959,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>140</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -975,7 +975,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>80</y>
+      <y>60</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -994,7 +994,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>120</y>
+      <y>100</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -1013,7 +1013,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>160</y>
+      <y>140</y>
       <width>171</width>
       <height>31</height>
      </rect>
@@ -1032,7 +1032,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>210</y>
+      <y>220</y>
       <width>80</width>
       <height>51</height>
      </rect>
@@ -1045,7 +1045,7 @@ color:rgb(255,255,255);</string>
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>210</y>
+      <y>220</y>
       <width>80</width>
       <height>51</height>
      </rect>
@@ -1054,14 +1054,49 @@ color:rgb(255,255,255);</string>
      <string>应用</string>
     </property>
    </widget>
+   <widget class="QLineEdit" name="mac">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>180</y>
+      <width>171</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">padding-left:10px;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_21">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>51</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>MAC</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
   </widget>
   <widget class="QFrame" name="frame_6">
    <property name="geometry">
     <rect>
      <x>1150</x>
-     <y>210</y>
+     <y>200</y>
      <width>281</width>
-     <height>271</height>
+     <height>281</height>
     </rect>
    </property>
    <property name="styleSheet">
