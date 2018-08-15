@@ -44,6 +44,7 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     tcpState = noState;
     needReg = false;
     syncFLag = false;
+    needClone = false;
     reply_login = NULL;
     reply_check_store_list = NULL;
     reply_goods_access = NULL;
@@ -64,18 +65,6 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
 
     beatTimer = new QTimer(this);
     connect(beatTimer, SIGNAL(timeout()), this, SLOT(heartBeat()));
-//    qDebug()<<"[aesCodec]"<<aesCodec->aes_ecb(QByteArray("1234567")).toBase64();
-    QStringList params;
-//    params<<"delivery_note_no=CK20180417000001";
-//    params<<"app_id=dc52853b3264e67f7237263927266613";
-//    params<<"card_no=11111";
-//    params<<"nonce_str=ibuaiVcKdpRxkhJA";
-//    params<<"timestamp=1529391684";
-//    apiJson(params, "8f3eedb6e9155bddcd3f5b945b09b61c");
-    params<<"A1"<<"A2"<<"A3"<<"A4"<<"A5";
-    CaseAddress a;
-    goodsCheck(params, a);
-//    qDebug()<<"[getBarCode]"<<getBarCode("定数包DS1-18-3已经回库");
 }
 
 tcpServer::~tcpServer()
@@ -153,6 +142,13 @@ void tcpServer::parCabInfo(cJSON *json)
     cabManager->setDepartName(hospital_department_name);
     cabManager->setHospitalName(hospital_name);
     cabManager->setScrPos(pos);
+
+    if(needClone)
+    {
+        config->creatCabinetConfig(layout.split('#', QString::SkipEmptyParts), pos);
+        config->readCabinetConfig();
+        needClone = false;
+    }
 }
 
 void tcpServer::parUserInfo(cJSON *json)
@@ -624,7 +620,7 @@ void tcpServer::readData()
             qint64 timestamp = cJSON_GetObjectItem(data,"timestamp")->valuedouble*1000;
             checkSysTime(QDateTime::fromMSecsSinceEpoch(timestamp));
             qDebug()<<"[timestamp]"<<QDateTime::fromMSecsSinceEpoch(timestamp);
-            if(!needReg)
+            if((!needReg) || needClone)
             {
                 login();
             }
@@ -1143,7 +1139,10 @@ void tcpServer::cabInfoReq()
 
 void tcpServer::cabCloneReq(QString oldCabinetId)
 {
-
+    config->setCabinetId(oldCabinetId);
+    regId = oldCabinetId;
+    needClone = true;
+    login();
 }
 
 void tcpServer::cabInfoSync()

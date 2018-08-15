@@ -39,6 +39,7 @@ public:
         noState,
         regState,
         logState,
+        cloneState,
         checkTimeState
     };
 
@@ -53,6 +54,7 @@ private:
     QString storeListCode;
     bool needReg;
     bool needSaveAddress;
+    bool needClone;
     bool waitTimeRst;
     bool syncFLag;
     TcpReqState tcpState;

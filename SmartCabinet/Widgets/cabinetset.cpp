@@ -329,11 +329,11 @@ void CabinetSet::on_cloneStart_clicked()
         ui->cloneMsg->setText("克隆ID为空");
         return;
     }
-    if(!(initStep & (1<<1)))
-    {
-        ui->cloneMsg->setText("请先配置柜格布局");
-        return;
-    }
+//    if(!(initStep & (1<<1)))
+//    {
+//        ui->cloneMsg->setText("请先配置柜格布局");
+//        return;
+//    }
     ui->regId->setEnabled(false);
 
     emit cabinetClone(ui->cloneId->text());
