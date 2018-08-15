@@ -105,10 +105,12 @@ void CabinetService::updateNetInfo()
     dev_ip = dev_network->ip();
     dev_gateway = dev_network->gateway();
     dev_netmask = dev_network->netmask();
+    dev_mac = dev_network->macAddress();
     qDebug()<<dev_ip<<dev_gateway<<dev_netmask;
     ui->addr->setText(dev_ip);
     ui->netmask->setText(dev_netmask);
     ui->gateway->setText(dev_gateway);
+    ui->mac->setText(dev_mac);
     qDebug()<<"updateNetInfo2";
 }
 

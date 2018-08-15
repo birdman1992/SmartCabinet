@@ -77,6 +77,7 @@ private:
     QString dev_ip;
     QString dev_netmask;
     QString dev_gateway;
+    QString dev_mac;
     QList<QCheckBox*> l_board_num;//锁控板号
     QButtonGroup l_lock_num;//锁号
     CabinetConfig* config;
