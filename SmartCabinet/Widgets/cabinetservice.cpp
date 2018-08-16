@@ -385,7 +385,7 @@ void CabinetService::ctrl_boardcast()
             while(t.elapsed() < 150)
             {
                 QCoreApplication::processEvents();
-                ::usleep(10000);//sleep和usleep都已经obsolete，Linux下也可以使用nanosleep代替
+                ::usleep(30000);//sleep和usleep都已经obsolete，Linux下也可以使用nanosleep代替
             }
             emit requireOpenLock(j, i);
         }
