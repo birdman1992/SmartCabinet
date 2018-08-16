@@ -38,8 +38,7 @@ private slots:
     void on_save_clicked();
     void on_serverAddr_editingFinished();
     void on_lock_test_clicked();
-//    void on_lock_group_clicked(int id);
-
+    void on_lock_group_clicked(int id);
     void on_pushButton_clicked();
 
     void on_netUpdate_clicked();

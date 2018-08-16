@@ -47,7 +47,7 @@ CabinetSet::CabinetSet(QWidget *parent) :
     group_lock.addButton(ui->lock_test_17 , 15);
 
 
-//    connect(&group_lock, SIGNAL(buttonClicked(int)), this, SLOT(on_lock_group_clicked(int)));
+    connect(&group_lock, SIGNAL(buttonClicked(int)), this, SLOT(on_lock_group_clicked(int)));
     on_netUpdate_clicked();
 }
 
@@ -205,10 +205,10 @@ void CabinetSet::on_lock_test_clicked()
     emit lockTest();
 }
 
-//void CabinetSet::on_lock_group_clicked(int id)
-//{
-//    emit requireOpenCase(ui->comboBox->currentIndex(), id);
-//}
+void CabinetSet::on_lock_group_clicked(int id)
+{
+    emit requireOpenCase(ui->comboBox->currentIndex(), id);
+}
 
 void CabinetSet::on_pushButton_clicked()
 {
