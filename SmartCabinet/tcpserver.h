@@ -57,6 +57,7 @@ private:
     bool needClone;
     bool waitTimeRst;
     bool syncFLag;
+    bool undoFlag;
     TcpReqState tcpState;
     QStringList accessList;
 
@@ -167,6 +168,7 @@ signals:
     void netState(bool);//true:连接  false:断开
     void sysLock();//锁定系统
     void insertRst(bool success);
+    void insertUndoRst(bool success);
     void curCheckList(CheckList* l);
     void checkTables(QList<CheckTableInfo*>);
     void curSearchList(CheckList*);
@@ -201,6 +203,7 @@ public slots:
     void replyRequire(QList<GoodsCheckInfo*> replyList);
     void requireCheckTableInfo(QString id);
 
+    void cabInsertUndo();
 };
 
 #endif // TCPSERVER_H

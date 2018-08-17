@@ -268,6 +268,14 @@ bool CabinetService::inserCol(int pos, QString layout)
     return true;
 }
 
+void CabinetService::saveInsert()
+{
+    nTab->setStyleSheet("");
+    list_preview.insert(insert_pos, nTab);
+    nTab = new QTableWidget;
+    ui->insert_pos->setMaximum(list_preview.count());
+}
+
 void CabinetService::initNetwork()
 {
 //    qDebug("[QNetInterface1]");
@@ -398,11 +406,17 @@ void CabinetService::recvInsertColResult(bool success)
     if(success)
     {
         ui->insert->setText("插入\n成功");
+        saveInsert();
     }
     else
     {
         ui->insert->setText("插入\n失败");
     }
+}
+
+void CabinetService::recvInsertUndoResult(bool)
+{
+    ui->undo->setEnabled(true);
 }
 
 void CabinetService::on_clear_clicked()
@@ -512,6 +526,19 @@ void CabinetService::on_insert_clicked()
             ui->insert->setEnabled(true);
         }
     }
+}
+
+void CabinetService::on_undo_clicked()
+{
+    cabManager->readConfig();
+    int lastPos = cabManager->maxPos(cabManager->cabMap);
+    if(lastPos == cabManager->scrPos.x())
+        return;
+    ui->undo->setEnabled(false);
+    QTableWidget* oTab = list_preview.at(lastPos);
+    list_preview.removeAt(lastPos);
+    delete oTab;
+    emit requireInsertUndo();
 }
 
 void CabinetService::on_insert_pos_valueChanged(int arg1)
@@ -631,7 +658,3 @@ QList<QTableWidget *> CabinetService::creatPreviewList(QStringList layouts)
 //    }
 }
 
-void CabinetService::on_undo_clicked()
-{
-
-}

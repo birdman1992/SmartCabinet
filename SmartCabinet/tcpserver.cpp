@@ -45,6 +45,7 @@ tcpServer::tcpServer(QObject *parent) : QObject(parent)
     needReg = false;
     syncFLag = false;
     needClone = false;
+    undoFlag = false;
     reply_login = NULL;
     reply_check_store_list = NULL;
     reply_goods_access = NULL;
@@ -612,7 +613,14 @@ void tcpServer::readData()
         int code = cJSON_GetObjectItem(json, "code")->valueint;
         if(code == 3002)
         {
-            emit insertRst(true);
+            if(undoFlag)
+            {
+                emit insertUndoRst(true);
+            }
+            else
+            {
+                emit insertRst(true);
+            }
             config->setCabLayout(cabManager->getCabLayout());
             config->setScreenPos(cabManager->getScrPos().x(), cabManager->getScrPos().y());
             syncFLag = true;
@@ -620,7 +628,14 @@ void tcpServer::readData()
         }
         else
         {
-            emit insertRst(false);
+            if(undoFlag)
+            {
+                emit insertUndoRst(false);
+            }
+            else
+            {
+                emit insertRst(false);
+            }
         }
     }
     else if(cr == "timestamp")
@@ -1165,10 +1180,20 @@ void tcpServer::cabInfoSync()
 
 void tcpServer::cabColInsert(int pos, QString layout)
 {
+    undoFlag = false;
     cabManager->insertCol(pos, layout);
 
     QByteArray qba = jUpdate(cabManager->cabLayout, cabManager->cabMap, cabManager->scrPos);
     qDebug()<<"[cabColInsert]"<<qba;
+    pushTcpReq(qba);
+}
+
+void tcpServer::cabInsertUndo()
+{
+    undoFlag = true;
+    cabManager->insertUndo();
+    QByteArray qba = jUpdate(cabManager->cabLayout, cabManager->cabMap, cabManager->scrPos);
+    qDebug()<<"[cabInsertUndo]"<<qba;
     pushTcpReq(qba);
 }
 

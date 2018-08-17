@@ -32,6 +32,7 @@ public:
     bool installGlobalConfig(CabinetConfig *globalConfig);
 signals:
     void requireInsertCol(int pos, QString layout);
+    void requireInsertUndo();
     void winSwitch(int);
     void requireOpenLock(int seqNum, int lockId);
     void requireClear();
@@ -68,6 +69,7 @@ private slots:
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);
+    void recvInsertUndoResult(bool success);
 
 private:
     Ui::CabinetService *ui;
@@ -96,6 +98,7 @@ private:
     void creatCtrlConfig();
     void showVerInfo();
     bool inserCol(int pos, QString layout);
+    void saveInsert();
 
     void showEvent(QShowEvent*);
     bool eventFilter(QObject *w, QEvent *e);

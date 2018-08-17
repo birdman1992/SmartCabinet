@@ -71,11 +71,34 @@ void CabinetManager::insertCol(int colPos, QString layout)
     }
 }
 
-void CabinetManager::insertUndo()
+int CabinetManager::insertUndo()
 {
     readConfig();
+    QStringList layouts = cabLayout.split('#', QString::SkipEmptyParts);
+    int lastPos = maxPos(cabMap);
+    if(lastPos == scrPos.x())
+        return -1;
 
+    if(lastPos<scrPos.x())
+        scrPos.setX(scrPos.x() - 1);
 
+    layouts.removeAt(lastPos);
+    cabLayout = layouts.join("#");
+    cabMap.remove(lastPos, 1);
+    saveConfig();
+    return lastPos;
+}
+
+int CabinetManager::maxPos(QString map)
+{
+    int ret = 0;
+    QChar maxChar = map.at(0);
+    for(int i=1; i<map.size(); i++)
+    {
+        maxChar = (maxChar<map.at(i))?map.at(i):maxChar;
+    }
+    ret = map.indexOf(maxChar);
+    return ret;
 }
 
 QString CabinetManager::getCabMap()

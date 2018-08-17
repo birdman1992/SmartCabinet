@@ -637,7 +637,9 @@ void MainWidget::init_huangpo()
     connect(win_cab_service, SIGNAL(requireClear()), this, SLOT(cabinetClear()));
     connect(win_cab_service, SIGNAL(requireUpdateServerAddress()), cabServer, SLOT(updateAddress()));
     connect(win_cab_service, SIGNAL(requireInsertCol(int,QString)), cabServer, SLOT(cabColInsert(int,QString)));
+    connect(win_cab_service, SIGNAL(requireInsertUndo()), cabServer, SLOT(cabInsertUndo()));
     connect(cabServer, SIGNAL(insertRst(bool)), win_cab_service, SLOT(recvInsertColResult(bool)));
+    connect(cabServer, SIGNAL(insertUndoRst(bool)), win_cab_service, SLOT(recvInsertUndoResult(bool)));
 
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
