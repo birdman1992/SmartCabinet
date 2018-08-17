@@ -976,7 +976,7 @@ font:20px&quot;微软雅黑&quot;;
                <number>0</number>
               </property>
               <property name="topMargin">
-               <number>10</number>
+               <number>0</number>
               </property>
               <property name="rightMargin">
                <number>0</number>
@@ -1009,7 +1009,23 @@ font:20px&quot;微软雅黑&quot;;
                  <item>
                   <widget class="QLabel" name="label_5">
                    <property name="text">
-                    <string>列插入位置</string>
+                    <string>插入位置</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="undo">
+                   <property name="maximumSize">
+                    <size>
+                     <width>65</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>撤销</string>
                    </property>
                   </widget>
                  </item>

@@ -171,6 +171,7 @@ signals:
     void checkTables(QList<CheckTableInfo*>);
     void curSearchList(CheckList*);
     void goodsReplyRst(bool,QString);
+    void cabPanelChanged();
 
 public slots:
     void cabRegister();

@@ -40,6 +40,7 @@ public:
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
     void setScreenPos(int col, int row);
+    void setCabLayout(QString layout);
     void showMsg(QString msg, bool iswarnning);
     int getGoodsType(QString packageId);
     void clearOptId();//清除操作者记录

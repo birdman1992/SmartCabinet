@@ -602,6 +602,7 @@ void CabinetWidget::logoClicked()
 
 void CabinetWidget::cabinetInit()
 {
+    waitForInit = true;
     panel_init(config->list_cabinet);
 }
 

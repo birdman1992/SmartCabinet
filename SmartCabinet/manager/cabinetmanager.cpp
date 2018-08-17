@@ -58,6 +58,7 @@ void CabinetManager::readConfig()
 
 void CabinetManager::insertCol(int colPos, QString layout)
 {
+    readConfig();
     QStringList layouts = cabLayout.split('#', QString::SkipEmptyParts);
     layouts.insert(colPos, layout);
     cabLayout = layouts.join("#");
@@ -68,6 +69,13 @@ void CabinetManager::insertCol(int colPos, QString layout)
     {
         scrPos.setX(scrPos.x()+1);
     }
+}
+
+void CabinetManager::insertUndo()
+{
+    readConfig();
+
+
 }
 
 QString CabinetManager::getCabMap()

@@ -367,6 +367,7 @@ void CabinetSet::on_savePos_clicked()
     qDebug()<<cabinet_pos.toHex();
     config->setScreenPos(screenPos.x(),screenPos.y());
 //    config->creatCabinetConfig(cabinet_pos);
+    config->clearConfig();
     config->creatCabinetConfig(list_layout, screenPos);
     config->readCabinetConfig();
     initStep |= (1<<1);

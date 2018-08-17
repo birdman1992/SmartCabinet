@@ -100,6 +100,13 @@ void CabinetConfig::setScreenPos(int col, int row)
     settings.sync();
 }
 
+void CabinetConfig::setCabLayout(QString layout)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("cabLayout",QVariant(layout));
+    settings.sync();
+}
+
 void CabinetConfig::showMsg(QString msg, bool iswarnning)
 {
     list_cabinet[screenPos.x()]->showMsg(msg, iswarnning);
@@ -643,6 +650,7 @@ void CabinetConfig::creatCabinetConfig(QStringList cabLayout, QPoint screenPos)
     settings.setValue("CabinetId",cabinetId);
     settings.setValue("cabLayout",cabLayout.join("#"));
     settings.setValue("ColMap", initColMap(cabLayout.count()));
+    settings.setValue("screenPos",QString("%1,%2").arg(screenPos.x()).arg(screenPos.y()));
 
     for(i=0; i<cabLayout.count(); i++)
     {

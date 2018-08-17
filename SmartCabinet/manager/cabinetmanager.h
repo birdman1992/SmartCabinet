@@ -17,6 +17,7 @@ public:
     void saveConfig();
     void readConfig();
     void insertCol(int colPos, QString layout);
+    void insertUndo();
 
     /*SETS*/
     void setCabMap(QString map);

@@ -63,6 +63,8 @@ private slots:
 
     void on_col_layout_activated(const QString &arg1);
 
+    void on_undo_clicked();
+
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);

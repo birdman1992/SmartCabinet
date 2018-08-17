@@ -147,7 +147,13 @@ void tcpServer::parCabInfo(cJSON *json)
     {
         config->creatCabinetConfig(layout.split('#', QString::SkipEmptyParts), pos);
         config->readCabinetConfig();
+        emit cloneResult(true, "克隆成功");
         needClone = false;
+    }
+    if(syncFLag)
+    {
+        config->setCabLayout(cabManager->getCabLayout());
+        config->setScreenPos(cabManager->getScrPos().x(), cabManager->getScrPos().y());
     }
 }
 
@@ -170,6 +176,8 @@ void tcpServer::parGoodsInfo(cJSON *json)
     {
         syncFLag = false;
         config->clearGoodsConfig();
+        config->readCabinetConfig();
+        emit cabPanelChanged();
         emit cabSyncResult(true);
     }
 
@@ -605,6 +613,10 @@ void tcpServer::readData()
         if(code == 3002)
         {
             emit insertRst(true);
+            config->setCabLayout(cabManager->getCabLayout());
+            config->setScreenPos(cabManager->getScrPos().x(), cabManager->getScrPos().y());
+            syncFLag = true;
+            login();
         }
         else
         {
@@ -1153,7 +1165,6 @@ void tcpServer::cabInfoSync()
 
 void tcpServer::cabColInsert(int pos, QString layout)
 {
-    cabManager->readConfig();
     cabManager->insertCol(pos, layout);
 
     QByteArray qba = jUpdate(cabManager->cabLayout, cabManager->cabMap, cabManager->scrPos);

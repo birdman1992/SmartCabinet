@@ -630,3 +630,8 @@ QList<QTableWidget *> CabinetService::creatPreviewList(QStringList layouts)
 //        warningSelScreen(false);
 //    }
 }
+
+void CabinetService::on_undo_clicked()
+{
+
+}
