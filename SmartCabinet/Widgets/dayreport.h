@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPaintEvent>
+#include <QShowEvent>
 #include <QEvent>
 #include <QDate>
 #include "Structs/dayreportinfo.h"
@@ -40,6 +41,7 @@ private:
 //    QList<CheckTableInfo *> listCheckTables;
     QStringList listDates;
     bool eventFilter(QObject *, QEvent *);
+    void showEvent(QShowEvent *);
 //    void setCheckTables(QStringList);
     void setCurReportTable(QList<DayReportInfo*>l);
 //    void showOnlyCheckTable(CheckList* l);

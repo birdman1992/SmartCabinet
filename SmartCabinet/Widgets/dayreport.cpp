@@ -9,20 +9,10 @@ DayReport::DayReport(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
 //    ui->list_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-    ui->date_start->setDisplayFormat("yyyy/MM/dd");
-    ui->date_finish->setDisplayFormat("yyyy/MM/dd");
-    ui->date_start->setDate(QDate::currentDate());
-    ui->date_finish->setDate(QDate::currentDate());
-    ui->date_start->setMaximumDate(QDate::currentDate());
-    ui->date_finish->setMinimumDate(QDate::currentDate());
-    ui->date_finish->setMaximumDate(QDate::currentDate());
+    ui->label_2->hide();
     ui->date_start->installEventFilter(this);
     ui->date_finish->installEventFilter(this);
-    ui->date_finish->hide();
-    ui->label_2->hide();
-    qDebug()<<"[date]"<<QDate::currentDate()<<QDateTime::currentDateTime();
 //    this->setWindowOpacity(0.7);
-
 //    setCheckTables(createDateList(QDateTime(), QDateTime::currentDateTime()));
 }
 
@@ -87,6 +77,18 @@ void DayReport::on_date_finish_dateChanged(const QDate &date)
 bool DayReport::eventFilter(QObject *w, QEvent *e)
 {
     return QWidget::eventFilter(w,e);
+}
+
+void DayReport::showEvent(QShowEvent *)
+{
+    ui->date_start->setDisplayFormat("yyyy/MM/dd");
+    ui->date_finish->setDisplayFormat("yyyy/MM/dd");
+    ui->date_start->setDate(QDate::currentDate());
+    ui->date_finish->setDate(QDate::currentDate());
+    ui->date_start->setMaximumDate(QDate::currentDate());
+    ui->date_finish->setMinimumDate(QDate::currentDate());
+    ui->date_finish->setMaximumDate(QDate::currentDate());
+    ui->date_finish->hide();
 }
 
 //void DayReport::setCheckTables(QStringList l)

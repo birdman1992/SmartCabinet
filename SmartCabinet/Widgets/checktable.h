@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPaintEvent>
+#include <QShowEvent>
 #include <QEvent>
 #include "Structs/goodscheckinfo.h"
 
@@ -38,6 +39,7 @@ private:
     Ui::CheckTable *ui;
     QList<CheckTableInfo *> listCheckTables;
     bool eventFilter(QObject *, QEvent *);
+    void showEvent(QShowEvent*);
     void setCheckTables(QStringList);
     void setCurCheckTable(CheckList*l);
     void showOnlyCheckTable(CheckList* l);

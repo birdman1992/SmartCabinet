@@ -10,13 +10,6 @@ CheckTable::CheckTable(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
 //    ui->list_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-    ui->date_start->setDisplayFormat("yyyy/MM/dd");
-    ui->date_finish->setDisplayFormat("yyyy/MM/dd");
-    ui->date_start->setDate(QDate::currentDate());
-    ui->date_finish->setDate(QDate::currentDate());
-    ui->date_start->setMaximumDate(QDate::currentDate());
-    ui->date_finish->setMinimumDate(QDate::currentDate());
-    ui->date_finish->setMaximumDate(QDate::currentDate());
     ui->date_start->installEventFilter(this);
     ui->date_finish->installEventFilter(this);
 //    this->setWindowOpacity(0.7);
@@ -74,6 +67,17 @@ void CheckTable::on_date_finish_dateChanged(const QDate &date)
 bool CheckTable::eventFilter(QObject *w, QEvent *e)
 {
     return QWidget::eventFilter(w,e);
+}
+
+void CheckTable::showEvent(QShowEvent *)
+{
+    ui->date_start->setDisplayFormat("yyyy/MM/dd");
+    ui->date_finish->setDisplayFormat("yyyy/MM/dd");
+    ui->date_start->setDate(QDate::currentDate());
+    ui->date_finish->setDate(QDate::currentDate());
+    ui->date_start->setMaximumDate(QDate::currentDate());
+    ui->date_finish->setMinimumDate(QDate::currentDate());
+    ui->date_finish->setMaximumDate(QDate::currentDate());
 }
 
 void CheckTable::setCheckTables(QStringList l)
