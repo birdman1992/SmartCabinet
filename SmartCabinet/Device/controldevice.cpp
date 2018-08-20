@@ -245,7 +245,7 @@ void ControlDevice::rfidCtrl(QString id)
 void ControlDevice::openLock(int seqNum, int index)
 {
 //    int ctrlNum = (seqNum <= 0)?index:(6+(seqNum-1)*8+index);
-//    qDebug()<<"[openLock]"<<seqNum<<index<<ctrlNum;
+//    qDebug()<<"[openLock]"<<seqNum<<index;
 //    lockCtrl(ctrlNum);
     QByteArray qba = QByteArray::fromHex("fa000100ff");
     qba[1] = seqNum;

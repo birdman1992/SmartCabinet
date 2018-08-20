@@ -207,6 +207,7 @@ void CabinetSet::on_lock_test_clicked()
 
 void CabinetSet::on_lock_group_clicked(int id)
 {
+//    qDebug()<<"click"<<ui->comboBox->currentIndex()<<id;
     emit requireOpenCase(ui->comboBox->currentIndex(), id);
 }
 
