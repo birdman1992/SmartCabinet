@@ -1,6 +1,7 @@
 #include "qnetinterface.h"
 #include <QProcess>
 #include <QSettings>
+#include <QFile>
 
 QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
 {
@@ -185,6 +186,21 @@ void QNetInterface::initNetwork()
     setIp(netIp);
     setNetmask(netNetmask);
     setGateway(netGateway);
+}
+
+void QNetInterface::creatNetwork()
+{
+    QFile confFile("/home/config/network.ini");
+    if(confFile.exists())
+        return;
+
+    qDebug("[creatNetwork]");
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    settings.setValue("ip", QVariant(ip()));
+    settings.setValue("gateway", QVariant(gateway()));
+    settings.setValue("netmask", QVariant(netmask()));
+    settings.setValue("mac", QVariant(macAddress()));
+    settings.sync();
 }
 
 bool QNetInterface::isValid()

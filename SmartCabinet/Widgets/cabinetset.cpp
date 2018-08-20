@@ -26,7 +26,7 @@ CabinetSet::CabinetSet(QWidget *parent) :
     dev_network = new QNetInterface("eth1");
 #endif
     dev_network->initNetwork();
-    dev_network->saveNetwork();
+    dev_network->creatNetwork();
 
     ui->devState->setEnabled(false);
 

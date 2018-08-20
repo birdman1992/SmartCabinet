@@ -23,6 +23,7 @@ public:
     bool setMacAddress(QString _macAddr);
     void saveNetwork();
     void initNetwork();
+    void creatNetwork();
 
     bool isValid();
 
