@@ -84,8 +84,14 @@ void CabinetService::showEvent(QShowEvent *)
 {
     initNetwork();
     creatCtrlConfig();
+    if(!list_preview.isEmpty())
+    {
+        qDeleteAll(list_preview.begin(), list_preview.end());
+        list_preview.clear();
+    }
     list_preview = creatPreviewList(config->getCabinetLayout().split('#', QString::SkipEmptyParts));
     updateCabpreview(NULL, 0);
+    updateCabpreviewScr();
     ui->server_addr->setText(config->getServerAddress());
     qDebug()<<ui->server_addr->text();
 }
@@ -624,7 +630,14 @@ void CabinetService::updateCabpreview(QTableWidget* newTab, int pos)
         ui->layout_preview->layout()->addWidget(newTab);
         newTab->setStyleSheet("background:blue;");
     }
-    QPoint sPos = config->getScreenPos();
+
+}
+
+void CabinetService::updateCabpreviewScr()
+{
+    QPoint sPos = cabManager->getScrPos();
+    if(sPos.x()>=list_preview.count())
+        return;
     QTableWidgetItem* item = new QTableWidgetItem();
     item->setBackgroundColor(QColor(62, 155, 255));
     list_preview.at(sPos.x())->setItem(sPos.y(), 0, item);

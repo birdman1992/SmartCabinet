@@ -155,6 +155,7 @@ void tcpServer::parCabInfo(cJSON *json)
     {
         config->setCabLayout(cabManager->getCabLayout());
         config->setScreenPos(cabManager->getScrPos().x(), cabManager->getScrPos().y());
+        config->setCabinetColMap(cabManager->getCabMap());
     }
 }
 
@@ -1182,8 +1183,12 @@ void tcpServer::cabColInsert(int pos, QString layout)
 {
     undoFlag = false;
     cabManager->insertCol(pos, layout);
+//    qDebug()<<"[cabColInsert]"<<cabManager->cabLayout<<cabManager->cabMap<<cabManager->scrPos;
+//    emit insertRst(true);
 
     QByteArray qba = jUpdate(cabManager->cabLayout, cabManager->cabMap, cabManager->scrPos);
+//    QByteArray qba = jUpdate("31111111#31111111#331111#31111111#31111111", "01234", QPoint(2,1));
+
     qDebug()<<"[cabColInsert]"<<qba;
     pushTcpReq(qba);
 }
@@ -1192,6 +1197,8 @@ void tcpServer::cabInsertUndo()
 {
     undoFlag = true;
     cabManager->insertUndo();
+    qDebug()<<"[cabInsertUndo]"<<cabManager->cabLayout<<cabManager->cabMap<<cabManager->scrPos;
+//    emit insertUndoRst(true);
     QByteArray qba = jUpdate(cabManager->cabLayout, cabManager->cabMap, cabManager->scrPos);
     qDebug()<<"[cabInsertUndo]"<<qba;
     pushTcpReq(qba);

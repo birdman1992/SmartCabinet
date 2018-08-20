@@ -108,6 +108,7 @@ private:
     QList<QTableWidget*> creatPreviewList(QStringList layouts);
     int getBaseCount(QString scale);
     void updateCabpreview(QTableWidget *newTab, int pos);
+    void updateCabpreviewScr();
 };
 
 #endif // CABINETSERVICE_H

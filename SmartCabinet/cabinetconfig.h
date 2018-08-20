@@ -99,6 +99,7 @@ public:
 //    QList<>
 
     QString scanDataTrans(QString code);
+    void setCabinetColMap(QString map);
 private:
     bool cardReaderIsOk;
     bool codeScanIsOk;

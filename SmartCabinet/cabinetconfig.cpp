@@ -580,6 +580,13 @@ QString CabinetConfig::getCabinetColMap()
     return ColMap;
 }
 
+void CabinetConfig::setCabinetColMap(QString map)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("ColMap",map);
+    settings.sync();
+}
+
 QPoint CabinetConfig::getScreenPos()
 {
     return screenPos;
