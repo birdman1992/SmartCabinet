@@ -167,7 +167,7 @@ void QNetInterface::saveNetwork()
 {
     QSettings settings("/home/config/network.ini", QSettings::IniFormat);
     settings.setValue("ip", QVariant(ip()));
-    settings.setValue("gateway", QVariant(devGateway));
+    settings.setValue("gateway", QVariant(gateway()));
     settings.setValue("netmask", QVariant(netmask()));
     settings.setValue("mac", QVariant(macAddress()));
     settings.sync();
