@@ -408,3 +408,59 @@ void CabinetSet::on_tabExp_clicked(const QModelIndex &index)
     screenPos.setY(index.row());
 }
 
+
+void CabinetSet::on_cabType_2_activated(int index)
+{
+    QString str = "RXS";
+    QString strId = ui->cloneId->text();
+    QRegExp rx("[RXS]\d*");
+    int idx = rx.indexIn(strId);
+    qDebug()<<index;
+    if(idx == -1)//开头没有RXS
+    {
+        if(index != 0)
+        {
+            strId.insert(0, str.at(index-1));
+        }
+    }
+    else
+    {
+        if(index != 0)
+        {
+            strId[0] = str.at(index-1);
+        }
+        else
+        {
+            strId.remove(0,1);
+        }
+    }
+}
+
+void CabinetSet::on_cloneId_textChanged(const QString &arg1)
+{
+    QString str = "RXS";
+    int index = ui->cabType_2->currentIndex();
+    QRegExp rx("[RXS]\d*");
+    int idx = rx.indexIn(strId);
+    qDebug()<<index;
+    if(idx == -1)//开头没有RXS
+    {
+        if(index != 0)
+        {
+            strId.insert(0, str.at(index-1));
+        }
+        QPixmap a;
+        a.load(1)
+    }
+    else
+    {
+        if(index != 0)
+        {
+            strId[0] = str.at(index-1);
+        }
+        else
+        {
+            strId.remove(0,1);
+        }
+    }
+}

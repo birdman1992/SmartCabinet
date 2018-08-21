@@ -59,6 +59,10 @@ private slots:
 
     void on_tabExp_clicked(const QModelIndex &index);
 
+    void on_cabType_2_activated(int index);
+
+    void on_cloneId_textChanged(const QString &arg1);
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
