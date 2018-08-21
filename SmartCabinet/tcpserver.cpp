@@ -377,6 +377,11 @@ void tcpServer::login()
     pushTcpReq(jLogin(regId, aesId, 1));
 }
 
+void tcpServer::reLogin()
+{
+    socket->disconnectFromHost();
+}
+
 QByteArray tcpServer::jLogin(QString id, QString aesId, int jType)
 {
     return QString("{\
@@ -625,7 +630,7 @@ void tcpServer::readData()
             config->setCabLayout(cabManager->getCabLayout());
             config->setScreenPos(cabManager->getScrPos().x(), cabManager->getScrPos().y());
             syncFLag = true;
-            login();
+            reLogin();
         }
         else
         {
@@ -854,7 +859,7 @@ void tcpServer::recvRebindCase()
     if(statusCode == 200)
     {
         config->clearGoodsConfig();
-        login();
+        reLogin();
     }
 }
 
@@ -1089,7 +1094,7 @@ void tcpServer::connectChanged(QAbstractSocket::SocketState state)
     }
     else if(state == QAbstractSocket::UnconnectedState)
     {
-        QTimer::singleShot(10000, this, SLOT(reconnect()));
+        QTimer::singleShot(2000, this, SLOT(reconnect()));
         beatTimer->stop();
         emit netState(false);
     }
@@ -1176,7 +1181,7 @@ void tcpServer::cabCloneReq(QString oldCabinetId)
 void tcpServer::cabInfoSync()
 {
     syncFLag = true;
-    login();
+    reLogin();
 }
 
 void tcpServer::cabColInsert(int pos, QString layout)

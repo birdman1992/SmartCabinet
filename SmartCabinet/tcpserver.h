@@ -125,6 +125,7 @@ private:
     void goodsFetch(QString goodsCode);
     void goodsRefund(QString goodsCode);
 
+    void reLogin();
 private slots:
     void readData();
     void connectChanged(QAbstractSocket::SocketState);

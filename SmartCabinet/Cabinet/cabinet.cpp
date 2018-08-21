@@ -383,6 +383,11 @@ void Cabinet::clearSelectState(int row)
 
 void Cabinet::showMsg(QString msg, bool iswarnning)
 {
+    if(logo == NULL)
+    {
+        qDebug("show NULL>>>>>>>>>>>>>>");
+        return;
+    }
     logo->setText(msg);
     logo->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     if(iswarnning)
