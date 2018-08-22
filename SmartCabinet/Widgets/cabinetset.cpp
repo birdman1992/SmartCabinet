@@ -439,8 +439,9 @@ void CabinetSet::on_cabType_2_activated(int index)
 void CabinetSet::on_cloneId_textChanged(const QString &arg1)
 {
     QString str = "RXS";
+    QString strId = arg1;
     int index = ui->cabType_2->currentIndex();
-    QRegExp rx("[RXS]\d*");
+    QRegExp rx("[RXS][\d*]");
     int idx = rx.indexIn(strId);
     qDebug()<<index;
     if(idx == -1)//开头没有RXS
@@ -449,8 +450,6 @@ void CabinetSet::on_cloneId_textChanged(const QString &arg1)
         {
             strId.insert(0, str.at(index-1));
         }
-        QPixmap a;
-        a.load(1)
     }
     else
     {
