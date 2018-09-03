@@ -28,7 +28,7 @@
 #define API_CHECK_CREAT     "/spd-web/sarkApi/TakeStockCheset/create/"       //创建盘点
 #define API_CHECK_END       "/spd-web/sarkApi/TakeStockCheset/end/"          //结束盘点
 #define API_CHECK_TIME "/spd-web/sarkApi/Time/query/"
-#define API_REQ_LIST "/spd-web/sarkApi/OutStorage/find/OutStorageCar/"      //查询待存送货单接口OLD
+#define API_REQ_LIST "/spd-web/sarkApi/OutStorage/find/OutStorageCar/"      //查询是否有送货单在途中
 #define API_LIST_CHECK_NEW "/spd-web/sarkApi/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
 #define API_NETSTATE_CHECK "/spd-web/websocket/"    //网络状态检查
 #define API_CHECK_TABLES "/spd-web/sarkApi/TakeStockCheset/query/takestockList/"    //查询盘点清单表
