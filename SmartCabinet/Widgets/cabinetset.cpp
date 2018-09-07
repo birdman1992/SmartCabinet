@@ -242,10 +242,12 @@ void CabinetSet::on_netSet_clicked()
     QString ip = ui->ip->text();
     QString gateway = ui->gateway->text();
     QString netmask = ui->netmask->text();
+    QString mac = ui->mac->text();
 
     dev_network->setIp(ip);
     dev_network->setGateway(gateway);
     dev_network->setNetmask(netmask);
+    dev_network->setMacAddress(mac);
     dev_network->saveNetwork();
 
     ui->ip->setText(dev_network->ip());
