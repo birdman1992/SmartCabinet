@@ -13,6 +13,16 @@ TEMPLATE = app
 target.path = /home
 INSTALLS += target
 
+if(contains(DEFINES,PC)){
+LIBS += -L$$PWD/libs/PC/libusb -lusb-1.0
+}
+if(contains(DEFINES,MC)){
+LIBS += -L$$PWD/libs/MC/libusb -lusb-1.0
+}
+if(contains(DEFINES,MY)){
+LIBS += -L$$PWD/libs/MY/libusb -lusb-1.0
+}
+
 
 SOURCES += main.cpp\
         mainwidget.cpp \
@@ -21,7 +31,6 @@ SOURCES += main.cpp\
     Device/Qextserial/qextserialport_unix.cpp \
     Device/Hid/qhid.cpp \
     Device/controldevice.cpp \
-    Device/Hid/hid.c \
     Device/devicesimulate.cpp \
     medinf.cpp \
     Widgets/standbywidget.cpp \
@@ -72,7 +81,8 @@ SOURCES += main.cpp\
     Widgets/keyboad.cpp \
     Widgets/checkwarning.cpp \
     Widgets/dayreport.cpp \
-    Structs/dayreportinfo.cpp
+    Structs/dayreportinfo.cpp \
+    Device/Hid/hid-libusb.c
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -81,7 +91,6 @@ HEADERS  += mainwidget.h \
     Device/Qextserial/qextserialport_global.h \
     Device/Hid/qhid.h \
     Device/controldevice.h \
-    Device/Hid/hid.h \
     Device/devicesimulate.h \
     medinf.h \
     Widgets/standbywidget.h \
@@ -134,7 +143,9 @@ HEADERS  += mainwidget.h \
     Widgets/keyboad.h \
     Widgets/checkwarning.h \
     Widgets/dayreport.h \
-    Structs/dayreportinfo.h
+    Structs/dayreportinfo.h \
+    Device/Hid/libusb.h \
+    Device/Hid/hidapi.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
