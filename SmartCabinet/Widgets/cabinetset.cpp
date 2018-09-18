@@ -100,6 +100,7 @@ void CabinetSet::cloneResult(bool isSuccess, QString msg)
 
 void CabinetSet::regResult(bool isSuccess)
 {
+    ui->regId->setEnabled(true);
     if(isSuccess)
     {
         QString msg = QString("ID注册成功：\n%1").arg(config->getCabinetId());
@@ -208,7 +209,6 @@ void CabinetSet::on_lock_test_clicked()
 
 void CabinetSet::on_lock_group_clicked(int id)
 {
-//    qDebug()<<"click"<<ui->comboBox->currentIndex()<<id;
     emit requireOpenCase(ui->comboBox->currentIndex(), id);
 }
 
@@ -333,11 +333,11 @@ void CabinetSet::on_cloneStart_clicked()
         ui->cloneMsg->setText("克隆ID为空");
         return;
     }
-    if(!(initStep & (1<<1)))
-    {
-        ui->cloneMsg->setText("请先配置柜格布局");
-        return;
-    }
+//    if(!(initStep & (1<<1)))
+//    {
+//        ui->cloneMsg->setText("请先配置柜格布局");
+//        return;
+//    }
     ui->regId->setEnabled(false);
 
     emit cabinetClone(ui->cloneId->text());
@@ -350,6 +350,7 @@ void CabinetSet::on_regId_clicked()
         ui->regMsg->setText("请先配置柜格布局");
         return;
     }
+    ui->regId->setEnabled(false);
     emit requireCabRigster();
 }
 
@@ -369,6 +370,7 @@ void CabinetSet::on_savePos_clicked()
     qDebug()<<cabinet_pos.toHex();
     config->setScreenPos(screenPos.x(),screenPos.y());
 //    config->creatCabinetConfig(cabinet_pos);
+    config->clearConfig();
     config->creatCabinetConfig(list_layout, screenPos);
     config->readCabinetConfig();
     initStep |= (1<<1);
@@ -409,3 +411,58 @@ void CabinetSet::on_tabExp_clicked(const QModelIndex &index)
     screenPos.setY(index.row());
 }
 
+
+void CabinetSet::on_cabType_2_activated(int index)
+{
+    QString str = "RXS";
+    QString strId = ui->cloneId->text();
+    QRegExp rx("[RXS]\\d*");
+    int idx = rx.indexIn(strId);
+    qDebug()<<index;
+    if(idx == -1)//开头没有RXS
+    {
+        if(index != 0)
+        {
+            strId.insert(0, str.at(index-1));
+        }
+    }
+    else
+    {
+        if(index != 0)
+        {
+            strId[0] = str.at(index-1);
+        }
+        else
+        {
+            strId.remove(0,1);
+        }
+    }
+}
+
+void CabinetSet::on_cloneId_textChanged(const QString &arg1)
+{
+    QString str = "RXS";
+    QString strId = arg1;
+    int index = ui->cabType_2->currentIndex();
+    QRegExp rx("[RXS][\\d*]");
+    int idx = rx.indexIn(strId);
+    qDebug()<<index;
+    if(idx == -1)//开头没有RXS
+    {
+        if(index != 0)
+        {
+            strId.insert(0, str.at(index-1));
+        }
+    }
+    else
+    {
+        if(index != 0)
+        {
+            strId[0] = str.at(index-1);
+        }
+        else
+        {
+            strId.remove(0,1);
+        }
+    }
+}

@@ -32,9 +32,15 @@ public:
     ~CabinetConfig();
     void saveFetchList(QByteArray _data);
     void readCabinetConfig();//读取柜子配置
+    QString getSecondUser();
+    void setSecondUser(QString userId);
+    QString getCabinetLayout();
+    QString getCabinetColMap();
+    QPoint getScreenPos();
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
     void setScreenPos(int col, int row);
+    void setCabLayout(QString layout);
     void showMsg(QString msg, bool iswarnning);
     int getGoodsType(QString packageId);
     void clearOptId();//清除操作者记录
@@ -94,6 +100,7 @@ public:
 //    QList<>
 
     QString scanDataTrans(QString code);
+    void setCabinetColMap(QString map);
 private:
     bool cardReaderIsOk;
     bool codeScanIsOk;
@@ -107,11 +114,13 @@ private:
     QString cabinetId;
     QString serverAddr;
     QString optName;//操作者卡号
+    QString secOpt;//第二操作人
 
     void readUserConfig();//读取用户配置
 
     void addNewUser(UserInfo* info);
     void restart();//重启自身
+    QString initColMap(int cabNum);
 
 public slots:
 

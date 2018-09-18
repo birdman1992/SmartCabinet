@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QList>
 #include <qtimer.h>
+#include "manager/goodsmanager.h"
 #include "Structs/goodslist.h"
 #include "cabinetstorelistitem.h"
 #include "cabinetconfig.h"
@@ -33,9 +34,11 @@ private:
     Ui::CabinetStoreList *ui;
     void paintEvent(QPaintEvent *);
     void clearList();
+    void saveList();
 
     QTimer time_test;
     bool loginState;
+    GoodsManager* manager;
     CabinetConfig* config;
     GoodsList* list_store;
     CabinetStoreListItem* bindItem;

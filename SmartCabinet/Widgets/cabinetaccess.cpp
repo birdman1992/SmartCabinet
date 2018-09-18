@@ -357,7 +357,7 @@ void CabinetAccess::recvOptGoodsNum(int num)
         int goodsType = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->goodsType;
         ui->info->setText(QString("已取出%1×(%5)%2，剩余%3×(%5)%4").arg(outNum).arg(unit).arg(num).arg(unit).arg(goodsType));
 //        ui->tip->setText("取出成功");
-//        showTips("取出成功", false);
+        showTips("取出成功", false);
     }
     else if(config->state == STATE_REFUN)
     {

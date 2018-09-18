@@ -38,6 +38,7 @@
 #define API_DAY_REPORT "/spd-web/sarkApi/Cheset/query/consumeDate/"  //日清单
 
 
+
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);

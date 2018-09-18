@@ -27,7 +27,6 @@ QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
         {
             getNetworkInfo();
         }
-
     }
     else
         getNetworkInfo();

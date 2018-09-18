@@ -17,6 +17,7 @@ CabinetConfig::CabinetConfig()
     sleepFlag = 0;
     cardReaderIsOk = false;
     codeScanIsOk = false;
+    secOpt = QString();
     //    cabId.clear();
     cabinetId.clear();
     list_user.clear();
@@ -96,6 +97,13 @@ void CabinetConfig::setScreenPos(int col, int row)
     screenPos.setY(row);
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("screenPos",QString("%1,%2").arg(col).arg(row));
+    settings.sync();
+}
+
+void CabinetConfig::setCabLayout(QString layout)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("cabLayout",QVariant(layout));
     settings.sync();
 }
 
@@ -556,6 +564,44 @@ void CabinetConfig::readCabinetConfig()
     creatCabinetJson();
 }
 
+QString CabinetConfig::getSecondUser()
+{
+    QString ret = secOpt;
+    secOpt.clear();
+    return ret;
+}
+
+void CabinetConfig::setSecondUser(QString userId)
+{
+    secOpt = userId;
+}
+
+QString CabinetConfig::getCabinetLayout()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString cLayout = settings.value("cabLayout",QString()).toString();
+    return cLayout;
+}
+
+QString CabinetConfig::getCabinetColMap()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString ColMap = settings.value("ColMap",QString()).toString();
+    return ColMap;
+}
+
+void CabinetConfig::setCabinetColMap(QString map)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("ColMap",map);
+    settings.sync();
+}
+
+QPoint CabinetConfig::getScreenPos()
+{
+    return screenPos;
+}
+
 //创建柜子配置文件  qba:柜子位置信息
 //void CabinetConfig::creatCabinetConfig(QByteArray qba)
 //{
@@ -620,6 +666,8 @@ void CabinetConfig::creatCabinetConfig(QStringList cabLayout, QPoint screenPos)
     settings.setValue("CabNum",cabLayout.count());
     settings.setValue("CabinetId",cabinetId);
     settings.setValue("cabLayout",cabLayout.join("#"));
+    settings.setValue("ColMap", initColMap(cabLayout.count()));
+    settings.setValue("screenPos",QString("%1,%2").arg(screenPos.x()).arg(screenPos.y()));
 
     for(i=0; i<cabLayout.count(); i++)
     {
@@ -701,6 +749,8 @@ CaseAddress CabinetConfig::checkCabinetByBarCode(QString id)
     int j = 0;
     int goodsIndex = 0;
     CaseAddress ret;
+    if(id.isEmpty())
+        return ret;
 
     for(i=0; i<list_cabinet.count(); i++)
     {
@@ -972,7 +1022,7 @@ void CabinetConfig::addNewUser(UserInfo *info)
 
 void CabinetConfig::restart()
 {
-        qApp->closeAllWindows();
+    qApp->closeAllWindows();
 #ifdef SIMULATE_ON
     QProcess::startDetached(qApp->applicationFilePath(), QStringList());
 #else
@@ -982,6 +1032,18 @@ void CabinetConfig::restart()
     QProcess::startDetached(qApp->applicationFilePath(),args);
 #endif
 
+}
+
+QString CabinetConfig::initColMap(int cabNum)
+{
+    QByteArray qba;
+    char z = '0';
+    for(int i=0; i<cabNum; i++)
+    {
+        qba.append(z+i);
+    }
+    qDebug()<<"initColMap"<<qba;
+    return QString(qba);
 }
 
 int CabinetConfig::reboot()

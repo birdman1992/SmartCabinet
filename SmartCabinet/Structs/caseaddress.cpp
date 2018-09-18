@@ -7,6 +7,12 @@ CaseAddress::CaseAddress()
     goodsIndex = -1;
 }
 
+void CaseAddress::setAddress(QPoint pos)
+{
+    cabinetSeqNum = pos.x();
+    caseIndex = pos.y();
+}
+
 void CaseAddress::clear()
 {
     cabinetSeqNum = -1;

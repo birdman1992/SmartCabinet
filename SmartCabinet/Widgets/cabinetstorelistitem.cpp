@@ -1,13 +1,15 @@
 #include "cabinetstorelistitem.h"
 #include "ui_cabinetstorelistitem.h"
 #include <QPainter>
+#include <QDebug>
 
 CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CabinetStoreListItem)
 {
     ui->setupUi(this);
-    cabGoods = new Goods(goods);
+//    cabGoods = new Goods(goods);
+    cabGoods = goods;
     name = goods->name+QString("(%1)").arg(goods->packageType);
     num = goods->takeCount;
     package_id = goods->packageBarcode;
@@ -31,6 +33,7 @@ void CabinetStoreListItem::bindRst(CaseAddress addr)
 {
     pos_seq = addr.cabinetSeqNum;
     pos_index = addr.caseIndex;
+    cabGoods->pos = QPoint(addr.cabinetSeqNum, addr.caseIndex);
 
     updateOptState();
 }

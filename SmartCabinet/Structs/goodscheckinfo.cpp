@@ -1,5 +1,6 @@
 #include "goodscheckinfo.h"
 #include <QDebug>
+#include "Device/controldevice.h"
 
 GoodsCheckInfo::GoodsCheckInfo()
 {
@@ -35,10 +36,17 @@ int GoodsCheckInfo::outPackNum(int outGoodsNum)
 int GoodsCheckInfo::addPack()
 {
     num_pack++;
+#ifndef TCP_API
     if(num_pack*type>num_cur)
         num_pack--;
 //    qDebug()<<"addPack"<<num_pack<<num_pack*type;
     return num_pack*type;
+#else
+    if(num_pack>num_cur)
+        num_pack--;
+//    qDebug()<<"addPack"<<num_pack<<num_pack*type;
+    return num_pack;
+#endif
 }
 
 int GoodsCheckInfo::redPack()
@@ -49,8 +57,11 @@ int GoodsCheckInfo::redPack()
 
     num_pack--;
 //    qDebug()<<num_pack*type;
-
+#ifndef TCP_API
     return num_pack*type;
+#else
+    return num_pack;
+#endif
 }
 
 CheckList::CheckList()
@@ -83,6 +94,7 @@ void CheckList::setCheckDateTime(QString str)
 void CheckList::addInfo(GoodsCheckInfo * info)
 {
     listInfo<<info;
+    qDebug()<<"[addInfo]"<<listInfo.count();
 }
 
 

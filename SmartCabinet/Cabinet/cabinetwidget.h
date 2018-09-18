@@ -22,6 +22,7 @@
 #include "Structs/caseaddress.h"
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
+#include "manager/goodsmanager.h"
 
 bool posSort(Cabinet* A, Cabinet* B);
 
@@ -64,6 +65,9 @@ public slots:
     void recvCabSyncResult(bool);
     void recvCheckRst(bool);
     void recvCheckFinish(bool);
+    void recvCheckCreatRst(bool, QString msg);
+    void recvCheckFinishRst(bool, QString msg);
+
 
 signals:
     void winSwitch(int);
@@ -72,6 +76,7 @@ signals:
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
     void requireCaseBind(int  seqNum, int index, QString goodsId);
+    void requireCaseRebind(int  seqNum, int index, QString goodsId);
     void goodsNumChanged(int);//报告物品数量的变化
     void checkLockState();//检查锁状态
     void scanData(QByteArray qba);
@@ -87,6 +92,7 @@ signals:
     void requireCheckShow();
     void requireSearchShow();
     void requireDayReportShow();
+    void requireApplyShow();
 
 private slots:
     void setMenuHide(bool ishide);
@@ -130,23 +136,26 @@ private:
     CheckWarning* win_check_warnning;
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件
+    bool checkFinishLock;
     bool volPressed;
     bool waitForCardReader;
     bool waitForGoodsListCode;
     bool loginState;
     bool netCheckState;
-    bool checkFinishLock;
+    bool waitForCheckFinish;
     bool clickLock;//点击锁,如果为true，点击无效
     int selectCab;//选中的柜子顺序编号
     int selectCase;//选中的柜格编号
     int bindCab;
     int bindCase;
     GoodsInfo bindInfo;
+    GoodsManager* goodsManager;
 
     int storeNum;
     bool waitForCodeScan;
     bool waitForInit;
     bool waitForServer;
+    bool waitForSecondaryCard;
     bool checkMask;
     QString scanInfo;
     QString fullScanInfo;
@@ -183,7 +192,8 @@ private:
     void clearCheckState();
     void clearMenuState();
     void volumTest();
-    void checkStart();//盘点开始
+    void checkStart();//盘点开始 master
+    void creatCheck();//new_api
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

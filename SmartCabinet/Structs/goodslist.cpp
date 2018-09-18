@@ -99,6 +99,7 @@ Goods::Goods()
     storeNum = 0;
     curNum = 0;
     finish = false;
+    pos = QPoint(-1, -1);
 }
 
 Goods::Goods(QString _goodsId , QString goodsName, int goodsNum)
@@ -118,6 +119,8 @@ Goods::Goods(Goods *goods)
     goodsId = goods->goodsId;
     size = goods->size;
     unit = goods->unit;
+    pos = goods->pos;
+    codes = goods->codes;
     packageBarcode = goods->packageBarcode;
     roomName = goods->roomName;
     packageType = goods->packageType;

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,14 +15,15 @@ INSTALLS += target
 
 if(contains(DEFINES,PC)){
 LIBS += -L$$PWD/libs/PC/libusb -lusb-1.0
+LIBS += -L$$PWD/Crypto/x64 -lcrypto
 }
 if(contains(DEFINES,MC)){
 LIBS += -L$$PWD/libs/MC/libusb -lusb-1.0
+LIBS += -L$$PWD/Crypto/mc -lcrypto
 }
 if(contains(DEFINES,MY)){
 LIBS += -L$$PWD/libs/MY/libusb -lusb-1.0
 }
-
 
 SOURCES += main.cpp\
         mainwidget.cpp \
@@ -82,6 +83,11 @@ SOURCES += main.cpp\
     Widgets/checkwarning.cpp \
     Widgets/dayreport.cpp \
     Structs/dayreportinfo.cpp \
+    tcpserver.cpp \
+    Crypto/qaes.cpp \
+    manager/usermanager.cpp \
+    manager/cabinetmanager.cpp \
+    manager/goodsmanager.cpp \
     Device/Hid/hid-libusb.c
 
 HEADERS  += mainwidget.h \
@@ -138,12 +144,19 @@ HEADERS  += mainwidget.h \
     Device/QDeviceWatcher/qdevicewatcher.h \
     Widgets/checktable.h \
     Structs/goodscheckinfo.h \
-    Widgets/goodsapply.h \
     Structs/goodssearchinfo.h \
-    Widgets/keyboad.h \
     Widgets/checkwarning.h \
     Widgets/dayreport.h \
     Structs/dayreportinfo.h \
+    tcpserver.h \
+    Crypto/opensslconf.h \
+    Crypto/aes.h \
+    Crypto/qaes.h \
+    manager/usermanager.h \
+    manager/cabinetmanager.h \
+    manager/goodsmanager.h \
+    Widgets/keyboad.h \
+    Widgets/goodsapply.h \
     Device/Hid/libusb.h \
     Device/Hid/hidapi.h
 
@@ -176,13 +189,16 @@ FORMS    += mainwidget.ui \
     Widgets/casepanel.ui \
     Device/Network/networkset.ui \
     Widgets/checktable.ui \
-    Widgets/goodsapply.ui \
-    Widgets/keyboad.ui \
     Widgets/checkwarning.ui \
-    Widgets/dayreport.ui
+    Widgets/dayreport.ui \
+    Widgets/keyboad.ui \
+    Widgets/goodsapply.ui
 
 RESOURCES += \
     image.qrc
 
-DISTFILES += \
-    Jsoncpp/sconscript
+#DISTFILES += \
+#    Jsoncpp/sconscript \
+#    Crypto/libcrypto.so.1.1 \
+#    Crypto/libcrypto.so
+

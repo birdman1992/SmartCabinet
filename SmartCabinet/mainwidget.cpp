@@ -592,14 +592,29 @@ void MainWidget::init_huangpo()
     //智能柜配置
     cabinetConf = new CabinetConfig();
 
+#ifdef TCP_API
+    //tcp通信类
+    cabServer = new tcpServer(this);
+    cabServer->installGlobalConfig(cabinetConf);
+#else
     //http通信类
     cabServer = new CabinetServer(this);
     cabServer->installGlobalConfig(cabinetConf);
+#endif
+
+//    //tcp通信类
+//    tcpApi = new tcpServer(this);
+//    tcpApi->installGlobalConfig(cabinetConf);
+//    tcpApi->setServer(QHostAddress("120.78.144.255"), 8088);
 
     //仿真控制台
     ctrlUi = new ControlDevice;
     ctrlUi->installGlobalConfig(cabinetConf);
     connect(cabServer, SIGNAL(newGoodsCar(GoodsCar)), ctrlUi, SLOT(readyForNewCar(GoodsCar)));
+
+    //扫码输入面板
+    win_coder_keyboard = new coderKeyboard();
+    connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));
 
     //盘点表格窗口
     win_check_table = new CheckTable();
@@ -630,48 +645,19 @@ void MainWidget::init_huangpo()
     connect(win_cab_service, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_cab_service, SIGNAL(requireClear()), this, SLOT(cabinetClear()));
     connect(win_cab_service, SIGNAL(requireUpdateServerAddress()), cabServer, SLOT(updateAddress()));
-    connect(win_cab_service, SIGNAL(requireInsertCol(int,int)), cabServer, SLOT(cabColInsert(int,int)));
+    connect(win_cab_service, SIGNAL(requireInsertCol(int,QString)), cabServer, SLOT(cabColInsert(int,QString)));
+    connect(win_cab_service, SIGNAL(requireInsertUndo()), cabServer, SLOT(cabInsertUndo()));
     connect(cabServer, SIGNAL(insertRst(bool)), win_cab_service, SLOT(recvInsertColResult(bool)));
+    connect(cabServer, SIGNAL(insertUndoRst(bool)), win_cab_service, SLOT(recvInsertUndoResult(bool)));
 
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
     win_cabinet->installGlobalConfig(cabinetConf);
-    connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
-    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
-    connect(ctrlUi, SIGNAL(readyListData(QString)), win_cabinet,SLOT(readyGoodsList(QString)));
-    connect(win_cabinet, SIGNAL(checkLockState()), ctrlUi, SLOT(getLockState()));
-    connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
-    connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
-    connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
-    connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
-    connect(win_cabinet, SIGNAL(requireCaseBind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
-    connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,int)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,int)));
-    connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
-    connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
-    connect(win_cabinet, SIGNAL(checkCase(QStringList,CaseAddress)), cabServer, SLOT(goodsCheck(QStringList,CaseAddress)));
-    connect(win_cabinet, SIGNAL(storeList(QList<CabinetStoreListItem*>)), cabServer, SLOT(goodsListStore(QList<CabinetStoreListItem*>)));
-    connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
-    connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
-    connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
-    connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
-    connect(win_cabinet, SIGNAL(requireSearchShow()), win_goods_apply, SLOT(show()));
-    connect(win_cabinet, SIGNAL(requireDayReportShow()), win_day_report, SLOT(show()));
-    connect(cabServer, SIGNAL(checkCreatRst(bool)), win_cabinet, SLOT(recvCheckRst(bool)));
-    connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
-    connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));
-    connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
-    connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
-    connect(cabServer, SIGNAL(goodsNumChanged(QString,int)), win_cabinet, SLOT(recvGoodsNumInfo(QString,int)));
-    connect(cabServer, SIGNAL(accessFailed(QString)), win_cabinet, SLOT(accessFailedMsg(QString)));
-    connect(cabServer, SIGNAL(accessSuccess(QString)), win_cabinet, SLOT(accessSuccessMsg(QString)));
-    connect(cabServer, SIGNAL(updateGoodsPrice(float,float)), win_cabinet, SLOT(updateFetchPrice(float,float)));
-    connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
-    connect(cabServer, SIGNAL(idUpdate()), win_cabinet, SLOT(updateId()));
-    connect(cabServer, SIGNAL(goodsCheckRst(QString)), win_cabinet, SLOT(recvGoodsCheckRst(QString)));
-    connect(cabServer, SIGNAL(newGoodsList(QString,QString)), win_cabinet, SLOT(newGoodsList(QString,QString)));
-    connect(cabServer, SIGNAL(netState(bool)), win_cabinet, SLOT(updateNetState(bool)));
-    connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
-    connect(cabServer, SIGNAL(checkFinish(bool)), win_cabinet, SLOT(recvCheckFinish(bool)));
+#ifdef TCP_API
+    connect_new_api();
+#else
+    connect_master();
+#endif
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -690,9 +676,9 @@ void MainWidget::init_huangpo()
     win_cabinet_set->installGlobalConfig(cabinetConf);
     connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
-    connect(win_cabinet_set, SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
     connect(win_cabinet_set, SIGNAL(lockTest()), win_cab_service, SLOT(ctrl_boardcast()));
     connect(win_cabinet_set, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
+    connect(win_cabinet_set, SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
     connect(win_cabinet_set, SIGNAL(cabinetClone(QString)), cabServer, SLOT(cabCloneReq(QString)));
     connect(win_cabinet_set, SIGNAL(requireCabRigster()), cabServer, SLOT(cabRegister()));
     connect(cabServer, SIGNAL(regResult(bool)), win_cabinet_set, SLOT(regResult(bool)));
@@ -726,6 +712,89 @@ void MainWidget::init_huangpo()
 //    qDebug()<<cabinetConf->list_cabinet.count();
 //    win_check_table->show();
     qDebug()<<QStyleFactory::keys();
+}
+
+void MainWidget::connect_master()
+{
+    connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
+    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+    connect(ctrlUi, SIGNAL(readyListData(QString)), win_cabinet,SLOT(readyGoodsList(QString)));
+    connect(win_cabinet, SIGNAL(checkLockState()), ctrlUi, SLOT(getLockState()));
+    connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
+    connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+    connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
+    connect(win_cabinet, SIGNAL(requireCaseBind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
+    connect(win_cabinet, SIGNAL(requireCaseRebind(int,int,QString)), cabServer, SLOT(cabinetRebind(int,int,QString)));
+    connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,int)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,int)));
+    connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
+    connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
+    connect(win_cabinet, SIGNAL(checkCase(QStringList,CaseAddress)), cabServer, SLOT(goodsCheck(QStringList,CaseAddress)));
+    connect(win_cabinet, SIGNAL(storeList(QList<CabinetStoreListItem*>)), cabServer, SLOT(goodsListStore(QList<CabinetStoreListItem*>)));
+    connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
+    connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
+    connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
+    connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
+    connect(win_cabinet, SIGNAL(requireApplyShow()), win_goods_apply, SLOT(show()));
+    connect(win_cabinet, SIGNAL(requireDayReportShow()), win_day_report, SLOT(show()));
+    connect(cabServer, SIGNAL(checkCreatRst(bool)), win_cabinet, SLOT(recvCheckRst(bool)));
+    connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
+    connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));
+    connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
+    connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
+    connect(cabServer, SIGNAL(goodsNumChanged(QString,int)), win_cabinet, SLOT(recvGoodsNumInfo(QString,int)));
+    connect(cabServer, SIGNAL(accessFailed(QString)), win_cabinet, SLOT(accessFailedMsg(QString)));
+    connect(cabServer, SIGNAL(accessSuccess(QString)), win_cabinet, SLOT(accessSuccessMsg(QString)));
+    connect(cabServer, SIGNAL(updateGoodsPrice(float,float)), win_cabinet, SLOT(updateFetchPrice(float,float)));
+    connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
+    connect(cabServer, SIGNAL(idUpdate()), win_cabinet, SLOT(updateId()));
+    connect(cabServer, SIGNAL(goodsCheckRst(QString)), win_cabinet, SLOT(recvGoodsCheckRst(QString)));
+    connect(cabServer, SIGNAL(newGoodsList(QString,QString)), win_cabinet, SLOT(newGoodsList(QString,QString)));
+    connect(cabServer, SIGNAL(netState(bool)), win_cabinet, SLOT(updateNetState(bool)));
+    connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
+    connect(cabServer, SIGNAL(checkFinish(bool)), win_cabinet, SLOT(recvCheckFinish(bool)));
+}
+
+void MainWidget::connect_new_api()
+{
+    connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
+    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+    connect(ctrlUi, SIGNAL(readyListData(QString)), win_cabinet,SLOT(readyGoodsList(QString)));
+    connect(win_cabinet, SIGNAL(checkLockState()), ctrlUi, SLOT(getLockState()));
+    connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
+    connect(win_cabinet, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(win_cabinet, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+    connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
+    connect(win_cabinet, SIGNAL(requireCaseBind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
+    connect(win_cabinet, SIGNAL(requireCaseRebind(int,int,QString)), cabServer, SLOT(cabinetRebind(int,int,QString)));
+    connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,int)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,int)));
+    connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
+    connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
+    connect(win_cabinet, SIGNAL(checkCase(QStringList,CaseAddress)), cabServer, SLOT(goodsCheck(QStringList,CaseAddress)));
+    connect(win_cabinet, SIGNAL(storeList(QList<CabinetStoreListItem*>)), cabServer, SLOT(goodsListStore(QList<CabinetStoreListItem*>)));
+    connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
+    connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
+    connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
+    connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
+    connect(win_cabinet, SIGNAL(requireApplyShow()), win_goods_apply, SLOT(show()));
+    connect(cabServer, SIGNAL(checkCreatRst(bool, QString)), win_cabinet, SLOT(recvCheckCreatRst(bool, QString)));
+    connect(cabServer, SIGNAL(checkFinishRst(bool, QString)), win_cabinet, SLOT(recvCheckFinishRst(bool, QString)));
+    connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
+    connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));
+    connect(cabServer, SIGNAL(listRst(GoodsList*)), win_cabinet, SLOT(recvListInfo(GoodsList*)));
+    connect(cabServer, SIGNAL(bindRst(bool)), win_cabinet, SLOT(recvBindRst(bool)));
+    connect(cabServer, SIGNAL(goodsNumChanged(QString,int)), win_cabinet, SLOT(recvGoodsNumInfo(QString,int)));
+    connect(cabServer, SIGNAL(accessFailed(QString)), win_cabinet, SLOT(accessFailedMsg(QString)));
+    connect(cabServer, SIGNAL(accessSuccess(QString)), win_cabinet, SLOT(accessSuccessMsg(QString)));
+    connect(cabServer, SIGNAL(updateGoodsPrice(float,float)), win_cabinet, SLOT(updateFetchPrice(float,float)));
+    connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
+    connect(cabServer, SIGNAL(idUpdate()), win_cabinet, SLOT(updateId()));
+    connect(cabServer, SIGNAL(goodsCheckRst(QString)), win_cabinet, SLOT(recvGoodsCheckRst(QString)));
+    connect(cabServer, SIGNAL(newGoodsList(QString,QString)), win_cabinet, SLOT(newGoodsList(QString,QString)));
+    connect(cabServer, SIGNAL(netState(bool)), win_cabinet, SLOT(updateNetState(bool)));
+    connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
+    connect(cabServer, SIGNAL(cabPanelChanged()), win_cabinet, SLOT(cabinetInit()));
+
 }
 
 MainWidget::~MainWidget()
