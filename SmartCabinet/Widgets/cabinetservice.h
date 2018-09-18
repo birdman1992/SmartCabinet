@@ -31,6 +31,7 @@ public:
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
 signals:
+    void requireInsertCol(int, int);
     void requireInsertCol(int pos, QString layout);
     void requireInsertUndo();
     void winSwitch(int);
@@ -41,6 +42,7 @@ signals:
 private slots:
     void on_back_clicked();
     void on_addr_returnPressed();
+    void on_insert_num_2_valueChanged(int arg1);
 //    void on_addr_textEdited(const QString &arg1);
     void on_ok_clicked();
     void on_cancel_clicked();
@@ -61,10 +63,14 @@ private slots:
     void on_insert_clicked();
 
     void on_insert_pos_valueChanged(int arg1);
+    void on_insert_pos_2_valueChanged(int arg1);
 
     void on_col_layout_activated(const QString &arg1);
 
     void on_undo_clicked();
+
+
+    void on_insert_2_clicked();
 
 public slots:
     void ctrl_boardcast();//广播控制
@@ -97,6 +103,7 @@ private:
     void initGroup();
     void creatCtrlConfig();
     void showVerInfo();
+    bool inserCol(int pos, int num);
     bool inserCol(int pos, QString layout);
     void saveInsert();
 

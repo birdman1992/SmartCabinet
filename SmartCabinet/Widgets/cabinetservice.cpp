@@ -25,7 +25,7 @@ CabinetService::CabinetService(QWidget *parent) :
 
     dev_network = NULL;
     lockConfigIsOk = false;
-    cabManager = CabinetManager::manager();
+
     win_ctrl_config = new CabinetCtrlConfig();
     connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
     connect(win_ctrl_config, SIGNAL(updateBtn()), this,SLOT(updateBtn()));
@@ -34,13 +34,15 @@ CabinetService::CabinetService(QWidget *parent) :
     initGroup();
     showVerInfo();
 
+#ifdef TCP_API
+    cabManager = CabinetManager::manager();
     QStringList types;
     types<<"331111"<<"31111111"<<"21111112"<<"2211112"<<"1111";
     ui->col_layout->addItems(types);
     nTab = new QTableWidget;
     nTab->setSelectionMode(QAbstractItemView::NoSelection);
     nTab->resize(7,270-10);
-
+#endif
     ui->listWidget->setCurrentRow(0);
     ui->stackedWidget->setCurrentIndex(0);
 //    QTimer::singleShot(1000, this, SLOT(initNetwork()));
@@ -70,7 +72,11 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
         return false;
     config = globalConfig;
     win_ctrl_config->installGlobalConfig(config);
+#ifdef TCP_API
     ui->insert_pos->setMaximum(config->list_cabinet.count());
+#else
+    ui->insert_pos->setMaximum(config->list_cabinet.count() - 1);
+#endif
     return true;
 }
 
@@ -84,6 +90,7 @@ void CabinetService::showEvent(QShowEvent *)
 {
     initNetwork();
     creatCtrlConfig();
+#ifdef TCP_API
     if(!list_preview.isEmpty())
     {
         qDeleteAll(list_preview.begin(), list_preview.end());
@@ -92,6 +99,7 @@ void CabinetService::showEvent(QShowEvent *)
     list_preview = creatPreviewList(config->getCabinetLayout().split('#', QString::SkipEmptyParts));
     updateCabpreview(NULL, 0);
     updateCabpreviewScr();
+#endif
     ui->server_addr->setText(config->getServerAddress());
     qDebug()<<ui->server_addr->text();
 }
@@ -268,6 +276,15 @@ void CabinetService::showVerInfo()
     printf("\n\n************************************\n");
 }
 
+bool CabinetService::inserCol(int pos, int num)
+{
+    if(!(pos+num))
+        return false;
+    else
+        emit requireInsertCol(pos, num);
+    return true;
+}
+
 bool CabinetService::inserCol(int pos, QString layout)
 {
     emit requireInsertCol(pos, layout);
@@ -304,6 +321,17 @@ void CabinetService::initNetwork()
 void CabinetService::on_addr_returnPressed()
 {
     this->setFocus();
+}
+
+void CabinetService::on_insert_num_2_valueChanged(int arg1)
+{
+    ui->insert_pos_2->setMaximum(config->list_cabinet.count() - qAbs(arg1));
+}
+
+void CabinetService::on_insert_pos_2_valueChanged(int arg1)
+{
+    ui->insert_num_2->setMaximum(config->list_cabinet.count() - arg1);
+    ui->insert_num_2->setMinimum(arg1-config->list_cabinet.count());
 }
 
 //void CabinetService::on_addr_textEdited(const QString &arg1)
@@ -408,6 +436,7 @@ void CabinetService::ctrl_boardcast()
 
 void CabinetService::recvInsertColResult(bool success)
 {
+#ifdef TCP_API
     ui->insert->setEnabled(true);
     if(success)
     {
@@ -418,6 +447,17 @@ void CabinetService::recvInsertColResult(bool success)
     {
         ui->insert->setText("插入\n失败");
     }
+#else
+    ui->insert_2->setEnabled(true);
+    if(success)
+    {
+        ui->insert_2->setText("插入\n成功");
+    }
+    else
+    {
+        ui->insert_2->setText("插入\n失败");
+    }
+#endif
 }
 
 void CabinetService::recvInsertUndoResult(bool)
@@ -671,3 +711,22 @@ QList<QTableWidget *> CabinetService::creatPreviewList(QStringList layouts)
 //    }
 }
 
+
+void CabinetService::on_insert_2_clicked()
+{
+    if(ui->insert->text().indexOf("插入") != -1)
+    {
+        ui->insert->setText("确定");
+        return;
+    }
+    else
+    {
+        ui->insert->setText("正在插入");
+        ui->insert->setEnabled(false);
+        if(!inserCol(ui->insert_pos_2->value(), ui->insert_num_2->value()))
+        {
+            ui->insert->setText("确定");
+            ui->insert->setEnabled(true);
+        }
+    }
+}
