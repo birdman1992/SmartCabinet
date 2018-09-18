@@ -3,105 +3,66 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <time.h>
-#include <sys/ioctl.h>
-#include <linux/hiddev.h>
+
 #include <QDebug>
 extern "C"
 {
-    #include "hid.h"
+    #include "hidapi.h"
 }
 
-
+static unsigned char tab[] = {0, 0, 0, 0, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 0, 0, 0, 0, 0, 45, 61, 91, 93, 92, 0, 59, 39, 96, 44, 46, 47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 33, 64, 35, 36, 37, 94, 38, 42, 40, 41, 0, 0, 0, 0, 0, 95, 43, 123, 125, 124, 0, 58, 34, 126, 60, 62, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 QHid::QHid(QObject *parent) : QThread(parent)
 {
-
+    handle = NULL;
+    hid_init();
 }
 
 void QHid::run()
 {
-    struct hiddev_event ev[64];
-    unsigned int i,j=0;
-    int rd = 0;
-    char id[100] = {0};
-    setbuf(stdout,NULL);
-
+    int res = 0;
+    int flag =0;
+    char c,g;
+    unsigned char rst[100];
+    unsigned char buf[10];
+    memset(rst, 0, 100);
     while (1)
     {
-        rd = read(fd, ev, sizeof(ev));
-        if (rd < (int) sizeof(ev[0]))
+        res = hid_read(handle, buf, sizeof(buf));
+        if(res>0)
         {
-            if (rd < 0)
-                perror("\nevtest: error reading");
-            return;
-        }
-
-        for (i = 0; i < rd / sizeof(ev[0]); i++)
-        {
-            if(ev[i].hid && (ev[i].hid)!=0x280000)
+            if(buf[2] == 0x00)
+                continue;
+            if(buf[2] == 0x28)
             {
-//                printf("%c:%d\n",((ev[i].hid)>>16),((ev[i].hid)>>16));
-                if(((ev[i].hid)>>16)<45)
-                    id[j++] = tab[((ev[i].hid)>>16)];
-                else
-                    id[j++] = ((ev[i].hid)>>16);
+                printf("READ:%s\n",rst);
+                emit hidRead(QByteArray((char*)rst, flag));
+                memset(rst, 0, 50);
+                flag = 0;
+                continue;
             }
-            else if((ev[i].hid)==0x280000)
-            {
-                QByteArray qba(id, strlen(id));
-                printf("READ ID:%s\n",id);
-                emit hidRead(qba);
-                memset(id, 0, 100);
-                j=0;
-            }
+            c = buf[2];
+            g = buf[0]/0x20;
+            rst[flag] = tab[g*128+c];
+            flag++;
         }
     }
+
+    hid_close(handle);
+
+    /* Free static HIDAPI objects. */
+    hid_exit();
 }
 
-void QHid::hidOpen(QString dev)
+bool QHid::hidOpen(unsigned short vId, unsigned short pId)
 {
-    struct hiddev_devinfo dinfo;
-    QByteArray qba = dev.toLocal8Bit();
-    fd = open(qba.data(), O_RDWR);
-    if (fd == -1)
+    handle = hid_open(vId, pId, NULL);
+    if(!handle)
     {
-        fprintf(stderr, "open %s failure\n", qba.data());
-        return;
+        qWarning("Device:v:%d p:%d open failed.",vId, pId);
+        return false;
     }
-    printf("%s info\n", qba.data());
-
-    if (ioctl(fd, HIDIOCGVERSION, &version) < 0)
-        perror("HIDIOCGVERSION");
-    else
-    {
-        printf("HIDIOCGVERSION: %d.%d\n", (version >> 16) & 0xFFFF,version & 0xFFFF);
-        if (version != HID_VERSION)
-            printf("WARNING: version does not match compile-time version\n");
-    }
-
-    if (ioctl(fd, HIDIOCGDEVINFO, &dinfo) < 0)
-        perror("HIDIOCGDEVINFO");
-    else
-    {
-        printf("HIDIOCGDEVINFO: bustype=%d busnum=%d devnum=%d ifnum=%d\n"
-                "\tvendor=0x%04hx product=0x%04hx version=0x%04hx\n"
-                "\tnum_applications=%d\n", dinfo.bustype, dinfo.busnum,
-                dinfo.devnum, dinfo.ifnum, dinfo.vendor, dinfo.product,
-                dinfo.version, dinfo.num_applications);
-    }
-
-    if (ioctl(fd, HIDIOCGNAME(99), name) < 0)
-        perror("HIDIOCGNAME");
-    else
-    {
-        name[99] = 0;
-        printf("HIDIOCGNAME: %s\n", name);
-    }
-
-    show_all_report(fd);
     this->start();
+    return true;
 }
