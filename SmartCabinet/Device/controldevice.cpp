@@ -48,15 +48,20 @@ void ControlDevice::deviceInit()
 //    timer.start(1000);
 //    connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
 //    qDebug()<<"[write to rfid]"<<DEV_RFID_CTRL<<ret<<QByteArray::fromHex("fe0700000005ff").toHex();
-
     //初始化读卡器
     hid_card_reader = new QHid(this);
-    hid_card_reader->hidOpen(dev_path[0]);
+    if(!hid_card_reader->hidOpen(2303, 9))
+        qDebug()<<"[CARD READER] open failed";
     connect(hid_card_reader, SIGNAL(hidRead(QByteArray)), this, SLOT(readCardReaderData(QByteArray)));
 
     //初始化扫码设备
     hid_code_scan = new QHid(this);
-    hid_code_scan->hidOpen(dev_path[1]);
+    if(!hid_code_scan->hidOpen(1155, 17))
+        if(!hid_code_scan->hidOpen(8208, 30264))
+        {
+            qDebug()<<"[CODE SCAN] open failed";
+        }
+
     connect(hid_code_scan, SIGNAL(hidRead(QByteArray)), this, SLOT(readCodeScanData(QByteArray)));
 }
 

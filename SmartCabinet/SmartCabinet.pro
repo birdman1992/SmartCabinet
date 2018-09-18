@@ -12,8 +12,18 @@ TARGET = SmartCabinet
 TEMPLATE = app
 target.path = /home
 INSTALLS += target
+
+if(contains(DEFINES,PC)){
+LIBS += -L$$PWD/libs/PC/libusb -lusb-1.0
 LIBS += -L$$PWD/Crypto/x64 -lcrypto
-#LIBS += -L$$PWD/Crypto/mc -lcrypto
+}
+if(contains(DEFINES,MC)){
+LIBS += -L$$PWD/libs/MC/libusb -lusb-1.0
+LIBS += -L$$PWD/Crypto/mc -lcrypto
+}
+if(contains(DEFINES,MY)){
+LIBS += -L$$PWD/libs/MY/libusb -lusb-1.0
+}
 
 SOURCES += main.cpp\
         mainwidget.cpp \
@@ -22,7 +32,6 @@ SOURCES += main.cpp\
     Device/Qextserial/qextserialport_unix.cpp \
     Device/Hid/qhid.cpp \
     Device/controldevice.cpp \
-    Device/Hid/hid.c \
     Device/devicesimulate.cpp \
     medinf.cpp \
     Widgets/standbywidget.cpp \
@@ -74,7 +83,8 @@ SOURCES += main.cpp\
     manager/cabinetmanager.cpp \
     manager/goodsmanager.cpp \
     Widgets/keyboad.cpp \
-    Widgets/goodsapply.cpp
+    Widgets/goodsapply.cpp \
+    Device/Hid/hid-libusb.c
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -83,7 +93,6 @@ HEADERS  += mainwidget.h \
     Device/Qextserial/qextserialport_global.h \
     Device/Hid/qhid.h \
     Device/controldevice.h \
-    Device/Hid/hid.h \
     Device/devicesimulate.h \
     medinf.h \
     Widgets/standbywidget.h \
@@ -139,7 +148,9 @@ HEADERS  += mainwidget.h \
     manager/cabinetmanager.h \
     manager/goodsmanager.h \
     Widgets/keyboad.h \
-    Widgets/goodsapply.h
+    Widgets/goodsapply.h \
+    Device/Hid/libusb.h \
+    Device/Hid/hidapi.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
