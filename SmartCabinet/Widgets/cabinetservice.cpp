@@ -635,7 +635,7 @@ void CabinetService::updateCabpreview(QTableWidget* newTab, int pos)
 
 void CabinetService::updateCabpreviewScr()
 {
-    QPoint sPos = cabManager->getScrPos();
+    QPoint sPos = cabManager->getScrPos();qDebug("1");
     if(sPos.x()>=list_preview.count())
         return;
     QTableWidgetItem* item = new QTableWidgetItem();
