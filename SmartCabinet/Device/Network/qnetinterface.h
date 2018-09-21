@@ -34,6 +34,7 @@ private:
     QNetworkAddressEntry netEntry;
     QNetworkInterface getNetworkInterface(QString name);
     void getNetworkInfo();
+    void setDeviceName(QString name);
 signals:
 
 public slots:

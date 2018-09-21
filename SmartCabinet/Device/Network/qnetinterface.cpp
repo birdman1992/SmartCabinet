@@ -229,6 +229,8 @@ void QNetInterface::getNetworkInfo()
     if(!interface.isValid())
         return;
 
+    setDeviceName(devName);
+
     QList<QNetworkAddressEntry> entryList = interface.addressEntries();
     if(entryList.isEmpty())
         return;
@@ -243,4 +245,11 @@ void QNetInterface::getNetworkInfo()
             return;
         }
     }
+}
+
+void QNetInterface::setDeviceName(QString name)
+{
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    settings.setValue("device", QVariant(name));
+    settings.sync();
 }
