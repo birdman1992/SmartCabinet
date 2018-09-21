@@ -136,7 +136,6 @@ private:
     CheckWarning* win_check_warnning;
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件
-    bool checkFinishLock;
     bool volPressed;
     bool waitForCardReader;
     bool waitForGoodsListCode;
@@ -159,6 +158,7 @@ private:
     bool checkMask;
     QString scanInfo;
     QString fullScanInfo;
+    QString scanGoodsId;
     UserInfo* optUser;//操作者id
     CaseAddress casePos;
     CaseAddress rebind_old_addr;
@@ -193,7 +193,6 @@ private:
     void clearMenuState();
     void volumTest();
     void checkStart();//盘点开始 master
-    void creatCheck();//new_api
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

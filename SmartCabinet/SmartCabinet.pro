@@ -13,6 +13,8 @@ TEMPLATE = app
 target.path = /home
 INSTALLS += target
 
+LIBS += -lpthread
+
 if(contains(DEFINES,PC)){
 LIBS += -L$$PWD/libs/PC/libusb -lusb-1.0
 LIBS += -L$$PWD/Crypto/x64 -lcrypto

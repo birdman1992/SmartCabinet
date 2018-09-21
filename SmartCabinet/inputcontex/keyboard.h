@@ -34,8 +34,8 @@ private slots:
     void backspace_timeout();
 
 private:
-    Ui::KeyBoard *ui;
     QWidget *lastFocusedWidget;
+    Ui::KeyBoard *ui;
     QTimer* timer_backspace;
     void paintEvent(QPaintEvent *);
     QButtonGroup group_key;

@@ -21,7 +21,6 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForCardReader = true;
     waitForSecondaryCard = false;
     waitForCheckFinish = false;
-    checkFinishLock = false;
     waitForInit = true;
     loginState = false;
     rebindGoods = NULL;
@@ -37,7 +36,9 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_net_set = new NetworkSet();
     win_check_warnning = new CheckWarning();
     connect(win_check_warnning, SIGNAL(pushCheck()), this, SLOT(checkPush()));
+#ifdef TCP_API
     goodsManager = GoodsManager::manager();
+#endif
     initVolum();
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -66,7 +67,6 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->quit->hide();
     ui->frame_check_history->hide();
     ui->consume_date->hide();
-    ui->reply->hide();
     ui->menuWidget->setCurrentIndex(0);
 
 //#ifndef SIMULATE_ON
@@ -115,7 +115,6 @@ void CabinetWidget::cabLock()
     ui->refund->hide();
     ui->check->hide();
     ui->search->hide();
-    ui->reply->hide();
     ui->quit->hide();
     ui->consume_date->hide();
     ui->reply->hide();
@@ -258,12 +257,6 @@ void CabinetWidget::clearMenuState()
 void CabinetWidget::volumTest()
 {
     config->cabVoice.voicePlay("vol.wav");
-}
-
-void CabinetWidget::creatCheck()
-{
-    config->showMsg(MSG_CHECK_CREAT,false);
-    emit requireGoodsCheck();
 }
 
 void CabinetWidget::checkStart()
@@ -507,6 +500,11 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     scanInfo = QString(code);
     fullScanInfo = QString(qba);
+#ifdef TCP_API
+    scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
+#else
+    scanGoodsId = scanInfo;
+#endif
     qDebug()<<scanInfo<<fullScanInfo;
 
     if(config->state == STATE_STORE)
@@ -551,8 +549,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_FETCH)
     {/*qDebug("fetch");*/
-        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
         CaseAddress addr = config->checkCabinetByBarCode(scanGoodsId);
+
         if(addr.cabinetSeqNum == -1)
         {
             qDebug()<<"[fetch]"<<"scan data not find";
@@ -565,14 +563,13 @@ void CabinetWidget::recvScanData(QByteArray qba)
         {
             if(!needWaitForServer())
             {
-                win_access->scanOpen(scanGoodsId);
+                win_access->scanOpen(scanGoodsId);          
                 emit goodsAccess(addr,fullScanInfo, 1, 1);
             }
         }
     }
     else if(config->state == STATE_REFUN)
     {
-        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
         win_refund->refundScan(scanGoodsId,fullScanInfo);
 //        CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
 //        if(addr.cabinetSeqNUM == -1)
@@ -594,12 +591,10 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_CHECK)
     {
-        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
         win_check->checkScan(scanGoodsId,fullScanInfo);
     }
     else if(config->state == STATE_REBIND)
     {
-        QString scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
         rebind_old_addr = config->checkCabinetByBarCode(scanGoodsId);
         if(rebind_old_addr.cabinetSeqNum == -1)
             return;
@@ -1048,7 +1043,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
     }
 //    waitForCardReader = false;
 //    optUser = QString(qba);
-    if(waitForSecondaryCard)
+    if(waitForSecondaryCard)//NEW_API
     {
         waitForSecondaryCard = false;
         config->setSecondUser(QString(qba));
@@ -1064,7 +1059,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
         }
         else
         {
-            creatCheck();
+            checkStart();
         }
 
         return;
@@ -1275,7 +1270,6 @@ void CabinetWidget::recvCheckRst(bool success)
     else
     {
         config->showMsg(MSG_CHECK_CREAT_FAILED,false);
-        checkFinishLock = true;
         ui->check->setChecked(false);
     }
 }
@@ -1289,7 +1283,6 @@ void CabinetWidget::recvCheckCreatRst(bool success, QString msg)
     else
     {
         config->showMsg(msg,false);
-//        checkFinishLock = true;
         ui->check->setChecked(false);
     }
 }

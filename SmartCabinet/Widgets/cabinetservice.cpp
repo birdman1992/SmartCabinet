@@ -42,6 +42,11 @@ CabinetService::CabinetService(QWidget *parent) :
     nTab = new QTableWidget;
     nTab->setSelectionMode(QAbstractItemView::NoSelection);
     nTab->resize(7,270-10);
+    ui->frame_new->show();
+    ui->frame_master->hide();
+#else
+    ui->frame_new->hide();
+    ui->frame_master->show();
 #endif
     ui->listWidget->setCurrentRow(0);
     ui->stackedWidget->setCurrentIndex(0);
@@ -75,7 +80,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 #ifdef TCP_API
     ui->insert_pos->setMaximum(config->list_cabinet.count());
 #else
-    ui->insert_pos->setMaximum(config->list_cabinet.count() - 1);
+    ui->insert_pos_2->setMaximum(config->list_cabinet.count() - 1);
 #endif
     return true;
 }

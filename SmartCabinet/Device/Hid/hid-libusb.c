@@ -308,7 +308,7 @@ static int is_language_supported(libusb_device_handle *dev, uint16_t lang)
 static wchar_t *get_usb_string(libusb_device_handle *dev, uint8_t idx)
 {
 	char buf[512];
-	int len;
+    int len;
 	wchar_t *str = NULL;
 	wchar_t wbuf[256];
 
@@ -337,7 +337,7 @@ static wchar_t *get_usb_string(libusb_device_handle *dev, uint8_t idx)
 	
 	buf[sizeof(buf)-1] = '\0';
 	
-	if (len+1 < sizeof(buf))
+    if ((unsigned int)len+1 < sizeof(buf))
 		buf[len+1] = '\0';
 	
 	/* Initialize iconv. */
@@ -756,6 +756,8 @@ hid_device * HID_API_EXPORT hid_open_path(const char *path)
 		hid_init();
 
 	num_devs = libusb_get_device_list(NULL, &devs);
+    num_devs = num_devs;
+
 	while ((usb_dev = devs[d++]) != NULL) {
 		struct libusb_device_descriptor desc;
 		struct libusb_config_descriptor *conf_desc = NULL;
@@ -1171,6 +1173,7 @@ int HID_API_EXPORT_CALL hid_get_indexed_string(hid_device *dev, int string_index
 
 HID_API_EXPORT const wchar_t * HID_API_CALL  hid_error(hid_device *dev)
 {
+    dev = dev;
 	return NULL;
 }
 

@@ -96,6 +96,8 @@ void tcpServer::replyCheck(QNetworkReply *reply)
 
 int tcpServer::pushTcpReq(QByteArray qba)
 {
+    if(qba[qba.size()-1] != '\n')
+        qba.append('\n');
     QTimer::singleShot(2000, this, SLOT(tcpReqTimeout()));
     return socket->write(qba);
 }
@@ -1108,7 +1110,7 @@ void tcpServer::heartBeat()
                                 \"data\": {\
                                     \"packets \": \"i am coming\"\
                                 }\
-                               }");
+                               }\n");
     socket->write(qba);
     qDebug()<<"[heartBeat]";
 }
