@@ -68,6 +68,7 @@ void DayReport::on_date_start_dateChanged(const QDate &date)
 //    setCheckTables(createDateList(ui->date_start->dateTime(), ui->date_finish->dateTime()));
 }
 
+//unuse
 void DayReport::on_date_finish_dateChanged(const QDate &date)
 {
     ui->date_start->setMaximumDate(date);
@@ -89,6 +90,7 @@ void DayReport::showEvent(QShowEvent *)
     ui->date_finish->setMinimumDate(QDate::currentDate());
     ui->date_finish->setMaximumDate(QDate::currentDate());
     ui->date_finish->hide();
+    emit askListInfo(ui->date_start->date(), ui->date_start->date());
 }
 
 //void DayReport::setCheckTables(QStringList l)
