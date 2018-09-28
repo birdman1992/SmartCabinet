@@ -22,8 +22,9 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 #ifdef SIMULATE_ON
     simulateInit();
 #else
-    deviceInit();
+
 #endif
+    deviceInit();
 }
 
 //设备初始化

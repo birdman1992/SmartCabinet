@@ -127,6 +127,16 @@ void CabinetWidget::cabLock()
     emit checkLockState();
 }
 
+void CabinetWidget::cabInit()
+{
+    ui->store->setChecked(false);
+    ui->service->setChecked(false);
+    ui->cut->setChecked(false);
+    ui->refund->setChecked(false);
+    ui->check->setChecked(false);
+    ui->search->setChecked(false);
+}
+
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
 //    qDebug()<<"bind"<<info.id<<info.abbName;
@@ -1035,12 +1045,13 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
     if(this->isHidden())
         return;
 
-    if(!waitForCardReader)
-    {
-        qDebug()<<"[CabinetWidget]"<<"recvUserInfo not need.";
-        msgClear();
-        return;
-    }
+//    if(!waitForCardReader)
+//    {
+//        qDebug()<<"[CabinetWidget]"<<"recvUserInfo not need.";
+//        msgClear();
+//        return;
+//    }
+
 //    waitForCardReader = false;
 //    optUser = QString(qba);
     if(waitForSecondaryCard)//NEW_API
@@ -1380,6 +1391,9 @@ void CabinetWidget::checkPush()
 
 void CabinetWidget::recvUserCheckRst(UserInfo* info)
 {
+    cabInit();
+    waitForCodeScan = false;
+    waitForGoodsListCode = false;
     waitForServer = false;
     msgClear();
     optUser = info;
