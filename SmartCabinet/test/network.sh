@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ ! -f "/home/config/network.ini" ];then
+    exit
+fi
+
 source /home/config/network.ini
 
 echo $ip

@@ -21,10 +21,11 @@ LIBS += -L$$PWD/Crypto/x64 -lcrypto
 }
 if(contains(DEFINES,MC)){
 LIBS += -L$$PWD/libs/MC/libusb -lusb-1.0
-LIBS += -L$$PWD/Crypto/mc -lcrypto
+LIBS += -L$$PWD/libs/MC/Crypto -lcrypto
 }
 if(contains(DEFINES,MY)){
 LIBS += -L$$PWD/libs/MY/libusb -lusb-1.0
+LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 }
 
 SOURCES += main.cpp\
