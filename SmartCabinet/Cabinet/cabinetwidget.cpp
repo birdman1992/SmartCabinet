@@ -54,6 +54,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(win_store_list, SIGNAL(requireBind(Goods*)), this, SLOT(cabinetBind(Goods*)));
     connect(win_store_list, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
     connect(win_store_list, SIGNAL(storeList(QList<CabinetStoreListItem*>)), this, SIGNAL(storeList(QList<CabinetStoreListItem*>)));
+    connect(win_store_list, SIGNAL(requireScanState(bool)), this, SLOT(updateScanState(bool)));
 
     connect(win_refund, SIGNAL(refundCase(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
 //    optUser = QString();
@@ -615,6 +616,11 @@ void CabinetWidget::recvScanData(QByteArray qba)
 //        config->removeConfig(rebind_old_addr);
     }
 
+}
+
+void CabinetWidget::updateScanState(bool state)
+{
+    waitForCodeScan = state;
 }
 
 void CabinetWidget::logoClicked()

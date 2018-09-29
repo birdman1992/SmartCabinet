@@ -1683,8 +1683,8 @@ void CabinetServer::sysTimeout()
         }
         return;
     }
-    if(needReqCar&& config->state == STATE_NO)
-        requireListState();
+//    if(needReqCar&& config->state == STATE_NO);//不再轮询送货单
+//        requireListState();
 
     if(config->sleepFlagTimeout())
     {

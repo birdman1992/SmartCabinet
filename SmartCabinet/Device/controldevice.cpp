@@ -15,7 +15,7 @@
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
 
-char dev_path[2][24] = {0};
+char dev_path[2][24] = {{0},{0}};
 
 ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 {

@@ -55,6 +55,7 @@ signals:
     void requireBind(Goods*);
     void requireOpenCase(int seq, int index);
     void storeList(QList<CabinetStoreListItem*>);
+    void requireScanState(bool);
 //    void storeList(QStringList);
 };
 

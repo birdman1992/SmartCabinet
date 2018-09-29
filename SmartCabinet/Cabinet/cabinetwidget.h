@@ -46,6 +46,7 @@ public:
 public slots:
     void caseClicked(int caseIndex, int cabSeqNum);//柜格下标,柜子顺序编号
     void recvScanData(QByteArray);
+    void updateScanState(bool);
     void logoClicked();//logo被点击
     void cabinetInit();
     void recvUserCheckRst(UserInfo *);//接收用户校验结果

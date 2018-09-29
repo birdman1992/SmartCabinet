@@ -32,6 +32,7 @@ CabinetStoreList::~CabinetStoreList()
 
 void CabinetStoreList::show()
 {
+    emit requireScanState(false);
     this->showFullScreen();
 }
 
@@ -50,9 +51,12 @@ void CabinetStoreList::storeStart(GoodsList *l)
     {
         Goods* goods = l->list_goods.at(i);
         qDebug()<<"storeStart"<<goods->abbName<<goods->pos;
+#ifdef TCP_API
         CaseAddress addr;
         addr.setAddress(goods->pos);
-//        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
+#else
+        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
+#endif
         item = new CabinetStoreListItem(goods, addr);
         connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
         connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
@@ -186,4 +190,5 @@ void CabinetStoreList::on_back_clicked()
 {
     storeFinish();
     this->close();
+    emit requireScanState(true);
 }
