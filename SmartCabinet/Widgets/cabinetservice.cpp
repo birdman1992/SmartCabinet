@@ -396,6 +396,15 @@ void CabinetService::recvInsertColResult(bool success)
     }
 }
 
+void CabinetService::tsCalibration()
+{
+    qDebug()<<"[tsCalibration]";
+    QProcess process;
+    process.start("rm /etc/pointercal");
+    process.waitForFinished();
+    QProcess::startDetached("reboot");
+}
+
 void CabinetService::on_clear_clicked()
 {
     emit requireClear();

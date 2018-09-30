@@ -79,6 +79,7 @@ signals:
     void requireCabSync();
     void requireGoodsCheck();
     void goodsCheckFinish();
+    void tsCalReq();
 
 private slots:
     void setMenuHide(bool ishide);
@@ -117,6 +118,8 @@ private:
     CabinetConfig* config;
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件
+    QString curCard;
+    int tsCalFlag;
     bool volPressed;
     bool waitForCardReader;
     bool waitForGoodsListCode;
@@ -170,6 +173,7 @@ private:
     void clearMenuState();
     void volumTest();
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
+    void calCheck(QString card);
 };
 
 #endif // CABINETWIDGET_H

@@ -634,6 +634,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
     connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
+    connect(win_cabinet, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
     connect(cabServer, SIGNAL(checkCreatRst(bool)), win_cabinet, SLOT(recvCheckRst(bool)));
     connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));

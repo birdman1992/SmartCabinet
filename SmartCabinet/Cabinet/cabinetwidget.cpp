@@ -24,6 +24,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     rebindGoods = NULL;
     curStoreList = NULL;
     msgBox = NULL;
+    tsCalFlag = 0;
+    curCard = QString();
     selectCase = -1;
     selectCab = -1;
     win_access = new CabinetAccess();
@@ -85,6 +87,7 @@ void CabinetWidget::paintEvent(QPaintEvent*)
 
 void CabinetWidget::cabLock()
 {
+    tsCalFlag = 0;
     optUser = NULL;
     ui->userInfo->setText("请刷卡使用");
     storeNum = 0;
@@ -263,6 +266,20 @@ QByteArray CabinetWidget::scanDataTrans(QByteArray code)
         return code;
 
     return code.left(index);
+}
+
+void CabinetWidget::calCheck(QString card)
+{
+    if(card != curCard)
+        return;
+
+    tsCalFlag++;
+    qDebug()<<"[tsCalFlag]"<<tsCalFlag;
+    if(tsCalFlag>5)
+    {
+        tsCalFlag = 0;
+        emit tsCalReq();
+    }
 }
 
 //初始化药柜界面
@@ -941,6 +958,8 @@ void CabinetWidget::setPowerState(int power)
 
 void CabinetWidget::recvUserInfo(QByteArray qba)
 {
+    calCheck(QString(qba));
+
     if(this->isHidden())
         return;
 
@@ -1214,6 +1233,8 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     waitForServer = false;
     msgClear();
     optUser = info;
+    curCard = optUser->cardId;
+    tsCalFlag = 0;
     config->setOptId(info->cardId);
     qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
     config->state = STATE_FETCH;

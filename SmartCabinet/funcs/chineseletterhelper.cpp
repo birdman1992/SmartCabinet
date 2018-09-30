@@ -5790,7 +5790,7 @@ QString ChineseLetterHelper::GetPinyin(int code)
     }
     if (pinyin.isEmpty())
     {
-        pinyin="";
+        pinyin=" ";
     }
     return pinyin;
 }
