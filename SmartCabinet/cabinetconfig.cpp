@@ -590,6 +590,20 @@ QString CabinetConfig::getCabinetColMap()
     return ColMap;
 }
 
+void CabinetConfig::setCabinetType(int type)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("cabType",type);
+    return;
+}
+
+int CabinetConfig::getCabinetType()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    int ret = settings.value("cabType",1).toInt();
+    return ret;
+}
+
 void CabinetConfig::setCabinetColMap(QString map)
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);

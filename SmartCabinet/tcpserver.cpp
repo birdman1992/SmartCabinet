@@ -99,6 +99,7 @@ int tcpServer::pushTcpReq(QByteArray qba)
     if(qba[qba.size()-1] != '\n')
         qba.append('\n');
     QTimer::singleShot(2000, this, SLOT(tcpReqTimeout()));
+    qDebug()<<"[pushTcpReq]"<<qba;
     return socket->write(qba);
 }
 #include <QRegExp>
@@ -420,6 +421,7 @@ QByteArray tcpServer::jRegist(QString id, QString aesId)
     QString aes_device_id = aesId;
     QString layout = config->getCabinetLayout();
     QString col_map = config->getCabinetColMap();
+    int cabinetType = config->getCabinetType();
     QPoint screenPos = config->getScreenPos();
 
 
@@ -429,7 +431,7 @@ QByteArray tcpServer::jRegist(QString id, QString aesId)
                 \"device_id\": \"%1\",\
                 \"aes_device_id\": \"%2\",\
                 \"type\": 2,\
-                \"cabinet_type\": 1,\
+                \"cabinet_type\": %7,\
                 \"layout\": \"%3\",\
                 \"col_map\": \"%4\",\
                 \"screen_pos\": {\
@@ -437,7 +439,7 @@ QByteArray tcpServer::jRegist(QString id, QString aesId)
                     \"col\": %6\
                 }\
             }\
-        }").arg(device_id).arg(aes_device_id).arg(layout).arg(col_map).arg(screenPos.x()).arg(screenPos.y());
+        }").arg(device_id).arg(aes_device_id).arg(layout).arg(col_map).arg(screenPos.y()).arg(screenPos.x()).arg(cabinetType);
 
 //    qDebug()<<"jRegist:"<<retJ;
 return retJ.toLocal8Bit();

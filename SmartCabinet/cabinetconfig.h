@@ -36,6 +36,8 @@ public:
     void setSecondUser(QString userId);
     QString getCabinetLayout();
     QString getCabinetColMap();
+    void setCabinetType(int type);
+    int getCabinetType();
     QPoint getScreenPos();
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
@@ -111,6 +113,7 @@ private:
     QPoint screenPos;
     int caseWidth;
 //    QString cabId;
+    int cabinetType;
     QString cabinetId;
     QString serverAddr;
     QString optName;//操作者卡号

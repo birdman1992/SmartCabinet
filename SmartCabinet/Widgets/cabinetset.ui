@@ -1448,16 +1448,6 @@ color:rgb(255,255,255);</string>
       <string>rfid柜</string>
      </property>
     </item>
-    <item>
-     <property name="text">
-      <string>消毒柜</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>手术室柜</string>
-     </property>
-    </item>
    </widget>
   </widget>
   <widget class="QLabel" name="label_20">

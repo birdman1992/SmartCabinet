@@ -370,7 +370,7 @@ void CabinetSet::on_savePos_clicked()
     qDebug()<<cabinet_pos.toHex();
     config->setScreenPos(screenPos.x(),screenPos.y());
 //    config->creatCabinetConfig(cabinet_pos);
-    config->clearConfig();
+//    config->clearConfig();
     config->creatCabinetConfig(list_layout, screenPos);
     config->readCabinetConfig();
     initStep |= (1<<1);
@@ -416,27 +416,32 @@ void CabinetSet::on_cabType_2_activated(int index)
 {
     QString str = "RXS";
     QString strId = ui->cloneId->text();
-    QRegExp rx("[RXS]\\d*");
-    int idx = rx.indexIn(strId);
-    qDebug()<<index;
-    if(idx == -1)//开头没有RXS
+
+    if(!strId.isEmpty())
     {
-        if(index != 0)
+        QRegExp rx("[RXS]\\d*");
+        int idx = rx.indexIn(strId);
+        qDebug()<<index;
+        if(idx == -1)//开头没有RXS
         {
-            strId.insert(0, str.at(index-1));
-        }
-    }
-    else
-    {
-        if(index != 0)
-        {
-            strId[0] = str.at(index-1);
+            if(index != 0)
+            {
+                strId.insert(0, str.at(index-1));
+            }
         }
         else
         {
-            strId.remove(0,1);
+            if(index != 0)
+            {
+                strId[0] = str.at(index-1);
+            }
+            else
+            {
+                strId.remove(0,1);
+            }
         }
     }
+    config->setCabinetType(ui->cabType_2->currentIndex()+1);
 }
 
 void CabinetSet::on_cloneId_textChanged(const QString &arg1)
