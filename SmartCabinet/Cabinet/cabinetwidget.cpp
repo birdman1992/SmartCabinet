@@ -14,6 +14,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     storeNum = 0;
+    tsCalFlag = 0;
+    curCard = QString();
     clickLock = true;
     waitForCodeScan = false;
     waitForGoodsListCode = false;
@@ -97,6 +99,7 @@ void CabinetWidget::paintEvent(QPaintEvent*)
 
 void CabinetWidget::cabLock()
 {
+    tsCalFlag = 0;
     optUser = NULL;
     ui->userInfo->setText("请刷卡使用");
     storeNum = 0;
@@ -294,6 +297,20 @@ void CabinetWidget::checkStart()
     config->showMsg(MSG_CHECK_CREAT,false);
     emit requireGoodsCheck();
 #endif
+}
+
+void CabinetWidget::calCheck(QString card)
+{
+    if(card != curCard)
+        return;
+
+    tsCalFlag++;
+    qDebug()<<"[tsCalFlag]"<<tsCalFlag;
+    if(tsCalFlag>5)
+    {
+        tsCalFlag = 0;
+        emit tsCalReq();
+    }
 }
 
 bool posSort(Cabinet *A, Cabinet *B)
@@ -1048,6 +1065,8 @@ void CabinetWidget::setPowerState(int power)
 
 void CabinetWidget::recvUserInfo(QByteArray qba)
 {
+    calCheck(QString(qba));
+
     if(this->isHidden())
         return;
 
@@ -1403,6 +1422,8 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     waitForServer = false;
     msgClear();
     optUser = info;
+    curCard = optUser->cardId;
+    tsCalFlag = 0;
     config->setOptId(info->cardId);
     qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
     config->state = STATE_FETCH;

@@ -394,6 +394,17 @@ void CabinetService::on_cancel_clicked()
 
 }
 
+void CabinetService::tsCalibration()
+{
+    qDebug()<<"[tsCalibration]";
+    QProcess process;
+    process.start("rm /etc/pointercal");
+    process.waitForFinished();
+    QProcess::startDetached("reboot");
+}
+
+
+
 void CabinetService::ctrl_lock(int id)
 {
     int i = 0;

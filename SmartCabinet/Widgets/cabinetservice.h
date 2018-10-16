@@ -76,6 +76,7 @@ public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);
     void recvInsertUndoResult(bool success);
+    void tsCalibration();
 
 private:
     Ui::CabinetService *ui;

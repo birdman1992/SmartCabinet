@@ -94,6 +94,7 @@ signals:
     void requireSearchShow();
     void requireDayReportShow();
     void requireApplyShow();
+    void tsCalReq();
 
 private slots:
     void setMenuHide(bool ishide);
@@ -137,6 +138,9 @@ private:
     CheckWarning* win_check_warnning;
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件
+    QString curCard;
+    int tsCalFlag;
+
     bool volPressed;
     bool waitForCardReader;
     bool waitForGoodsListCode;
@@ -195,6 +199,7 @@ private:
     void clearMenuState();
     void volumTest();
     void checkStart();//盘点开始 master
+    void calCheck(QString card);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 

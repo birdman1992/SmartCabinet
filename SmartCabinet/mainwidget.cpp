@@ -738,6 +738,7 @@ void MainWidget::connect_master()
     connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
     connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
+    connect(win_cabinet, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
     connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
     connect(win_cabinet, SIGNAL(requireApplyShow()), win_goods_apply, SLOT(show()));
     connect(win_cabinet, SIGNAL(requireDayReportShow()), win_day_report, SLOT(show()));
@@ -779,6 +780,7 @@ void MainWidget::connect_new_api()
     connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
     connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
+    connect(win_cabinet, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
     connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
     connect(win_cabinet, SIGNAL(requireApplyShow()), win_goods_apply, SLOT(show()));
     connect(cabServer, SIGNAL(checkCreatRst(bool, QString)), win_cabinet, SLOT(recvCheckCreatRst(bool, QString)));
