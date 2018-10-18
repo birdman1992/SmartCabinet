@@ -18,6 +18,7 @@ public:
     QString packageBarCode;
     QString goodsSize;
     QString producerName;
+
     int type;
     int num_in;
     int num_out;

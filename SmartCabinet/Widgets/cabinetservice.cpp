@@ -279,6 +279,7 @@ void CabinetService::showVerInfo()
     printf("************************************\n\n\n");
     printf("%s\n",info.data());
     printf("\n\n************************************\n");
+    qDebug()<<"[VERSION]:"<<info;
 }
 
 bool CabinetService::inserCol(int pos, int num)
