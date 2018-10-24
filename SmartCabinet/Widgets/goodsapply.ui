@@ -190,9 +190,15 @@ background-color: rgb(52, 101, 164);</string>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,6">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,7">
      <item>
       <widget class="QTableWidget" name="searchRst">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
@@ -340,6 +346,27 @@ QHeadView{
        <column>
         <property name="text">
          <string>生产商</string>
+        </property>
+        <property name="background">
+         <color>
+          <red>114</red>
+          <green>159</green>
+          <blue>207</blue>
+         </color>
+        </property>
+        <property name="foreground">
+         <brush brushstyle="SolidPattern">
+          <color alpha="255">
+           <red>255</red>
+           <green>255</green>
+           <blue>255</blue>
+          </color>
+         </brush>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>供应商</string>
         </property>
         <property name="background">
          <color>

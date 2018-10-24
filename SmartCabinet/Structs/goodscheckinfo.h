@@ -18,6 +18,7 @@ public:
     QString packageBarCode;
     QString goodsSize;
     QString producerName;
+    QString supplyName;
 
     int type;
     int num_in;
@@ -27,6 +28,7 @@ public:
     int num_pack;
     int num_max;
     int num_min;
+    int supplyId;
 };
 
 class CheckTableInfo

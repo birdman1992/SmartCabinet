@@ -693,6 +693,7 @@ void CabinetServer::replyRequire(QList<GoodsCheckInfo *> l)
         cJSON_AddItemToObject(goods, "goodsId", cJSON_CreateString(info->id.toLocal8Bit()));
         cJSON_AddItemToObject(goods, "goodsCount", cJSON_CreateNumber(info->num_pack*info->type));
         cJSON_AddItemToObject(goods, "packageBarcode", cJSON_CreateString(info->packageBarCode.toLocal8Bit()));
+        cJSON_AddItemToObject(goods, "supplyId", cJSON_CreateNumber(info->supplyId));
         cJSON_AddItemToArray(StoreGoodsModel, goods);
     }
     cJSON_AddItemToObject(json, "li", StoreGoodsModel);
@@ -1526,6 +1527,10 @@ void CabinetServer::recvSearchSpell()
             info->unit = cJSON_GetObjectItem(jItem, "unit")->valueint;//单位
             info->producerName = cJSON_GetObjectItem(jItem, "producerName")->valuestring;//生产商
             info->type = QString(cJSON_GetObjectItem(jItem, "packageType")->valuestring).toInt();//type
+            info->supplyId = cJSON_GetObjectItem(jItem, "supplyId")->valueint;
+            info->supplyName = cJSON_GetObjectItem(jItem, "supplyName")->valuestring;
+            if(info->type == 0)
+                info->type = 1;
             checkList->addInfo(info);
         }
         emit curSearchList(checkList);
