@@ -20,6 +20,8 @@ GoodsCheckInfo::GoodsCheckInfo(GoodsCheckInfo &info)
     num_back = info.num_back;
     num_cur = info.num_cur;
     num_pack = info.num_pack;
+    supplyId = info.supplyId;
+    supplyName = info.supplyName;
     type = info.type;
 }
 

@@ -120,21 +120,23 @@ void GoodsApply::updatePushTableRow(int row, GoodsCheckInfo *info)
         ui->replyTable->setItem(row, 1, new QTableWidgetItem(info->id));
         ui->replyTable->setItem(row, 2, new QTableWidgetItem(info->goodsSize));
         ui->replyTable->setItem(row, 3, new QTableWidgetItem(info->producerName));
-        ui->replyTable->setItem(row, 4, new QTableWidgetItem(QString::number(info->num_cur)));
-        ui->replyTable->setItem(row, 5, new QTableWidgetItem(QString::number(info->num_in)));
-        ui->replyTable->setItem(row, 6, new QTableWidgetItem("-"));
-        ui->replyTable->setItem(row, 7, new QTableWidgetItem("+"));
-        ui->replyTable->item(row, 6)->setTextAlignment(Qt::AlignCenter);
+        ui->replyTable->setItem(row, 4, new QTableWidgetItem(info->supplyName));
+        ui->replyTable->setItem(row, 5, new QTableWidgetItem(QString::number(info->num_cur)));
+        ui->replyTable->setItem(row, 6, new QTableWidgetItem(QString::number(info->num_in)));
+        ui->replyTable->setItem(row, 7, new QTableWidgetItem("-"));
+        ui->replyTable->setItem(row, 8, new QTableWidgetItem("+"));
         ui->replyTable->item(row, 7)->setTextAlignment(Qt::AlignCenter);
+        ui->replyTable->item(row, 8)->setTextAlignment(Qt::AlignCenter);
     }
     else
     {
-        ui->replyTable->item(row,0)->setText(info->name);
+        ui->replyTable->item(row,0)->setText(QString("%1 ×%2").arg(info->name).arg(info->type));
         ui->replyTable->item(row,1)->setText(info->id);
         ui->replyTable->item(row,2)->setText(info->goodsSize);
         ui->replyTable->item(row,3)->setText(info->producerName);
-        ui->replyTable->item(row,4)->setText(QString::number(info->num_cur));
-        ui->replyTable->item(row,5)->setText(QString::number(info->num_in));
+        ui->replyTable->item(row,4)->setText(info->supplyName);
+        ui->replyTable->item(row,5)->setText(QString::number(info->num_cur));
+        ui->replyTable->item(row,6)->setText(QString::number(info->num_in));
     }
 }
 
@@ -155,17 +157,17 @@ void GoodsApply::on_searchRst_cellClicked(int row, int)
 
 void GoodsApply::on_replyTable_cellClicked(int row, int column)
 {
-    if(column == 7)
+    if(column == 8)
     {
-        ui->replyTable->item(row, 5)->setText(QString::number(listPush.at(row)->addPack()));
+        ui->replyTable->item(row, 6)->setText(QString::number(listPush.at(row)->addPack()));
     }
-    else if(column == 6)
+    else if(column == 7)
     {
         int pNum = listPush.at(row)->redPack();
         if(pNum<0)
             pushTableDelete(row);
         else
-            ui->replyTable->item(row, 5)->setText(QString::number(pNum));
+            ui->replyTable->item(row, 6)->setText(QString::number(pNum));
     }
 //        pushTableDelete(row);
 //    else if(column == 5)

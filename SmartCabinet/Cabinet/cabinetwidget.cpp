@@ -1423,7 +1423,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     msgClear();
     optUser = info;
     curCard = optUser->cardId;
-    tsCalFlag = 0;
+//    tsCalFlag = 0;
     config->setOptId(info->cardId);
     qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
     config->state = STATE_FETCH;
