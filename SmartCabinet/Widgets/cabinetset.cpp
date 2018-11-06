@@ -20,13 +20,13 @@ CabinetSet::CabinetSet(QWidget *parent) :
     initCabType();
 
 //    ui->save->hide();
-#ifdef SIMULATE_ON
-    dev_network = new QNetInterface("eth0");
-#else
-    dev_network = new QNetInterface("eth1");
-#endif
-    dev_network->initNetwork();
-    dev_network->creatNetwork();
+//#ifdef SIMULATE_ON
+//    dev_network = new QNetInterface("eth0");
+//#else
+//    dev_network = new QNetInterface("eth1");
+//#endif
+//    dev_network->initNetwork();
+//    dev_network->creatNetwork();
 
     ui->devState->setEnabled(false);
 
@@ -250,9 +250,14 @@ void CabinetSet::on_netSet_clicked()
     dev_network->setMacAddress(mac);
     dev_network->saveNetwork();
 
-    ui->ip->setText(dev_network->ip());
-    ui->netmask->setText(dev_network->netmask());
-    ui->gateway->setText(dev_network->gateway());
+//    ui->ip->setText(dev_network->ip());
+//    ui->netmask->setText(dev_network->netmask());
+//    ui->gateway->setText(dev_network->gateway());
+//    ui->mac->setText(dev_network->macAddress());
+//    on_netUpdate_clicked();
+    QTimer::singleShot(5000, this, SLOT(on_netUpdate_clicked()));
+
+//    qDebug()<<dev_network->ip()<<dev_network->netmask()<<dev_network->gateway();
 }
 
 void CabinetSet::checkDevice()

@@ -2,7 +2,7 @@
 if [ ! -f "/home/config/network.ini" ];then
     exit
 fi
-
+killall udhcpc
 source /home/config/network.ini
 
 echo $ip

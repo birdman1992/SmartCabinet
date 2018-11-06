@@ -31,7 +31,7 @@ QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
     else
         getNetworkInfo();
     qDebug()<<"[QNetInterface]"<<devName<<"open success.";
-    qDebug()<<"[MAC address]"<<macAddress();
+//    qDebug()<<"[MAC address]"<<macAddress();
 }
 
 QString QNetInterface::ip()
@@ -39,6 +39,7 @@ QString QNetInterface::ip()
     if(interface.isValid())
     {
         getNetworkInfo();
+        qDebug()<<"[ip]"<<netEntry.ip().toString()<<netEntry.ip().toIPv4Address();
         return netEntry.ip().toString();
     }
     else
@@ -50,6 +51,7 @@ QString QNetInterface::netmask()
     if(interface.isValid())
     {
         getNetworkInfo();
+        qDebug()<<"[netmask]"<<netEntry.netmask().toString();
         return netEntry.netmask().toString();
     }
     else
@@ -62,14 +64,16 @@ QString QNetInterface::gateway()
     {
         QSettings settings("/home/config/network.ini", QSettings::IniFormat);
         QString netGateway = settings.value("gateway", QString()).toString();
-        if(!netGateway.isEmpty())
+        if((!netGateway.isEmpty()) && (netGateway.length()>9))
             return netGateway;
 
         getNetworkInfo();
         QString _ip = netEntry.ip().toString();
         QStringList l = _ip.split('.');
+//        qDebug()<<_ip;
         l.removeLast();
         l.append("1");
+//        qDebug()<<l;
         return l.join(".");
     }
     else
@@ -79,7 +83,10 @@ QString QNetInterface::gateway()
 QString QNetInterface::macAddress()
 {
     if(interface.isValid())
+    {
+        qDebug()<<"[mac]"<<interface.hardwareAddress();
         return interface.hardwareAddress();
+    }
     else
         return QString();
 }
@@ -241,7 +248,7 @@ void QNetInterface::getNetworkInfo()
         if(en.ip().toString().length()<16)
         {
             netEntry = en;
-//            qDebug()<<netEntry.ip()<<netEntry.broadcast()<<netEntry.netmask();
+            qDebug()<<"[netEntry]"<<netEntry.ip()<<netEntry.broadcast()<<netEntry.netmask();
             return;
         }
     }
