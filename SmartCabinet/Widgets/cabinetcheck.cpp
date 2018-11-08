@@ -56,7 +56,7 @@ void CabinetCheck::checkScan(QString scanId, QString fullId)
 
     for(i=0; i<list_item.count(); i++)
     {
-        qDebug()<<list_item.at(i)->itemId()<<scanId;
+//        qDebug()<<list_item.at(i)->itemId()<<scanId;
         if(scanId == list_item.at(i)->itemId())
         {
             if(!list_item.at(i)->itemAdd())
