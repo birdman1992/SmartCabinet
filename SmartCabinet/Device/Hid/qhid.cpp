@@ -43,8 +43,9 @@ void QHid::run()
                 continue;
             }
             c = buf[2];
-            g = buf[0]/0x20;
+            g = buf[0]/0x02;
             rst[flag] = tab[g*128+c];
+//            printf("%x %x %c\n",buf[0], buf[2], rst[flag]);
             flag++;
         }
     }
