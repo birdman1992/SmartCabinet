@@ -344,6 +344,8 @@ void CabinetSet::on_cloneStart_clicked()
 //        return;
 //    }
     ui->regId->setEnabled(false);
+    ui->cloneMsg->show();
+    ui->regMsg->hide();
 
     emit cabinetClone(ui->cloneId->text());
 }
@@ -355,6 +357,8 @@ void CabinetSet::on_regId_clicked()
         ui->regMsg->setText("请先配置柜格布局");
         return;
     }
+    ui->cloneMsg->hide();
+    ui->regMsg->show();
     ui->regId->setEnabled(false);
     emit requireCabRigster();
 }
