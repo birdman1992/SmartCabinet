@@ -10,6 +10,7 @@ CabinetRefund::CabinetRefund(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
+    tableClear();
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
     QString style = QString(qssScrollbar.readAll());
@@ -140,6 +141,11 @@ void CabinetRefund::on_pushButton_clicked()
 
 void CabinetRefund::on_ok_clicked()
 {
+    if(list_code.isEmpty())
+    {
+        ui->msg->setText("请扫码添加退货物品");
+        return;
+    }
     ui->msg->setText("正在提交");
     emit refundCase(list_code, 3);
 }
