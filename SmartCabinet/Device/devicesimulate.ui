@@ -120,7 +120,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>18692241392</string>
+        <string>1274578679</string>
        </property>
       </widget>
       <widget class="QLabel" name="label">
@@ -172,7 +172,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>1234567</string>
+        <string>895061</string>
        </property>
       </widget>
      </widget>
