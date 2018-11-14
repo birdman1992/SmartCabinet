@@ -113,6 +113,7 @@ int get_path(void)
 				if(strstr(pFile->d_name,"hidraw")!=NULL)
 				{
 					sprintf(path,"/dev/%s",pFile->d_name);
+					printf("path:%s\n", path);
 					get_dev_info(path,usb_info);
 					if(usb_info->vid==3944 && usb_info->pid==22630)	// touch
 					{	
@@ -175,12 +176,12 @@ int get_path(void)
 
 					}
 					else if((usb_info->vid==2303) && (usb_info->pid==9))	// card reader
-                        snprintf(dev_path[0],20,"%s",path);
-                    else if((usb_info->vid==1534) && (usb_info->pid==4130))	// new card reader
-                        snprintf(dev_path[0],20,"%s",path);
+                        			snprintf(dev_path[0],20,"%s",path);
+                    			else if((usb_info->vid==1534) && (usb_info->pid==4130))	// new card reader
+                        			snprintf(dev_path[0],20,"%s",path);
 					else if(usb_info->vid==1155 && usb_info->pid==17)	// scan
 						snprintf(dev_path[1],20,"%s",path);
-                    else if(usb_info->vid==8208 && usb_info->pid==30264)	// new scan
+                    			else if(usb_info->vid==8208 && usb_info->pid==30264)	// new scan
 						snprintf(dev_path[1],20,"%s",path);
 
 					printf("vid: %lu\t,pid: %lu\n",usb_info->vid,usb_info->pid);

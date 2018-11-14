@@ -30,6 +30,7 @@ class ControlDevice : public QObject
     Q_OBJECT
 public:
     explicit ControlDevice(QObject *parent = 0);
+    ~ControlDevice();
     bool installGlobalConfig(CabinetConfig *globalConfig);
 private:
     QHid* hid_card_reader;//读卡器设备
@@ -42,6 +43,8 @@ private:
     QTimer* timer_beat;
     GoodsCar curCar;
     QTimer timer;
+    bool scanState;
+    bool cardReaderState;
 
     void deviceInit();//设备初始化
     void simulateInit();//仿真器初始化

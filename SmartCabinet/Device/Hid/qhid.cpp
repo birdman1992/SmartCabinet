@@ -6,6 +6,7 @@
 #include <fcntl.h>
 
 #include <QDebug>
+#include <QByteArray>
 extern "C"
 {
     #include "hidapi.h"
@@ -32,6 +33,7 @@ void QHid::run()
         res = hid_read(handle, buf, sizeof(buf));
         if(res>0)
         {
+//            qDebug()<<QByteArray((const char*)buf, 10).toHex();
             if(buf[2] == 0x00)
                 continue;
             if(buf[2] == 0x28)
@@ -43,17 +45,14 @@ void QHid::run()
                 continue;
             }
             c = buf[2];
-            g = buf[0]/0x02;
+            g = (buf[0]!=0);
             rst[flag] = tab[g*128+c];
-//            printf("%x %x %c\n",buf[0], buf[2], rst[flag]);
+//            printf("%x %x %x %c\n", g,buf[0], buf[2], rst[flag]);
             flag++;
         }
     }
 
-    hid_close(handle);
-
-    /* Free static HIDAPI objects. */
-    hid_exit();
+    hidClose();
 }
 
 bool QHid::hidOpen(unsigned short vId, unsigned short pId)
@@ -66,4 +65,14 @@ bool QHid::hidOpen(unsigned short vId, unsigned short pId)
     }
     this->start();
     return true;
+}
+
+void QHid::hidClose()
+{
+    if(handle != NULL)
+    {
+        hid_close(handle);
+        hid_exit();
+        handle = NULL;
+    }
 }

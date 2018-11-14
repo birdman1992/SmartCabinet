@@ -12,6 +12,7 @@ class QHid : public QThread
 public:
     explicit QHid(QObject *parent = 0);
     bool hidOpen(unsigned short vId, unsigned short pId);
+    void hidClose();
     void run();
 
 private:
