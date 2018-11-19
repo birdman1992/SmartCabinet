@@ -28,6 +28,7 @@
 #include "Widgets/goodsapply.h"
 #include "Widgets/dayreport.h"
 #include "Cabinet/cabinetwidget.h"
+#include "MxAuthor/authormanager.h"
 
 #include "Menu/setmenu.h"
 #include "ShowInf/showinf.h"

@@ -33,7 +33,21 @@
     <layout class="QHBoxLayout" name="caseLayout">
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
-       <widget class="QWidget" name="page"/>
+       <widget class="QWidget" name="page">
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>160</y>
+           <width>281</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>未取得合法授权，请联系管理员</string>
+         </property>
+        </widget>
+       </widget>
        <widget class="QWidget" name="page_2"/>
       </widget>
      </item>

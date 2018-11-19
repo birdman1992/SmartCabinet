@@ -712,6 +712,12 @@ void MainWidget::init_huangpo()
         win_cabinet->panel_init(cabinetConf->list_cabinet);
         cabinetConf->cabVoice.voicePlay(VOICE_WELCOME);
     }
+#ifndef PC
+    AuthorManager *m = new AuthorManager();
+    if(!m->authorCheck())
+        ui->stackedWidget->setCurrentIndex(0);
+#endif
+
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
 //    qDebug()<<cabinetConf->list_cabinet.count();
 //    win_check_table->show();

@@ -91,7 +91,9 @@ SOURCES += main.cpp\
     manager/usermanager.cpp \
     manager/cabinetmanager.cpp \
     manager/goodsmanager.cpp \
-    Device/Hid/hid-libusb.c
+    Device/Hid/hid-libusb.c \
+    MxAuthor/authorencrypt.cpp \
+    MxAuthor/authormanager.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -161,7 +163,9 @@ HEADERS  += mainwidget.h \
     Widgets/keyboad.h \
     Widgets/goodsapply.h \
     Device/Hid/libusb.h \
-    Device/Hid/hidapi.h
+    Device/Hid/hidapi.h \
+    MxAuthor/authorencrypt.h \
+    MxAuthor/authormanager.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
