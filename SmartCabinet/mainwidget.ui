@@ -37,14 +37,14 @@
         <widget class="QLabel" name="label">
          <property name="geometry">
           <rect>
-           <x>190</x>
-           <y>160</y>
+           <x>160</x>
+           <y>150</y>
            <width>281</width>
            <height>41</height>
           </rect>
          </property>
          <property name="text">
-          <string>未取得合法授权，请联系管理员</string>
+          <string>程序被非法破坏，请联系管理员</string>
          </property>
         </widget>
        </widget>

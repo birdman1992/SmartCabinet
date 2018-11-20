@@ -1001,31 +1001,40 @@ void CabinetWidget::setPowerState(int power)
             ui->reply->show();
             break;
 
-        case 1://仓库员工:|补货|退货|退出|
-            ui->store->show();
-            ui->refund->show();
-            ui->cut->show();
-            ui->check->show();
-            ui->reply->show();
-            break;
+//        case 1://仓库员工:|补货|退货|退出|
+//            ui->store->show();
+//            ui->refund->show();
+//            ui->cut->show();
+//            ui->check->show();
+//            ui->reply->show();
+//            break;
 
-        case 2://医院管理:|补货|退货|服务|退出|
-            ui->store->show();
+//        case 2://医院管理:|补货|退货|服务|退出|
+//            ui->store->show();
+//            ui->refund->show();
+//            ui->cut->show();
+//            ui->reply->show();
+//            //        ui->service->show();
+//            break;
+
+        case 1://护士长:|退货|退出|
+            ui->reply->show();
             ui->refund->show();
             ui->cut->show();
-            ui->reply->show();
+            ui->quit->show();
             //        ui->service->show();
             break;
 
-        case 3://医院员工:|退货|退出|
+        case 2://护士:|退出|
             ui->reply->show();
             ui->refund->show();
             ui->cut->show();
+            ui->quit->show();
             //        ui->service->show();
             break;
 
         case 4://医院员工:|退出|
-            ui->cut->show();
+//            ui->cut->show();
             ui->quit->show();
             //        ui->service->show();
             break;
@@ -1053,6 +1062,11 @@ void CabinetWidget::setPowerState(int power)
             break;
 
         case 3://医院员工:
+            ui->cut->show();
+            ui->quit->show();
+            //        ui->service->show();
+            break;
+        case 4://医院员工:
             ui->cut->show();
             ui->quit->show();
             //        ui->service->show();
