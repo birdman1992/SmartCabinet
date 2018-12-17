@@ -555,8 +555,8 @@ void CabinetConfig::readCabinetConfig()
                 info->goodsType = getGoodsType(info->packageId);
                 info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
                 list_cabinet[i]->addCase(info,j,(cabNum <= 5));
-                list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
             }
+            list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
             settings.endArray();
         }
         settings.endGroup();

@@ -139,8 +139,11 @@ void CabinetServer::checkTime()
     connect(reply_datetime, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
 //    connect(reply_datetime, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(recvDateTimeError(QNetworkReply::NetworkError)));
 
-    sysClock.start(60000);
-    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+    if(!sysClock.isActive())
+    {
+        sysClock.start(60000);
+        connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+    }
     netTimeStart();
 }
 
@@ -234,6 +237,7 @@ void CabinetServer::watchdogStart()
     }
     qDebug()<<"[watchdog]"<<"start";
     watdogClock.start(10000);
+    watchdogTimeout();
     connect(&watdogClock, SIGNAL(timeout()), this, SLOT(watchdogTimeout()));
 }
 
@@ -1664,21 +1668,21 @@ int CabinetServer::watchdogTimeout()
     if (fWatchdog != -1)
     {
         ret = write(fWatchdog, "a", 1);
-
     }
     return ret;
 }
 
 void CabinetServer::sysTimeout()
 {
+//    watchdogTimeout();
     if(timeIsChecked)
     {
         emit timeUpdate();
     }
     else
     {
-        sysClock.stop();
-        disconnect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
+//        sysClock.stop();
+//        disconnect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
         checkTime();
 
         if(config->sleepFlagTimeout())

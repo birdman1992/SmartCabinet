@@ -20,6 +20,7 @@
 #include <errno.h> 
 //#define MY
 #define MC
+#define OFFSET_6Q 1
 
 const char *bus_str(int bus);
 char dev_path[2][24] = {0};
@@ -127,11 +128,11 @@ int get_path(void)
 #endif
 #ifdef MC
 						if(strcmp(pFile->d_name,"hidraw0") == 0)
-							event = 2;
+							event = 2-OFFSET_6Q;
 						else if(strcmp(pFile->d_name,"hidraw1") == 0)
-							event = 3;
+							event = 3-OFFSET_6Q;
 						else
-							event = 4;
+							event = 4-OFFSET_6Q;
 #endif
 
 					}
@@ -147,11 +148,11 @@ int get_path(void)
 #endif
 #ifdef MC
 						if(strcmp(pFile->d_name,"hidraw0") == 0)
-							event = 2;
+							event = 2-OFFSET_6Q;
 						else if(strcmp(pFile->d_name,"hidraw1") == 0)
-							event = 3;
+							event = 3-OFFSET_6Q;
 						else
-							event = 4;
+							event = 4-OFFSET_6Q;
 #endif
 
 					}
@@ -167,11 +168,11 @@ int get_path(void)
 #endif
 #ifdef MC
 						if(strcmp(pFile->d_name,"hidraw0") == 0)
-							event = 2;
+							event = 2-OFFSET_6Q;
 						else if(strcmp(pFile->d_name,"hidraw1") == 0)
-							event = 3;
+							event = 3-OFFSET_6Q;
 						else
-							event = 4;
+							event = 4-OFFSET_6Q;
 #endif
 
 					}

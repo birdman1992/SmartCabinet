@@ -701,6 +701,7 @@ bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
 //    ui->devScan->setVisible(true);
     ui->devReader->setVisible(config->getCardReaderState());
     ui->devScan->setVisible(config->getCodeScanState());
+
     return true;
 }
 

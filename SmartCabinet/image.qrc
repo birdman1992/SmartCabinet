@@ -37,6 +37,7 @@
         <file>image/btn_check_over_normal.png</file>
         <file>image/btn_notice_sel.png</file>
         <file>image/btn_notice_normal.png</file>
+        <file>image/bg_main_1600.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>
