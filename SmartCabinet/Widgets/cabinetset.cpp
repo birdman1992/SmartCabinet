@@ -244,10 +244,10 @@ void CabinetSet::on_netSet_clicked()
     QString netmask = ui->netmask->text();
     QString mac = ui->mac->text();
 
-    dev_network->setIp(ip);
-    dev_network->setGateway(gateway);
-    dev_network->setNetmask(netmask);
     dev_network->setMacAddress(mac);
+    dev_network->setIp(ip);
+    dev_network->setNetmask(netmask);
+    dev_network->setGateway(gateway);
     dev_network->saveNetwork();
 
 //    ui->ip->setText(dev_network->ip());
@@ -361,6 +361,7 @@ void CabinetSet::on_regId_clicked()
     ui->regMsg->show();
     ui->regId->setEnabled(false);
     emit requireCabRigster();
+    QTimer::singleShot(10000, this, SLOT(resetRegState()));
 }
 
 void CabinetSet::on_savePos_clicked()
@@ -479,4 +480,9 @@ void CabinetSet::on_cloneId_textChanged(const QString &arg1)
             strId.remove(0,1);
         }
     }
+}
+
+void CabinetSet::resetRegState()
+{
+    ui->regId->setEnabled(true);
 }

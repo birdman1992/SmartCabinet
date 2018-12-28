@@ -30,6 +30,9 @@ public:
 private:
     QString devName;
     QString devGateway;
+    QString devIp;
+    QString devMask;
+    QString devMac;
     QNetworkInterface interface;
     QNetworkAddressEntry netEntry;
     QNetworkInterface getNetworkInterface(QString name);

@@ -63,6 +63,8 @@ private slots:
 
     void on_cloneId_textChanged(const QString &arg1);
 
+    void resetRegState();
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
