@@ -313,6 +313,12 @@ void CabinetWidget::calCheck(QString card)
     }
 }
 
+void CabinetWidget::magicCmd(QString cmd)
+{
+    if(cmd == QString(MAGIC_CAL))
+        emit tsCalReq();
+}
+
 bool posSort(Cabinet *A, Cabinet *B)
 {
     return A->getCabPos() < B->getCabPos();
@@ -506,7 +512,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 }
 
 void CabinetWidget::recvScanData(QByteArray qba)
-{//qDebug()<<"recvScanData"<<qba;
+{qDebug()<<"recvScanData"<<qba;
+    magicCmd(QString(qba));
     if(!waitForCodeScan)
     {
         qDebug()<<"[CabinetWidget]"<<"scan data not need";
@@ -1080,7 +1087,7 @@ void CabinetWidget::setPowerState(int power)
 
 void CabinetWidget::recvUserInfo(QByteArray qba)
 {
-    calCheck(QString(qba));
+//    calCheck(QString(qba));
 
     if(this->isHidden())
         return;
@@ -1572,3 +1579,4 @@ void CabinetWidget::on_consume_date_clicked()
 {
     emit requireDayReportShow();
 }
+

@@ -8,6 +8,8 @@
 #define CONF_GOODS_INFO  "/home/config/goodsinfo.ini"
 #define CAB_CACHE "/home/config/cache.ini"
 
+#define MAGIC_CAL "ff00010acc"
+
 //全屏显示  unuse
 #define SHOW_FULLSCREEN
 

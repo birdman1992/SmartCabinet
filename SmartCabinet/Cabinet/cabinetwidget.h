@@ -200,6 +200,7 @@ private:
     void volumTest();
     void checkStart();//盘点开始 master
     void calCheck(QString card);
+    void magicCmd(QString cmd);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
 };
 
