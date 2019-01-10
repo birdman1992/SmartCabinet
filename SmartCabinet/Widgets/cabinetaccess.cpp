@@ -15,6 +15,7 @@ CabinetAccess::CabinetAccess(QWidget *parent) :
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
     isStore = false;//默认为取模式
     ui->frame_pri->hide();
+    networkState = false;
 
     keyBoard = new NumKeyboard();
     connect(keyBoard, SIGNAL(key(int)), this, SLOT(input(int)));
@@ -29,6 +30,11 @@ CabinetAccess::~CabinetAccess()
 {
     delete keyBoard;
     delete ui;
+}
+
+void CabinetAccess::setNetworkState(bool state)
+{
+    networkState = state;
 }
 
 bool CabinetAccess::installGlobalConfig(CabinetConfig *globalConfig)
@@ -144,7 +150,7 @@ void CabinetAccess::clickOpen(CabinetInfo *info)
 //    }
 //}
 
-void CabinetAccess::scanOpen(QString goodsId)
+void CabinetAccess::scanOpen(QString goodsId, QString goodsCode)
 {
     ui->frame_pri->hide();
     if(config->state == STATE_STORE)
@@ -186,8 +192,15 @@ void CabinetAccess::scanOpen(QString goodsId)
         config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
         qDebug()<<"fetch outnum"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         ui->name->setText(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->name);
-//        ui->tip->setText("正在取出");
-        showTips("正在取出", false);
+        //        ui->tip->setText("正在取出");
+        if(networkState)
+        {
+            showTips("正在取出", false);
+        }
+        else
+        {
+            showTips(QString("%1\n取出成功,离线取货请检查物品有效期").arg(goodsCode) ,false);
+        }
     }
     else if(config->state == STATE_REFUN)
     {

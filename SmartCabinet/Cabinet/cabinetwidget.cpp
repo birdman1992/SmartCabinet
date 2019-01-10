@@ -441,11 +441,11 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //            return;
 //        }
         //打开对应柜门
-        if(!ui->netState->isChecked())//离线状态只能批量取货
-        {
-            config->showMsg(MSG_OFFLINE,0);
-            return;
-        }
+//        if(!ui->netState->isChecked())//离线状态只能批量取货
+//        {
+//            config->showMsg(MSG_OFFLINE,0);
+//            return;
+//        }
 
         qDebug()<<"[CabinetWidget]"<<"[open]"<<cabSeqNum<<caseIndex;
         emit requireOpenCase(cabSeqNum, caseIndex);
@@ -454,6 +454,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         clickLock = false;
         scanInfo = QString();
         CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
+        win_access->setNetworkState(ui->netState->isChecked());
         win_access->setAccessModel(false);
         win_access->clickOpen(info);
 //        config->showMsg(MSG_FETCH_SCAN, false);
@@ -596,7 +597,12 @@ void CabinetWidget::recvScanData(QByteArray qba)
         }
         if(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
         {
-            if(!needWaitForServer())
+            if(!ui->netState->isChecked())
+            {
+                win_access->scanOpen(scanGoodsId, fullScanInfo);
+                emit goodsAccess(addr,fullScanInfo, 1, 1);
+            }
+            else if(!needWaitForServer())
             {
                 win_access->scanOpen(scanGoodsId);          
                 emit goodsAccess(addr,fullScanInfo, 1, 1);
@@ -991,6 +997,7 @@ void CabinetWidget::setPowerState(int power)
     ui->service->hide();
     ui->cut->hide();
     ui->check->hide();
+    ui->reply->hide();
     ui->search->show();
     ui->quit->hide();
     ui->frame_check_history->show();

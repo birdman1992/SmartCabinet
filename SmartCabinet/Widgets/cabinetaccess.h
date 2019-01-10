@@ -22,11 +22,12 @@ public:
     explicit CabinetAccess(QWidget *parent = 0);
     ~CabinetAccess();
 //    accessInit(bool store, );
+    void setNetworkState(bool state);
     void setAccessModel(bool store);//true:存 false:取
     void setStoreList(GoodsList* list);
     void clickOpen(QString goodsId);
     void clickOpen(CabinetInfo* info);
-    void scanOpen(QString goodsId);
+    void scanOpen(QString goodsId, QString goodsCode=QString());
     void save();
     void storeFailed(QString msg);
     void fetchFailed(QString msg);
@@ -54,6 +55,7 @@ private:
     Ui::CabinetAccess *ui;
     bool isStore;
     bool defaultValue;
+    bool networkState;
     CabinetConfig* config;
     GoodsList* storeList;
     Goods* storeGoods;

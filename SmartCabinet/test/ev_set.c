@@ -176,6 +176,26 @@ int get_path(void)
 #endif
 
 					}
+					else if(usb_info->vid==8746 && usb_info->pid==1)	// touch
+					{	
+#ifdef MY
+						if(strcmp(pFile->d_name,"hidraw0") == 0)
+							event = 4;
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
+							event = 5;
+						else
+							event = 6;
+#endif
+#ifdef MC
+						if(strcmp(pFile->d_name,"hidraw0") == 0)
+							event = 2-OFFSET_6Q;
+						else if(strcmp(pFile->d_name,"hidraw1") == 0)
+							event = 3-OFFSET_6Q;
+						else
+							event = 4-OFFSET_6Q;
+#endif
+
+					}
 					else if((usb_info->vid==2303) && (usb_info->pid==9))	// card reader
                         			snprintf(dev_path[0],20,"%s",path);
                     			else if((usb_info->vid==1534) && (usb_info->pid==4130))	// new card reader

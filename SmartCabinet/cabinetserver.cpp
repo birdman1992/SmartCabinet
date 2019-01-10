@@ -357,7 +357,8 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
 }
 
 void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optType)
-{qDebug()<<addr.cabinetSeqNum<<id<<num<<optType;
+{
+    qDebug()<<addr.cabinetSeqNum<<id<<num<<optType<<networkState;
     QString caseId = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex));
     QString cabinetId = config->getCabinetId();
     QString optName = config->getOptId();
@@ -375,16 +376,24 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
 
 //    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
     QString nUrl = ApiAddress+QString(API_GOODS_ACCESS);
-    qDebug()<<"[goodsAccess]"<<nUrl;
-    qDebug()<<qba;
-    replyCheck(reply_goods_access);
-    QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setUrl(nUrl);
-//    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
-    reply_goods_access = manager->post(request, qba.toBase64());
-    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
 
+    if(!networkState)
+    {
+        qDebug()<<"[offline access]"<<nUrl<<qba;
+        config->saveFetchList(qba.toBase64());
+    }
+    else
+    {
+        qDebug()<<"[goodsAccess]"<<nUrl;
+        qDebug()<<qba;
+        replyCheck(reply_goods_access);
+        QNetworkRequest request;
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        request.setUrl(nUrl);
+    //    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+        reply_goods_access = manager->post(request, qba.toBase64());
+        connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
+    }
 }
 
 void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 refund:3
@@ -976,6 +985,7 @@ void CabinetServer::recvGoodsAccess()
         emit accessFailed(QString(cJSON_GetObjectItem(json,"msg")->valuestring));
     }
     cJSON_Delete(json);
+    accessLoop();
 }
 
 void CabinetServer::recvListAccess()

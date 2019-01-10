@@ -911,7 +911,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.4.9.20190108_beta</string>
+        <string>VERSION: 1.4.10.20190110_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
