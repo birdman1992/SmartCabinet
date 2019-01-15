@@ -104,8 +104,22 @@ border:1px solid gray;</string>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="styleSheet">
+      <string notr="true">#opt{
+	background-color: rgb(255, 255, 255);
+}
+#opt:checked{
+background-color: rgb(114, 159, 207);
+}</string>
+     </property>
      <property name="text">
       <string/>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
