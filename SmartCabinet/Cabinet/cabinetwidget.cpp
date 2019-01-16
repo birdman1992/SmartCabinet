@@ -1048,6 +1048,15 @@ void CabinetWidget::setPowerState(int power)
             //        ui->service->show();
             break;
 
+        case 3://管理员:|补货|退货|退出|
+            ui->store->show();
+            ui->refund->show();
+//            ui->service->show();
+            ui->cut->show();
+            ui->check->show();
+            ui->reply->show();
+            break;
+
         case 4://医院员工:|退出|
 //            ui->cut->show();
             ui->quit->show();
