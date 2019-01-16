@@ -64,7 +64,7 @@ public slots:
     void readyGoodsList(QString listCode);
     void sysLock();
     void recvCabSyncResult(bool);
-    void recvCheckRst(bool);
+    void recvCheckRst(bool, QString msg);
     void recvCheckFinish(bool);
     void recvCheckCreatRst(bool, QString msg);
     void recvCheckFinishRst(bool, QString msg);

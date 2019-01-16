@@ -1326,7 +1326,7 @@ void CabinetWidget::recvCabSyncResult(bool rst)
     QTimer::singleShot(3000, this, SLOT(syncMsgTimeout()));
 }
 
-void CabinetWidget::recvCheckRst(bool success)
+void CabinetWidget::recvCheckRst(bool success, QString msg)
 {
     if(success)
     {
@@ -1334,7 +1334,7 @@ void CabinetWidget::recvCheckRst(bool success)
     }
     else
     {
-        config->showMsg(MSG_CHECK_CREAT_FAILED,false);
+        config->showMsg(msg,false);
         ui->check->setChecked(false);
     }
 }

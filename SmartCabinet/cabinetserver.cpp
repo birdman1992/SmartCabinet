@@ -1080,13 +1080,13 @@ void CabinetServer::recvCheckCreat()
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
-        emit checkCreatRst(true);
+        emit checkCreatRst(true, QString(cJSON_GetObjectItem(json, "msg")->valuestring));
         cJSON* jData = cJSON_GetObjectItem(json, "data");
         checkId = cJSON_GetObjectItem(jData,"id")->valueint;
     }
     else
     {
-        emit checkCreatRst(false);
+        emit checkCreatRst(false, QString(cJSON_GetObjectItem(json, "msg")->valuestring));
     }
 
     cJSON_Delete(json);
