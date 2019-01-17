@@ -347,6 +347,28 @@ void CabinetService::on_insert_pos_2_valueChanged(int arg1)
 
 void CabinetService::on_ok_clicked()
 {
+    if(dev_network == NULL)
+        return;
+
+    QString ip = ui->addr->text();
+    QString gateway = ui->gateway->text();
+    QString netmask = ui->netmask->text();
+    QString mac = ui->mac->text();
+
+    dev_network->setMacAddress(mac);
+    dev_network->setIp(ip);
+    dev_network->setNetmask(netmask);
+    dev_network->setGateway(gateway);
+    dev_network->saveNetwork();
+
+//    ui->ip->setText(dev_network->ip());
+//    ui->netmask->setText(dev_network->netmask());
+//    ui->gateway->setText(dev_network->gateway());
+//    ui->mac->setText(dev_network->macAddress());
+//    on_netUpdate_clicked();
+    QTimer::singleShot(5000, this, SLOT(updateNetInfo()));
+    return;
+
     if(ui->addr->text() != dev_ip)
     {
         if(dev_network->numPointCheck(ui->addr->text()))

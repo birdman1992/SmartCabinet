@@ -71,6 +71,7 @@ private slots:
 
 
     void on_insert_2_clicked();
+    void updateNetInfo();
 
 public slots:
     void ctrl_boardcast();//广播控制
@@ -99,7 +100,6 @@ private:
     int curId;
     bool lockConfigIsOk;
 
-    void updateNetInfo();
     void initStack();
     void initGroup();
     void creatCtrlConfig();
