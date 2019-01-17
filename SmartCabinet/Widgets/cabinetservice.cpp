@@ -361,55 +361,8 @@ void CabinetService::on_ok_clicked()
     dev_network->setGateway(gateway);
     dev_network->saveNetwork();
 
-//    ui->ip->setText(dev_network->ip());
-//    ui->netmask->setText(dev_network->netmask());
-//    ui->gateway->setText(dev_network->gateway());
-//    ui->mac->setText(dev_network->macAddress());
-//    on_netUpdate_clicked();
     QTimer::singleShot(5000, this, SLOT(updateNetInfo()));
     return;
-
-    if(ui->addr->text() != dev_ip)
-    {
-        if(dev_network->numPointCheck(ui->addr->text()))
-        {
-            dev_ip = ui->addr->text();
-            dev_network->setIp(dev_ip);
-            ui->warning->clear();
-        }
-        else
-        {
-            ui->warning->setText("地址格式错误");
-        }
-    }
-    if(ui->netmask->text() != dev_netmask)
-    {
-        if(dev_network->numPointCheck(dev_netmask))
-        {
-            dev_netmask = ui->netmask->text();
-            dev_network->setNetmask(dev_netmask);
-            ui->warning->clear();
-        }
-        else
-        {
-            ui->warning->setText("地址格式错误");
-        }
-    }
-//    if(ui->gateway->text() != dev_gateway)
-//    {
-    if(dev_network->numPointCheck(dev_gateway))
-    {
-        dev_gateway = ui->gateway->text();
-        dev_network->setGateway(dev_gateway);
-        ui->warning->clear();
-    }
-    else
-    {
-        ui->warning->setText("地址格式错误");
-    }
-//    }
-    dev_network->saveNetwork();
-    updateNetInfo();
 }
 
 void CabinetService::on_cancel_clicked()

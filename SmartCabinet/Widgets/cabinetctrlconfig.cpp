@@ -60,27 +60,28 @@ void CabinetCtrlConfig::on_test_clicked()
 
 void CabinetCtrlConfig::on_ok_clicked()
 {
-    QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    settings.beginGroup(QString("Cabinet%1").arg(curSeq));
-    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
-    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
+//    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+//    settings.beginGroup(QString("Cabinet%1").arg(curSeq));
+//    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
+//    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
     int seq = ui->seqnum->text().toInt();
     int index = ui->indexnum->text().toInt();
 
-    seq = (seq>0xff)?0xff:seq;
-    index = (index>0xff)?0xff:index;
-    config->list_cabinet[curSeq]->list_case[curIndex]->ctrlSeq = seq;
-    config->list_cabinet[curSeq]->list_case[curIndex]->ctrlIndex = index;
+    config->setLockCtrl(curSeq, curIndex, seq, index);
+//    seq = (seq>0xff)?0xff:seq;
+//    index = (index>0xff)?0xff:index;
+//    config->list_cabinet[curSeq]->list_case[curIndex]->ctrlSeq = seq;
+//    config->list_cabinet[curSeq]->list_case[curIndex]->ctrlIndex = index;
 
-    ctrlSeq[curIndex] = seq;
-    ctrlIndex[curIndex] = index;
+//    ctrlSeq[curIndex] = seq;
+//    ctrlIndex[curIndex] = index;
 
     emit updateBtn();
 
-    settings.setValue("ctrlSeq", ctrlSeq);
-    settings.setValue("ctrlIndex", ctrlIndex);
-    settings.endGroup();
-    settings.sync();
+//    settings.setValue("ctrlSeq", ctrlSeq);
+//    settings.setValue("ctrlIndex", ctrlIndex);
+//    settings.endGroup();
+//    settings.sync();
     ui->tips->setText("配置成功");
 }
 

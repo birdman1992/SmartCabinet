@@ -13,6 +13,7 @@
 
 CabinetConfig::CabinetConfig()
 {
+    lockManager = LockManager::manager();
     state = STATE_NO;
     sleepFlag = 0;
     cardReaderIsOk = false;
@@ -534,9 +535,8 @@ void CabinetConfig::readCabinetConfig()
     for(i=0; i<cabNum; i++)
     {
         settings.beginGroup(QString("Cabinet%1").arg(i));
-        QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
-        QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray::fromHex("00000000000000000000000000000000")).toByteArray();
-
+        QByteArray ctrlSeq = lockManager->getLockCtrlSeq(i);
+        QByteArray ctrlIndex = lockManager->getLockCtrlIndex(i);
         for(j=0; j<list_cabinet.at(i)->getCaseNum(); j++)
         {
             int arr_size = settings.beginReadArray(QString("case%1").arg(j));
@@ -562,6 +562,13 @@ void CabinetConfig::readCabinetConfig()
         settings.endGroup();
     }
     creatCabinetJson();
+}
+
+void CabinetConfig::setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlIndex)
+{
+    lockManager->setLockCtrl(cabSeq, cabIndex, ctrlSeq, ctrlIndex);
+    list_cabinet[cabSeq]->list_case[cabIndex]->ctrlSeq = ctrlSeq;
+    list_cabinet[cabSeq]->list_case[cabIndex]->ctrlIndex = ctrlIndex;
 }
 
 QString CabinetConfig::getSecondUser()

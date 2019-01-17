@@ -13,6 +13,7 @@
 #include "Cabinet/cabinet.h"
 #include "Device/voiceplayer.h"
 #include "medinf.h"
+#include "manager/lockmanager.h"
 
 enum CabState
 {
@@ -103,6 +104,7 @@ public:
 
     QString scanDataTrans(QString code);
     void setCabinetColMap(QString map);
+    void setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlIndex);
 private:
     bool cardReaderIsOk;
     bool codeScanIsOk;
@@ -118,6 +120,7 @@ private:
     QString serverAddr;
     QString optName;//操作者卡号
     QString secOpt;//第二操作人
+    LockManager* lockManager;
 
     void readUserConfig();//读取用户配置
 

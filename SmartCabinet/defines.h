@@ -1,6 +1,7 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#define CONF_LOCK "/home/config/lock.ini"  //锁控配置
 #define CONF_USER "/home/config/cabinet.ini"  //原接口
 #define CONF_USER_INFO  "/home/config/user.ini"   //new_api
 #define CONF_CABINET "/home/config/cabinet.ini"   //共用
