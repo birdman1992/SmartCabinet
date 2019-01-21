@@ -14,6 +14,7 @@
 #include "cabinetconfig.h"
 #include "Widgets/cabinetctrlconfig.h"
 #include "manager/cabinetmanager.h"
+#include "funcs/servertest.h"
 
 bool posSort(Cabinet *A, Cabinet *B);
 
@@ -73,6 +74,8 @@ private slots:
     void on_insert_2_clicked();
     void updateNetInfo();
 
+    void on_testServer_clicked();
+
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);
@@ -84,6 +87,7 @@ private:
     QNetInterface* dev_network;
     CabinetManager* cabManager;
     QTableWidget* nTab;
+    ServerTest* sTest;
     QString insert_layout;
     int insert_pos;
     QString dev_ip;

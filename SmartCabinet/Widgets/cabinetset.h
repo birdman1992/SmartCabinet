@@ -11,6 +11,7 @@
 #include <QButtonGroup>
 #include <QTableWidget>
 #include "Device/controldevice.h"
+#include "funcs/servertest.h"
 
 namespace Ui {
 class CabinetSet;
@@ -82,6 +83,7 @@ private:
     Ui::CabinetSet *ui;
     int initStep;
     QStringList cabTypeList;
+    ServerTest* sTest;
     QNetInterface* dev_network;
     CabinetConfig* config;
     QByteArray cabinet_pos;

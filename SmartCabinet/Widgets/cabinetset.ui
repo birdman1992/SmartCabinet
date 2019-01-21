@@ -882,7 +882,7 @@ background-color: rgb(255, 255, 255);</string>
     <rect>
      <x>880</x>
      <y>200</y>
-     <width>261</width>
+     <width>291</width>
      <height>281</height>
     </rect>
    </property>
@@ -908,7 +908,7 @@ font: 18px &quot;微软雅黑&quot;;
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>261</width>
+      <width>291</width>
       <height>51</height>
      </rect>
     </property>
@@ -976,7 +976,7 @@ color:rgb(255,255,255);</string>
      <rect>
       <x>70</x>
       <y>60</y>
-      <width>180</width>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
@@ -995,7 +995,7 @@ color:rgb(255,255,255);</string>
      <rect>
       <x>70</x>
       <y>100</y>
-      <width>180</width>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
@@ -1014,7 +1014,7 @@ color:rgb(255,255,255);</string>
      <rect>
       <x>70</x>
       <y>140</y>
-      <width>180</width>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
@@ -1059,7 +1059,7 @@ color:rgb(255,255,255);</string>
      <rect>
       <x>70</x>
       <y>180</y>
-      <width>180</width>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
@@ -1093,9 +1093,9 @@ color:rgb(255,255,255);</string>
   <widget class="QFrame" name="frame_6">
    <property name="geometry">
     <rect>
-     <x>1150</x>
+     <x>1180</x>
      <y>200</y>
-     <width>281</width>
+     <width>251</width>
      <height>281</height>
     </rect>
    </property>
@@ -1470,17 +1470,30 @@ color:rgb(255,255,255);
     <string>编号1，2，3，4为必要配置步骤，请按顺序完成</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="finish">
+  <widget class="QStackedWidget" name="testStack">
    <property name="geometry">
     <rect>
-     <x>880</x>
-     <y>570</y>
-     <width>551</width>
-     <height>321</height>
+     <x>870</x>
+     <y>560</y>
+     <width>571</width>
+     <height>331</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QPushButton{
+   <property name="currentIndex">
+    <number>1</number>
+   </property>
+   <widget class="QWidget" name="page">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="finish">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
 	background-color: rgb(62, 155, 255);
 	border:50px outset gray;
 	font: 100px &quot;微软雅黑&quot;;
@@ -1488,10 +1501,92 @@ color:rgb(255,255,255);
 QPushButton::pressed{
 	border:50px inset gray;
 }</string>
-   </property>
-   <property name="text">
-    <string>配置完成</string>
-   </property>
+       </property>
+       <property name="text">
+        <string>配置完成</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="page_2">
+    <widget class="QFrame" name="frame_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>551</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Ping</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="ping_msg">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QFrame" name="frame_9">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>551</width>
+       <height>66</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_23">
+        <property name="text">
+         <string>服务器时间</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="api_msg">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <resources/>

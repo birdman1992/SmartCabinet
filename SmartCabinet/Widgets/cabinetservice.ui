@@ -128,15 +128,15 @@ QPushButton::pressed{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_0">
       <widget class="QFrame" name="network">
        <property name="geometry">
         <rect>
-         <x>310</x>
-         <y>170</y>
-         <width>290</width>
+         <x>19</x>
+         <y>140</y>
+         <width>351</width>
          <height>331</height>
         </rect>
        </property>
@@ -300,8 +300,8 @@ font:20px&quot;微软雅黑&quot;;
       <widget class="QLineEdit" name="server_addr">
        <property name="geometry">
         <rect>
-         <x>420</x>
-         <y>90</y>
+         <x>140</x>
+         <y>75</y>
          <width>291</width>
          <height>41</height>
         </rect>
@@ -313,8 +313,8 @@ font:20px&quot;微软雅黑&quot;;
       <widget class="QLabel" name="label_4">
        <property name="geometry">
         <rect>
-         <x>310</x>
-         <y>90</y>
+         <x>30</x>
+         <y>75</y>
          <width>111</width>
          <height>38</height>
         </rect>
@@ -329,14 +329,103 @@ font:20px&quot;微软雅黑&quot;;
       <widget class="QPushButton" name="set_server_addr">
        <property name="geometry">
         <rect>
-         <x>730</x>
-         <y>85</y>
+         <x>450</x>
+         <y>70</y>
          <width>99</width>
          <height>48</height>
         </rect>
        </property>
        <property name="text">
         <string>设置</string>
+       </property>
+      </widget>
+      <widget class="QFrame" name="frame_8">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>230</y>
+         <width>551</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,1">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Ping</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="ping_msg">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QFrame" name="frame_9">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>320</y>
+         <width>551</width>
+         <height>66</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_9" stretch="0,0">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_23">
+          <property name="text">
+           <string>服务器时间</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="api_msg">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QPushButton" name="testServer">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>160</y>
+         <width>181</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>测试服务器连接</string>
        </property>
       </widget>
      </widget>
@@ -911,7 +1000,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.4.11.20190117_beta</string>
+        <string>VERSION: 1.5.0.20190121_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">

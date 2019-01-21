@@ -86,8 +86,15 @@ void ControlDevice::deviceInit()
     {
         if(!hid_code_scan->hidOpen(8208, 30264))
         {
-            qDebug()<<"[CODE SCAN] open failed";
-            scanState = false;
+            if(!hid_code_scan->hidOpen(0x23d0, 0x0c80))
+            {
+                qDebug()<<"[CODE SCAN] open failed";
+                scanState = false;
+            }
+            else
+            {
+                scanState = true;
+            }
         }
         else
         {

@@ -3,6 +3,7 @@
 #include "defines.h"
 #include <QDebug>
 #include <QHeaderView>
+#include "cabinetserver.h"
 
 CabinetSet::CabinetSet(QWidget *parent) :
     QWidget(parent),
@@ -13,7 +14,9 @@ CabinetSet::CabinetSet(QWidget *parent) :
     cabinet_pos[0] = 0;
     initStep = 0;
     ui->finish->hide();
+    ui->testStack->setCurrentIndex(1);
     dev_network = NULL;
+    sTest = NULL;
     needSelScreen = true;
     screenPos = QPoint(-1,-1);
     //初始化柜格类型
@@ -91,6 +94,7 @@ void CabinetSet::cloneResult(bool isSuccess, QString msg)
         ui->save->setEnabled(false);
         ui->cloneMsg->setText("克隆成功");
         ui->cloneStart->setText("确定");
+        ui->testStack->setCurrentIndex(0);
         ui->finish->show();
         config->setCabinetId(ui->cloneId->text());
         return;
@@ -105,6 +109,7 @@ void CabinetSet::regResult(bool isSuccess)
     {
         QString msg = QString("ID注册成功：\n%1").arg(config->getCabinetId());
         ui->regMsg->setText(msg);
+        ui->testStack->setCurrentIndex(0);
         ui->finish->show();
     }
     else
@@ -183,6 +188,17 @@ void CabinetSet::on_save_clicked()
     emit updateServerAddr(ui->serverAddr->text());
     config->setServerAddress(ui->serverAddr->text());
     initStep = 1;
+    if(sTest != NULL)
+        delete sTest;
+//    else
+//    {
+    QString testApi = "http://" + ui->serverAddr->text() + "/spd-web/sarkApi/Time/query/";
+    sTest = new ServerTest(testApi, QByteArray(), this, NULL);
+    connect(sTest, SIGNAL(apiMsg(QString)), ui->api_msg, SLOT(setText(QString)));
+    connect(sTest, SIGNAL(pingMsg(QString)), ui->ping_msg, SLOT(setText(QString)));
+    sTest->testStart();
+//    }
+
     return;
 }
 
@@ -393,6 +409,7 @@ void CabinetSet::on_finish_clicked()
     emit cabinetCreated();
     emit winSwitch(INDEX_CAB_SHOW);
     config->cabVoice.voicePlay(VOICE_WELCOME);
+    sTest->testFinish();
 }
 
 void CabinetSet::on_cabType_currentIndexChanged(int)

@@ -20,6 +20,8 @@ CabinetService::CabinetService(QWidget *parent) :
     ui->setupUi(this);
     ui->addr->installEventFilter(this);
 
+    sTest = NULL;
+
     cfg_layout = new QHBoxLayout();
     ui->ctrlCfg->setLayout(cfg_layout);
 
@@ -89,6 +91,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 void CabinetService::on_back_clicked()
 {
     emit winSwitch(INDEX_CAB_SHOW);
+    sTest->testFinish();
 }
 
 void CabinetService::showEvent(QShowEvent *)
@@ -721,4 +724,16 @@ void CabinetService::on_insert_2_clicked()
             ui->insert->setEnabled(true);
         }
     }
+}
+
+void CabinetService::on_testServer_clicked()
+{
+    if(sTest != NULL)
+        delete sTest;
+
+    QString testApi = ui->server_addr->text() + "/spd-web/sarkApi/Time/query/";
+    sTest = new ServerTest(testApi, QByteArray(), this, NULL);
+    connect(sTest, SIGNAL(apiMsg(QString)), ui->api_msg, SLOT(setText(QString)));
+    connect(sTest, SIGNAL(pingMsg(QString)), ui->ping_msg, SLOT(setText(QString)));
+    sTest->testStart();
 }
