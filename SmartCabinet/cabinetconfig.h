@@ -24,6 +24,7 @@ enum CabState
     STATE_LIST = 4,//列表取货状态
     STATE_CHECK = 5,//盘点状态
     STATE_REBIND = 6,//重新绑定
+    STATE_SPEC = 7,//配置特殊柜
 };
 
 class CabinetConfig
@@ -33,6 +34,8 @@ public:
     ~CabinetConfig();
     void saveFetchList(QByteArray _data);
     void readCabinetConfig();//读取柜子配置
+    void setSpecialCase(QPoint pos, bool needRecover = true);
+    QPoint getSpecialCase();
     QString getSecondUser();
     void setSecondUser(QString userId);
     QString getCabinetLayout();
@@ -70,6 +73,7 @@ public:
     void setCodeScanState(bool ok);
     bool getCodeScanState();
     bool isScreen(int seq, int _index);
+    bool isSpec(int seq, int index);
     bool sleepFlagTimeout();//唤醒超时检查
     bool isFirstUse();//判断是否第一次使用
     void addUser(UserInfo* info);//添加用户
@@ -113,6 +117,7 @@ private:
     int timeoutFlag;//超时标志
     int userNum;//用户数量
     QPoint screenPos;
+    QPoint specPos;
     int caseWidth;
 //    QString cabId;
     int cabinetType;

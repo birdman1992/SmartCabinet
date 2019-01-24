@@ -8,13 +8,14 @@ ServerTest::ServerTest(QString apiAddress, QByteArray postData, QObject *parent,
     pData = postData;
     serverAddress = getIpAddress(pAddress);
     reply = NULL;
+
     if(m == NULL)
     {
         manager = new QNetworkAccessManager(this);
-        tProcess = new QProcess(this);
-        connect(tProcess, SIGNAL(readyRead()), this, SLOT(recvPingRst()));
-        tProcess->start(QString("ping %1").arg(serverAddress));
     }
+    tProcess = new QProcess(this);
+    connect(tProcess, SIGNAL(readyRead()), this, SLOT(recvPingRst()));
+    tProcess->start(QString("ping %1").arg(serverAddress));
 }
 
 QNetworkAccessManager *ServerTest::getManager()

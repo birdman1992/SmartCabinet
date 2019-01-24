@@ -294,9 +294,30 @@ void CabinetWidget::checkStart()
     ui->reply->hide();
     ui->quit->hide();
 #else
+    config->state = STATE_CHECK;
+    waitForCodeScan = true;
+    waitForGoodsListCode = false;
+    config->showMsg(MSG_CHECK,false);
+    clickLock = false;
+    clearMenuState();
+    ui->check->setChecked(true);
+    config->wakeUp(TIMEOUT_CHECK);
+
+//    ui->store->hide();
+//    ui->service->hide();
+//    ui->cut->hide();
+//    ui->refund->hide();
+////    ui->check->hide();
+//    ui->search->hide();
+//    ui->reply->hide();
+//    ui->quit->hide();
+#endif
+}
+
+void CabinetWidget::checkCreat()
+{
     config->showMsg(MSG_CHECK_CREAT,false);
     emit requireGoodsCheck();
-#endif
 }
 
 void CabinetWidget::calCheck(QString card)
@@ -375,6 +396,12 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if(config->isScreen(cabSeqNum, caseIndex))
         return;
+    if(config->isSpec(cabSeqNum, caseIndex))
+    {
+        if((optUser->power > 1) && (optUser->power!=3))//0 1 3
+            return;
+    }
+
     if(clickLock && (config->state != STATE_REBIND))//锁定状态下点击无效
     {
         if((caseIndex==selectCase) && (cabSeqNum == selectCab))
@@ -509,6 +536,13 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //        config->removeConfig(rebind_old_addr);
         emit requireCaseRebind(selectCab, selectCase, rebindGoods->packageId);
 //        cabInfoBind(selectCab, selectCase, *rebindGoods);
+    }
+    else if(config->state == STATE_SPEC)
+    {
+        QPoint pSpec = QPoint(cabSeqNum, caseIndex);
+        config->setSpecialCase(pSpec);
+        emit winSwitch(INDEX_CAB_SERVICE);
+        config->state = STATE_FETCH;
     }
 }
 
@@ -1133,7 +1167,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
         }
         else
         {
-            checkStart();
+            checkCreat();
         }
 
         return;

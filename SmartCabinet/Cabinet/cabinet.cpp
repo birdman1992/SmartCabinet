@@ -117,6 +117,16 @@ void Cabinet::setCabPos(int pos)
     posNum = pos;
 }
 
+void Cabinet::setSpecCase(int index, bool spec)
+{
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
+    lab->setSpec(spec);
+    if(!spec)
+    {
+        lab->setText(list_case[index]->list_goods);
+    }
+}
+
 int Cabinet::getUnCheckNum()
 {
     int ret = 0;
@@ -550,22 +560,22 @@ void Cabinet::setCaseState(int index, int numState)
 
 //    if(isMainCabinet && index)
 //        index++;
+    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
+    if(lab->isSpecialCase())
+        return;
 
     if(numState == 0)//正常状态
     {
-        CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setCheckState(false);
         lab->setStyleSheet(cellStyle(QColor(36, 221, 149)));
     }
     else if(numState == 1)//被搜索状态
     {
-        CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setCheckState(false);
         lab->setStyleSheet(cellStyle(QColor(238, 128, 61)));
     }
     else if(numState == 2)//盘点完毕状态
     {
-        CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(index,0);
         lab->setCheckState(true);
         lab->setStyleSheet(cellStyle(QColor(36, 221, 149))+checkStyle());
     }

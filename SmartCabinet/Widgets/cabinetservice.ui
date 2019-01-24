@@ -128,7 +128,7 @@ QPushButton::pressed{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_0">
       <widget class="QFrame" name="network">
@@ -253,7 +253,7 @@ font:20px&quot;微软雅黑&quot;;
         <item row="0" column="1">
          <widget class="QLineEdit" name="addr">
           <property name="text">
-           <string>192.168.221.111</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -1000,7 +1000,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.5.0.20190121_beta</string>
+        <string>VERSION: 1.5.2.20190124_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
@@ -1364,6 +1364,19 @@ font:20px&quot;微软雅黑&quot;;
          </spacer>
         </item>
        </layout>
+      </widget>
+      <widget class="QPushButton" name="set_spec_case">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>730</y>
+         <width>421</width>
+         <height>111</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>设置护士长专用柜</string>
+       </property>
       </widget>
      </widget>
      <widget class="QWidget" name="page">

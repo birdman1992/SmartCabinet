@@ -24,10 +24,13 @@ public:
     QFont caseFont();
     int labWidth();
     int maxShowNum();
+    void setSpec(bool spec);
+    bool isSpecialCase();
 
 private:
     Ui::CasePanel *ui;
     bool showDoubleCol;
+    bool isSpec;//特殊柜
     QFont* font;
     QList<GoodsInfo *> list_show;
     QString geteElidedText(QFont _font, QString str, int MaxWidth);
@@ -37,6 +40,7 @@ private:
     void updatePanel();
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent* );
+    QString cellStyle(QColor rgb);
 };
 
 #endif // CASEPANEL_H

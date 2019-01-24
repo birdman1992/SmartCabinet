@@ -91,7 +91,12 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 void CabinetService::on_back_clicked()
 {
     emit winSwitch(INDEX_CAB_SHOW);
-    sTest->testFinish();
+    if(sTest != NULL)
+    {
+        sTest->testFinish();
+        delete sTest;
+        sTest = NULL;
+    }
 }
 
 void CabinetService::showEvent(QShowEvent *)
@@ -524,6 +529,13 @@ void CabinetService::on_rebind_clicked()
 {
     config->state = STATE_REBIND;
     config->showMsg(MSG_REBIND_SCAN,0);
+    emit winSwitch(INDEX_CAB_SHOW);
+}
+
+void CabinetService::on_set_spec_case_clicked()
+{
+    config->state = STATE_SPEC;
+    config->showMsg(MSG_SET_SPEC,0);
     emit winSwitch(INDEX_CAB_SHOW);
 }
 

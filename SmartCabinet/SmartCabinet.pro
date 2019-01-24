@@ -95,7 +95,8 @@ SOURCES += main.cpp\
     MxAuthor/authorencrypt.cpp \
     MxAuthor/authormanager.cpp \
     manager/lockmanager.cpp \
-    funcs/servertest.cpp
+    funcs/servertest.cpp \
+    funcs/routerepair.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -169,7 +170,8 @@ HEADERS  += mainwidget.h \
     MxAuthor/authorencrypt.h \
     MxAuthor/authormanager.h \
     manager/lockmanager.h \
-    funcs/servertest.h
+    funcs/servertest.h \
+    funcs/routerepair.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

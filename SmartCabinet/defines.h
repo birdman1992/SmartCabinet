@@ -52,6 +52,7 @@
 #define MSG_REFUND  "点击柜格扫码退货"
 #define MSG_OFFLINE  "当前为离线状态，请点击 切换 按钮批量取货"
 #define MSG_REBIND_SCAN     "点击柜格：开门\n扫描条码：选择需要变更的物品"
+#define MSG_SET_SPEC    "请选择护士长储物柜"
 #define MSG_REBIND_SELECT   "请选择物品重新绑定的柜格"
 
 

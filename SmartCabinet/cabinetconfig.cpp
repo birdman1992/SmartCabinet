@@ -149,7 +149,7 @@ void CabinetConfig::syncGoods(GoodsInfo *info, int row, int col)
         return;
     if((col >= list_cabinet.count()))
         return;
-    if(row >= list_cabinet[col]->list_case.count())
+    if((row<0) || (row >= list_cabinet[col]->list_case.count()))
         return;
 
     QList<GoodsInfo*> targetList = list_cabinet[col]->list_case[row]->list_goods;
@@ -298,6 +298,14 @@ bool CabinetConfig::getCodeScanState()
 bool CabinetConfig::isScreen(int seq, int _index)
 {
     if((seq == screenPos.x()) && (_index == screenPos.y()))
+        return true;
+    else
+        return false;
+}
+
+bool CabinetConfig::isSpec(int seq, int index)
+{
+    if((seq == specPos.x()) && (index == specPos.y()))
         return true;
     else
         return false;
@@ -562,6 +570,69 @@ void CabinetConfig::readCabinetConfig()
         settings.endGroup();
     }
     creatCabinetJson();
+
+    specPos = getSpecialCase();
+    setSpecialCase(specPos, false);
+}
+
+void CabinetConfig::setSpecialCase(QPoint pos, bool needRecover)
+{
+    QPoint oldSpec = getSpecialCase();
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("SpecialCase", QString("%1 %2").arg(pos.x()).arg(pos.y()));
+    settings.sync();
+
+    if(needRecover)
+    {
+        if(pos == oldSpec)
+        {
+            return;
+        }
+    }
+
+    specPos = pos;
+
+    //清除旧特殊柜格
+    if((oldSpec.x()>=0) && (oldSpec.x()<list_cabinet.count()))
+    {
+        if((oldSpec.y()>=0) && oldSpec.y() < (list_cabinet[oldSpec.x()]->list_case.count()))
+        {
+            list_cabinet[oldSpec.x()]->setSpecCase(oldSpec.y(), false);
+        }
+    }
+
+    //设置新特殊柜格
+    if((pos.x()>=0) && (pos.x()<list_cabinet.count()))
+    {
+        if((pos.y()>=0) && pos.y() < (list_cabinet[pos.x()]->list_case.count()))
+        {
+            list_cabinet[pos.x()]->setSpecCase(pos.y(), true);
+        }
+    }
+}
+
+QPoint CabinetConfig::getSpecialCase()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QVariant v = settings.value("SpecialCase");
+    if(v.isNull())
+        return QPoint(-1,-1);
+    QStringList listP = v.toString().split(" ", QString::SkipEmptyParts);
+    if(listP.count() != 2)
+        return QPoint(-1,-1);
+
+    bool ok;
+    QPoint ret;
+
+    ret.setX(listP[0].toInt(&ok));
+    if(!ok)
+        return QPoint(-1,-1);
+
+    ret.setY(listP[1].toInt(&ok));
+    if(!ok)
+        return QPoint(-1,-1);
+
+    return ret;
 }
 
 void CabinetConfig::setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlIndex)

@@ -76,6 +76,8 @@ private slots:
 
     void on_testServer_clicked();
 
+    void on_set_spec_case_clicked();
+
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);

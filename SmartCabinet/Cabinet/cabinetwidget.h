@@ -64,9 +64,9 @@ public slots:
     void readyGoodsList(QString listCode);
     void sysLock();
     void recvCabSyncResult(bool);
-    void recvCheckRst(bool, QString msg);
+    void recvCheckRst(bool, QString msg);//master
     void recvCheckFinish(bool);
-    void recvCheckCreatRst(bool, QString msg);
+    void recvCheckCreatRst(bool, QString msg);//new_api
     void recvCheckFinishRst(bool, QString msg);
 
 
@@ -95,6 +95,7 @@ signals:
     void requireDayReportShow();
     void requireApplyShow();
     void tsCalReq();
+    void setSpecialCase(QPoint);
 
 private slots:
     void setMenuHide(bool ishide);
@@ -198,7 +199,8 @@ private:
     void clearCheckState();
     void clearMenuState();
     void volumTest();
-    void checkStart();//盘点开始 master
+    void checkStart();//盘点开始 master&new_api
+    void checkCreat();
     void calCheck(QString card);
     void magicCmd(QString cmd);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换

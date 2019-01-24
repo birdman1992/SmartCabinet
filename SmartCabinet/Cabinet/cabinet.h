@@ -26,6 +26,7 @@ public:
     void CabinetInit(int _width, int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
     void CabinetInit(QString cLayout, int seq, int sPos=-1);
     void setCabPos(int pos);
+    void setSpecCase(int index, bool spec);
     int getUnCheckNum();
     int getCabPos();
     int getSeqNum();

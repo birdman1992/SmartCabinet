@@ -8,6 +8,7 @@ CasePanel::CasePanel(bool doubleCol, QWidget *parent) :
     ui(new Ui::CasePanel)
 {
     ui->setupUi(this);
+    isSpec = false;
     font = new QFont("msyh");
     font->setPixelSize(12);//另外需要修改cabinet.ui style sheet
     this->setFont(*font);
@@ -32,11 +33,25 @@ void CasePanel::setCheckState(bool checked)
     }
     else
     {
+        if(isSpec)
+        {
+            this->setStyleSheet(cellStyle(QColor(36, 221, 59)));
+            return;
+        }
         if(showDoubleCol)
             ui->right->setStyleSheet("");
         else
-             ui->left->setStyleSheet("");
+            ui->left->setStyleSheet("");
     }
+}
+
+QString CasePanel::cellStyle(QColor rgb)
+{
+    QString ret = QString("color:rgb(255,255,255);\
+                          background-color: rgb(%1, %2, %3);\
+            margin-top:2px;\
+            margin-bottom:2px;").arg(rgb.red()).arg(rgb.green()).arg(rgb.blue());
+            return ret;
 }
 
 void CasePanel::paintEvent(QPaintEvent*)
@@ -54,6 +69,9 @@ void CasePanel::resizeEvent(QResizeEvent *)
 
 void CasePanel::setText(QStringList text)
 {
+    if(isSpec)
+        return;
+
     QString left;
     QString right;
     qDebug()<<"[setText]"<<text<<text.count();
@@ -73,6 +91,9 @@ void CasePanel::setText(QStringList text)
 
 void CasePanel::setText(QList<GoodsInfo *> list)
 {
+    if(isSpec)
+        return;
+
     list_show = list;
     updatePanel();
 }
@@ -99,6 +120,31 @@ int CasePanel::maxShowNum()
     }
 }
 
+void CasePanel::setSpec(bool spec)
+{
+    isSpec = spec;
+    showDoubleCol = false;
+    if(spec)
+    {
+        ui->left->setText("护士长储物柜");
+        ui->left->show();
+        ui->right->hide();
+        this->setStyleSheet(cellStyle(QColor(36, 221, 59)));
+    }
+    else
+    {
+        font = new QFont("msyh");
+        font->setPixelSize(12);//另外需要修改cabinet.ui style sheet
+        this->setFont(*font);
+        this->setStyleSheet(cellStyle(QColor(36, 221, 159)));
+    }
+}
+
+bool CasePanel::isSpecialCase()
+{
+    return isSpec;
+}
+
 QString CasePanel::geteElidedText(QFont _font, QString str, int MaxWidth)
 {
     QFontMetrics fontWidth(_font);
@@ -119,6 +165,8 @@ int CasePanel::getStringWidth(QString str)
 
 void CasePanel::updatePanel()
 {
+    if(isSpec)
+        return;
 //    qDebug()<<"[updatePanel]";
     QString left;
     QString right;

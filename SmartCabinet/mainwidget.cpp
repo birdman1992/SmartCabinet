@@ -592,6 +592,8 @@ void MainWidget::init_huangpo()
     //智能柜配置
     cabinetConf = new CabinetConfig();
 
+    routeRepair = new RouteRepair(this);
+
 #ifdef TCP_API
     //tcp通信类
     cabServer = new tcpServer(this);
@@ -762,8 +764,10 @@ void MainWidget::connect_master()
     connect(cabServer, SIGNAL(goodsCheckRst(QString)), win_cabinet, SLOT(recvGoodsCheckRst(QString)));
     connect(cabServer, SIGNAL(newGoodsList(QString,QString)), win_cabinet, SLOT(newGoodsList(QString,QString)));
     connect(cabServer, SIGNAL(netState(bool)), win_cabinet, SLOT(updateNetState(bool)));
+    connect(cabServer, SIGNAL(netState(bool)), routeRepair, SLOT(repairStart(bool)));
     connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
     connect(cabServer, SIGNAL(checkFinish(bool)), win_cabinet, SLOT(recvCheckFinish(bool)));
+//    routeRepair->repairStart(false);
 }
 
 void MainWidget::connect_new_api()
