@@ -36,6 +36,8 @@
 #define API_SEARCH_SPELL "/spd-web/sarkApi/Cheset/query/chesetGoods/"     //首字母搜索物品
 #define API_GOODS_REPLY "/spd-web/sarkApi/Cheset/doPleaseGoods/"  //请货
 #define API_DAY_REPORT "/spd-web/sarkApi/Cheset/query/consumeDate/"  //日清单
+#define API_DOWNLOAD_PAC "/spd-web/sarkApi/cheset/download/package" //下载更新包
+#define API_VERSION_CHECK "/spd-web/sarkApi/cheset/get/package"  //检查更新包
 
 
 
@@ -44,6 +46,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     manager = new QNetworkAccessManager(this);
     cur_manager = new UserInfo();
     checkList = NULL;
+    pacUpdate = NULL;
     reply_register = NULL;
     reply_login = NULL;
     reply_check_tables = NULL;
@@ -61,6 +64,8 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_update_col = NULL;
     reply_search_spell = NULL;
     reply_day_report = NULL;
+    reply_download = NULL;
+    versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
     apiState = 0;
@@ -71,6 +76,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 #ifndef SIMULATE_ON
     watchdogStart();
 #endif
+    connect(&tarProcess, SIGNAL(finished(int)), this, SLOT(tarFinished(int)));
 }
 
 bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
@@ -83,6 +89,12 @@ bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
         return true;
 
     ApiAddress = config->getServerAddress();
+
+    if(versionInfo != NULL)
+    {
+        delete versionInfo;
+        versionInfo = NULL;
+    }
 //    if(ApiAddress.isEmpty())
 //    {
 //        ApiAddress = SERVER_ADDR;
@@ -681,6 +693,45 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
 
+void CabinetServer::checkUpdate()
+{
+    if(reply_download != NULL)
+    {
+        reply_download->deleteLater();
+        if(pacUpdate!=NULL)
+        {
+            if(pacUpdate->isOpen())
+                pacUpdate->close();
+            pacUpdate->deleteLater();
+        }
+    }
+    if(versionInfo == NULL)
+        versionInfo = new VersionInfo(config->getCurVersion());
+    QString nUrl = ApiAddress+QString(API_VERSION_CHECK);
+//    qDebug()<<nUrl;
+    reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_download, SIGNAL(finished()), this, SLOT(recvVersionInfo()));
+}
+
+void CabinetServer::getUpdatePac(QString fileName)
+{
+    if(reply_download != NULL)
+        return;
+
+    fileName = "/home/update/"+fileName;
+    pacUpdate = new QFile(fileName);
+    if(!pacUpdate->open(QFile::WriteOnly))
+    {
+        qDebug()<<"[getUpdatePac]:file open failed";
+        return;
+    }
+    QString nUrl = ApiAddress+QString(API_DOWNLOAD_PAC);
+    qDebug()<<nUrl;
+    reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
+    connect(reply_download, SIGNAL(finished()), this, SLOT(updatePacFinish()));
+    connect(reply_download, SIGNAL(readyRead()), this, SLOT(recvUpdatePac()));
+}
+
 void CabinetServer::searchSpell(QString spell)
 {
     QByteArray qba = QString("{\"spell\":\"%1\", \"departCode\":\"%2\"}").arg(spell).arg(config->getCabinetId()).toLocal8Bit();
@@ -1180,6 +1231,7 @@ void CabinetServer::recvDateTime()
     checkSysTime(QDateTime::fromString(str,"yyyy-MM-dd hh:mm:ss"));
     //    qDebug()<<QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     cJSON_Delete(json);
+//    getUpdatePac("test.tar.bz2");
 
     return;
 //    if(!needSaveAddress)
@@ -1626,6 +1678,47 @@ void CabinetServer::recvDayReportInfo()
     cJSON_Delete(json);
 }
 
+void CabinetServer::recvVersionInfo()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_download->readAll());
+    qDebug()<<"[recvVersionInfo]"<<qba;
+    if(versionInfo == NULL)
+        return;
+    if(versionInfo->needUpdate(qba))
+    {
+        reply_download->deleteLater();
+        reply_download = NULL;
+        getUpdatePac(versionInfo->pacFile);
+    }
+}
+
+void CabinetServer::recvUpdatePac()
+{
+    QByteArray qba =  reply_download->readAll();
+//    qDebug()<<"[recvUpdatePac]"<<qba.size();
+//    qDebug()<<qba;
+    pacUpdate->write(qba);
+}
+
+void CabinetServer::updatePacFinish()
+{
+    qDebug()<<"[updatePacFinish]"<<versionInfo->pacFile;
+    reply_download->deleteLater();
+    reply_download = NULL;
+    pacUpdate->close();
+    if(versionInfo->pacIsLegal(pacUpdate))
+    {
+        qDebug("[updatePacFinish]:package is legal,update start.");
+        QString cmd = QString("tar -jxvf /home/update/%1 -C /home/update/").arg(versionInfo->pacFile);
+        qDebug()<<cmd;
+        tarProcess.start(cmd);
+    }
+    else
+    {
+        qDebug("[updatePacFinish]:package is not legal,update stop.");
+    }
+}
+
 void CabinetServer::netTimeout()
 {
     if(netFlag)
@@ -1680,6 +1773,16 @@ int CabinetServer::watchdogTimeout()
         ret = write(fWatchdog, "a", 1);
     }
     return ret;
+}
+
+void CabinetServer::tarFinished(int code)
+{
+    qDebug()<<"update package tar finished:"<<code;
+    if(code == 0)
+    {
+        qDebug()<<"restart..";
+        QProcess::startDetached("reboot");
+    }
 }
 
 void CabinetServer::sysTimeout()

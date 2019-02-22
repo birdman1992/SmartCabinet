@@ -68,6 +68,8 @@ public:
     int reboot();
     void clearTimeoutFlag();
     int getSleepFlag();
+    QString getCurVersion();
+    void setCurVersion(QString version);
     void setCardReaderState(bool ok);
     bool getCardReaderState();
     void setCodeScanState(bool ok);
@@ -121,6 +123,7 @@ private:
     int caseWidth;
 //    QString cabId;
     int cabinetType;
+    QString curVersion;
     QString cabinetId;
     QString serverAddr;
     QString optName;//操作者卡号

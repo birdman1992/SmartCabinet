@@ -35,7 +35,9 @@ void QHid::run()
         {
 //            qDebug()<<QByteArray((const char*)buf, 10).toHex();
             if(buf[2] == 0x00)
+            {
                 continue;
+            }
             if(buf[2] == 0x28)
             {
                 printf("READ:%s\n",rst);

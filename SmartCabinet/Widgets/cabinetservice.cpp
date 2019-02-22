@@ -78,6 +78,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
     if(globalConfig == NULL)
         return false;
     config = globalConfig;
+    config->setCurVersion(ui->verInfo->text());
     win_ctrl_config->installGlobalConfig(config);
 #ifdef TCP_API
     ui->insert_pos->setMaximum(config->list_cabinet.count());

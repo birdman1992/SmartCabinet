@@ -19,6 +19,7 @@ CabinetConfig::CabinetConfig()
     cardReaderIsOk = false;
     codeScanIsOk = false;
     secOpt = QString();
+    curVersion = QString();
     //    cabId.clear();
     cabinetId.clear();
     list_user.clear();
@@ -273,6 +274,16 @@ void CabinetConfig::clearTimeoutFlag()
 int CabinetConfig::getSleepFlag()
 {
     return sleepFlag;
+}
+
+QString CabinetConfig::getCurVersion()
+{
+    return curVersion;
+}
+
+void CabinetConfig::setCurVersion(QString version)
+{
+    curVersion = version;
 }
 
 void CabinetConfig::setCardReaderState(bool ok)

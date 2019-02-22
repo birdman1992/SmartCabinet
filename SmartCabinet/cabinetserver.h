@@ -8,6 +8,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <QStringList>
+#include <QFile>
 
 #include "cabinetconfig.h"
 #include "Structs/userinfo.h"
@@ -16,6 +17,7 @@
 #include "Structs/goodscar.h"
 #include "Structs/goodscheckinfo.h"
 #include "Structs/dayreportinfo.h"
+#include "Structs/versioninfo.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
 
@@ -31,6 +33,8 @@ public:
 
 private:
     QNetworkAccessManager* manager;
+    QProcess updateProcess;
+    QProcess tarProcess;
     CabinetConfig* config;
     QNetworkReply* reply_register;
     QNetworkReply* reply_login;
@@ -49,7 +53,9 @@ private:
     QNetworkReply* reply_search_spell;
     QNetworkReply* reply_goods_reply;
     QNetworkReply* reply_day_report;
+    QNetworkReply* reply_download;
     CheckList* checkList;
+    QFile* pacUpdate;
     QString regId;
     QString logId;
     QString barCode;
@@ -65,11 +71,11 @@ private:
     QStringList list_goodsList;
     UserInfo* cur_user;
     UserInfo* cur_manager;
+    VersionInfo* versionInfo;
     int apiState;
     int fWatchdog;
     int checkId;//盘点返回id
     QList<QByteArray> list_access_cache;
-
 
     void checkTime();
     void checkSysTime(QDateTime _time);
@@ -135,6 +141,8 @@ public slots:
     void replyRequire(QList<GoodsCheckInfo *> l);
     void requireCheckTableInfo(QString id);
     void requireListInfo(QDate sDate, QDate eDate);
+    void checkUpdate();
+    void getUpdatePac(QString fileName);
 private slots:
     void recvCabRegister();
     void recvUserLogin();
@@ -158,8 +166,12 @@ private slots:
     void recvSearchSpell();
     void recvGoodsReply();
     void recvDayReportInfo();
+    void recvVersionInfo();
+    void recvUpdatePac();
+    void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();
+    void tarFinished(int code);
 };
 
 #endif // CABINETSERVER_H

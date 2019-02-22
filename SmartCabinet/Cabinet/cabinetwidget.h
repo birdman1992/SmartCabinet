@@ -96,6 +96,7 @@ signals:
     void requireApplyShow();
     void tsCalReq();
     void setSpecialCase(QPoint);
+    void reqCheckVersion();
 
 private slots:
     void setMenuHide(bool ishide);

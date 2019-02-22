@@ -72,11 +72,13 @@ void ControlDevice::deviceInit()
         else
         {
             cardReaderState =  true;
+            qDebug()<<"[CARD READER] open success";
         }
     }
     else
     {
         cardReaderState =  true;
+        qDebug()<<"[CARD READER] open success";
     }
     connect(hid_card_reader, SIGNAL(hidRead(QByteArray)), this, SLOT(readCardReaderData(QByteArray)));
 
@@ -94,11 +96,13 @@ void ControlDevice::deviceInit()
             else
             {
                 scanState = true;
+                qDebug()<<"[CODE SCAN] open success";
             }
         }
         else
         {
             scanState = true;
+            qDebug()<<"[CODE SCAN] open success";
         }
     }
     else

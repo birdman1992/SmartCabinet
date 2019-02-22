@@ -989,9 +989,9 @@ font:20px&quot;微软雅黑&quot;;
       <widget class="QLabel" name="verInfo">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>140</x>
          <y>30</y>
-         <width>421</width>
+         <width>311</width>
          <height>61</height>
         </rect>
        </property>
@@ -1000,7 +1000,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>VERSION: 1.5.2.20190124_beta</string>
+        <string>1.5.4.20190221_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
@@ -1376,6 +1376,23 @@ font:20px&quot;微软雅黑&quot;;
        </property>
        <property name="text">
         <string>设置护士长专用柜</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="verInfo_2">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>30</y>
+         <width>101</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">font: 75 25px &quot;微软雅黑&quot;;
+</string>
+       </property>
+       <property name="text">
+        <string>VERSION: </string>
        </property>
       </widget>
      </widget>
