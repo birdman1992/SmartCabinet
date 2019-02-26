@@ -1324,11 +1324,12 @@ void CabinetWidget::updateFetchPrice(float single, float total)
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
-    emit reqCheckVersion();
-//    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0))
-//    {
-//        config->reboot();
-//    }
+
+    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0))
+    {
+        qDebug("[update time]");
+        emit reqCheckVersion(false);
+    }
 }
 
 void CabinetWidget::updateId()

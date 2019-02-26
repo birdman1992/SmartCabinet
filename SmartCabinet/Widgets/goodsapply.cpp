@@ -85,7 +85,7 @@ void GoodsApply::setTableSearch(QList<GoodsCheckInfo *> l)
 
     for(int i=0; i<l.count(); i++)
     {
-        ui->searchRst->setItem(i, 0, new QTableWidgetItem(QString("%1 ×%2").arg(l.at(i)->name).arg(l.at(i)->type)));
+        ui->searchRst->setItem(i, 0, new QTableWidgetItem(QString("%1[%2] ×%3").arg(l.at(i)->name).arg(l.at(i)->goodsSize).arg(l.at(i)->type)));
     }
 }
 

@@ -751,7 +751,10 @@ void MainWidget::connect_master()
     connect(win_cabinet, SIGNAL(requireCheckShow()), win_check_table, SLOT(show()));
     connect(win_cabinet, SIGNAL(requireApplyShow()), win_goods_apply, SLOT(show()));
     connect(win_cabinet, SIGNAL(requireDayReportShow()), win_day_report, SLOT(show()));
-    connect(win_cabinet, SIGNAL(reqCheckVersion()), cabServer, SLOT(checkUpdate()));
+    connect(win_cabinet, SIGNAL(reqCheckVersion(bool)), cabServer, SLOT(checkUpdate(bool)));
+    connect(win_cab_service, SIGNAL(checkVersion(bool)), cabServer, SLOT(checkUpdate(bool)));
+    connect(win_cab_service, SIGNAL(updateStart()), cabServer, SLOT(updateStart()));
+    connect(cabServer, SIGNAL(updateCheckRst(bool,QString)), win_cab_service, SLOT(recvVersionInfo(bool,QString)));
     connect(cabServer, SIGNAL(checkCreatRst(bool, QString)), win_cabinet, SLOT(recvCheckRst(bool, QString)));
     connect(cabServer, SIGNAL(cabSyncResult(bool)), win_cabinet, SLOT(recvCabSyncResult(bool)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_cabinet, SLOT(recvUserCheckRst(UserInfo*)));

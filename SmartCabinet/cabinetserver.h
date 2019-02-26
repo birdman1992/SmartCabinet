@@ -64,6 +64,7 @@ private:
     bool needReqCar;
     bool needSaveAddress;
     bool needClearBeforeClone;
+    bool needConfirmUpdate;
     bool networkState;
     bool netFlag;
     QTimer sysClock;
@@ -113,6 +114,7 @@ signals:
     void checkTables(QList<CheckTableInfo*>);
     void goodsReplyRst(bool success, QString msg);
     void dayReportRst(QList<DayReportInfo*>, QString msg);
+    void updateCheckRst(bool needUpdate, QString version);
 
 public slots:
     void cabRegister();
@@ -141,8 +143,10 @@ public slots:
     void replyRequire(QList<GoodsCheckInfo *> l);
     void requireCheckTableInfo(QString id);
     void requireListInfo(QDate sDate, QDate eDate);
-    void checkUpdate();
+    void checkUpdate(bool needConfirm = false);
     void getUpdatePac(QString fileName);
+    void updateStart();
+
 private slots:
     void recvCabRegister();
     void recvUserLogin();

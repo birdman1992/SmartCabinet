@@ -27,6 +27,7 @@ CabinetService::CabinetService(QWidget *parent) :
 
     dev_network = NULL;
     lockConfigIsOk = false;
+    updateOk = false;
 
     win_ctrl_config = new CabinetCtrlConfig();
     connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
@@ -115,6 +116,8 @@ void CabinetService::showEvent(QShowEvent *)
     updateCabpreviewScr();
 #endif
     ui->server_addr->setText(config->getServerAddress());
+    ui->version_msg->clear();
+    ui->check->setEnabled(true);
     qDebug()<<ui->server_addr->text();
 }
 
@@ -388,7 +391,21 @@ void CabinetService::tsCalibration()
     QProcess::startDetached("reboot");
 }
 
-
+void CabinetService::recvVersionInfo(bool needUpdate, QString version)
+{
+    ui->check->setEnabled(true);
+    if(needUpdate)
+    {
+        updateOk = true;
+        ui->version_msg->setText(QString("可更新版本 %1").arg(version));
+        ui->check->setText("开始更新");
+    }
+    else
+    {
+        updateOk = false;
+        ui->version_msg->setText(QString("当前是最新版本"));
+    }
+}
 
 void CabinetService::ctrl_lock(int id)
 {
@@ -489,17 +506,19 @@ void CabinetService::on_init_clicked()
 
 void CabinetService::on_check_clicked()
 {
-#ifdef SIMULATE_ON
-    return;
-#else
-    QProcess process;
-    process.start("rm /etc/pointercal");
-    process.waitForFinished();
-    QProcess::startDetached("reboot");
-//    QStringList args;
-//    args.append("-qws");
-//    QProcess::startDetached(qApp->applicationFilePath(),args);
-#endif
+    ui->version_msg->clear();
+    if(updateOk)
+    {
+        ui->version_msg->setText("开始更新...");
+        ui->check->setEnabled(false);
+        updateOk = false;
+        emit updateStart();
+    }
+    else
+    {
+        emit checkVersion(true);
+        ui->check->setEnabled(false);
+    }
 }
 
 void CabinetService::ctrl_conf(int id)

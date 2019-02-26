@@ -693,8 +693,9 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
 
-void CabinetServer::checkUpdate()
+void CabinetServer::checkUpdate(bool needConfirm)
 {
+    needConfirmUpdate = needConfirm;
     if(reply_download != NULL)
     {
         reply_download->deleteLater();
@@ -708,7 +709,7 @@ void CabinetServer::checkUpdate()
     if(versionInfo == NULL)
         versionInfo = new VersionInfo(config->getCurVersion());
     QString nUrl = ApiAddress+QString(API_VERSION_CHECK);
-//    qDebug()<<nUrl;
+    qDebug()<<nUrl;
     reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_download, SIGNAL(finished()), this, SLOT(recvVersionInfo()));
 }
@@ -730,6 +731,14 @@ void CabinetServer::getUpdatePac(QString fileName)
     reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_download, SIGNAL(finished()), this, SLOT(updatePacFinish()));
     connect(reply_download, SIGNAL(readyRead()), this, SLOT(recvUpdatePac()));
+}
+
+void CabinetServer::updateStart()
+{
+    qDebug("[updatePacFinish]:package is legal,update start.");
+    QString cmd = QString("tar -jxvf /home/update/%1 -C /home/update/").arg(versionInfo->pacFile);
+    qDebug()<<cmd;
+    tarProcess.start(cmd);
 }
 
 void CabinetServer::searchSpell(QString spell)
@@ -1690,6 +1699,10 @@ void CabinetServer::recvVersionInfo()
         reply_download = NULL;
         getUpdatePac(versionInfo->pacFile);
     }
+    else
+    {
+        emit updateCheckRst(false, "当前最新版本");
+    }
 }
 
 void CabinetServer::recvUpdatePac()
@@ -1708,6 +1721,11 @@ void CabinetServer::updatePacFinish()
     pacUpdate->close();
     if(versionInfo->pacIsLegal(pacUpdate))
     {
+        if(needConfirmUpdate)
+        {
+            emit updateCheckRst(true, versionInfo->serverVersion);
+            return;
+        }
         qDebug("[updatePacFinish]:package is legal,update start.");
         QString cmd = QString("tar -jxvf /home/update/%1 -C /home/update/").arg(versionInfo->pacFile);
         qDebug()<<cmd;
@@ -1715,6 +1733,7 @@ void CabinetServer::updatePacFinish()
     }
     else
     {
+        emit updateCheckRst(false, "非法更新包");
         qDebug("[updatePacFinish]:package is not legal,update stop.");
     }
 }

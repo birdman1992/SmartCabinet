@@ -963,21 +963,21 @@ font:20px&quot;微软雅黑&quot;;
       <widget class="QPushButton" name="check">
        <property name="geometry">
         <rect>
-         <x>280</x>
-         <y>430</y>
-         <width>421</width>
-         <height>111</height>
+         <x>480</x>
+         <y>30</y>
+         <width>181</width>
+         <height>61</height>
         </rect>
        </property>
        <property name="text">
-        <string>校准触摸屏</string>
+        <string>检查新版本</string>
        </property>
       </widget>
       <widget class="QPushButton" name="rebind">
        <property name="geometry">
         <rect>
          <x>280</x>
-         <y>580</y>
+         <y>430</y>
          <width>421</width>
          <height>111</height>
         </rect>
@@ -989,7 +989,7 @@ font:20px&quot;微软雅黑&quot;;
       <widget class="QLabel" name="verInfo">
        <property name="geometry">
         <rect>
-         <x>140</x>
+         <x>150</x>
          <y>30</y>
          <width>311</width>
          <height>61</height>
@@ -1000,7 +1000,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.5.4.20190221_beta</string>
+        <string>1.5.4.20190226_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
@@ -1369,7 +1369,7 @@ font:20px&quot;微软雅黑&quot;;
        <property name="geometry">
         <rect>
          <x>280</x>
-         <y>730</y>
+         <y>580</y>
          <width>421</width>
          <height>111</height>
         </rect>
@@ -1383,7 +1383,7 @@ font:20px&quot;微软雅黑&quot;;
         <rect>
          <x>30</x>
          <y>30</y>
-         <width>101</width>
+         <width>111</width>
          <height>61</height>
         </rect>
        </property>
@@ -1393,6 +1393,19 @@ font:20px&quot;微软雅黑&quot;;
        </property>
        <property name="text">
         <string>VERSION: </string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="version_msg">
+       <property name="geometry">
+        <rect>
+         <x>670</x>
+         <y>40</y>
+         <width>311</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
        </property>
       </widget>
      </widget>

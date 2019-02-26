@@ -39,6 +39,8 @@ signals:
     void requireOpenLock(int seqNum, int lockId);
     void requireClear();
     void requireUpdateServerAddress();
+    void checkVersion(bool needConfirm);
+    void updateStart();
 
 private slots:
     void on_back_clicked();
@@ -83,6 +85,7 @@ public slots:
     void recvInsertColResult(bool success);
     void recvInsertUndoResult(bool success);
     void tsCalibration();
+    void recvVersionInfo(bool needUpdate, QString version);
 
 private:
     Ui::CabinetService *ui;
@@ -105,6 +108,7 @@ private:
     QList<QTableWidget*> list_preview;
     int curId;
     bool lockConfigIsOk;
+    bool updateOk;
 
     void initStack();
     void initGroup();
