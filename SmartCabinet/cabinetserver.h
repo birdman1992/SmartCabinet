@@ -146,6 +146,7 @@ public slots:
     void checkUpdate(bool needConfirm = false);
     void getUpdatePac(QString fileName);
     void updateStart();
+    void waitForRepaitOK();
 
 private slots:
     void recvCabRegister();

@@ -71,6 +71,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     apiState = 0;
     needReqCar = true;
     needSaveAddress = false;
+    timeIsChecked = false;
     fWatchdog = -1;
     checkId = -1;
 #ifndef SIMULATE_ON
@@ -739,6 +740,14 @@ void CabinetServer::updateStart()
     QString cmd = QString("tar -jxvf /home/update/%1 -C /home/update/").arg(versionInfo->pacFile);
     qDebug()<<cmd;
     tarProcess.start(cmd);
+}
+
+void CabinetServer::waitForRepaitOK()
+{
+    if(timeIsChecked)
+        return;
+
+    checkTime();
 }
 
 void CabinetServer::searchSpell(QString spell)
@@ -1816,13 +1825,6 @@ void CabinetServer::sysTimeout()
 //        sysClock.stop();
 //        disconnect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
         checkTime();
-
-        if(config->sleepFlagTimeout())
-        {
-            qDebug("[lock]");
-            emit sysLock();
-        }
-        return;
     }
 //    if(needReqCar&& config->state == STATE_NO);//不再轮询送货单
 //        requireListState();

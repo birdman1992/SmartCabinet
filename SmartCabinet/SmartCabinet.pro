@@ -97,7 +97,9 @@ SOURCES += main.cpp\
     manager/lockmanager.cpp \
     funcs/servertest.cpp \
     funcs/routerepair.cpp \
-    Structs/versioninfo.cpp
+    Structs/versioninfo.cpp \
+    logreport.cpp \
+    funcs/operationrecorder.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -173,7 +175,9 @@ HEADERS  += mainwidget.h \
     manager/lockmanager.h \
     funcs/servertest.h \
     funcs/routerepair.h \
-    Structs/versioninfo.h
+    Structs/versioninfo.h \
+    logreport.h \
+    funcs/operationrecorder.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

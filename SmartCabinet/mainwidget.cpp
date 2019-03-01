@@ -772,7 +772,8 @@ void MainWidget::connect_master()
     connect(cabServer, SIGNAL(netState(bool)), routeRepair, SLOT(repairStart(bool)));
     connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
     connect(cabServer, SIGNAL(checkFinish(bool)), win_cabinet, SLOT(recvCheckFinish(bool)));
-//    routeRepair->repairStart(false);
+//    connect(routeRepair, SIGNAL(repairOk()), cabServer, SLOT(waitForRepaitOK()));
+    routeRepair->repairStart(false);
 }
 
 void MainWidget::connect_new_api()

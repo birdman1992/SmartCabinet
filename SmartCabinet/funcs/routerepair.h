@@ -5,6 +5,7 @@
 #include <QProcess>
 #include <QRegExp>
 #include <QSettings>
+#include <QTimer>
 
 class RouteRepair : public QObject
 {
@@ -15,12 +16,16 @@ public:
 private:
     QProcess* process;
     QString getDefaultGateway();
+    bool isRepairing;
+
 signals:
+    void repairOk();
 
 public slots:
     void repairStart(bool);
 private slots:
     void recvCheckRst();
+    void repair();
 };
 
 #endif // ROUTEREPAIR_H

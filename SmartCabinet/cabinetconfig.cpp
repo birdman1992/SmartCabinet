@@ -1159,6 +1159,8 @@ UserInfo* CabinetConfig::checkUserLocal(QString userId)
 {
     int i = 0;
 
+    if(list_user.isEmpty())
+        return NULL;
     for(i=0; i<list_user.count(); i++)
     {
         qDebug()<<list_user.at(i)->cardId<<userId;

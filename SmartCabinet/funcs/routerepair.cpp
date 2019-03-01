@@ -4,6 +4,7 @@
 RouteRepair::RouteRepair(QObject *parent) : QObject(parent)
 {
     process = NULL;
+    isRepairing = false;
 }
 
 void RouteRepair::repairStart(bool state)
@@ -11,18 +12,29 @@ void RouteRepair::repairStart(bool state)
     if(state)
         return;
 
-    if(process == NULL)
-    {
-        process = new QProcess();
-        connect(process, SIGNAL(readyRead()), this, SLOT(recvCheckRst()));
-    }
-    process->start("route");
+    repair();
 }
 
 QString RouteRepair::getDefaultGateway()
 {
     QSettings settings("/home/config/network.ini", QSettings::IniFormat);
     return settings.value("gateway", QString()).toString();
+}
+
+void RouteRepair::repair()
+{
+    if(isRepairing)
+        return;
+
+    isRepairing = true;
+
+    if(process == NULL)
+    {
+        process = new QProcess();
+        connect(process, SIGNAL(readyRead()), this, SLOT(recvCheckRst()));
+    }
+    process->start("route");
+
 }
 
 void RouteRepair::recvCheckRst()
@@ -43,7 +55,9 @@ void RouteRepair::recvCheckRst()
     int def2 = defExp.indexIn(route, offset);
     if(def2 < 0)
     {
+        isRepairing = false;
         qDebug()<<"[RouteRepair]:gateway correct,exit repair.";
+        emit repairOk();
         return;
     }
 
@@ -53,7 +67,9 @@ void RouteRepair::recvCheckRst()
     qDebug()<<"[RouteRepair]"<<"gwIndex:"<<gwIndex;
     if(gwIndex < def2)
     {
+        isRepairing = false;
         qDebug()<<"[RouteRepair]:gateway correct,exit repair.";
+        emit repairOk();
         return;
     }
 
@@ -64,4 +80,6 @@ void RouteRepair::recvCheckRst()
     pro.start(QString("route add default gw %1").arg(gateway));
     pro.waitForFinished(300000);
     qDebug()<<"[RouteRepair]:repair finish";
+    isRepairing = false;
+//    QTimer::singleShot(5000, this, SLOT(repair()));
 }

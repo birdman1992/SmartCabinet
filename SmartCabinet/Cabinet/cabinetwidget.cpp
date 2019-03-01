@@ -396,12 +396,6 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if(config->isScreen(cabSeqNum, caseIndex))
         return;
-    if(config->isSpec(cabSeqNum, caseIndex))
-    {
-        if((optUser->power > 1) && (optUser->power!=3))//0 1 3
-            return;
-    }
-
     if(clickLock && (config->state != STATE_REBIND))//锁定状态下点击无效
     {
         if((caseIndex==selectCase) && (cabSeqNum == selectCab))
@@ -409,6 +403,13 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         else
             config->list_cabinet.at(cabSeqNum)->clearSelectState(caseIndex);
         return;
+    }
+    if(config->isSpec(cabSeqNum, caseIndex))
+    {
+        if(optUser == NULL)
+            return;
+        if((optUser->power > 1) && (optUser->power!=3))//0 1 3
+            return;
     }
 
 //    bool clickRepeat = false;
