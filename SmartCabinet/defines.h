@@ -39,6 +39,7 @@
 #define MSG_FULL "此柜格已满，请选择其他柜格"
 #define MSG_SCAN_LIST "请扫描送货单条码"
 #define MSG_GOODS_NOT_FIND "此物品不属于本智能柜"
+#define MSG_GOODS_USE_UP "此物品消耗完了"
 #define MSG_LIST_ERROR "无效的送货单"
 #define MSG_STORE "请扫描待存放物品条形码"
 #define MSG_STORE_SELECT "请选择绑定位置"

@@ -27,6 +27,7 @@ class CabinetServer : public QObject
     Q_OBJECT
 public:
     explicit CabinetServer(QObject *parent = 0);
+    ~CabinetServer();
 
     bool installGlobalConfig(CabinetConfig *globalConfig);
     void waitForListTimeout();//等待送货车超时

@@ -214,6 +214,7 @@ void CabinetSet::on_serverAddr_editingFinished()
         int index = str.lastIndexOf('.');
         str.replace(index,1,':');
         ui->serverAddr->setText(str);
+        dev_network->setServerAddr(str.left(index));
     }
     config->clearCabinet();
 }
@@ -264,6 +265,7 @@ void CabinetSet::on_netSet_clicked()
     dev_network->setIp(ip);
     dev_network->setNetmask(netmask);
     dev_network->setGateway(gateway);
+//    dev_network->setServerAddr();
     dev_network->saveNetwork();
 
 //    ui->ip->setText(dev_network->ip());

@@ -643,6 +643,12 @@ void CabinetWidget::recvScanData(QByteArray qba)
                 emit goodsAccess(addr,fullScanInfo, 1, 1);
             }
         }
+        else
+        {
+            win_access->scanOpen(scanGoodsId, fullScanInfo);
+            config->showMsg(MSG_GOODS_USE_UP, 1);
+            win_access->showTips(MSG_GOODS_USE_UP, 1);
+        }
     }
     else if(config->state == STATE_REFUN)
     {

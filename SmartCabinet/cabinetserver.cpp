@@ -80,6 +80,11 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     connect(&tarProcess, SIGNAL(finished(int)), this, SLOT(tarFinished(int)));
 }
 
+CabinetServer::~CabinetServer()
+{
+    ::close(fWatchdog);
+}
+
 bool CabinetServer::installGlobalConfig(CabinetConfig *globalConfig)
 {
     if(globalConfig == NULL)
@@ -719,6 +724,10 @@ void CabinetServer::getUpdatePac(QString fileName)
 {
     if(reply_download != NULL)
         return;
+
+    QDir dir("/home/update/");
+    if(!dir.exists())
+        dir.mkdir("/home/update/");
 
     fileName = "/home/update/"+fileName;
     pacUpdate = new QFile(fileName);

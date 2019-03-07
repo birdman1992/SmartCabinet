@@ -1000,7 +1000,7 @@ font:20px&quot;微软雅黑&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.5.5.20190226_beta</string>
+        <string>1.5.6.20190306_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">

@@ -413,7 +413,7 @@ void CabinetConfig::readCabinetConfig()
 
     serverAddr = settings.value("SERVER", QString()).toString();
     if(serverAddr.isEmpty())
-    {
+    {qDebug("4");
         firstUse = true;
 //        return;
     }

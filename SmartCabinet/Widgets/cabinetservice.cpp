@@ -564,7 +564,11 @@ void CabinetService::on_set_server_addr_clicked()
     QString strAddr = ui->server_addr->text();
 //    if(strAddr.indexOf("http:") != 0)
 //        strAddr = QString("http://") +strAddr;
-
+    int idx = strAddr.indexOf(":");
+    if(idx != -1)
+    {
+        dev_network->setServerAddr(strAddr.left(idx));
+    }
     config->setServerAddress(strAddr);
     qDebug()<<"setServerAddress"<<ui->server_addr->text();
     emit requireUpdateServerAddress();

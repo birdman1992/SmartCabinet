@@ -20,7 +20,7 @@
 #include <errno.h> 
 //#define MY
 #define MC
-#define OFFSET_6Q 1
+#define OFFSET_6Q 0
 
 const char *bus_str(int bus);
 char dev_path[2][24] = {0};

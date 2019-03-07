@@ -10,7 +10,7 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
     ui->setupUi(this);
 //    cabGoods = new Goods(goods);
     cabGoods = goods;
-    name = goods->name+QString("(%1)").arg(goods->packageType);
+    name = goods->name+QString("[%1](%2)").arg(goods->size).arg(goods->packageType);
     num = goods->takeCount;
     package_id = goods->packageBarcode;
     pos_seq = addr.cabinetSeqNum;

@@ -21,6 +21,8 @@ public:
     bool setNetmask(QString _netmask);
     bool setGateway(QString _gateway);
     bool setMacAddress(QString _macAddr);
+    QString getServerAddr();
+    bool setServerAddr(QString _sevAddr);
     void saveNetwork();
     void initNetwork();
     void creatNetwork();
@@ -33,6 +35,7 @@ private:
     QString devIp;
     QString devMask;
     QString devMac;
+    QString sevAddr;
     QNetworkInterface interface;
     QNetworkAddressEntry netEntry;
     QNetworkInterface getNetworkInterface(QString name);

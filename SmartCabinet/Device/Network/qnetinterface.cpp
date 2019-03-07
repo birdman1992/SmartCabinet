@@ -7,6 +7,12 @@ QNetInterface::QNetInterface(QString name, QObject *parent) : QObject(parent)
 {
     interface = getNetworkInterface(name);
     devName = name;
+    sevAddr = getServerAddr();
+    if(sevAddr.isEmpty())
+    {
+        sevAddr = QString("192.168.161.127");
+        setServerAddr(sevAddr);
+    }
 
     if(!interface.isValid())
     {
@@ -147,7 +153,10 @@ bool QNetInterface::setGateway(QString _gateway)
     qDebug()<<"[setGateway]"<<cmd;
     p.start(cmd);
     p.waitForFinished();
-
+    cmd = QString("route add -host %1 gw %2").arg(sevAddr).arg(devGateway);
+    qDebug()<<"[setServerGateway]"<<cmd;
+    p.start(cmd);
+    p.waitForFinished();
     return true;
 }
 
@@ -170,6 +179,30 @@ bool QNetInterface::setMacAddress(QString _macAddr)
 
     p.start(cmd_up);
     p.waitForFinished();
+    return true;
+}
+
+QString QNetInterface::getServerAddr()
+{
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    return settings.value("server", QString()).toString();
+}
+
+bool QNetInterface::setServerAddr(QString _sevAddr)
+{
+    if(!numPointCheck(_sevAddr))
+        return false;
+
+    sevAddr = _sevAddr;
+//    QProcess p;
+//    QString cmd = QString("route add -host %1 gw %2").arg(_sevAddr).arg(devGateway);
+//    qDebug()<<"[setServerGateway]"<<cmd;
+//    p.start(cmd);
+//    p.waitForFinished();
+
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    settings.setValue("server", QVariant(sevAddr));
+    settings.sync();
     return true;
 }
 
