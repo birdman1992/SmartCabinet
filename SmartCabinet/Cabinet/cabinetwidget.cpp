@@ -347,18 +347,27 @@ bool posSort(Cabinet *A, Cabinet *B)
 
 QByteArray CabinetWidget::scanDataTrans(QByteArray code)
 {
-    int index = code.indexOf("-");
-    QByteArray ret = code;
-    if(index == -1)
-        return ret;
+//    int index = code.indexOf("-");
+//    QByteArray ret = code;
+//    if(index == -1)
+//        return ret;
 
-    code = code.right(code.size()-index-1);
+//    code = code.right(code.size()-index-1);
 
-    index = code.lastIndexOf("-");
-    if(index == -1)
-        return ret;
+//    index = code.lastIndexOf("-");
+//    if(index == -1)
+//        return ret;
 
-    return code.left(index);
+//    return code.left(index);
+    QString strFull = QString(code);
+    QStringList strList = strFull.split("-", QString::SkipEmptyParts);
+    if(strList.count() < 4)
+        return QByteArray();
+
+    strList.removeLast();
+    strList = strList.mid(strList.count()-2, 2);
+    QByteArray ret = strList.join("-").toLocal8Bit();
+    return ret;
 }
 
 //初始化药柜界面
@@ -391,7 +400,6 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 {
     qDebug()<<caseIndex<<cabSeqNum;
     qDebug()<<clickLock;
-    config->wakeUp(TIMEOUT_BASE);
 //    qDebug()<<config->getCabinetId();
 //    emit requireOpenCase(cabSeqNum, caseIndex);
     if(config->isScreen(cabSeqNum, caseIndex))
@@ -411,7 +419,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if((optUser->power > 1) && (optUser->power!=3))//0 1 3
             return;
     }
-
+    config->wakeUp(TIMEOUT_BASE);
 //    bool clickRepeat = false;
 //    if((caseIndex==selectCase) && (cabSeqNum == selectCab))
 //        clickRepeat = true;//标记为重复点击
@@ -548,7 +556,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 }
 
 void CabinetWidget::recvScanData(QByteArray qba)
-{qDebug()<<"recvScanData"<<qba;
+{qDebug()<<"recvScanData"<<qba<<qba.toHex();
     magicCmd(QString(qba));
     if(!waitForCodeScan)
     {
@@ -1147,7 +1155,10 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 //    calCheck(QString(qba));
 
     if(this->isHidden())
+    {
+        qDebug()<<"recvUserInfo"<<qba<<"ignore..";
         return;
+    }
 
 //    if(!waitForCardReader)
 //    {
@@ -1180,12 +1191,9 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
         return;
     }
 
-    if(!needWaitForServer())
-    {
-        waitForServer = false;
-        msgShow("身份验证", "身份验证中...",false);
-        emit requireUserCheck(QString(qba));
-    }
+    msgShow("身份验证", "身份验证中...",false);
+    emit requireUserCheck(QString(qba));
+
 //        setPowerState(0);
 }
 

@@ -80,6 +80,13 @@ int main(int argc, char *argv[])
     w.showFullScreen();
 #endif
     a.setWidows(&w);
+    QFontDatabase database;
+
+    //下面为支持简体中文字体库
+    foreach (const QString &family, database.families(QFontDatabase::SimplifiedChinese))
+    {
+        qDebug()<<family;
+    }
 
     return a.exec();
 }

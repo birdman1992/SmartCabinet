@@ -139,8 +139,7 @@
                   <string notr="true">background-color: rgb(18, 112, 161);
 color: rgb(255,255,255);
 border:0px solid grey;
-font: 75 20px &quot;微软雅黑&quot;;
-</string>
+font: 75 20px  &quot;WenQuanYi Micro Hei Mono&quot;;</string>
                  </property>
                  <property name="text">
                   <string>日清单</string>
@@ -205,9 +204,10 @@ font: 75 20px &quot;微软雅黑&quot;;
                      <enum>Qt::NoFocus</enum>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">border:0px solid grey;
-font: 75 20px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);</string>
+                     <string notr="true">background-color: rgb(18, 112, 161);
+color: rgb(255,255,255);
+border:0px solid grey;
+font: 75 20px  &quot;WenQuanYi Micro Hei Mono&quot;;</string>
                     </property>
                     <property name="text">
                      <string>历史盘点</string>
@@ -228,7 +228,7 @@ color: rgb(255, 255, 255);</string>
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
+                <string notr="true">font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
                </property>
                <property name="text">
                 <string/>
@@ -344,8 +344,10 @@ border:0px solid #1270a1;</string>
                  </rect>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">font: 75 20px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);</string>
+                 <string notr="true">background-color: rgb(18, 112, 161);
+color: rgb(255,255,255);
+border:0px solid grey;
+font: 75 20px  &quot;WenQuanYi Micro Hei Mono&quot;;</string>
                 </property>
                 <property name="text">
                  <string>请刷卡使用</string>
@@ -542,8 +544,11 @@ color: rgb(255, 255, 255);</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(18, 112, 161);
-font: 75 20px &quot;微软雅黑&quot;;
-color: rgb(255, 255, 255);</string>
+color: rgb(255,255,255);
+border:0px solid grey;
+font: 75 20px  &quot;WenQuanYi Micro Hei Mono&quot;;
+
+</string>
                   </property>
                   <property name="text">
                    <string>设备终端NO:</string>
@@ -654,7 +659,7 @@ background-color: rgb(238, 0, 0);
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">font: 75 24px &quot;微软雅黑&quot;;
+                   <string notr="true">font: 75 24px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 </string>
                   </property>
@@ -1108,7 +1113,7 @@ border-image: url(:/image/image/btn_notice_sel.png);}</string>
                    <string notr="true">background-color: rgb(255, 255, 255);
 border:1px solid grey;
 border-radius:10px;
-font: 20px &quot;微软雅黑&quot;;</string>
+font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1130,7 +1135,7 @@ font: 20px &quot;微软雅黑&quot;;</string>
                    <enum>Qt::NoFocus</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">font: 35px &quot;微软雅黑&quot;;
+                   <string notr="true">font: 35px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
 border-radius: 35px;
@@ -1147,7 +1152,7 @@ background-color: rgb(36, 221, 149);</string>
                <widget class="QFrame" name="search_frame">
                 <property name="styleSheet">
                  <string notr="true">QPushButton::pressed{
-font: 35px &quot;微软雅黑&quot;;
+font: 35px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
 border-radius: 35px;
@@ -1155,7 +1160,7 @@ background-color:  rgba(22, 52, 73, 200);
 }
 
 QPushButton{
-font: 35px &quot;微软雅黑&quot;;
+font: 35px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
 border-radius: 35px;

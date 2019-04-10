@@ -9,7 +9,7 @@ CasePanel::CasePanel(bool doubleCol, QWidget *parent) :
 {
     ui->setupUi(this);
     isSpec = false;
-    font = new QFont("msyh");
+    font = new QFont("WenQuanYi Micro Hei Mono");
     font->setPixelSize(12);//另外需要修改cabinet.ui style sheet
     this->setFont(*font);
     list_show.clear();
@@ -64,6 +64,7 @@ void CasePanel::paintEvent(QPaintEvent*)
 
 void CasePanel::resizeEvent(QResizeEvent *)
 {
+    qDebug()<<"resize"<<ui->left->width();
     updatePanel();
 }
 
@@ -112,11 +113,11 @@ int CasePanel::maxShowNum()
 {
     if(showDoubleCol)
     {
-        return (getMaxLine()-1)*2;
+        return (getMaxLine())*2;
     }
     else
     {
-        return getMaxLine()-1;
+        return getMaxLine();
     }
 }
 
@@ -133,7 +134,7 @@ void CasePanel::setSpec(bool spec)
     }
     else
     {
-        font = new QFont("msyh");
+        font = new QFont("WenQuanYi Micro Hei Mono");
         font->setPixelSize(12);//另外需要修改cabinet.ui style sheet
         this->setFont(*font);
         this->setStyleSheet(cellStyle(QColor(36, 221, 159)));
@@ -149,7 +150,7 @@ QString CasePanel::geteElidedText(QFont _font, QString str, int MaxWidth)
 {
     QFontMetrics fontWidth(_font);
     int width = fontWidth.width(str);  //计算字符串宽度
-//    qDebug()<<"[geteElidedText]"<<str<<fontWidth.width(str)<<MaxWidth;  //qDebug获取"abcdefg..." 为60
+    qDebug()<<"[geteElidedText]"<<str<<fontWidth.width(str)<<MaxWidth;  //qDebug获取"abcdefg..." 为60
     if(width>=MaxWidth)  //当字符串宽度大于最大宽度时进行转换
     {
         str = fontWidth.elidedText(str,Qt::ElideRight, MaxWidth);  //右部显示省略号
@@ -171,7 +172,7 @@ void CasePanel::updatePanel()
     QString left;
     QString right;
     int i = 0;
-    int maxLine = getMaxLine()-1;
+    int maxLine = getMaxLine();
 //    qDebug()<<"[getMaxLine]"<<maxLine;
 
     if(showDoubleCol)
@@ -229,15 +230,23 @@ void CasePanel::updatePanel()
 
 QString CasePanel::getShowStr(GoodsInfo *info)
 {
-//    if(info->num == 0)
-//        return QString();
+    if(info->num == 0)
+        return QString();
     QString str = info->name;
     QString strTail = QString("×%1").arg(info->num);
 
     if(!info->abbName.isEmpty())
         str = info->abbName;
 
-    str = geteElidedText(*font, str, ui->left->width() - getStringWidth(strTail) - 10);
+    int maxWidth = this->width();
+    if(showDoubleCol)
+    {
+        maxWidth = maxWidth/2;
+    }
+    maxWidth = maxWidth - getStringWidth(strTail) - 10;
+//    qDebug()<<"[getshow str]"<<showDoubleCol<<ui->left->width()<<ui->right->width()<<this->width()<<getStringWidth(strTail);
+
+    str = geteElidedText(*font, str, maxWidth);
     str += strTail;
 
     return str;
@@ -246,5 +255,5 @@ QString CasePanel::getShowStr(GoodsInfo *info)
 int CasePanel::getMaxLine()
 {
     QFontMetrics fontWidth(*font);
-    return ui->left->height()/(fontWidth.height()-5);
+    return this->height()/(fontWidth.height());
 }

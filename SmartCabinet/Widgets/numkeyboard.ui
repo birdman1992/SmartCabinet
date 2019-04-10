@@ -19,12 +19,12 @@ background-color: rgb(255, 255, 255);
 }
 QPushButton{
 border:0px silid gray;
-font: 40px &quot;微软雅黑&quot;;
+font: 40px &quot;WenQuanYi Micro Hei Mono&quot;;
 color:rgb(255, 255, 255);
 background-color: rgb(36, 221, 149);
 }
 QPushButton:pressed{
-font: 40px &quot;微软雅黑&quot;;
+font: 40px &quot;WenQuanYi Micro Hei Mono&quot;;
 color:rgb(255, 255, 255);
 background-color: rgb(36, 221, 149);
 background-color: rgb(8, 182, 114);
@@ -203,7 +203,7 @@ background-color: rgb(8, 182, 114);
     <enum>Qt::NoFocus</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 30px &quot;微软雅黑&quot;;</string>
+    <string notr="true">font: 30px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
    </property>
    <property name="text">
     <string>清除</string>

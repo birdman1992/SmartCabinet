@@ -33,14 +33,14 @@
 border:1px solid grey;
 background-color: rgb(36, 221, 149);
 border-radius:38px;
-font: 75 22px &quot;微软雅黑&quot;;
+font: 75 22px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 }
 QPushButton:pressed{
 border:1px solid grey;
 background-color: rgb(25, 200, 137);
 border-radius:38px;
-font: 75 22px &quot;微软雅黑&quot;;
+font: 75 22px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 }</string>
      </property>

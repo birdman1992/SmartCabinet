@@ -138,7 +138,7 @@
     <enum>Qt::NoFocus</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">font: 30px &quot;微软雅黑&quot;;</string>
+    <string notr="true">font: 30px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
    </property>
    <property name="text">
     <string>清除</string>

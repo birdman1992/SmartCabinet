@@ -41,7 +41,7 @@ void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
         ui->tableWidget->setRowCount(caseNum);
         logo = new QLabel(this);
         logo->setWordWrap(true);
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"WenQuanYi Micro Hei Mono\";");
         ui->tableWidget->setCellWidget(1,0,logo);
     }
 }
@@ -65,7 +65,7 @@ void Cabinet::CabinetInit(QString cLayout, int seq, int sPos)
         cabSplit(cLayout, ui->tableWidget);
         logo = new QLabel(this);
         logo->setWordWrap(true);
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"WenQuanYi Micro Hei Mono\";");
         ui->tableWidget->setCellWidget(sPos,0,logo);
     }
 }
@@ -180,7 +180,7 @@ void Cabinet::setScreenPos(int pos)
     {
         logo = new QLabel(this);
         logo->setWordWrap(true);
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"WenQuanYi Micro Hei Mono\";");
         ui->tableWidget->setCellWidget(pos,0,logo);
     }
 }
@@ -415,9 +415,9 @@ void Cabinet::showMsg(QString msg, bool iswarnning)
     logo->setText(msg);
     logo->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     if(iswarnning)
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"Sans Serif\";image:url(:/image/image/warning.png);image-position:top left");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"WenQuanYi Micro Hei Mono\";image:url(:/image/image/warning.png);image-position:top left");
     else
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 20px \"Sans Serif\";");
+        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 20px \"WenQuanYi Micro Hei Mono\";");
 }
 
 void Cabinet::setCaseName(GoodsInfo info, int index)

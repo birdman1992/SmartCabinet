@@ -69,7 +69,7 @@ background-color: rgb(255, 255, 255);
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font: 20px &quot;微软雅黑&quot;;
+         <string notr="true">font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(40, 122, 35);
 background-color: rgb(255, 255, 255);</string>
         </property>
@@ -92,7 +92,7 @@ background-color: rgb(255, 255, 255);</string>
         <property name="styleSheet">
          <string notr="true">border-image: url(:/image/image/bg_input_normal.png);
 padding-left:10px;
-font: 20px &quot;微软雅黑&quot;;</string>
+font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
         </property>
         <property name="readOnly">
          <bool>true</bool>
@@ -113,11 +113,11 @@ font: 20px &quot;微软雅黑&quot;;</string>
         <property name="styleSheet">
          <string notr="true">#cancel{
 	color: rgb(255, 255, 255);
-	font: 75 26px &quot;微软雅黑&quot;;
+	font: 75 26px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(238, 128, 61);
 }
 #cancel:pressed{
-	font: 75 26px &quot;微软雅黑&quot;;
+	font: 75 26px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(8, 182, 114);
 	background-color: rgb(224, 95, 17);
 }</string>
@@ -141,11 +141,11 @@ font: 20px &quot;微软雅黑&quot;;</string>
         <property name="styleSheet">
          <string notr="true">#onekey{
 	color: rgb(255, 255, 255);
-	font: 75 20px &quot;微软雅黑&quot;;
+	font: 75 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(36, 221, 149);
 }
 #onekey:pressed{
-	font: 75 20px &quot;微软雅黑&quot;;
+	font: 75 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(8, 182, 114);
 }</string>
         </property>
@@ -168,11 +168,11 @@ font: 20px &quot;微软雅黑&quot;;</string>
         <property name="styleSheet">
          <string notr="true">#ok{
 	color: rgb(255, 255, 255);
-	font: 75 26px &quot;微软雅黑&quot;;
+	font: 75 26px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(36, 221, 149);
 }
 #ok:pressed{
-	font: 75 26px &quot;微软雅黑&quot;;
+	font: 75 26px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(8, 182, 114);
 }</string>
         </property>
@@ -190,7 +190,7 @@ font: 20px &quot;微软雅黑&quot;;</string>
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font: 75 25px &quot;微软雅黑&quot;;</string>
+         <string notr="true">font: 75 25px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
         </property>
         <property name="text">
          <string>医用棉签</string>

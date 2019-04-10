@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget{
-font: 18px &quot;微软雅黑&quot;;
+font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;
 background-color: rgb(255, 255, 255);
 }
 QPushButton{

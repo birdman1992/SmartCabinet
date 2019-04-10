@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget{
-	font: 15px &quot;微软雅黑&quot;;
+	font: 15px &quot;WenQuanYi Micro Hei Mono&quot;;
 }
 #CabinetListItem{
 background-color: rgb(255, 255, 255);

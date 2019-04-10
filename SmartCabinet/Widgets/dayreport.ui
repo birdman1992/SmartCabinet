@@ -20,7 +20,7 @@ color: rgb(255, 255, 255);
 }
 
 #CheckTable{
-font: 16px &quot;微软雅黑&quot;;
+font: 16px &quot;WenQuanYi Micro Hei Mono&quot;;
 background-color: rgb(114, 159, 207);
 color: rgb(255, 255, 255);
 }</string>
@@ -40,7 +40,7 @@ color: rgb(255, 255, 255);
 }
 
 QWidget{
-font: 18px &quot;微软雅黑&quot;;
+font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;
 }</string>
      </property>
      <property name="frameShape">

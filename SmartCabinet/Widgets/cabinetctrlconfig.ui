@@ -21,7 +21,7 @@
 	background-color: rgb(62, 155, 255);
 	border:10px outset gray;
 	
-	font: 20px &quot;微软雅黑&quot;;
+	font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 }
 QPushButton::pressed{
 	border:10px inset gray;
@@ -45,7 +45,7 @@ QPushButton::pressed{
      <property name="styleSheet">
       <string notr="true">#frame{
 background-color: rgb(255, 255, 255);
-font: 20px &quot;微软雅黑&quot;;
+font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 }</string>
      </property>
      <property name="frameShape">

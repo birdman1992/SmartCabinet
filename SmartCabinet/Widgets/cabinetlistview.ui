@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QLabel{
-font: 18px &quot;微软雅黑&quot;;
+font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4" stretch="25,2,2">
@@ -40,7 +40,7 @@ font: 18px &quot;微软雅黑&quot;;
       <widget class="QFrame" name="frame">
        <property name="styleSheet">
         <string notr="true">background-color: rgb(255, 255, 255);
-font: 18px &quot;微软雅黑&quot;;</string>
+font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
        </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -189,7 +189,7 @@ font: 18px &quot;微软雅黑&quot;;</string>
               <property name="styleSheet">
                <string notr="true">#fetch{
 background-color: rgb(36, 221, 149);
-font: 20px &quot;微软雅黑&quot;;
+font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 }
 #fetch:!enabled{
@@ -214,7 +214,7 @@ background-color: rgb(145, 145, 145);
               </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(13, 96, 150);
-font: 20px &quot;微软雅黑&quot;;
+font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);</string>
               </property>
               <property name="text">
@@ -233,7 +233,7 @@ color: rgb(255, 255, 255);</string>
       <widget class="QFrame" name="verticalFrame">
        <property name="styleSheet">
         <string notr="true">background-color: rgb(255, 255, 255);
-font: 18px &quot;微软雅黑&quot;;</string>
+font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="leftMargin">
@@ -312,7 +312,7 @@ QTableWidget::Item{
     <widget class="QFrame" name="frame_3">
      <property name="styleSheet">
       <string notr="true">QPushButton::pressed{
-font: 23px &quot;微软雅黑&quot;;
+font: 23px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
 border-radius: 26px;
@@ -320,7 +320,7 @@ background-color:  rgba(22, 52, 73, 200);
 }
 
 QPushButton{
-font: 23px &quot;微软雅黑&quot;;
+font: 23px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
 border-radius: 26px;
@@ -1063,7 +1063,7 @@ background-color: rgb(36, 221, 149);
          <string notr="true">background-color: rgb(255, 255, 255);
 border:1px solid grey;
 border-radius:8px;
-font: 20px &quot;微软雅黑&quot;;</string>
+font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
         </property>
        </widget>
       </item>
@@ -1082,7 +1082,7 @@ font: 20px &quot;微软雅黑&quot;;</string>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">font: 35px &quot;微软雅黑&quot;;
+         <string notr="true">font: 35px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
 border-radius: 8px;

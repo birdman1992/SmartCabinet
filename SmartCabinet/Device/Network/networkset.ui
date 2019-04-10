@@ -15,10 +15,10 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QLabel{
-font:20px&quot;微软雅黑&quot;;
+font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 }
 QLineEdit{
-font:20px&quot;微软雅黑&quot;;
+font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 }</string>
   </property>
   <widget class="QFrame" name="frame_4">
@@ -73,7 +73,7 @@ font:20px&quot;微软雅黑&quot;;
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
+      <string notr="true">font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
      </property>
      <property name="text">
       <string>确定</string>
@@ -160,10 +160,10 @@ font:20px&quot;微软雅黑&quot;;
      </property>
      <property name="styleSheet">
       <string notr="true">QLabel{
-font:20px&quot;微软雅黑&quot;;
+font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 }
 QLineEdit{
-font:20px&quot;微软雅黑&quot;;
+font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 }</string>
      </property>
      <property name="frameShape">
@@ -258,7 +258,7 @@ font:20px&quot;微软雅黑&quot;;
               </sizepolicy>
              </property>
              <property name="styleSheet">
-              <string notr="true">font: 18px &quot;微软雅黑&quot;;</string>
+              <string notr="true">font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
              </property>
              <property name="text">
               <string>确定</string>
@@ -350,7 +350,7 @@ font:20px&quot;微软雅黑&quot;;
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 20px &quot;微软雅黑&quot;;</string>
+     <string notr="true">font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
     </property>
     <property name="text">
      <string>返回</string>

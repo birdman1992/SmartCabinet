@@ -33,11 +33,11 @@
        <property name="styleSheet">
         <string notr="true">QPushButton{
 	color: rgb(255, 255, 255);
-	font: 75 26px &quot;微软雅黑&quot;;
+	font: 75 26px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(36, 221, 149);
 }
 QPushButton:pressed{
-	font: 75 26px &quot;微软雅黑&quot;;
+	font: 75 26px &quot;WenQuanYi Micro Hei Mono&quot;;
 	background-color: rgb(8, 182, 114);
 }
 #frame{
@@ -60,7 +60,7 @@ background-color: rgb(255, 255, 255);
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font: 20px &quot;微软雅黑&quot;;
+         <string notr="true">font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(40, 122, 35);
 background-color: rgb(255, 255, 255);</string>
         </property>
@@ -110,7 +110,7 @@ background-color: rgb(255, 255, 255);</string>
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font: 20px &quot;微软雅黑&quot;;
+         <string notr="true">font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(40, 122, 35);
 background-color: rgb(255, 255, 255);</string>
         </property>
