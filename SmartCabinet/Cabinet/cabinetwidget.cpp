@@ -19,7 +19,6 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     clickLock = true;
     waitForCodeScan = false;
     waitForGoodsListCode = false;
-    waitForServer = false;
     waitForCardReader = true;
     waitForSecondaryCard = false;
     waitForCheckFinish = false;
@@ -206,18 +205,6 @@ void CabinetWidget::initVolum()
     connect(volume, SIGNAL(sliderPressed()), this, SLOT(vol_pressed()));
     connect(volume, SIGNAL(sliderReleased()), this, SLOT(vol_released()));
     connect(volume, SIGNAL(valueChanged(int)), this, SLOT(vol_changed(int)));
-}
-
-bool CabinetWidget::needWaitForServer()
-{
-    if(waitForServer)
-        return true;
-    else
-    {
-        waitForServer = true;
-//        QTimer::singleShot(5000, this, SLOT(wait_timeout()));
-        return false;
-    }
 }
 
 void CabinetWidget::showCurrentTime(QString curTime)
@@ -614,7 +601,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
             if(newStore)
                 emit requireOpenCase(pos.cabinetSeqNum, pos.caseIndex);
 
-            if(curGoods->curNum < curGoods->totalNum && (!needWaitForServer()))
+            if(curGoods->curNum < curGoods->totalNum)
             {
                 win_access->scanOpen(curGoods->packageBarcode);
                 CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
@@ -645,7 +632,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
                 win_access->scanOpen(scanGoodsId, fullScanInfo);
                 emit goodsAccess(addr,fullScanInfo, 1, 1);
             }
-            else if(!needWaitForServer())
+            else
             {
                 win_access->scanOpen(scanGoodsId);          
                 emit goodsAccess(addr,fullScanInfo, 1, 1);
@@ -939,28 +926,6 @@ void CabinetWidget::updateNetState(bool connected)
 {
     netCheckState = connected;
     ui->netState->setChecked(netCheckState);
-}
-
-void CabinetWidget::wait_timeout()
-{
-    waitForServer = false;
-//    if(msgBox == NULL)
-//        return;
-
-//    if(!waitForCardReader)
-//        return;
-//    waitForCardReader = false;
-//    msgShow("等待超时", "身份校验超时",false);
-//    msgBox->close();
-//    msgBox->deleteLater();
-//    msgBox = NULL;
-
-//    msgBox = new QMessageBox(QMessageBox::NoIcon, "等待超时", "身份校验超时",QMessageBox::Ok,NULL,
-//           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
-//    msgBox->setModal(true);
-//    msgBox->exec();
-//    msgBox->deleteLater();
-    //    msgBox = NULL;
 }
 
 void CabinetWidget::saveStore(Goods *goods, int num)
@@ -1273,7 +1238,6 @@ void CabinetWidget::recvGoodsCheckRst(QString msg)
 void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
 {
     CaseAddress addr = config->checkCabinetByBarCode(goodsId);
-    waitForServer = false;
     if(num == -1)
     {
         num = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num - 1;
@@ -1301,7 +1265,6 @@ void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
 
 void CabinetWidget::accessFailedMsg(QString msg)
 {
-    waitForServer = false;
     if(config->state == STATE_LIST)
     {
         win_cab_list_view->fetchFailed(msg);
@@ -1508,7 +1471,6 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     cabInit();
     waitForCodeScan = false;
     waitForGoodsListCode = false;
-    waitForServer = false;
     msgClear();
     optUser = info;
     curCard = optUser->cardId;

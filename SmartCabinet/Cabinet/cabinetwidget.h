@@ -104,8 +104,6 @@ private slots:
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
     void checkOneCase(QStringList l, CaseAddress addr);
     void checkPush();
-    //    void on_fetch_clicked();
-    void wait_timeout();
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
 //    void on_fetch_toggled(bool checked);
@@ -160,7 +158,6 @@ private:
     int storeNum;
     bool waitForCodeScan;
     bool waitForInit;
-    bool waitForServer;
     bool waitForSecondaryCard;
     bool checkMask;
     QString scanInfo;
@@ -193,7 +190,6 @@ private:
     void initAccessState();
     void initSearchBtns();
     void initVolum();
-    bool needWaitForServer();
     void showCurrentTime(QString curTime);
     void rebindRecover();//重绑定恢复
     void rebindOver();//重绑定完成
