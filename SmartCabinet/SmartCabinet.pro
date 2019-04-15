@@ -8,6 +8,8 @@ QT       += core gui network printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+include($$PWD/log/log.pri)
+
 TARGET = SmartCabinet
 TEMPLATE = app
 target.path = /home
