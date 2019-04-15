@@ -44,7 +44,7 @@ void MainWidget::init_xiangang()
 
 void MainWidget::config_ui_set()
 {
-    cabinetConf = new CabinetConfig();
+    cabinetConf = CabinetConfig::config();
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -590,7 +590,7 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
 
     //智能柜配置
-    cabinetConf = new CabinetConfig();
+    cabinetConf = CabinetConfig::config();
 
     routeRepair = new RouteRepair(this);
 

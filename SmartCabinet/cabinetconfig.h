@@ -30,8 +30,8 @@ enum CabState
 class CabinetConfig
 {
 public:
-    CabinetConfig();
     ~CabinetConfig();
+    static CabinetConfig* config();
     void saveFetchList(QByteArray _data);
     void readCabinetConfig();//读取柜子配置
     void setSpecialCase(QPoint pos, bool needRecover = true);
@@ -112,6 +112,8 @@ public:
     void setCabinetColMap(QString map);
     void setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlIndex);
 private:
+    CabinetConfig();
+    static CabinetConfig* c;
     bool cardReaderIsOk;
     bool codeScanIsOk;
     bool firstUse;//第一次使用

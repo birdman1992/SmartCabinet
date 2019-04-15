@@ -11,6 +11,8 @@
 #include "funcs/chineseletterhelper.h"
 #include "Device/controldevice.h"
 
+CabinetConfig* CabinetConfig::c = new CabinetConfig;
+
 CabinetConfig::CabinetConfig()
 {
     lockManager = LockManager::manager();
@@ -40,6 +42,11 @@ CabinetConfig::~CabinetConfig()
 {
     qDeleteAll(list_user.begin(), list_user.end());
     list_user.clear();
+}
+
+CabinetConfig *CabinetConfig::config()
+{
+    return c;
 }
 
 void CabinetConfig::saveFetchList(QByteArray _data)
