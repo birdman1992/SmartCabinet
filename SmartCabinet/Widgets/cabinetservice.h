@@ -80,6 +80,10 @@ private slots:
 
     void on_set_spec_case_clicked();
 
+    void on_scan_list_toggled(bool checked);
+
+    void on_scan_all_toggled(bool checked);
+
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);

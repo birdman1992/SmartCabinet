@@ -3,6 +3,7 @@
 
 GoodsList::GoodsList()
 {
+    legalList = false;
     map_goods.clear();
 }
 

@@ -20,6 +20,8 @@ public:
     QString unit;
     QString packageBarcode;
     QString roomName;
+    QString proName;//生产商
+    QString supName;//供应商
 
     QPoint pos;
     int packageType;
@@ -28,6 +30,7 @@ public:
     int singlePrice;
     int inStorageId;
     int totalNum;
+    int waitNum;
     int curNum;//未写入柜子信息的已存入数量
     int storeNum;//写入柜子信息的已存入数量
     bool finish;
@@ -46,8 +49,10 @@ public:
     bool isFinished();
     bool listCheck();
 
+    bool legalList;//存货单是否 true:合法  false:不合法
     QMap<QString, Goods*> map_goods;
     QString barcode;
+    QString departName;
     QList<Goods*> list_goods;
 };
 

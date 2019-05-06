@@ -37,6 +37,7 @@ private:
     void setConfig(QString key, QVariant value);
     QVariant getConfig(QString key, QVariant defaultRet);
     void removeConfig(QString path);
+
 signals:
 
 public slots:

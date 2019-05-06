@@ -38,6 +38,7 @@
 #define API_DAY_REPORT "/spd-web/sarkApi/Cheset/query/consumeDate/"  //日清单
 #define API_DOWNLOAD_PAC "/spd-web/sarkApi/cheset/download/package" //下载更新包
 #define API_VERSION_CHECK "/spd-web/sarkApi/cheset/get/package"  //检查更新包
+#define API_GOODS_TRACE  "/spd-web/sarkApi/Cheset/doSaveTraceId"  //物品存入跟踪
 
 
 
@@ -65,6 +66,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_search_spell = NULL;
     reply_day_report = NULL;
     reply_download = NULL;
+    reply_store_trace = NULL;
     versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
@@ -650,6 +652,25 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     free(buff);
 }
 
+void CabinetServer::goodsStoreTrace(QString goodsCode)
+{
+    replyCheck(reply_store_trace);
+    QString nUrl = ApiAddress+QString(API_GOODS_TRACE);
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setUrl(nUrl);
+    QString optId = config->getOptId();
+    QString chesetCode = config->getCabinetId();
+    QString barcode = barCode;
+    QString traceId = goodsCode;
+    QByteArray qba = QString("{\"optName\":\"%1\",\"chesetCode\":\"%2\",\"traceId\":\"%3\",\"barcode\":\"%4\"}")
+             .arg(optId).arg(chesetCode).arg(traceId).arg(barcode).toLocal8Bit();
+
+    qDebug()<<"[goodsStoreTrace]"<<qba;
+    reply_store_trace = manager->post(request, qba.toBase64());
+    connect(reply_store_trace, SIGNAL(finished()), this, SLOT(recvGoodsTrace()));
+}
+
 void CabinetServer::goodsCarScan()
 {
     needReqCar = true;//打开定时查询
@@ -757,6 +778,11 @@ void CabinetServer::waitForRepaitOK()
         return;
 
     checkTime();
+}
+
+void CabinetServer::updateCurBarcode(QString code)
+{
+    barCode = code;
 }
 
 void CabinetServer::searchSpell(QString spell)
@@ -983,8 +1009,11 @@ void CabinetServer::recvListCheck()
             info->roomName = QString::fromUtf8(cJSON_GetObjectItem(json_info,"roomName")->valuestring);
             info->singlePrice = cJSON_GetObjectItem(json_info,"singlePrice")->valueint;
             info->size = QString::fromUtf8(cJSON_GetObjectItem(json_info,"size")->valuestring);
+            info->proName = QString::fromUtf8(cJSON_GetObjectItem(json_info,"proName")->valuestring);
+            info->supName = QString::fromUtf8(cJSON_GetObjectItem(json_info,"supplyName")->valuestring);
 //            info->takeCount = cJSON_GetObjectItem(json_info,"takeCount")->valueint;
             info->takeCount = cJSON_GetObjectItem(json_info,"outCount")->valueint;//packageCount
+            info->waitNum = info->takeCount;
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
 
@@ -998,14 +1027,15 @@ void CabinetServer::recvListCheck()
         }
         cJSON* json_list_info = cJSON_GetObjectItem(json_data,"store");
         list->barcode = QString::fromUtf8(cJSON_GetObjectItem(json_list_info, "barcode")->valuestring);
+        list->departName = QString::fromUtf8(cJSON_GetObjectItem(json_list_info, "departCode")->valuestring);
         if(config->getCabinetId() == QString::fromUtf8(cJSON_GetObjectItem(json_list_info, "departName")->valuestring))
         {
+            list->legalList = true;//合法送货单
             emit listRst(list);
         }
         else
         {
-            delete list;
-            list = new GoodsList;
+            list->legalList = true;//非法送货单
             emit listRst(list);
         }
     }
@@ -1118,6 +1148,23 @@ void CabinetServer::recvListAccess()
     cJSON_Delete(json);
 
     accessLoop();
+}
+
+void CabinetServer::recvGoodsTrace()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_store_trace->readAll());
+    reply_store_trace->deleteLater();
+    reply_store_trace = NULL;
+
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvGoodsTrace]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    QString msg = QString(cJSON_GetObjectItem(json, "msg")->valuestring);
+    QString goodsCode = QString(cJSON_GetObjectItem(json, "data")->valuestring);
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    emit goodsTraceRst(json_rst->type, msg, goodsCode);
 }
 
 void CabinetServer::recvGoodsCheck()

@@ -68,6 +68,7 @@ public slots:
     void recvCheckFinish(bool);
     void recvCheckCreatRst(bool, QString msg);//new_api
     void recvCheckFinishRst(bool, QString msg);
+    void recvGoodsTraceRst(bool, QString msg, QString goodsCode);
 
 
 signals:
@@ -78,6 +79,7 @@ signals:
     void requireOpenCase(int seqNum, int index);
     void requireCaseBind(int  seqNum, int index, QString goodsId);
     void requireCaseRebind(int  seqNum, int index, QString goodsId);
+    void reportTraceId(QString traceId);
     void goodsNumChanged(int);//报告物品数量的变化
     void checkLockState();//检查锁状态
     void scanData(QByteArray qba);
@@ -86,6 +88,7 @@ signals:
     void checkCase(QList<CabinetCheckItem*> l, CaseAddress addr);
     void checkCase(QStringList, CaseAddress);
     void storeList(QList<CabinetStoreListItem*>);
+    void newStoreBarCode(QString);
     void requireTimeout();
     void requireCabSync();
     void requireGoodsCheck();

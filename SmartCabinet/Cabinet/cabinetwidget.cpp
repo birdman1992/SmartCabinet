@@ -54,8 +54,11 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 
     connect(win_store_list, SIGNAL(requireBind(Goods*)), this, SLOT(cabinetBind(Goods*)));
     connect(win_store_list, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+    connect(win_store_list, SIGNAL(requireGoodsListCheck(QString)), this, SIGNAL(requireGoodsListCheck(QString)));
     connect(win_store_list, SIGNAL(storeList(QList<CabinetStoreListItem*>)), this, SIGNAL(storeList(QList<CabinetStoreListItem*>)));
+    connect(win_store_list, SIGNAL(newStoreBarCode(QString)), this, SIGNAL(newStoreBarCode(QString)));
     connect(win_store_list, SIGNAL(requireScanState(bool)), this, SLOT(updateScanState(bool)));
+    connect(win_store_list, SIGNAL(reportTraceId(QString)), this, SIGNAL(reportTraceId(QString)));
 
     connect(win_refund, SIGNAL(refundCase(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
 //    optUser = QString();
@@ -550,8 +553,9 @@ void CabinetWidget::recvScanData(QByteArray qba)
         qDebug()<<"[CabinetWidget]"<<"scan data not need";
         return;
     }
-    if(waitForGoodsListCode)
+    if(waitForGoodsListCode && (!config->getStoreMode()))//不用扫描全部物品的模式,扫描全部物品的模式下由存货窗口接管此信号的发射
     {
+        qDebug()<<"requireGoodsListCheck";
         emit requireGoodsListCheck(QString(qba));
         return;
     }
@@ -575,43 +579,11 @@ void CabinetWidget::recvScanData(QByteArray qba)
 
     if(config->state == STATE_STORE)
     {
-        return;
-        curGoods = curStoreList->getGoodsById(scanInfo);
-        if(curGoods == NULL)
-        {
-            qDebug()<<"[recvScanData]"<<"scan goods id not find";
-            return;
-        }
-        else
-            qDebug()<<"[recvScanData]"<<"scan goods id find";
-        //根据物品名搜索柜格位置
-        CaseAddress pos = config->checkCabinetByBarCode(curGoods->packageBarcode);
-
-        if(pos.cabinetSeqNum == -1)//没有搜索到药品对应的柜格
-        {
-            clickLock = false;
-            win_access->save();
-            win_access->hide();
-            config->showMsg(MSG_STORE_SELECT, false);
-        }
-        else
-        {
-            //打开对应柜门
-            qDebug()<<"[CabinetWidget]"<<"[open]"<<pos.cabinetSeqNum<<pos.caseIndex;
-            if(newStore)
-                emit requireOpenCase(pos.cabinetSeqNum, pos.caseIndex);
-
-            if(curGoods->curNum < curGoods->totalNum)
-            {
-                win_access->scanOpen(curGoods->packageBarcode);
-                CaseAddress addr = config->checkCabinetByBarCode(scanInfo);
-                emit goodsAccess(addr,fullScanInfo, 1, 2);
-            }
-//            storeNum++;
-//            config->showMsg(MSG_STORE+
-//                                             QString("\n已放入\n%1 ×%2").arg(config->list_cabinet[casePos.cabinetSeqNUM]->list_case[casePos.caseIndex]->name).arg(storeNum), false);
-//            config->list_cabinet[casePos.cabinetSeqNUM]->consumableIn(casePos.caseIndex);
-        }
+        if(scanInfo.isEmpty())
+            scanInfo = fullScanInfo;
+        win_store_list->recvScanCode(fullScanInfo);
+//        win_store_list->recvStoreTraceRst(true, "存入成功", fullScanInfo);//test
+//        emit reportTraceId(fullScanInfo);
     }
     else if(config->state == STATE_FETCH)
     {/*qDebug("fetch");*/
@@ -844,6 +816,8 @@ void CabinetWidget::on_store_clicked(bool checked)
         clearMenuState();
         ui->store->setChecked(true);
         config->wakeUp(TIMEOUT_BASE);
+        if(config->getStoreMode())
+            win_store_list->show();
     }
     else
     {
@@ -1168,17 +1142,14 @@ void CabinetWidget::recvListInfo(GoodsList *l)
     if(l->list_goods.count() == 0)
     {
         config->showMsg(MSG_LIST_ERROR, 1);
+        win_store_list->listError(MSG_LIST_ERROR);
         return;
     }
 
-    if(curStoreList != NULL)
-        delete curStoreList;
-
     curStoreList = l;
-
     win_store_list->setLoginState(loginState);
     win_store_list->storeStart(l);
-    win_store_list->show();
+//    win_store_list->show();
     return;
 
     win_access->setStoreList(l);
@@ -1400,6 +1371,11 @@ void CabinetWidget::recvCheckFinishRst(bool success, QString msg)
         config->showMsg(msg,false);
         ui->check->setChecked(true);
     }
+}
+
+void CabinetWidget::recvGoodsTraceRst(bool success, QString msg, QString goodsCode)
+{
+    win_store_list->recvStoreTraceRst(success, msg, goodsCode);
 }
 
 void CabinetWidget::setMenuHide(bool ishide)

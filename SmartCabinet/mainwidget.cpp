@@ -44,7 +44,7 @@ void MainWidget::init_xiangang()
 
 void MainWidget::config_ui_set()
 {
-    cabinetConf = new CabinetConfig();
+    cabinetConf = CabinetConfig::config();
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -590,7 +590,8 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
 
     //智能柜配置
-    cabinetConf = new CabinetConfig();
+    cabinetConf = CabinetConfig::config();
+    cabinetConf->configInit();
 
     routeRepair = new RouteRepair(this);
 
@@ -744,6 +745,7 @@ void MainWidget::connect_master()
     connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
     connect(win_cabinet, SIGNAL(checkCase(QStringList,CaseAddress)), cabServer, SLOT(goodsCheck(QStringList,CaseAddress)));
     connect(win_cabinet, SIGNAL(storeList(QList<CabinetStoreListItem*>)), cabServer, SLOT(goodsListStore(QList<CabinetStoreListItem*>)));
+    connect(win_cabinet, SIGNAL(newStoreBarCode(QString)), cabServer, SLOT(updateCurBarcode(QString)));
     connect(win_cabinet, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
     connect(win_cabinet, SIGNAL(requireGoodsCheck()), cabServer, SLOT(goodsCheckReq()));
     connect(win_cabinet, SIGNAL(goodsCheckFinish()), cabServer, SLOT(goodsCheckFinish()));
@@ -752,6 +754,7 @@ void MainWidget::connect_master()
     connect(win_cabinet, SIGNAL(requireApplyShow()), win_goods_apply, SLOT(show()));
     connect(win_cabinet, SIGNAL(requireDayReportShow()), win_day_report, SLOT(show()));
     connect(win_cabinet, SIGNAL(reqCheckVersion(bool)), cabServer, SLOT(checkUpdate(bool)));
+    connect(win_cabinet, SIGNAL(reportTraceId(QString)), cabServer, SLOT(goodsStoreTrace(QString)));
     connect(win_cab_service, SIGNAL(checkVersion(bool)), cabServer, SLOT(checkUpdate(bool)));
     connect(win_cab_service, SIGNAL(updateStart()), cabServer, SLOT(updateStart()));
     connect(cabServer, SIGNAL(updateCheckRst(bool,QString)), win_cab_service, SLOT(recvVersionInfo(bool,QString)));
@@ -772,6 +775,7 @@ void MainWidget::connect_master()
     connect(cabServer, SIGNAL(netState(bool)), routeRepair, SLOT(repairStart(bool)));
     connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
     connect(cabServer, SIGNAL(checkFinish(bool)), win_cabinet, SLOT(recvCheckFinish(bool)));
+    connect(cabServer, SIGNAL(goodsTraceRst(bool,QString,QString)), win_cabinet, SLOT(recvGoodsTraceRst(bool,QString,QString)));
 //    connect(routeRepair, SIGNAL(repairOk()), cabServer, SLOT(waitForRepaitOK()));
     routeRepair->repairStart(false);
 }

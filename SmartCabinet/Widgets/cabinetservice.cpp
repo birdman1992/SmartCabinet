@@ -118,6 +118,15 @@ void CabinetService::showEvent(QShowEvent *)
     ui->server_addr->setText(config->getServerAddress());
     ui->version_msg->clear();
     ui->check->setEnabled(true);
+    if(config->getStoreMode())//scan all
+    {
+        ui->scan_all->setChecked(true);
+    }
+    else
+    {
+        ui->scan_list->setChecked(false);
+    }
+
     qDebug()<<ui->server_addr->text();
 }
 
@@ -772,4 +781,20 @@ void CabinetService::on_testServer_clicked()
     connect(sTest, SIGNAL(apiMsg(QString)), ui->api_msg, SLOT(setText(QString)));
     connect(sTest, SIGNAL(pingMsg(QString)), ui->ping_msg, SLOT(setText(QString)));
     sTest->testStart();
+}
+
+void CabinetService::on_scan_list_toggled(bool checked)
+{
+    if(checked)
+    {
+        config->setStoreMode(false);
+    }
+}
+
+void CabinetService::on_scan_all_toggled(bool checked)
+{
+    if(checked)
+    {
+        config->setStoreMode(true);
+    }
 }

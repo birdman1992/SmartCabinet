@@ -55,6 +55,7 @@ private:
     QNetworkReply* reply_goods_reply;
     QNetworkReply* reply_day_report;
     QNetworkReply* reply_download;
+    QNetworkReply* reply_store_trace;
     CheckList* checkList;
     QFile* pacUpdate;
     QString regId;
@@ -103,6 +104,7 @@ signals:
     void cloneResult(bool, QString);
     void cabSyncResult(bool);
     void checkCreatRst(bool, QString);
+    void goodsTraceRst(bool, QString msg, QString goodsCode);
     void goodsCheckRst(QString msg);
     void newGoodsList(QString listCode, QString rfidCode);
     void newGoodsCar(GoodsCar);
@@ -136,6 +138,7 @@ public slots:
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
     void goodsCheck(QStringList l, CaseAddress);
     void goodsListStore(QList<CabinetStoreListItem*> l);
+    void goodsStoreTrace(QString goodsCode);
     void goodsCarScan();
     void sysTimeout();
     void updateAddress();
@@ -148,6 +151,7 @@ public slots:
     void getUpdatePac(QString fileName);
     void updateStart();
     void waitForRepaitOK();
+    void updateCurBarcode(QString code);
 
 private slots:
     void recvCabRegister();
@@ -156,6 +160,7 @@ private slots:
     void recvCabBind();
     void recvGoodsAccess();
     void recvListAccess();
+    void recvGoodsTrace();
     void recvGoodsCheck();
     void recvCheckCreat();
     void recvCheckFinish();

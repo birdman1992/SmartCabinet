@@ -16,10 +16,16 @@ class CabinetStoreListItem : public QWidget
 
 public:
     explicit CabinetStoreListItem(Goods* goods,CaseAddress addr, QWidget *parent = 0);
+    explicit CabinetStoreListItem(Goods* goods,QPoint addr, QWidget *parent = 0);
     ~CabinetStoreListItem();
     void bindRst(CaseAddress addr);
     QString itemId();
     int itemNum();
+    int waitNum();
+    QPoint itemPos();
+    bool samePos(QPoint pos);
+    void storeOnePac();
+    Goods* itemGoods();
 
 private slots:
     void on_minus_clicked();
@@ -41,6 +47,7 @@ private:
 
     void paintEvent(QPaintEvent *);
     void updateOptState();
+    void setStoreState(bool storeOver);//所有物品存放完毕
 
 };
 

@@ -11,8 +11,28 @@
 #include "funcs/chineseletterhelper.h"
 #include "Device/controldevice.h"
 
+CabinetConfig* CabinetConfig::c = new CabinetConfig;
+
 CabinetConfig::CabinetConfig()
 {
+    lockManager = NULL;
+}
+
+CabinetConfig::~CabinetConfig()
+{
+    qDeleteAll(list_user.begin(), list_user.end());
+    list_user.clear();
+}
+
+CabinetConfig *CabinetConfig::config()
+{
+    return c;
+}
+
+void CabinetConfig::configInit()
+{
+    if(lockManager != NULL)//已经初始化了一次
+        return;
     lockManager = LockManager::manager();
     state = STATE_NO;
     sleepFlag = 0;
@@ -34,12 +54,6 @@ CabinetConfig::CabinetConfig()
 
     readCabinetConfig();
     readUserConfig();
-}
-
-CabinetConfig::~CabinetConfig()
-{
-    qDeleteAll(list_user.begin(), list_user.end());
-    list_user.clear();
 }
 
 void CabinetConfig::saveFetchList(QByteArray _data)
@@ -663,6 +677,19 @@ QString CabinetConfig::getSecondUser()
 void CabinetConfig::setSecondUser(QString userId)
 {
     secOpt = userId;
+}
+
+void CabinetConfig::setStoreMode(bool needScanAll)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("StoreMode", needScanAll);
+    settings.sync();
+}
+
+bool CabinetConfig::getStoreMode()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    return settings.value("StoreMode", false).toBool();
 }
 
 QString CabinetConfig::getCabinetLayout()

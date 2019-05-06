@@ -101,7 +101,9 @@ SOURCES += main.cpp\
     funcs/routerepair.cpp \
     Structs/versioninfo.cpp \
     logreport.cpp \
-    funcs/operationrecorder.cpp
+    funcs/operationrecorder.cpp \
+    Widgets/stroebyitem.cpp \
+    manager/storelistmanager.cpp
 
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
@@ -179,7 +181,9 @@ HEADERS  += mainwidget.h \
     funcs/routerepair.h \
     Structs/versioninfo.h \
     logreport.h \
-    funcs/operationrecorder.h
+    funcs/operationrecorder.h \
+    Widgets/stroebyitem.h \
+    manager/storelistmanager.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -213,7 +217,8 @@ FORMS    += mainwidget.ui \
     Widgets/checkwarning.ui \
     Widgets/dayreport.ui \
     Widgets/keyboad.ui \
-    Widgets/goodsapply.ui
+    Widgets/goodsapply.ui \
+    Widgets/stroebyitem.ui
 
 RESOURCES += \
     image.qrc

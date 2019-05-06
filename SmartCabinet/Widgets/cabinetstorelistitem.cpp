@@ -11,10 +11,32 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
 //    cabGoods = new Goods(goods);
     cabGoods = goods;
     name = goods->name+QString("[%1](%2)").arg(goods->size).arg(goods->packageType);
-    num = goods->takeCount;
+    num = goods->waitNum;
+
     package_id = goods->packageBarcode;
     pos_seq = addr.cabinetSeqNum;
     pos_index = addr.caseIndex;
+
+    ui->name->setText(name);
+    ui->num->setText(QString::number(num));
+    ui->add->hide();
+    ui->minus->hide();
+
+    updateOptState();
+}
+
+CabinetStoreListItem::CabinetStoreListItem(Goods *goods, QPoint addr, QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::CabinetStoreListItem)
+{
+    ui->setupUi(this);
+//    cabGoods = new Goods(goods);
+    cabGoods = goods;
+    name = goods->name+QString("[%1](%2)").arg(goods->size).arg(goods->packageType);
+    num = goods->waitNum;
+    package_id = goods->packageBarcode;
+    pos_seq = addr.x();
+    pos_index = addr.y();
 
     ui->name->setText(name);
     ui->num->setText(QString::number(num));
@@ -45,7 +67,44 @@ QString CabinetStoreListItem::itemId()
 
 int CabinetStoreListItem::itemNum()
 {
+    return cabGoods->takeCount;
+}
+
+int CabinetStoreListItem::waitNum()
+{
     return num;
+}
+
+QPoint CabinetStoreListItem::itemPos()
+{
+    return QPoint(pos_seq, pos_index);
+}
+
+bool CabinetStoreListItem::samePos(QPoint pos)
+{
+    if((pos_seq == pos.x()) && (pos_index == pos.y()))
+        return true;
+    else
+        return false;
+}
+
+void CabinetStoreListItem::storeOnePac()
+{
+    if(num > 0)
+        num--;
+    if(cabGoods->waitNum > 0)
+        cabGoods->waitNum--;
+    ui->num->setText(QString::number(num));
+    if(num == 0)
+    {
+        setStoreState(true);
+        ui->opt->setChecked(true);
+    }
+}
+
+Goods *CabinetStoreListItem::itemGoods()
+{
+    return cabGoods;
 }
 
 void CabinetStoreListItem::paintEvent(QPaintEvent*)
@@ -65,6 +124,20 @@ void CabinetStoreListItem::updateOptState()
     else
     {
         ui->opt->setText("存放");
+    }
+    if(num == 0)
+        setStoreState(true);
+}
+
+void CabinetStoreListItem::setStoreState(bool storeOver)
+{
+    if(storeOver)
+    {
+        ui->num->setStyleSheet("background-color: rgb(78, 154, 6);border:1px solid gray;");
+    }
+    else
+    {
+        ui->num->setStyleSheet("background-color: rgb(207, 207, 207);border:1px solid gray;");
     }
 }
 
