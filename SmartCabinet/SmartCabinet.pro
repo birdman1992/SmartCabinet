@@ -105,6 +105,7 @@ SOURCES += main.cpp\
     Widgets/stroebyitem.cpp \
     manager/storelistmanager.cpp
 
+
 HEADERS  += mainwidget.h \
     Cabinet/cabinetpanel.h \
     Device/Qextserial/qextserialport.h \

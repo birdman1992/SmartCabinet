@@ -38,7 +38,6 @@ private:
 
     void clearList();
 private slots:
-
     void itemBind(Goods *goods, CabinetStoreListItem *item);
 };
 
