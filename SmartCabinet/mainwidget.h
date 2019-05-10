@@ -47,57 +47,15 @@ class MainWidget : public QWidget
 public:
     explicit MainWidget(QWidget *parent = 0);
     ~MainWidget();
-    bool ui_inf_exist;
 
 public slots:
-    void btn_one();
-    void btn_two();
-    void btn_three();
-    void btn_four();
-    void check_code(QByteArray);
-    void read_showinf(MedInf );
-    void New_Pri_User(UserInf);
-    void scan_user(QByteArray);
-    void cabinet_cleck(int);
-    void cabinet_cleck_one(int);
-    void cabinet_cleck_two(int);
-    void cabinet_cleck_three(int);
-    void cabinet_cleck_four(int);
-    void win_swich_2(int);
-    void set_cabinet(QByteArray);
     void cabinetClear();
     void globalTouch();
 
 protected:
-    int readSettings();                //--读配置信息
-    void writeSettings();            //--写配置信息
-    void menu_set_init();
-    void check_pri_use();
-    void readSettings_cabinet(int );
-    void writeSettings_cabinet(int);
-    void create_cabinet();
-    void init_xg_ui_set();
-    void config_ui_set();
 
 private:
     Ui::MainWidget *ui;
-
-    CabinetPanel cabinets[5];          //--定义5药柜
-
-    int num;                           //--药柜数目
-    int lattice_num;                   //--药柜格子数目
-    int cabinet_num;
-    int cab_lattice_num[5];            //--主药柜格子数目
-    int qb_num[5];
-    QByteArray qb_cabinet_order;
-
-    QString path_cabinet;              //药柜文件路径
-
-    QList<MedInf> medinf[5];           //--定义5个qlist，用于存储药柜信息
-    QList<UserInf> USER;
-
-    ControlDevice *ctrlUi;//新添加的控制类，只需要和3个信号对接，详情见signals
-
     CabinetConfig* cabinetConf;
 #ifdef TCP_API
     tcpServer* cabServer;
@@ -115,29 +73,10 @@ private:
     GoodsApply* win_goods_apply;//请货窗口
     DayReport* win_day_report;//日清单窗口
     RouteRepair* routeRepair;//路由修复
+    ControlDevice* ctrlUi;
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框
-    QWidget *cab_widget;
-    SetMenu *menu_widget;
-    ShowInf *show_inf;
-    PrimaryUser *Pri_user;
-
-    QVBoxLayout *qvbox_menu_layout;
-
-    QHBoxLayout *qhbox_main;
-    QVBoxLayout *qvbox_zero_layout;
-    QVBoxLayout *qvbox_one_layout;
-    QVBoxLayout *qvbox_two_layout;
-    QVBoxLayout *qvbox_three_layout;
-    QVBoxLayout *qvbox_four_layout;
-
-    QPushButton *btn_cabinet_add_one;   //--添加药柜按钮
-    QPushButton *btn_cabinet_add_two;
-    QPushButton *btn_cabinet_add_three;
-    QPushButton *btn_cabinet_add_four;
-
-    QLabel *label;
 
     void init_xiangang();
     void init_huangpo();
