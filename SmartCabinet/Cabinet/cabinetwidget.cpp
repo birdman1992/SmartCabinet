@@ -1149,7 +1149,8 @@ void CabinetWidget::recvListInfo(GoodsList *l)
     curStoreList = l;
     win_store_list->setLoginState(loginState);
     win_store_list->storeStart(l);
-//    win_store_list->show();
+    if(!config->getStoreMode())
+        win_store_list->show();
     return;
 
     win_access->setStoreList(l);
