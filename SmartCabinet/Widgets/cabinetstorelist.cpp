@@ -80,7 +80,9 @@ void CabinetStoreList::recvStoreTraceRst(bool success, QString msg, QString good
         }
     }
     else
+    {
         setStateMsg(STATE_ERROR, msg);
+    }
 
     updateScanPanel(goodsId);
 }
@@ -133,7 +135,9 @@ void CabinetStoreList::listError(QString msg)
 
 void CabinetStoreList::storeFinish()
 {
-    storeManager->removeStoreCache(list_store->barcode);
+    if(list_store != NULL)
+        storeManager->removeStoreCache(list_store->barcode);
+
     saveList();
     clearList();
 }
@@ -177,6 +181,21 @@ void CabinetStoreList::recvScanCode(QString scanCode)
 void CabinetStoreList::storeScan(QString scanCode)
 {
     QString goodsId = scanDataTrans(scanCode);
+    Goods* scanGoods = list_store->map_goods.value(goodsId, NULL);
+    if(scanGoods == NULL)
+    {
+        QString msg = QString("%1 %2").arg(scanCode).arg("unknow goods.");
+        qDebug()<<QString("[storeScan]:%1").arg(msg);
+        newMsg(msg);
+        return;
+    }
+    if(scanGoods->codes.indexOf(scanCode) != -1)
+    {
+        QString msg = QString("%1 %2").arg(scanCode).arg("重复扫描的物品");
+        qDebug()<<QString("[storeScan]:%1").arg(msg);
+        newMsg(msg);
+        return;
+    }
     updateScanPanel(goodsId);
     setStateMsg(STATE_WAIT, "已扫描，请等待");
     emit reportTraceId(scanCode);
@@ -340,6 +359,7 @@ void CabinetStoreList::clearList()
         list_item.clear();
     }
     ui->storeTable->clear();
+    ui->storeTable->setRowCount(0);
 }
 
 void CabinetStoreList::closeClear()
@@ -530,7 +550,7 @@ void CabinetStoreList::on_ok_clicked()
 
 void CabinetStoreList::on_back_clicked()
 {
-    storeFinish();
+//    storeFinish();
     closeClear();
     this->close();
     emit requireScanState(true);
