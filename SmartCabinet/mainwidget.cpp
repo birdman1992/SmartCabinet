@@ -168,8 +168,10 @@ void MainWidget::init_huangpo()
     if(!m->authorCheck())
         ui->stackedWidget->setCurrentIndex(0);
 #endif
-
-    qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
+    ui->stackedWidget->setCurrentIndex(1);
+    win_aio = new AIOMachine(this);
+    ui->page_2->layout()->addWidget(win_aio);
+//    qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
 //    qDebug()<<cabinetConf->list_cabinet.count();
 //    win_check_table->show();
     qDebug()<<QStyleFactory::keys();

@@ -38,6 +38,22 @@
         <file>image/btn_notice_sel.png</file>
         <file>image/btn_notice_normal.png</file>
         <file>image/bg_main_1600.png</file>
+        <file>image/aio/tip_home_check.png</file>
+        <file>image/aio/monitor_temperature.png</file>
+        <file>image/aio/monitor_humidity.png</file>
+        <file>image/aio/btn_log_signout.png</file>
+        <file>image/aio/btn_log_checkin.png</file>
+        <file>image/aio/btn_home_jxqwp.png</file>
+        <file>image/aio/btn_home_jrrk.png</file>
+        <file>image/aio/btn_home_jrck.png</file>
+        <file>image/aio/btn_home_hcpz.png</file>
+        <file>image/aio/btn_home_byck.png</file>
+        <file>image/aio/btn_bottom_settlement.png</file>
+        <file>image/aio/btn_bottom_return.png</file>
+        <file>image/aio/btn_bottom_pick.png</file>
+        <file>image/aio/btn_bottom_consume.png</file>
+        <file>image/aio/btn_bottom_check.png</file>
+        <file>image/aio/bg.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

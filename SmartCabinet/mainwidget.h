@@ -27,6 +27,7 @@
 #include "Widgets/checktable.h"
 #include "Widgets/goodsapply.h"
 #include "Widgets/dayreport.h"
+#include "Widgets/aiomachine.h"
 #include "Cabinet/cabinetwidget.h"
 #include "MxAuthor/authormanager.h"
 #include "funcs/routerepair.h"
@@ -72,6 +73,7 @@ private:
     CheckTable* win_check_table;//盘点表格窗口
     GoodsApply* win_goods_apply;//请货窗口
     DayReport* win_day_report;//日清单窗口
+    AIOMachine* win_aio;
     RouteRepair* routeRepair;//路由修复
     ControlDevice* ctrlUi;
 
