@@ -98,7 +98,7 @@ signals:
     void updateGoodsPrice(float single, float total);
     void accessFailed(QString msg);
     void accessSuccess(QString msg);
-    void timeUpdate();
+//    void timeUpdate();
     void idUpdate();
     void regResult(bool);
     void cloneResult(bool, QString);

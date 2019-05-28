@@ -142,6 +142,7 @@ private:
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件
     QString curCard;
+    QTimer* timeUpdater;
     int tsCalFlag;
 
     bool volPressed;

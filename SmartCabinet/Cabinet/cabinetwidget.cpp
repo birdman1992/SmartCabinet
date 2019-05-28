@@ -40,6 +40,10 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 #ifdef TCP_API
     goodsManager = GoodsManager::manager();
 #endif
+    timeUpdater = new QTimer(this);
+    connect(timeUpdater, SIGNAL(timeout()), this, SLOT(updateTime()));
+    timeUpdater->start(1000);
+
     initVolum();
     initSearchBtns();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -1273,9 +1277,9 @@ void CabinetWidget::updateFetchPrice(float single, float total)
 
 void CabinetWidget::updateTime()
 {
-    showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+    showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 
-    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0))
+    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0) && (QTime::currentTime().second() == 0))
     {
         qDebug("[update time]");
         emit reqCheckVersion(false);
