@@ -113,6 +113,10 @@ void MainWidget::init_huangpo()
 #else
     connect_master();
 #endif
+    win_aio = new AIOMachine(this);
+    connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+    connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
+    connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -143,39 +147,33 @@ void MainWidget::init_huangpo()
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ui->stackedWidget->addWidget(win_standby);
+    ui->page_2->layout()->addWidget(win_aio);
     ui->stackedWidget->addWidget(win_user_manage);
     ui->stackedWidget->addWidget(win_cabinet_set);
     ui->stackedWidget->addWidget(win_cabinet);
     ui->stackedWidget->addWidget(win_cab_service);
 
+
     if(cabinetConf->isFirstUse())
     {
-//        if(cabinetConf->list_user.count())
-            ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
-//        else
-//            ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
+        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SET);
     }
     else
     {
-//        ui->stackedWidget->setCurrentIndex(INDEX_USER_MANAGE);
         ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
-//        ui->stackedWidget->setCurrentIndex(INDEX_CAB_SERVICE);
         win_cabinet->panel_init(cabinetConf->list_cabinet);
         cabinetConf->cabVoice.voicePlay(VOICE_WELCOME);
+        if(cabinetConf->getCabinetMode() == "aio")
+            ui->stackedWidget->setCurrentIndex(INDEX_AIO);
     }
 #ifndef PC
     AuthorManager *m = new AuthorManager();
     if(!m->authorCheck())
         ui->stackedWidget->setCurrentIndex(0);
 #endif
-    ui->stackedWidget->setCurrentIndex(1);
-    win_aio = new AIOMachine(this);
-    ui->page_2->layout()->addWidget(win_aio);
-//    qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
-//    qDebug()<<cabinetConf->list_cabinet.count();
-//    win_check_table->show();
-    qDebug()<<QStyleFactory::keys();
-//    cabServer->checkUpdate();
+    qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
+//    qDebug()<<QStyleFactory::keys();
+
 }
 
 void MainWidget::connect_master()
@@ -232,8 +230,8 @@ void MainWidget::connect_master()
 
 void MainWidget::connect_new_api()
 {
-    connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
-    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+//    connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
+//    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
     connect(ctrlUi, SIGNAL(readyListData(QString)), win_cabinet,SLOT(readyGoodsList(QString)));
     connect(win_cabinet, SIGNAL(checkLockState()), ctrlUi, SLOT(getLockState()));
     connect(win_cabinet, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
@@ -273,6 +271,34 @@ void MainWidget::connect_new_api()
 
 }
 
+void MainWidget::aio_connect_mode(bool con)
+{
+    if(con)
+    {
+        connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_aio, SLOT(recvScanData(QByteArray)), Qt::UniqueConnection);
+        connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_aio, SLOT(recvUserInfo(QByteArray)),Qt::UniqueConnection);
+    }
+    else
+    {
+        disconnect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_aio, SLOT(recvScanData(QByteArray)));
+        disconnect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_aio, SLOT(recvUserInfo(QByteArray)));
+    }
+}
+
+void MainWidget::cab_connect_mode(bool con)
+{
+    if(con)
+    {
+        connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)), Qt::UniqueConnection);
+        connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)),Qt::UniqueConnection);
+    }
+    else
+    {
+        disconnect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
+        disconnect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+    }
+}
+
 MainWidget::~MainWidget()
 {
     delete ui;
@@ -286,4 +312,19 @@ void MainWidget::paintEvent(QPaintEvent*)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void MainWidget::on_stackedWidget_currentChanged(int arg1)
+{
+    qDebug()<<"[Current main stack]"<<arg1;
+    if(arg1 == INDEX_AIO)
+    {
+        aio_connect_mode(true);
+        cab_connect_mode(false);
+    }
+    else if(arg1 == INDEX_CAB_SHOW)
+    {
+        aio_connect_mode(false);
+        cab_connect_mode(true);
+    }
 }

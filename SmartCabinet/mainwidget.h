@@ -55,6 +55,9 @@ public slots:
 
 protected:
 
+private slots:
+    void on_stackedWidget_currentChanged(int arg1);
+
 private:
     Ui::MainWidget *ui;
     CabinetConfig* cabinetConf;
@@ -84,6 +87,8 @@ private:
     void init_huangpo();
     void connect_master();
     void connect_new_api();
+    void aio_connect_mode(bool con);
+    void cab_connect_mode(bool con);
     void paintEvent(QPaintEvent *);
 };
 

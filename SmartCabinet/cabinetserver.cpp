@@ -77,7 +77,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     fWatchdog = -1;
     checkId = -1;
 #ifndef SIMULATE_ON
-    watchdogStart();
+//    watchdogStart();
 #endif
     connect(&tarProcess, SIGNAL(finished(int)), this, SLOT(tarFinished(int)));
 }
@@ -880,6 +880,15 @@ void CabinetServer::recvUserLogin()
         }
 
         cJSON* json_info = cJSON_GetArrayItem(json_data,0);
+        cJSON* dpt_name = cJSON_GetObjectItem(json_info, "departName");
+        if(dpt_name != NULL)
+        {
+            info->departName = QString(dpt_name->valuestring);
+        }
+        else
+        {
+            info->departName = QString();
+        }
         info->id = cJSON_GetObjectItem(json_info,"id")->valueint;
         info->cardId = QString(cJSON_GetObjectItem(json_info,"cardId")->valuestring);
         info->departId = QString(cJSON_GetObjectItem(json_info,"departId")->valuestring);

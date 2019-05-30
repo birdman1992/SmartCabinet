@@ -66,6 +66,8 @@ private slots:
 
     void resetRegState();
 
+    void on_aio_mode_toggled(bool checked);
+
 signals:
     void winSwitch(int index);//窗口切换
     //设置柜子组合:QByteArray
@@ -98,6 +100,7 @@ private:
     void cabSplit(QString scale, QTableWidget* table);
     int getBaseCount(QString scale);
     void warningSelScreen(bool waringOn);
+    void layoutInit();
 };
 
 #endif // CABINETSET_H

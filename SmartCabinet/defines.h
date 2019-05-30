@@ -24,6 +24,7 @@
 /*模拟无服务器状态*/
 //#define NO_SERVER
 
+#define INDEX_AIO 1
 #define INDEX_STANDBY 2
 #define INDEX_USER_MANAGE 3
 #define INDEX_CAB_SET 4

@@ -41,6 +41,9 @@ public:
     void setSecondUser(QString userId);
     void setStoreMode(bool needScanAll);
     bool getStoreMode();//return need scanALL
+    //depart name
+    void setDepartName(QString dptName);
+    QString getDepartName();
 
     QString getCabinetLayout();
     QString getCabinetColMap();
@@ -49,6 +52,8 @@ public:
     QPoint getScreenPos();
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
+    QString getCabinetMode();
+    void setCabinetMode(QString cMode);
     void setScreenPos(int col, int row);
     void setCabLayout(QString layout);
     void showMsg(QString msg, bool iswarnning);
@@ -131,6 +136,7 @@ private:
     int cabinetType;
     QString curVersion;
     QString cabinetId;
+    QString cabinetMode;
     QString serverAddr;
     QString optName;//操作者卡号
     QString secOpt;//第二操作人

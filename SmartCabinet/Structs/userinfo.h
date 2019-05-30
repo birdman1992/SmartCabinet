@@ -10,6 +10,7 @@ public:
     int id;
     QString cardId;
     QString departId;
+    QString departName;
     int power;//0 超级管理员, 1 仓库员工, 2 医院管理, 3 医院员工
     QString identityId;
     QString tel;
