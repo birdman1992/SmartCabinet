@@ -27,7 +27,7 @@
 #include "Widgets/checktable.h"
 #include "Widgets/goodsapply.h"
 #include "Widgets/dayreport.h"
-#include "Widgets/aiomachine.h"
+#include "aio/aiomachine.h"
 #include "Cabinet/cabinetwidget.h"
 #include "MxAuthor/authormanager.h"
 #include "funcs/routerepair.h"

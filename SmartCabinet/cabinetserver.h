@@ -20,6 +20,8 @@
 #include "Structs/versioninfo.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
+#include "aio/aiooverview.h"
+#include "aio/aiomachine.h"
 
 
 class CabinetServer : public QObject
@@ -56,6 +58,9 @@ private:
     QNetworkReply* reply_day_report;
     QNetworkReply* reply_download;
     QNetworkReply* reply_store_trace;
+    QNetworkReply* reply_aio_overview;
+    QNetworkReply* reply_aio_data;
+    AIOMachine::cEvent aio_state;
     CheckList* checkList;
     QFile* pacUpdate;
     QString regId;
@@ -89,6 +94,7 @@ private:
     void accessLoop();
     QString getAbbName(QString fullName);
     void watchdogStart();
+    QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
 
 signals:
     void loginRst(UserInfo*);
@@ -118,6 +124,9 @@ signals:
     void goodsReplyRst(bool success, QString msg);
     void dayReportRst(QList<DayReportInfo*>, QString msg);
     void updateCheckRst(bool needUpdate, QString version);
+    //aio
+    void aioOverview(QString, AIOOverview*);
+    void aioData(AIOMachine::cEvent, QList<GoodsInfo*>);
 
 public slots:
     void cabRegister();
@@ -147,6 +156,9 @@ public slots:
     void replyRequire(QList<GoodsCheckInfo *> l);
     void requireCheckTableInfo(QString id);
     void requireListInfo(QDate sDate, QDate eDate);
+    //aio
+    void requireAioOverview();
+    void requireAioData(AIOMachine::cEvent);
     void checkUpdate(bool needConfirm = false);
     void getUpdatePac(QString fileName);
     void updateStart();
@@ -179,6 +191,8 @@ private slots:
     void recvDayReportInfo();
     void recvVersionInfo();
     void recvUpdatePac();
+    void recvAioOverview();
+    void recvAioData();
     void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();

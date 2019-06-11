@@ -104,8 +104,9 @@ SOURCES += main.cpp\
     funcs/operationrecorder.cpp \
     Widgets/stroebyitem.cpp \
     manager/storelistmanager.cpp \
-    Widgets/aiomachine.cpp \
-    Widgets/aiobutton.cpp
+    aio/aiomachine.cpp \
+    aio/aiobutton.cpp \
+    aio/aiooverview.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -187,8 +188,9 @@ HEADERS  += mainwidget.h \
     funcs/operationrecorder.h \
     Widgets/stroebyitem.h \
     manager/storelistmanager.h \
-    Widgets/aiomachine.h \
-    Widgets/aiobutton.h
+    aio/aiomachine.h \
+    aio/aiobutton.h \
+    aio/aiooverview.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -224,7 +226,7 @@ FORMS    += mainwidget.ui \
     Widgets/keyboad.ui \
     Widgets/goodsapply.ui \
     Widgets/stroebyitem.ui \
-    Widgets/aiomachine.ui
+    aio/aiomachine.ui
 
 RESOURCES += \
     image.qrc

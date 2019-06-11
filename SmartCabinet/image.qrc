@@ -41,6 +41,10 @@
         <file>image/aio/tip_home_check.png</file>
         <file>image/aio/monitor_temperature.png</file>
         <file>image/aio/monitor_humidity.png</file>
+        <file>image/aio/list_title_bg.png</file>
+        <file>image/aio/list_back_bg.png</file>
+        <file>image/aio/btn_previous.png</file>
+        <file>image/aio/btn_next.png</file>
         <file>image/aio/btn_log_signout.png</file>
         <file>image/aio/btn_log_checkin.png</file>
         <file>image/aio/btn_home_jxqwp.png</file>
@@ -53,7 +57,8 @@
         <file>image/aio/btn_bottom_pick.png</file>
         <file>image/aio/btn_bottom_consume.png</file>
         <file>image/aio/btn_bottom_check.png</file>
-        <file>image/aio/bg.png</file>
+        <file>image/aio/bg_new.png</file>
+        <file>image/aio/bg_list.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

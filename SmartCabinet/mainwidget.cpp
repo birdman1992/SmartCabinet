@@ -117,6 +117,10 @@ void MainWidget::init_huangpo()
     connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
     connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
+    connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
+    connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
+
+    win_aio->sysLock();
 
     //待机界面
     win_standby = new StandbyWidget(this);
