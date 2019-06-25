@@ -230,8 +230,8 @@ void CasePanel::updatePanel()
 
 QString CasePanel::getShowStr(GoodsInfo *info)
 {
-    if(info->num == 0)
-        return QString();
+//    if(info->num == 0)
+//        return QString();
     QString str = info->name;
     QString strTail = QString("×%1").arg(info->num);
 
