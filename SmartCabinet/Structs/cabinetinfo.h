@@ -37,8 +37,8 @@ public:
     int outNum;//取出数量
     float price;//单价
     float sumCount;//总价
-    QString aioInNum;
-    QString aioOutNum;
+    QString aioInNum;//入库数
+    QString aioOutNum;//出库数
 
     QString Py;
 };

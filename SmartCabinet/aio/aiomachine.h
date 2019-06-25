@@ -27,18 +27,6 @@ class AIOMachine : public QWidget
 public:
     explicit AIOMachine(QWidget *parent = 0);
     ~AIOMachine();
-
-public slots:
-    void recvScanData(QByteArray);
-    void recvUserCheckRst(UserInfo *);//接收用户校验结果
-    void recvUserInfo(QByteArray qba);//接收用户信息
-    void sysLock();//系统锁定
-    void recvAioOverview(QString msg, AIOOverview* overview);
-
-signals:
-    void requireUserCheck(QString);//请求身份验证
-
-private:
     enum cEvent
     {
         click_num_expired,
@@ -49,6 +37,19 @@ private:
         click_lab_temp,
         click_lab_hum,
     };
+
+public slots:
+    void recvScanData(QByteArray);
+    void recvUserCheckRst(UserInfo *);//接收用户校验结果
+    void recvUserInfo(QByteArray qba);//接收用户信息
+    void sysLock();//系统锁定
+    void recvAioOverview(QString msg, AIOOverview* overview);
+    void recvAioData(QString msg,AIOMachine::cEvent e,QList<GoodsInfo*> lInfo);
+
+signals:
+    void requireUserCheck(QString);//请求身份验证
+
+private:
     enum colMark
     {
         unknow=-1,
@@ -61,6 +62,19 @@ private:
         unit,//单位
         threshold,//预警数量
         maxThreshold,//最大数量
+        packageCount,
+        goodsCount,
+        lifeDay,
+        lifeTime,
+        productTime,
+        price,
+        sumCount,
+        aioInNum,
+        aioOutNum,
+        optName,
+        optTime,
+        batchNumber,
+        traceId,
     };
 
 signals:
@@ -89,6 +103,13 @@ private:
     void setAioInfo(QString departName, QString departId);
     void setNumLabel(AIOOverview* overview);
     void showTable(QString title, QStringList colNames, QList<GoodsInfo*>);
+    void showNumExpired(QList<GoodsInfo*> lInfo);
+    void showNumGoods(QList<GoodsInfo*> lInfo);
+    void showNumTodayIn(QList<GoodsInfo*> lInfo);
+    void showNumTodayOut(QList<GoodsInfo*> lInfo);
+    void showNumWarningRep(QList<GoodsInfo*> lInfo);
+    void showLabTemp(QList<GoodsInfo*> lInfo);
+    void showLabHum(QList<GoodsInfo*> lInfo);
     QString getGoodsInfoText(GoodsInfo* info, QString key);
     QList<GoodsInfo*> listPage(unsigned int pageNum);
 

@@ -1896,7 +1896,7 @@ void CabinetServer::recvAioData()
     if(json_rst->type == cJSON_True)
     {
        int dataSize = cJSON_GetArraySize(json_data);
-       for(int i=0; j<dataSize; j++)
+       for(int i=0; i<dataSize; i++)
        {
             cJSON* jGoods = cJSON_GetArrayItem(json_data, i);
             GoodsInfo* info = new GoodsInfo;
@@ -1919,11 +1919,17 @@ void CabinetServer::recvAioData()
             info->goodsCount = getCjsonItem(jGoods, "goodsCount", 0).toInt();
             info->price = getCjsonItem(jGoods, "price", 0.0).toFloat();
             info->sumCount = getCjsonItem(jGoods, "sumCount", 0.0).toFloat();
-            info->optName = getCjsonItem(jGoods, "optName", QString());
-            info->optTime = getCjsonItem(jGoods, "optTime", QString());
+            info->optName = getCjsonItem(jGoods, "optName", QString()).toString();
+            info->optTime = getCjsonItem(jGoods, "optTime", QString()).toString();
+            info->traceId = getCjsonItem(jGoods, "traceId", QString()).toString();
+            ret<<info;
        }
     }
-    emit aioOverview(msg, ret);
+    else
+    {
+        ret.clear();
+    }
+    emit aioData(msg, aio_state, ret);
 }
 
 void CabinetServer::updatePacFinish()

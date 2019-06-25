@@ -36,6 +36,8 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<CabinetStoreListItem*> >("QList<CabinetStoreListItem*>");
     qRegisterMetaType<QList<CabinetCheckItem*> >("QList<CabinetCheckItem*>");
     qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
+    qRegisterMetaType<QList<GoodsInfo*> >("QList<GoodsInfo*>");
+
 
     //智能柜配置
     cabinetConf = CabinetConfig::config();
@@ -119,6 +121,8 @@ void MainWidget::init_huangpo()
     connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
     connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
     connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
+    connect(win_aio, SIGNAL(click_event(cEvent)), cabServer, SLOT(requireAioData(AIOMachine::cEvent)));
+    connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)));
 
     win_aio->sysLock();
 

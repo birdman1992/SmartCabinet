@@ -129,6 +129,19 @@ void AIOMachine::initColMap()
     mapColName.insert("单位", unit);
     mapColName.insert("预警数量", threshold);
     mapColName.insert("最大数量", maxThreshold);
+    mapColName.insert("包数", packageCount);
+    mapColName.insert("耗材数量", goodsCount);
+    mapColName.insert("效期天数", lifeDay);
+    mapColName.insert("有效期至", lifeTime);
+    mapColName.insert("生产日期", productTime);
+    mapColName.insert("单价", price);
+    mapColName.insert("总价", sumCount);
+    mapColName.insert("入库数", aioInNum);
+    mapColName.insert("出库数", aioOutNum);
+    mapColName.insert("操作人", optName);
+    mapColName.insert("操作时间", optTime);
+    mapColName.insert("批次", batchNumber);
+    mapColName.insert("条码", traceId);
     listColName = mapColName.keys();
 }
 
@@ -172,6 +185,93 @@ void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*
         if(rowIndex >= rowCount)
             break;
     }
+}
+
+void AIOMachine::showNumExpired(QList<GoodsInfo *> lInfo)
+{
+    QString title = "近效期物品";
+    QStringList colNames;
+    colNames<<listColName.at(goodsId);
+    colNames<<listColName.at(goodsName);
+    colNames<<listColName.at(batchNumber);
+    colNames<<listColName.at(size);
+    colNames<<listColName.at(unit);
+    colNames<<listColName.at(productTime);
+    colNames<<listColName.at(supplyName);
+    colNames<<listColName.at(packageType);
+    colNames<<listColName.at(lifeDay);
+    colNames<<listColName.at(productTime);
+    colNames<<listColName.at(lifeTime);
+    showTable(title, colNames, lInfo);
+}
+
+void AIOMachine::showNumGoods(QList<GoodsInfo *> lInfo)
+{
+    QString title = "库存物品";
+    QStringList colNames;
+    colNames<<listColName.at(goodsId);
+    colNames<<listColName.at(goodsName);
+    colNames<<listColName.at(size);
+    colNames<<listColName.at(proName);
+    colNames<<listColName.at(supplyName);
+    colNames<<listColName.at(packageType);
+    colNames<<listColName.at(unit);
+    colNames<<listColName.at(threshold);
+    colNames<<listColName.at(maxThreshold);
+    showTable(title, colNames, lInfo);
+}
+
+void AIOMachine::showNumTodayIn(QList<GoodsInfo *> lInfo)
+{
+    QString title = "今日入库";
+    QStringList colNames;
+    colNames<<listColName.at(goodsId);
+    colNames<<listColName.at(goodsName);
+    colNames<<listColName.at(size);
+    colNames<<listColName.at(unit);
+    colNames<<listColName.at(proName);
+    colNames<<listColName.at(supplyName);
+    colNames<<listColName.at(packageType);
+    colNames<<listColName.at(aioInNum);
+    colNames<<listColName.at(price);
+    colNames<<listColName.at(sumCount);
+    showTable(title, colNames, lInfo);
+}
+
+void AIOMachine::showNumTodayOut(QList<GoodsInfo *> lInfo)
+{
+    QString title = "今日出库";
+    QStringList colNames;
+    colNames<<listColName.at(goodsId);
+    colNames<<listColName.at(goodsName);
+    colNames<<listColName.at(size);
+    colNames<<listColName.at(unit);
+    colNames<<listColName.at(batchNumber);
+    colNames<<listColName.at(traceId);
+    colNames<<listColName.at(proName);
+    colNames<<listColName.at(supplyName);
+    colNames<<listColName.at(goodsCount);
+    colNames<<listColName.at(price);
+    colNames<<listColName.at(sumCount);
+    colNames<<listColName.at(optName);
+    colNames<<listColName.at(optTime);
+    showTable(title, colNames, lInfo);
+}
+
+void AIOMachine::showNumWarningRep(QList<GoodsInfo *> lInfo)
+{
+    QString title = "库存预警";
+    QStringList colNames;
+    colNames<<listColName.at(goodsId);
+    colNames<<listColName.at(goodsName);
+    colNames<<listColName.at(size);
+    colNames<<listColName.at(unit);
+    colNames<<listColName.at(proName);
+    colNames<<listColName.at(packageType);
+    colNames<<listColName.at(packageCount);
+    colNames<<listColName.at(goodsCount);
+    colNames<<listColName.at(threshold);
+    showTable(title, colNames, lInfo);
 }
 
 QString AIOMachine::getGoodsInfoText(GoodsInfo *info, QString key)
@@ -219,6 +319,27 @@ void AIOMachine::recvAioOverview(QString msg, AIOOverview *overview)
     }
     setNumLabel(overview);
     delete overview;
+}
+
+void AIOMachine::recvAioData(QString msg, AIOMachine::cEvent e, QList<GoodsInfo *> lInfo)
+{
+    if(lInfo.isEmpty())//接口调用失败
+    {
+        qDebug()<<"[AIOMachine]recvAioData failed:"<<msg;
+        return;
+    }
+    switch(e)
+    {
+    case AIOMachine::click_lab_hum:break;
+    case AIOMachine::click_num_expired:break;
+    case AIOMachine::click_num_goods :break;
+    case AIOMachine::click_num_today_in :break;
+    case AIOMachine::click_num_today_out :break;
+    case AIOMachine::click_num_warning_rep :break;
+    case AIOMachine::click_lab_temp :break;
+    default:
+        break;
+    }
 }
 
 void AIOMachine::sysUnlock()

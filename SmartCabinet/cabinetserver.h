@@ -126,7 +126,7 @@ signals:
     void updateCheckRst(bool needUpdate, QString version);
     //aio
     void aioOverview(QString, AIOOverview*);
-    void aioData(AIOMachine::cEvent, QList<GoodsInfo*>);
+    void aioData(QString, AIOMachine::cEvent, QList<GoodsInfo*>);
 
 public slots:
     void cabRegister();
