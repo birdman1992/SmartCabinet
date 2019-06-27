@@ -1000,7 +1000,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.5.8.20190528_beta</string>
+        <string>1.5.8.20190625_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
