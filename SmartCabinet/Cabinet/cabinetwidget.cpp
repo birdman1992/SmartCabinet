@@ -567,7 +567,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     config->wakeUp(TIMEOUT_FETCH);
 
-    bool newStore = false;
+    bool newStore;
+    Q_UNUSED(newStore);
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
 
     if(scanInfo != QString(code))
@@ -1145,7 +1146,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 void CabinetWidget::recvListInfo(GoodsList *l)
 {
     qDebug("[recvListInfo]");
-    if(l->list_goods.count() == 0)
+    if((l->list_goods.count() == 0) || (!l->legalList))
     {
         config->showMsg(MSG_LIST_ERROR, 1);
         win_store_list->listError(MSG_LIST_ERROR);

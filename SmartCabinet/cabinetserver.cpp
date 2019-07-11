@@ -1035,7 +1035,7 @@ void CabinetServer::recvListCheck()
         }
         else
         {
-            list->legalList = true;//非法送货单
+            list->legalList = false;//非法送货单
             emit listRst(list);
         }
     }
