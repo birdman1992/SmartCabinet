@@ -330,13 +330,19 @@ void AIOMachine::recvAioData(QString msg, AIOMachine::cEvent e, QList<GoodsInfo 
     }
     switch(e)
     {
-    case AIOMachine::click_lab_hum:break;
-    case AIOMachine::click_num_expired:break;
-    case AIOMachine::click_num_goods :break;
-    case AIOMachine::click_num_today_in :break;
-    case AIOMachine::click_num_today_out :break;
-    case AIOMachine::click_num_warning_rep :break;
-    case AIOMachine::click_lab_temp :break;
+    case AIOMachine::click_lab_hum: break;
+    case AIOMachine::click_lab_temp : break;
+//        showLabTemp(lInfo);break;
+    case AIOMachine::click_num_expired:
+        showNumExpired(lInfo); break;
+    case AIOMachine::click_num_goods :
+        showNumGoods(lInfo);break;
+    case AIOMachine::click_num_today_in :
+        showNumTodayIn(lInfo);break;
+    case AIOMachine::click_num_today_out :
+        showNumTodayOut(lInfo);break;
+    case AIOMachine::click_num_warning_rep :
+        showNumWarningRep(lInfo);break;
     default:
         break;
     }

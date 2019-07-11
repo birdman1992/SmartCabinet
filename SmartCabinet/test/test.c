@@ -39,12 +39,12 @@ int get_dev_info(char *dev_name,USBINFO* uInfo)
     fd = open(dev_name, O_RDWR|O_NONBLOCK);
 
     if (fd < 0) {
-        perror("Unable to open device");
+        printf("Unable to open device");
         return 1;
     }
 
     // Get Report Descriptor Size 
-	//printf("%s info:\n",dev_name);
+	printf("%s info:\n",dev_name);
     // Get Raw Info 
     res = ioctl(fd, EVIOCGID, uInfo);
     if (res < 0) 
