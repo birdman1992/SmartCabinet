@@ -754,14 +754,15 @@ void CabinetServer::requireAioOverview()
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
 
-void CabinetServer::requireAioData(AIOMachine::cEvent e)
+void CabinetServer::requireAioData(int cevent)
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
-    aio_state = e;
+    qDebug()<<"requireAioData"<<cevent;
+    aio_state = (AIOMachine::cEvent)cevent;
 
     QString apiPath;
-    switch(e)
+    switch(cevent)
     {
     case AIOMachine::click_num_expired:apiPath = QString(API_AIO_EXPIRED);
         break;
@@ -773,7 +774,7 @@ void CabinetServer::requireAioData(AIOMachine::cEvent e)
         break;
     case AIOMachine::click_num_warning_rep:apiPath = QString(API_AIO_WARNING_REP);
         break;
-    default:return;
+    default:
         break;
     }
 
@@ -781,7 +782,7 @@ void CabinetServer::requireAioData(AIOMachine::cEvent e)
     replyCheck(reply_aio_data);
     reply_aio_data = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_aio_data, SIGNAL(finished()), this, SLOT(recvAioData()));
-    qDebug()<<"[requireAioData]"<<e<<nUrl<<qba;
+    qDebug()<<"[requireAioData]"<<cevent<<nUrl<<qba;
 }
 
 void CabinetServer::checkUpdate(bool needConfirm)

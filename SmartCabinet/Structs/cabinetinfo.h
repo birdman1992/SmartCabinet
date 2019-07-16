@@ -26,8 +26,8 @@ public:
     QString batch;//批次
     QString traceId;//条码
     int lifeDay;//效期天数
-    int productTime;//生产日期
-    int lifeTime;//有效期至
+    QString productTime;//生产日期
+    QString lifeTime;//有效期至
     int threshold;//预警数据(包)
     int maxThreshold;//最大数量(包)
     int goodsType;//打包规格

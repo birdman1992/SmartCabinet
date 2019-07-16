@@ -15,6 +15,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->page_overview->setAttribute(Qt::WA_TranslucentBackground);
     ui->page_table->setWindowOpacity(1);
     ui->page_table->setAttribute(Qt::WA_TranslucentBackground);
+    ui->info_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
     loginState = false;
     optUser = NULL;
@@ -26,6 +27,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
         connect(sysTime, SIGNAL(timeout()), this, SLOT(updateTime()));
         sysTime->start(1000);
     }
+    ui->stackedWidget->setCurrentIndex(0);
     sysLock();
 }
 
@@ -125,7 +127,7 @@ void AIOMachine::initColMap()
     mapColName.insert("包类型", packageType);
     mapColName.insert("生产商", proName);
     mapColName.insert("供应商", supplyName);
-    mapColName.insert("规格", size);
+    mapColName.insert("规格", goodsSize);
     mapColName.insert("单位", unit);
     mapColName.insert("预警数量", threshold);
     mapColName.insert("最大数量", maxThreshold);
@@ -142,7 +144,8 @@ void AIOMachine::initColMap()
     mapColName.insert("操作时间", optTime);
     mapColName.insert("批次", batchNumber);
     mapColName.insert("条码", traceId);
-    listColName = mapColName.keys();
+    listColName<<"物品编码"<<"物品名称"<<"包类型"<<"生产商"<<"供应商"<<"规格"<<"单位"<<"预警数量"<<"最大数量"<<"包数"<<"耗材数量"<<"效期天数"<<"有效期至"<<"生产日期"<<"单价"<<"总价"<<"入库数"<<"出库数"<<"操作人"<<"操作时间"<<"批次"<<"条码";
+//    qDebug()<<"[listColName]"<<listColName;
 }
 
 void AIOMachine::setAioInfo(QString departName, QString departId)
@@ -163,13 +166,23 @@ void AIOMachine::setNumLabel(AIOOverview *overview)
 
 void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*>listInfo)
 {
+    qDebug()<<"[showTable]"<<colNames;
+    if(!cur_list.isEmpty())
+    {
+        qDeleteAll(cur_list.begin(), cur_list.end());
+        cur_list.clear();
+    }
+    cur_list = listInfo;
+
     ui->stackedWidget->setCurrentIndex(1);
     ui->tab_title->setText(title);
+    curPage = 0;
     int rowCount = listInfo.count()>MAX_TABLE_ROW?MAX_TABLE_ROW:listInfo.count();
     int colCount = colNames.count();
     ui->info_table->setRowCount(rowCount);
     ui->info_table->setColumnCount(colCount);
     ui->info_table->setHorizontalHeaderLabels(colNames);
+    ui->info_table->setAlternatingRowColors(true);
     int colIndex = 0;
     int rowIndex = 0;
 
@@ -185,6 +198,7 @@ void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*
         if(rowIndex >= rowCount)
             break;
     }
+//    ui->info_table->resizeColumnsToContents();
 }
 
 void AIOMachine::showNumExpired(QList<GoodsInfo *> lInfo)
@@ -194,7 +208,7 @@ void AIOMachine::showNumExpired(QList<GoodsInfo *> lInfo)
     colNames<<listColName.at(goodsId);
     colNames<<listColName.at(goodsName);
     colNames<<listColName.at(batchNumber);
-    colNames<<listColName.at(size);
+    colNames<<listColName.at(goodsSize);
     colNames<<listColName.at(unit);
     colNames<<listColName.at(productTime);
     colNames<<listColName.at(supplyName);
@@ -211,7 +225,7 @@ void AIOMachine::showNumGoods(QList<GoodsInfo *> lInfo)
     QStringList colNames;
     colNames<<listColName.at(goodsId);
     colNames<<listColName.at(goodsName);
-    colNames<<listColName.at(size);
+    colNames<<listColName.at(goodsSize);
     colNames<<listColName.at(proName);
     colNames<<listColName.at(supplyName);
     colNames<<listColName.at(packageType);
@@ -227,7 +241,7 @@ void AIOMachine::showNumTodayIn(QList<GoodsInfo *> lInfo)
     QStringList colNames;
     colNames<<listColName.at(goodsId);
     colNames<<listColName.at(goodsName);
-    colNames<<listColName.at(size);
+    colNames<<listColName.at(goodsSize);
     colNames<<listColName.at(unit);
     colNames<<listColName.at(proName);
     colNames<<listColName.at(supplyName);
@@ -244,7 +258,7 @@ void AIOMachine::showNumTodayOut(QList<GoodsInfo *> lInfo)
     QStringList colNames;
     colNames<<listColName.at(goodsId);
     colNames<<listColName.at(goodsName);
-    colNames<<listColName.at(size);
+    colNames<<listColName.at(goodsSize);
     colNames<<listColName.at(unit);
     colNames<<listColName.at(batchNumber);
     colNames<<listColName.at(traceId);
@@ -264,7 +278,7 @@ void AIOMachine::showNumWarningRep(QList<GoodsInfo *> lInfo)
     QStringList colNames;
     colNames<<listColName.at(goodsId);
     colNames<<listColName.at(goodsName);
-    colNames<<listColName.at(size);
+    colNames<<listColName.at(goodsSize);
     colNames<<listColName.at(unit);
     colNames<<listColName.at(proName);
     colNames<<listColName.at(packageType);
@@ -284,10 +298,24 @@ QString AIOMachine::getGoodsInfoText(GoodsInfo *info, QString key)
     case packageType:return QString("%1").arg(info->goodsType);//包类型
     case proName:return info->proName;//生产商
     case supplyName:return info->supName;//供应商
-    case size:return info->size;//规格
+    case goodsSize:return info->size;//规格
     case unit:return info->unit;//单位
     case threshold:return QString("%1").arg(info->threshold);//预警数量
     case maxThreshold:return QString("%1").arg(info->maxThreshold);//最大数量
+    case packageCount:return QString("%1").arg(info->packageCount);
+    case goodsCount:return QString("%1").arg(info->goodsCount);
+    case lifeDay:return QString("%1").arg(info->lifeDay);
+    case lifeTime:return info->lifeTime;
+    case productTime:return info->productTime;
+    case price:return QString("%1").arg(info->price);
+    case sumCount:return QString("%1").arg(info->sumCount);
+    case aioInNum:return info->aioInNum;
+    case aioOutNum:return info->aioOutNum;
+    case optName:return info->optName;
+    case optTime:return info->optTime;
+    case batchNumber:return info->batch;
+    case traceId:return info->traceId;
+
     default:
         break;
     }
@@ -297,7 +325,10 @@ QString AIOMachine::getGoodsInfoText(GoodsInfo *info, QString key)
 QList<GoodsInfo *> AIOMachine::listPage(unsigned int pageNum)
 {
     int firstIndex = pageNum * MAX_TABLE_ROW;
-    
+    int pageLen = (cur_list.count() - firstIndex);
+    pageLen = pageLen>MAX_TABLE_ROW ? MAX_TABLE_ROW:pageLen;
+
+    cur_list.mid(firstIndex, pageLen);
 }
 
 void AIOMachine::sysLock()

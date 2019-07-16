@@ -158,7 +158,7 @@ public slots:
     void requireListInfo(QDate sDate, QDate eDate);
     //aio
     void requireAioOverview();
-    void requireAioData(AIOMachine::cEvent);
+    void requireAioData(int cevent);
     void checkUpdate(bool needConfirm = false);
     void getUpdatePac(QString fileName);
     void updateStart();

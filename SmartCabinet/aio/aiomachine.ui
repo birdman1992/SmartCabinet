@@ -650,10 +650,15 @@ margin:8px;
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/image/image/aio/list_title_bg.png);</string>
+            <string notr="true">border-image: url(:/image/image/aio/list_title_bg.png);
+font: 75 38px &quot;WenQuanYi Micro Hei Mono&quot;;
+color: rgb(255, 255, 255);</string>
            </property>
            <property name="text">
-            <string/>
+            <string>库存物品</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -707,6 +712,18 @@ margin:8px;
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+           <attribute name="verticalHeaderVisible">
+            <bool>true</bool>
+           </attribute>
           </widget>
          </item>
          <item>

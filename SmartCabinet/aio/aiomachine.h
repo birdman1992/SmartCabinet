@@ -58,7 +58,7 @@ private:
         packageType,//包类型
         proName,//生产商
         supplyName,//供应商
-        size,//规格
+        goodsSize,//规格
         unit,//单位
         threshold,//预警数量
         maxThreshold,//最大数量
@@ -78,7 +78,8 @@ private:
     };
 
 signals:
-    void click_event(cEvent c);
+//    void click_event(cEvent c);
+    void click_event(int);
     void reqCheckVersion(bool);
     void reqUpdateOverview();
 
@@ -95,6 +96,7 @@ private:
     CabinetConfig* config;
     QTimer* sysTime;
     bool loginState;
+    int curPage;
 
     void paintEvent(QPaintEvent *);
     bool eventFilter(QObject *, QEvent *);

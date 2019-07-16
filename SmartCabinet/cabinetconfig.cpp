@@ -113,6 +113,7 @@ QString CabinetConfig::getCabinetMode()
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     QString cMode = settings.value("CabinetMode",QString("cabinet")).toString();
     settings.sync();
+    qDebug()<<"getCabinetMode:"<<cMode;
 //    cabinetMode = cMode;
     return cMode;
 }
