@@ -561,13 +561,13 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     config->wakeUp(TIMEOUT_FETCH);
 
-    bool newStore = false;
+//    bool newStore = false;
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
 
-    if(scanInfo != QString(code))
-    {
-        newStore = true;
-    }
+//    if(scanInfo != QString(code))
+//    {
+//        newStore = true;
+//    }
     scanInfo = QString(code);
     fullScanInfo = QString(qba);
 #ifdef TCP_API

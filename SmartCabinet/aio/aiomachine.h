@@ -120,6 +120,7 @@ private:
 private slots:
     void loginTimeout();
     void updateTime();
+    void on_tab_back_clicked();
 };
 
 #endif // AIOMACHINE_H

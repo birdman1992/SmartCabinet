@@ -38,6 +38,7 @@
         <file>image/btn_notice_sel.png</file>
         <file>image/btn_notice_normal.png</file>
         <file>image/bg_main_1600.png</file>
+        <file>image/aio/bg.png</file>
         <file>image/aio/tip_home_check.png</file>
         <file>image/aio/monitor_temperature.png</file>
         <file>image/aio/monitor_humidity.png</file>

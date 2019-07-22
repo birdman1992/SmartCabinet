@@ -328,7 +328,7 @@ QList<GoodsInfo *> AIOMachine::listPage(unsigned int pageNum)
     int pageLen = (cur_list.count() - firstIndex);
     pageLen = pageLen>MAX_TABLE_ROW ? MAX_TABLE_ROW:pageLen;
 
-    cur_list.mid(firstIndex, pageLen);
+    return cur_list.mid(firstIndex, pageLen);
 }
 
 void AIOMachine::sysLock()
@@ -409,4 +409,9 @@ void AIOMachine::on_aio_quit_clicked()
 {
     sysLock();
     ui->aio_hello->clear();
+}
+
+void AIOMachine::on_tab_back_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
 }

@@ -625,7 +625,7 @@ margin:8px;
      <widget class="QWidget" name="page_table">
       <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,9">
        <property name="leftMargin">
-        <number>80</number>
+        <number>50</number>
        </property>
        <property name="topMargin">
         <number>70</number>
@@ -639,19 +639,19 @@ margin:8px;
           <widget class="QLabel" name="tab_title">
            <property name="minimumSize">
             <size>
-             <width>274</width>
-             <height>170</height>
+             <width>174</width>
+             <height>110</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>274</width>
-             <height>170</height>
+             <width>174</width>
+             <height>110</height>
             </size>
            </property>
            <property name="styleSheet">
             <string notr="true">border-image: url(:/image/image/aio/list_title_bg.png);
-font: 75 38px &quot;WenQuanYi Micro Hei Mono&quot;;
+font: 75 34px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);</string>
            </property>
            <property name="text">
@@ -666,14 +666,14 @@ color: rgb(255, 255, 255);</string>
           <widget class="QPushButton" name="tab_back">
            <property name="minimumSize">
             <size>
-             <width>274</width>
-             <height>170</height>
+             <width>174</width>
+             <height>110</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>274</width>
-             <height>170</height>
+             <width>174</width>
+             <height>110</height>
             </size>
            </property>
            <property name="styleSheet">
