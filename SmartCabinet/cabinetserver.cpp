@@ -1885,7 +1885,7 @@ void CabinetServer::recvAioData()
     reply_aio_data->deleteLater();
     reply_aio_data = NULL;
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<"[recvAioOverview]"<<cJSON_Print(json);
+    qDebug()<<"[recvAioData]"<<cJSON_Print(json);
     if(!json)
         return;
 

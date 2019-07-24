@@ -83,15 +83,23 @@ border-image: url(:/image/image/aio/bg_new.png);
          <number>40</number>
         </property>
         <item>
-         <widget class="QLabel" name="aio_time">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);
-font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
-          </property>
-          <property name="text">
-           <string>2019-04-06 12:00</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QLabel" name="aio_time">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);
+font: 18px &quot;WenQuanYi Micro Hei Mono&quot;;
+padding-right:2px;</string>
+            </property>
+            <property name="text">
+             <string>2019-04-06 12:00</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -126,7 +134,7 @@ font: 16px &quot;WenQuanYi Micro Hei Mono&quot;;
 padding-right:2px;</string>
             </property>
             <property name="text">
-             <string>测试 ID:12111</string>
+             <string>消化内科-第二住院楼3F ID:727580</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

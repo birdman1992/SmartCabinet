@@ -1445,6 +1445,9 @@ void CabinetWidget::checkPush()
 
 void CabinetWidget::recvUserCheckRst(UserInfo* info)
 {
+    if(info == NULL)
+        return;
+
     cabInit();
     waitForCodeScan = false;
     waitForGoodsListCode = false;

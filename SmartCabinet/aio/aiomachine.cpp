@@ -15,7 +15,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->page_overview->setAttribute(Qt::WA_TranslucentBackground);
     ui->page_table->setWindowOpacity(1);
     ui->page_table->setAttribute(Qt::WA_TranslucentBackground);
-    ui->info_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+//    ui->info_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
     loginState = false;
     optUser = NULL;
@@ -43,6 +43,9 @@ void AIOMachine::recvScanData(QByteArray)
 
 void AIOMachine::recvUserCheckRst(UserInfo *user)
 {
+    if(user == NULL)
+        return;
+
     optUser = user;
     loginState = true;
     if(config->getDepartName().isEmpty())
@@ -198,7 +201,7 @@ void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*
         if(rowIndex >= rowCount)
             break;
     }
-//    ui->info_table->resizeColumnsToContents();
+    ui->info_table->resizeColumnsToContents();
 }
 
 void AIOMachine::showNumExpired(QList<GoodsInfo *> lInfo)
@@ -291,6 +294,7 @@ void AIOMachine::showNumWarningRep(QList<GoodsInfo *> lInfo)
 QString AIOMachine::getGoodsInfoText(GoodsInfo *info, QString key)
 {
     colMark mark = mapColName.value(key, unknow);
+
     switch(mark)
     {
     case goodsId:return info->id;//物品编码
