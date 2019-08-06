@@ -139,7 +139,7 @@ void CabinetServer::cabRegister()
     {
         regId.insert(0,'0');
     }
-    QByteArray qba = QString("{\"code\":\"%1\"}").arg(regId).toUtf8();
+    QByteArray qba = QString("{\"code\":\"%1\",\"cabLayout\":\"%2\"}").arg(regId).arg(config->getCabinetLayout()).toUtf8();
     QString nUrl = ApiAddress+QString(API_REG)+'?'+qba.toBase64();
     qDebug()<<"[cabRegister]"<<nUrl<<qba;
     replyCheck(reply_register);
