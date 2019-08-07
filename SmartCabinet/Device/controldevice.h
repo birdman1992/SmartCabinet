@@ -8,6 +8,7 @@
 #include "Device/Hid/qhid.h"
 #include "Device/Qextserial/qextserialport.h"
 #include "Device/devicesimulate.h"
+#include "Device/QDeviceWatcher/qdevicewatcher.h"
 #include "cabinetconfig.h"
 #include "defines.h"
 //#include "Device/SerialPort/qserialport.h"
@@ -39,6 +40,7 @@ private:
     DeviceSimulate* dev_simulate;//设备仿真器
     CabinetConfig* config;//全局配置
     QList<QByteArray> lockCtrlCmd;//控制协议
+    QDeviceWatcher* devWater;
     QTimer* timer_beat;
     GoodsCar curCar;
     QTimer timer;
