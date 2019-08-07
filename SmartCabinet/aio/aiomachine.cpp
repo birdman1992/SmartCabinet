@@ -38,7 +38,23 @@ AIOMachine::~AIOMachine()
 
 void AIOMachine::recvScanData(QByteArray)
 {
+    if(loginState == false)
+        return;
 
+    switch(config->state)
+    {
+    case STATE_FETCH:
+
+        break;
+    case STATE_REFUN:
+
+        break;
+    case STATE_STORE:
+
+        break;
+    default:
+        break;
+    }
 }
 
 void AIOMachine::recvUserCheckRst(UserInfo *user)
@@ -56,6 +72,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     }
 
     ui->aio_hello->setText(QString("您好！%1").arg(user->name));
+    config->state = STATE_FETCH;
     sysUnlock();
 }
 
