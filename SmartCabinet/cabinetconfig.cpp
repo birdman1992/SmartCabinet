@@ -692,6 +692,19 @@ bool CabinetConfig::getStoreMode()
     return settings.value("StoreMode", false).toBool();
 }
 
+QString CabinetConfig::getApiProName()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    return settings.value("ApiPro", "spd-web").toBool();
+}
+
+void CabinetConfig::setApiProName(QString apiName)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("ApiPro", apiName);
+    settings.sync();
+}
+
 QString CabinetConfig::getCabinetLayout()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
