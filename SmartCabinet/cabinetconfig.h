@@ -41,6 +41,8 @@ public:
     void setSecondUser(QString userId);
     void setStoreMode(bool needScanAll);
     bool getStoreMode();//return need scanALL
+    QString getApiProName();//获取接口项目名称,默认 spd-web
+    void setApiProName(QString apiName);//设置接口项目名称
 
     QString getCabinetLayout();
     QString getCabinetColMap();

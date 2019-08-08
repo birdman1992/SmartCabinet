@@ -27,6 +27,8 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 
 #endif
     deviceInit();
+    devWater = new QDeviceWatcher(this);
+    devWater->start();
 }
 
 ControlDevice::~ControlDevice()
