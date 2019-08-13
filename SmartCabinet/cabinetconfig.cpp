@@ -136,7 +136,8 @@ QString CabinetConfig::getCabinetId()
 
 QString CabinetConfig::getServerAddress()
 {
-    return serverAddr;
+    return QString("%1/%2").arg(serverAddr).arg(getApiProName());
+//    return serverAddr;
 }
 
 void CabinetConfig::insertGoods(GoodsInfo *info, int row, int col)
@@ -695,11 +696,12 @@ bool CabinetConfig::getStoreMode()
 QString CabinetConfig::getApiProName()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    return settings.value("ApiPro", "spd-web").toBool();
+    return settings.value("ApiPro", "spd-web").toString();
 }
 
 void CabinetConfig::setApiProName(QString apiName)
 {
+    qDebug()<<"[setApiProName]"<<apiName;
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("ApiPro", apiName);
     settings.sync();

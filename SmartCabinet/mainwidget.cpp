@@ -101,9 +101,9 @@ void MainWidget::init_huangpo()
 #else
     connect(win_cab_service, SIGNAL(requireInsertCol(int,int)), cabServer, SLOT(cabColInsert(int,int)));
 #endif
-    connect(win_cab_service, SIGNAL(requireInsertUndo()), cabServer, SLOT(cabInsertUndo()));
+//    connect(win_cab_service, SIGNAL(requireInsertUndo()), cabServer, SLOT(cabInsertUndo()));
     connect(cabServer, SIGNAL(insertRst(bool)), win_cab_service, SLOT(recvInsertColResult(bool)));
-    connect(cabServer, SIGNAL(insertUndoRst(bool)), win_cab_service, SLOT(recvInsertUndoResult(bool)));
+//    connect(cabServer, SIGNAL(insertUndoRst(bool)), win_cab_service, SLOT(recvInsertUndoResult(bool)));
 
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
@@ -133,7 +133,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
     connect(win_cabinet_set, SIGNAL(lockTest()), win_cab_service, SLOT(ctrl_boardcast()));
     connect(win_cabinet_set, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
-    connect(win_cabinet_set, SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
+    connect(win_cabinet_set, SIGNAL(updateServerAddr()),cabServer, SLOT(getServerAddr()));
     connect(win_cabinet_set, SIGNAL(cabinetClone(QString)), cabServer, SLOT(cabCloneReq(QString)));
     connect(win_cabinet_set, SIGNAL(requireCabRigster()), cabServer, SLOT(cabRegister()));
     connect(cabServer, SIGNAL(regResult(bool)), win_cabinet_set, SLOT(regResult(bool)));
@@ -172,7 +172,7 @@ void MainWidget::init_huangpo()
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
 //    qDebug()<<cabinetConf->list_cabinet.count();
 //    win_check_table->show();
-    qDebug()<<QStyleFactory::keys();
+//    qDebug()<<QStyleFactory::keys();
 //    cabServer->checkUpdate();
 }
 

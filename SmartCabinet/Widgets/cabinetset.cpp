@@ -74,6 +74,11 @@ bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
     config = globalConfig;
     checkDevice();
 
+    QStringList proList;
+    proList<<"spd-web"<<"cheset-admin";
+    ui->apiProName->addItems(proList);
+    ui->apiProName->setCurrentIndex(0);
+
     return true;
 }
 
@@ -185,14 +190,14 @@ void CabinetSet::on_clear_clicked()
 
 void CabinetSet::on_save_clicked()
 {
-    emit updateServerAddr(ui->serverAddr->text());
+    emit updateServerAddr();
     config->setServerAddress(ui->serverAddr->text());
     initStep = 1;
     if(sTest != NULL)
         delete sTest;
 //    else
 //    {
-    QString testApi = "http://" + ui->serverAddr->text() + "/spd-web/sarkApi/Time/query/";
+    QString testApi = "http://" + ui->serverAddr->text() + QString("/%1/sarkApi/Time/query/").arg(config->getApiProName());
     sTest = new ServerTest(testApi, QByteArray(), this, NULL);
     connect(sTest, SIGNAL(apiMsg(QString)), ui->api_msg, SLOT(setText(QString)));
     connect(sTest, SIGNAL(pingMsg(QString)), ui->ping_msg, SLOT(setText(QString)));
@@ -504,4 +509,10 @@ void CabinetSet::on_cloneId_textChanged(const QString &arg1)
 void CabinetSet::resetRegState()
 {
     ui->regId->setEnabled(true);
+}
+
+void CabinetSet::on_apiProName_activated(const QString &arg1)
+{
+    config->setApiProName(arg1);
+    emit updateServerAddr();
 }

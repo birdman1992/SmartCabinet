@@ -12,33 +12,33 @@
 
 //#define SERVER_ADDR "http://175.11.185.181"
 #define SERVER_ADDR "http://120.77.159.8:8080"
-#define API_REG "/spd-web/sarkApi/SmartCheset/saveOrUpdate/"   //注册接口
+#define API_REG "/sarkApi/SmartCheset/saveOrUpdate/"   //注册接口
 #define API_INFO_UPLOAD ""    //柜子信息上传接口
-#define API_INFO_REQ "/spd-web/sarkApi/SmartCheset/query/"      //柜子信息查询接口
-#define API_CLONE_REQ "/spd-web/sarkApi/Cheset/syncCheset/"     //柜子克隆请求接口
+#define API_INFO_REQ "/sarkApi/SmartCheset/query/"      //柜子信息查询接口
+#define API_CLONE_REQ "/sarkApi/Cheset/syncCheset/"     //柜子克隆请求接口
 #define API_CLONE_SYNC  ""      //柜子克隆数据同步接口
-#define API_INSERT_COL "/spd-web/sarkApi/Cheset/doUpdateChesetCol/"//列插入接口
-#define API_LOGIN "/spd-web/sarkApi/UserInfo/query/"  //登录接口
-#define API_LIST_CHECK "/spd-web/sarkApi/OutStorage/query/goods/" //送货单检查接口
-#define API_LIST_STORE "/spd-web/sarkApi/OutStorage/query/"      //存入完毕销单接口
-#define API_CAB_BIND "/spd-web/sarkApi/Cheset/register/"     //柜格物品绑定接口
-#define API_GOODS_ACCESS  "/spd-web/sarkApi/Cheset/doGoods/"
-//#define API_GOODS_CHECK  "/spd-web/sarkApi/Cheset/doUpdataGoods/"     //盘点接口
-#define API_GOODS_CHECK    "/spd-web/sarkApi/Cheset/checkCheset/"      //盘点接口
-#define API_CHECK_CREAT     "/spd-web/sarkApi/TakeStockCheset/create/"       //创建盘点
-#define API_CHECK_END       "/spd-web/sarkApi/TakeStockCheset/end/"          //结束盘点
-#define API_CHECK_TIME "/spd-web/sarkApi/Time/query/"
-#define API_REQ_LIST "/spd-web/sarkApi/OutStorage/find/OutStorageCar/"      //查询是否有送货单在途中
-#define API_LIST_CHECK_NEW "/spd-web/sarkApi/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
-#define API_NETSTATE_CHECK "/spd-web/websocket/"    //网络状态检查
-#define API_CHECK_TABLES "/spd-web/sarkApi/TakeStockCheset/query/takestockList/"    //查询盘点清单表
-#define API_CHECK_INFO "/spd-web/sarkApi/TakeStockCheset/query/takestockGoodsList/"    //查询盘点清单内容
-#define API_SEARCH_SPELL "/spd-web/sarkApi/Cheset/query/chesetGoods/"     //首字母搜索物品
-#define API_GOODS_REPLY "/spd-web/sarkApi/Cheset/doPleaseGoods/"  //请货
-#define API_DAY_REPORT "/spd-web/sarkApi/Cheset/query/consumeDate/"  //日清单
-#define API_DOWNLOAD_PAC "/spd-web/sarkApi/cheset/download/package" //下载更新包
-#define API_VERSION_CHECK "/spd-web/sarkApi/cheset/get/package"  //检查更新包
-#define API_GOODS_TRACE  "/spd-web/sarkApi/Cheset/doSaveTraceId"  //物品存入跟踪
+#define API_INSERT_COL "/sarkApi/Cheset/doUpdateChesetCol/"//列插入接口
+#define API_LOGIN "/sarkApi/UserInfo/query/"  //登录接口
+#define API_LIST_CHECK "/sarkApi/OutStorage/query/goods/" //送货单检查接口
+#define API_LIST_STORE "/sarkApi/OutStorage/query/"      //存入完毕销单接口
+#define API_CAB_BIND "/sarkApi/Cheset/register/"     //柜格物品绑定接口
+#define API_GOODS_ACCESS  "/sarkApi/Cheset/doGoods/"
+//#define API_GOODS_CHECK  "/sarkApi/Cheset/doUpdataGoods/"     //盘点接口
+#define API_GOODS_CHECK    "/sarkApi/Cheset/checkCheset/"      //盘点接口
+#define API_CHECK_CREAT     "/sarkApi/TakeStockCheset/create/"       //创建盘点
+#define API_CHECK_END       "/sarkApi/TakeStockCheset/end/"          //结束盘点
+#define API_CHECK_TIME "/sarkApi/Time/query/"
+#define API_REQ_LIST "/sarkApi/OutStorage/find/OutStorageCar/"      //查询是否有送货单在途中
+#define API_LIST_CHECK_NEW "/sarkApi/OutStorage/queryfind/goods/"     //查询待存送货单接口NEW
+#define API_NETSTATE_CHECK "/websocket/"    //网络状态检查
+#define API_CHECK_TABLES "/sarkApi/TakeStockCheset/query/takestockList/"    //查询盘点清单表
+#define API_CHECK_INFO "/sarkApi/TakeStockCheset/query/takestockGoodsList/"    //查询盘点清单内容
+#define API_SEARCH_SPELL "/sarkApi/Cheset/query/chesetGoods/"     //首字母搜索物品
+#define API_GOODS_REPLY "/sarkApi/Cheset/doPleaseGoods/"  //请货
+#define API_DAY_REPORT "/sarkApi/Cheset/query/consumeDate/"  //日清单
+#define API_DOWNLOAD_PAC "/sarkApi/cheset/download/package" //下载更新包
+#define API_VERSION_CHECK "/sarkApi/cheset/get/package"  //检查更新包
+#define API_GOODS_TRACE  "/sarkApi/Cheset/doSaveTraceId"  //物品存入跟踪
 
 
 
@@ -140,10 +140,11 @@ void CabinetServer::cabRegister()
         regId.insert(0,'0');
     }
     QByteArray qba = QString("{\"code\":\"%1\",\"cabLayout\":\"%2\"}").arg(regId).arg(config->getCabinetLayout()).toUtf8();
-    QString nUrl = ApiAddress+QString(API_REG)+'?'+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_REG);//+'?'+qba.toBase64();
     qDebug()<<"[cabRegister]"<<nUrl<<qba;
     replyCheck(reply_register);
-    reply_register = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_register = post(nUrl, qba);
+//    reply_register = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
 }
 
@@ -154,7 +155,8 @@ void CabinetServer::checkTime()
     replyCheck(reply_datetime);
 
     QString url = ApiAddress + QString(API_CHECK_TIME);
-    reply_datetime = manager->get(QNetworkRequest(QUrl(url)));
+    reply_datetime = post(url, QByteArray());
+//    reply_datetime = manager->get(QNetworkRequest(QUrl(url)));
     qDebug()<<"[checkTime]"<<url;
     connect(reply_datetime, SIGNAL(readyRead()), this, SLOT(recvDateTime()));
 //    connect(reply_datetime, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(recvDateTimeError(QNetworkReply::NetworkError)));
@@ -182,10 +184,11 @@ void CabinetServer::checkSysTime(QDateTime _time)
 void CabinetServer::requireListState()
 {
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(config->getCabinetId()).toUtf8();
-    QString url = ApiAddress + QString(API_REQ_LIST) +'?'+ qba.toBase64();
+    QString url = ApiAddress + QString(API_REQ_LIST);// +'?'+ qba.toBase64();
 
     replyCheck(reply_list_state);
-    reply_list_state = manager->get(QNetworkRequest(QUrl(url)));
+    reply_list_state = post(url, qba);
+//    reply_list_state = manager->get(QNetworkRequest(QUrl(url)));
     qDebug()<<"[requireListState]"<<url;
     qDebug()<<qba;
     connect(reply_list_state, SIGNAL(readyRead()), this, SLOT(recvListState()));
@@ -220,11 +223,12 @@ void CabinetServer::accessLoop()
         return;
 
     QByteArray qba = list_access_cache.takeFirst();
-    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba;
+    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS);//+"?"+qba;
     qDebug()<<"[accessLoop]"<<nUrl;
     qDebug()<<QByteArray::fromBase64(qba);
     replyCheck(reply_goods_access);
-    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_goods_access = post(nUrl, qba);
+//    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
 }
 
@@ -261,10 +265,18 @@ void CabinetServer::watchdogStart()
     connect(&watdogClock, SIGNAL(timeout()), this, SLOT(watchdogTimeout()));
 }
 
-void CabinetServer::getServerAddr(QString addr)
+QNetworkReply *CabinetServer::post(QString url, QByteArray postData)
+{
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setUrl(url);
+    return manager->post(request, postData.toBase64());
+}
+
+void CabinetServer::getServerAddr()
 {
     qDebug("[getServerAddr]");
-    ApiAddress = QString("http://") + addr;
+    ApiAddress = config->getServerAddress();// QString("http://") + addr;
     needSaveAddress = true;
 //    config->setServerAddress(ApiAddress);
 
@@ -283,13 +295,14 @@ void CabinetServer::userLogin(QString userId)
 //    emit loginRst(true);
 //#endif
     QByteArray qba = QString("{\"cardId\":\"%2\",\"departId\":\"%1\"}").arg(config->getCabinetId()).arg(userId).toUtf8();
-    QString nUrl = ApiAddress+QString(API_LOGIN)+'?'+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_LOGIN);//+'?'+qba.toBase64();
     qDebug()<<"[login]"<<nUrl;
     qDebug()<<qba;
     logId = userId;
 
     replyCheck(reply_login);
-    reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_login = post(nUrl, qba);
+//    reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
     apiState = 1;
     netTimeStart();
@@ -298,21 +311,23 @@ void CabinetServer::userLogin(QString userId)
 void CabinetServer::listCheck(QString code)
 {
     QByteArray qba = QString("{\"barcode\":\"%1\"}").arg(code).toUtf8();
-    QString nUrl = ApiAddress+QString(API_LIST_CHECK_NEW)+'?'+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_LIST_CHECK_NEW);//+'?'+qba.toBase64();
     barCode = code;
     qDebug()<<"[listCheck]"<<nUrl;
     replyCheck(reply_list_check);
-    reply_list_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_list_check = post(nUrl, qba);
+//    reply_list_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_list_check, SIGNAL(finished()), this, SLOT(recvListCheck()));
 }
 
 void CabinetServer::cabInfoUpload()
 {
     QByteArray qba = config->creatCabinetJson();
-    QString nUrl = ApiAddress+QString(API_INFO_UPLOAD)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_INFO_UPLOAD);//+"?"+qba.toBase64();
     qDebug()<<"[cabInfoUpload]"<<nUrl<<qba;
     replyCheck(reply_cabinet_info);
-    reply_cabinet_info = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_cabinet_info = post(nUrl, qba);
+//    reply_cabinet_info = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_info, SIGNAL(finished()), this, SLOT(recvInfoUploadResult()));
 }
 
@@ -329,7 +344,7 @@ void CabinetServer::cabCloneReq(QString oldCabinetId)
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(oldCabinetId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CLONE_REQ)+"?"+qba.toBase64();
     replyCheck(reply_cabinet_clone);
-    reply_cabinet_clone = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_cabinet_clone = post(nUrl, qba);//manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_clone, SIGNAL(finished()), this, SLOT(recvCabClone()));
     qDebug()<<"[cabCloneReq]"<<nUrl<<qba;
 }
@@ -338,10 +353,11 @@ void CabinetServer::cabInfoSync()//同步柜子库存信息
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"code\":\"%1\"}").arg(cabId).toUtf8();
-    QString nUrl = ApiAddress+QString(API_CLONE_REQ)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_CLONE_REQ);//+"?"+qba.toBase64();
     needClearBeforeClone = true;
     replyCheck(reply_cabinet_clone);
-    reply_cabinet_clone = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_cabinet_clone = post(nUrl, qba);
+//    reply_cabinet_clone = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_clone, SIGNAL(finished()), this, SLOT(recvCabSync()));
     qDebug()<<"[cabInfoSync]"<<nUrl<<qba;
 }
@@ -350,9 +366,10 @@ void CabinetServer::cabColInsert(int pos, int num)
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"departCode\":\"%1\",\"col\":[\"%2\",\"%3\"]}").arg(cabId).arg(pos).arg(num).toUtf8();
-    QString nUrl = ApiAddress+QString(API_INSERT_COL)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_INSERT_COL);//+"?"+qba.toBase64();
     replyCheck(reply_update_col);
-    reply_update_col = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_update_col = post(nUrl, qba);
+//    reply_update_col = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_update_col, SIGNAL(finished()), this, SLOT(recvColInsert()));
     qDebug()<<"[cabColInsert]"<<nUrl<<qba;
 }
@@ -369,10 +386,11 @@ void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
     QString cabinetId = config->getCabinetId();
     QByteArray qba = QString("{\"optName\":\"%6\",\"goodsId\":\"%1\",\"chesetCode\":\"%2\",\"goodsCode\":\"%3\",\"cabinetRow\":%4,\"cabinetCol\":%5}").arg(goodsId).arg(cabinetId).arg(caseId).arg(index).arg(seqNum).arg(optId).toUtf8();
 //    QByteArray qba = QString("{\"goodId\":\"%1\",\"chesetCode\":\"%2\",\"caseId\":\"%3\"}").arg(goodsId).arg(cabinetId).arg(caseId).toUtf8();
-    QString nUrl = ApiAddress+QString(API_CAB_BIND)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_CAB_BIND);//+"?"+qba.toBase64();
     qDebug()<<"[cabinetBind]"<<nUrl<<"\n"<<qba;
     replyCheck(reply_cabinet_bind);
-    reply_cabinet_bind = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_cabinet_bind = post(nUrl, qba);
+//    reply_cabinet_bind = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_bind, SIGNAL(finished()), this, SLOT(recvCabBind()));
 }
 
@@ -410,7 +428,6 @@ void CabinetServer::goodsAccess(CaseAddress addr, QString id, int num, int optTy
         QNetworkRequest request;
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
         request.setUrl(nUrl);
-    //    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
         reply_goods_access = manager->post(request, qba.toBase64());
         connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
     }
@@ -473,11 +490,8 @@ void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 
         qDebug()<<"[listAccess]"<<nUrl;
         qDebug()<<qba;
         replyCheck(reply_goods_access);
-        QNetworkRequest request;
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        request.setUrl(nUrl);
 //        reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
-        reply_goods_access = manager->post(request, qba.toBase64());
+        reply_goods_access = post(nUrl, qba);
         connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
         free(buff);
     //    qDebug()<<"[list fetch]"<<cJSON_Print(json);
@@ -488,9 +502,10 @@ void CabinetServer::goodsCheckReq()
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
-    QString nUrl = ApiAddress+QString(API_CHECK_CREAT)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_CHECK_CREAT);//+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
-    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_goods_check = post(nUrl, qba);
+//    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvCheckCreat()));
     qDebug()<<"[goodsCheckCreat]"<<nUrl<<qba;
 }
@@ -501,9 +516,10 @@ void CabinetServer::goodsCheckFinish()
         return;
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
-    QString nUrl = ApiAddress+QString(API_CHECK_END)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_CHECK_END);//+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
-    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_goods_check = post(nUrl, qba);
+//    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvCheckFinish()));
     qDebug()<<"[goodsCheckFinish]"<<nUrl<<qba;
 }
@@ -553,10 +569,7 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     qDebug()<<qba;
     replyCheck(reply_goods_check);
 //    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
-    QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setUrl(nUrl);
-    reply_goods_check = manager->post(request, qba.toBase64());
+    reply_goods_check = post(nUrl, qba);
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvGoodsCheck()));
     free(buff);
 }
@@ -587,10 +600,7 @@ void CabinetServer::goodsCheck(QStringList l, CaseAddress)
     qDebug()<<"[goodsCheck]"<<nUrl;
     qDebug()<<qba;
     replyCheck(reply_goods_check);
-    QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setUrl(nUrl);
-    reply_goods_check = manager->post(request, qba.toBase64());
+    reply_goods_check = post(nUrl, qba);
 //    reply_goods_check = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_check, SIGNAL(finished()), this, SLOT(recvGoodsCheck()));
     free(buff);
@@ -643,11 +653,8 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
     qDebug()<<"[goodsListStore]"<<nUrl;
     qDebug()<<qba;
     replyCheck(reply_goods_access);
-    QNetworkRequest request;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setUrl(nUrl);
 //    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
-    reply_goods_access = manager->post(request, qba.toBase64());
+    reply_goods_access = post(nUrl, qba);
     connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
     free(buff);
 }
@@ -690,9 +697,10 @@ void CabinetServer::requireCheckTables(QDate start, QDate finish)
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"departCode\":\"%1\",\"sTime\":\"%2 00:00:00\",\"eTime\":\"%3 23:59:59\"}").arg(cabId).arg(start.toString("yyyy-MM-dd")).arg(finish.toString("yyyy-MM-dd")).toUtf8();
-    QString nUrl = ApiAddress+QString(API_CHECK_TABLES)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_CHECK_TABLES);//+"?"+qba.toBase64();
     replyCheck(reply_check_tables);
-    reply_check_tables = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_check_tables = post(nUrl, qba);
+//    reply_check_tables = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_check_tables, SIGNAL(finished()), this, SLOT(recvCheckTables()));
     qDebug()<<"[requireCheckTables]"<<nUrl<<qba;
 }
@@ -701,9 +709,10 @@ void CabinetServer::requireCheckTableInfo(QString id)
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"id\":\"%1\"}").arg(id.toInt()).toUtf8();
-    QString nUrl = ApiAddress+QString(API_CHECK_INFO)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_CHECK_INFO);//+"?"+qba.toBase64();
     replyCheck(reply_check_table_info);
-    reply_check_table_info = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_check_table_info = post(nUrl, qba);
+//    reply_check_table_info = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_check_table_info, SIGNAL(finished()), this, SLOT(recvCheckTableInfo()));
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
@@ -713,9 +722,10 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\"}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).toUtf8();
-    QString nUrl = ApiAddress+QString(API_DAY_REPORT)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_DAY_REPORT);//+"?"+qba.toBase64();
     replyCheck(reply_day_report);
-    reply_day_report = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_day_report = post(nUrl, qba);
+//    reply_day_report = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_day_report, SIGNAL(finished()), this, SLOT(recvDayReportInfo()));
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
@@ -737,7 +747,8 @@ void CabinetServer::checkUpdate(bool needConfirm)
         versionInfo = new VersionInfo(config->getCurVersion());
     QString nUrl = ApiAddress+QString(API_VERSION_CHECK);
     qDebug()<<nUrl;
-    reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_download = post(nUrl, QByteArray());
+//    reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_download, SIGNAL(finished()), this, SLOT(recvVersionInfo()));
 }
 
@@ -759,7 +770,8 @@ void CabinetServer::getUpdatePac(QString fileName)
     }
     QString nUrl = ApiAddress+QString(API_DOWNLOAD_PAC);
     qDebug()<<nUrl;
-    reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_download = post(nUrl, QByteArray());
+//    reply_download = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_download, SIGNAL(finished()), this, SLOT(updatePacFinish()));
     connect(reply_download, SIGNAL(readyRead()), this, SLOT(recvUpdatePac()));
 }
@@ -788,9 +800,13 @@ void CabinetServer::updateCurBarcode(QString code)
 void CabinetServer::searchSpell(QString spell)
 {
     QByteArray qba = QString("{\"spell\":\"%1\", \"departCode\":\"%2\"}").arg(spell).arg(config->getCabinetId()).toLocal8Bit();
-    QString nUrl = ApiAddress+QString(API_SEARCH_SPELL)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_SEARCH_SPELL);//+"?"+qba.toBase64();
     replyCheck(reply_search_spell);
-    reply_search_spell = manager->get(QNetworkRequest(QUrl(nUrl)));
+    QNetworkRequest request;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setUrl(nUrl);
+    reply_search_spell = post(nUrl, qba);
+//    reply_search_spell = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_search_spell, SIGNAL(finished()), this, SLOT(recvSearchSpell()));
     qDebug()<<"[searchSpell]"<<nUrl<<qba;
 }
@@ -817,9 +833,10 @@ void CabinetServer::replyRequire(QList<GoodsCheckInfo *> l)
     QByteArray qba = QByteArray(cJSON_Print(json));
     cJSON_Delete(json);
     qDeleteAll(l.begin(), l.end());
-    QString nUrl = ApiAddress+QString(API_GOODS_REPLY)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_GOODS_REPLY);//+"?"+qba.toBase64();
     replyCheck(reply_goods_reply);
-    reply_goods_reply = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_goods_reply = post(nUrl, qba);
+//    reply_goods_reply = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_goods_reply, SIGNAL(finished()), this, SLOT(recvGoodsReply()));
     qDebug()<<"[replyRequire]"<<nUrl<<qba;
 }
@@ -1889,6 +1906,7 @@ void CabinetServer::sysTimeout()
 
 void CabinetServer::updateAddress()
 {
+    qDebug("CabinetServer::updateAddress");
     ApiAddress = config->getServerAddress();
 }
 

@@ -128,7 +128,7 @@ QPushButton::pressed{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_0">
       <widget class="QFrame" name="network">
@@ -302,7 +302,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
         <rect>
          <x>140</x>
          <y>75</y>
-         <width>291</width>
+         <width>551</width>
          <height>41</height>
         </rect>
        </property>
@@ -329,7 +329,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
       <widget class="QPushButton" name="set_server_addr">
        <property name="geometry">
         <rect>
-         <x>450</x>
+         <x>700</x>
          <y>70</y>
          <width>99</width>
          <height>48</height>
@@ -1032,7 +1032,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.5.9.20190718_beta</string>
+        <string>1.5.9.20190809_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
@@ -1516,6 +1516,73 @@ background-color: rgb(105, 157, 255);</string>
             </property>
             <property name="autoExclusive">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QFrame" name="frame_11">
+       <property name="geometry">
+        <rect>
+         <x>760</x>
+         <y>730</y>
+         <width>271</width>
+         <height>55</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QCheckBox{
+font: 25px &quot;WenQuanYi Micro Hei Mono&quot;;
+}
+QCheckBox::indicator {width: 30px;height:30px;}</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_13">
+          <property name="styleSheet">
+           <string notr="true">font: 75 30px &quot;WenQuanYi Micro Hei&quot;;
+background-color: rgb(105, 157, 255);</string>
+          </property>
+          <property name="text">
+           <string>存货模式</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <widget class="QComboBox" name="proName">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
            </widget>
           </item>
