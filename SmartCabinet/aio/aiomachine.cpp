@@ -11,6 +11,11 @@ AIOMachine::AIOMachine(QWidget *parent) :
     initNumLabel();
     initColMap();
 
+    win_access = new CabinetAccess();
+    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
+    connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
+    connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
+
     ui->page_overview->setWindowOpacity(1);
     ui->page_overview->setAttribute(Qt::WA_TranslucentBackground);
     ui->page_table->setWindowOpacity(1);
@@ -33,6 +38,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
 
 AIOMachine::~AIOMachine()
 {
+    win_access->deleteLater();
     delete ui;
 }
 

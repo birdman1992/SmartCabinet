@@ -14,7 +14,7 @@ CabinetPanel::CabinetPanel(QWidget *parent) :
 void CabinetPanel::double_click(QTableWidgetItem* item)
 {
     qDebug()<<"row:"<<item->row();
-    if(item->text().length() << 2)
+    if(item->text().length() < 2)
     {
         qDebug()<<"add";
         emit lattice_inf(item->row());

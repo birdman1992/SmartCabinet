@@ -15,6 +15,7 @@
 #include "aiobutton.h"
 #include "Structs/userinfo.h"
 #include "aiooverview.h"
+#include "Widgets/cabinetaccess.h"
 
 namespace Ui {
 class AIOMachine;
@@ -88,6 +89,7 @@ private slots:
 
 private:
     Ui::AIOMachine *ui;
+    CabinetAccess* win_access;
     QMap<QString, colMark> mapColName;
     QList<QLabel*> l_num_label;
     QList<GoodsInfo*> cur_list;
