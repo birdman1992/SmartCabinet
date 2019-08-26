@@ -140,6 +140,11 @@ QString CabinetConfig::getServerAddress()
 //    return serverAddr;
 }
 
+QString CabinetConfig::getServerIp()
+{
+    return serverIp;
+}
+
 void CabinetConfig::insertGoods(GoodsInfo *info, int row, int col)
 {
     if((col<0) || (col>=list_cabinet.count()))
@@ -198,10 +203,10 @@ void CabinetConfig::syncGoods(GoodsInfo *info, int row, int col)
 
 void CabinetConfig::setServerAddress(QString addr)
 {
-    serverAddr = addr;
+    serverIp = addr;
 
     if(serverAddr.indexOf("http:") != 0)
-        serverAddr = QString("http://") +serverAddr;
+        serverAddr = QString("http://") +serverIp;
 
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("SERVER", serverAddr);
@@ -426,11 +431,27 @@ void CabinetConfig::readCabinetConfig()
 
     caseWidth = 1080/cabNum;
 
+    serverIp = QString();
     serverAddr = settings.value("SERVER", QString()).toString();
     if(serverAddr.isEmpty())
-    {qDebug("4");
+    {
+        qDebug("SERVER is empty, first use");
         firstUse = true;
 //        return;
+    }
+    else
+    {
+        QString pattern = ("//(.*):");
+        QRegExp rx(pattern);
+        if(serverAddr.indexOf(rx) >= 0)
+        {
+            serverIp = rx.cap(1);
+        }
+        else
+        {
+            serverIp = QString();
+        }
+        qDebug()<<"server ip"<<serverIp;
     }
 
     int i = 0;

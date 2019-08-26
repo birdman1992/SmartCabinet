@@ -696,6 +696,13 @@ void CabinetWidget::cabinetInit()
     panel_init(config->list_cabinet);
 }
 
+void CabinetWidget::updateDelay(int delay)
+{
+    updateNetState(delay);
+    ui->delay->setText(QString("%1ms").arg(delay));
+    ui->delay->setChecked(((delay<100) && (delay>0)));
+}
+
 void CabinetWidget::showEvent(QShowEvent *)
 {
     ui->cabId->setText(QString("设备终端NO:%1").arg(config->getCabinetId()));

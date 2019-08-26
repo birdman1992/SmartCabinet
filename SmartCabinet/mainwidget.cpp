@@ -111,6 +111,10 @@ void MainWidget::init_huangpo()
 #ifdef TCP_API
     connect_new_api();
 #else
+    //TCP接口,对接肖萍
+    cabTcp = new CabinetTcp(this);
+    connect(cabTcp, SIGNAL(serverDelay(int)), win_cabinet, SLOT(updateDelay(int)));
+    connect(cabTcp, SIGNAL(syncRequire()), cabServer, SLOT(cabInfoSync()));
     connect_master();
 #endif
 
@@ -268,7 +272,6 @@ void MainWidget::connect_new_api()
     connect(cabServer, SIGNAL(netState(bool)), win_cabinet, SLOT(updateNetState(bool)));
     connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
     connect(cabServer, SIGNAL(cabPanelChanged()), win_cabinet, SLOT(cabinetInit()));
-
 }
 
 MainWidget::~MainWidget()

@@ -49,6 +49,7 @@ public slots:
     void updateScanState(bool);
     void logoClicked();//logo被点击
     void cabinetInit();
+    void updateDelay(int delay);
     void recvUserCheckRst(UserInfo *);//接收用户校验结果
     void recvUserInfo(QByteArray qba);//接收用户信息
     void recvListInfo(GoodsList*);
