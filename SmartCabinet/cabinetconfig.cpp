@@ -695,7 +695,7 @@ bool CabinetConfig::getStoreMode()
 QString CabinetConfig::getApiProName()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    return settings.value("ApiPro", "spd-web").toBool();
+    return settings.value("ApiPro", "spd-web").toString();
 }
 
 void CabinetConfig::setApiProName(QString apiName)
