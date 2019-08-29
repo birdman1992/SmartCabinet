@@ -103,7 +103,8 @@ SOURCES += main.cpp\
     logreport.cpp \
     funcs/operationrecorder.cpp \
     Widgets/stroebyitem.cpp \
-    manager/storelistmanager.cpp
+    manager/storelistmanager.cpp \
+    gpio/gpioapi.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -184,7 +185,8 @@ HEADERS  += mainwidget.h \
     logreport.h \
     funcs/operationrecorder.h \
     Widgets/stroebyitem.h \
-    manager/storelistmanager.h
+    manager/storelistmanager.h \
+    gpio/gpioapi.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
