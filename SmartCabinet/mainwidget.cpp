@@ -115,6 +115,7 @@ void MainWidget::init_huangpo()
     cabTcp = new CabinetTcp(this);
     connect(cabTcp, SIGNAL(serverDelay(int)), win_cabinet, SLOT(updateDelay(int)));
     connect(cabTcp, SIGNAL(syncRequire()), cabServer, SLOT(cabInfoSync()));
+    connect(cabTcp, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
     connect_master();
 #endif
 

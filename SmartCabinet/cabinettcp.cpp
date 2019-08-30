@@ -80,8 +80,11 @@ void CabinetTcp::readData()
     case 1://heartBeat
         parHeartBeat(json);
         break;
-    case 2:
+    case 2://sync
         parCabSync(json);
+        break;
+    case 3:
+        parLockCtrl(json);
         break;
     default:
         break;
@@ -103,7 +106,7 @@ void CabinetTcp::heartBeat()
                                }\n").arg(timeStamp()).arg(config->getCabinetId()).toLocal8Bit();
     socket->write(qba);
     beatWait = true;
-    qDebug()<<"[heartBeat]"<<qba;
+    qDebug()<<"[heartBeat]";
 }
 
 void CabinetTcp::parHeartBeat(cJSON* json)
@@ -122,4 +125,15 @@ void CabinetTcp::parCabSync(cJSON* json)
     socket->write(retData);
     emit syncRequire();
     qDebug()<<"syncRequire";
+}
+
+void CabinetTcp::parLockCtrl(cJSON* json)
+{
+    cJSON_ReplaceItemInObject(json, "opt", cJSON_CreateString("back"));
+    int col = cJSON_GetObjectItem(json, "col")->valueint;
+    int row = cJSON_GetObjectItem(json, "row")->valueint;
+    emit requireOpenCase(col, row);
+    char* retData = cJSON_Print(json);
+    socket->write(retData);
+    qDebug()<<"OpenCaseRequire";
 }

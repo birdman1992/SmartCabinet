@@ -24,6 +24,7 @@ public slots:
 signals:
     void serverDelay(int ms);//服务延迟,0为超时
     void syncRequire();//柜子同步请求
+    void requireOpenCase(int seqNum, int index);
 
 private:
     QTcpSocket* socket;
@@ -38,6 +39,7 @@ private:
     bool packageIsComplete(QByteArray qba);
     void parHeartBeat(cJSON* json);
     void parCabSync(cJSON *json);
+    void parLockCtrl(cJSON *json);
 private slots:
     void connectChanged(QAbstractSocket::SocketState state);
     void heartBeat();

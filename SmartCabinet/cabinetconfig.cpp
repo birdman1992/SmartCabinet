@@ -768,6 +768,12 @@ QPoint CabinetConfig::getScreenPos()
     return screenPos;
 }
 
+QString CabinetConfig::getScreenConfig()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    return settings.value("screenPos","0,0").toString();
+}
+
 //创建柜子配置文件  qba:柜子位置信息
 //void CabinetConfig::creatCabinetConfig(QByteArray qba)
 //{

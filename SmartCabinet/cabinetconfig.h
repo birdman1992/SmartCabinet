@@ -49,6 +49,7 @@ public:
     void setCabinetType(int type);
     int getCabinetType();
     QPoint getScreenPos();
+    QString getScreenConfig();
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
     void setScreenPos(int col, int row);
