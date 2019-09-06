@@ -11,6 +11,7 @@
 #define CAB_CACHE "/home/config/cache.ini"
 
 #define MAGIC_CAL "ff00010acc"
+#define MAGIC_SHOT "ff00010add"
 
 //全屏显示  unuse
 #define SHOW_FULLSCREEN

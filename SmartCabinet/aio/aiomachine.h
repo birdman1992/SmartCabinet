@@ -49,6 +49,7 @@ public slots:
 
 signals:
     void requireUserCheck(QString);//请求身份验证
+    void tsCalReq();//屏幕校准请求
 
 private:
     enum colMark
@@ -119,6 +120,7 @@ private:
 
     void sysUnlock();
 
+    void magicCmd(QString cmd);
 private slots:
     void loginTimeout();
     void updateTime();

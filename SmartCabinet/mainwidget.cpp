@@ -89,10 +89,6 @@ void MainWidget::init_huangpo()
     connect(win_day_report, SIGNAL(askListInfo(QDate,QDate)), cabServer, SLOT(requireListInfo(QDate,QDate)));
     connect(cabServer, SIGNAL(dayReportRst(QList<DayReportInfo*>,QString)), win_day_report, SLOT(recvReportInfo(QList<DayReportInfo*>, QString)));
 
-    //扫码输入面板
-    win_coder_keyboard = new coderKeyboard();
-    connect(win_coder_keyboard, SIGNAL(coderData(QByteArray)), ctrlUi, SIGNAL(codeScanData(QByteArray)));
-
     //服务界面
     win_cab_service = new CabinetService();
     win_cab_service->installGlobalConfig(cabinetConf);
@@ -125,6 +121,7 @@ void MainWidget::init_huangpo()
     connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
     connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
     connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)));
+    connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
 
     win_aio->sysLock();
 

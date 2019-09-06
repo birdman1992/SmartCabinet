@@ -106,7 +106,8 @@ SOURCES += main.cpp\
     manager/storelistmanager.cpp \
     aio/aiomachine.cpp \
     aio/aiobutton.cpp \
-    aio/aiooverview.cpp
+    aio/aiooverview.cpp \
+    funcs/screenshot.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -190,7 +191,8 @@ HEADERS  += mainwidget.h \
     manager/storelistmanager.h \
     aio/aiomachine.h \
     aio/aiobutton.h \
-    aio/aiooverview.h
+    aio/aiooverview.h \
+    funcs/screenshot.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

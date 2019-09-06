@@ -5,6 +5,7 @@
 #include <QWidget>
 #include "defines.h"
 #include "Device/controldevice.h"
+#include "funcs/screenshot.h"
 
 //提示信息
 
@@ -328,6 +329,8 @@ void CabinetWidget::magicCmd(QString cmd)
 {
     if(cmd == QString(MAGIC_CAL))
         emit tsCalReq();
+    if(cmd == QString(MAGIC_SHOT))
+        ScreenShot::singleShot();
 }
 
 bool posSort(Cabinet *A, Cabinet *B)
