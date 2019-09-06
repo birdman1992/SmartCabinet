@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QSettings>
 #include "Device/controldevice.h"
+#include "Device/ledctrl.h"
 #include "medinf.h"
 #include <QList>
 #include <QVBoxLayout>
@@ -74,6 +75,7 @@ private:
     DayReport* win_day_report;//日清单窗口
     RouteRepair* routeRepair;//路由修复
     ControlDevice* ctrlUi;
+    LedCtrl* ledCtrl;
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框

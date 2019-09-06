@@ -1,6 +1,7 @@
 #include "gpioapi.h"
 #include <unistd.h>
 #include <stdio.h>
+#include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/mman.h>
@@ -33,27 +34,31 @@ GpioApi::~GpioApi()
 
 void GpioApi::printIONums()
 {
-    qDebug()<<QString("C_0=%1").arg(calc_port_num('c', 0));
-    qDebug()<<QString("C_2=%1").arg(calc_port_num('c', 2));
-    qDebug()<<QString("C_4=%1").arg(calc_port_num('c', 4));
-    qDebug()<<QString("H_11=%1").arg(calc_port_num('h', 11));
-    qDebug()<<QString("H_7=%1").arg(calc_port_num('h', 7));
-    qDebug()<<QString("H_6=%1").arg(calc_port_num('h', 6));
-    qDebug()<<QString("D_24=%1").arg(calc_port_num('d', 24));
-    qDebug()<<QString("G_11=%1").arg(calc_port_num('g', 11));
-    qDebug()<<QString("G_10=%1").arg(calc_port_num('g', 10));
-    qDebug()<<QString("G_12=%1").arg(calc_port_num('g', 12));
-    qDebug()<<QString("B_2=%1").arg(calc_port_num('b', 2));
-    qDebug()<<QString("B_3=%1").arg(calc_port_num('b', 3));
-    qDebug()<<QString("L_5=%1").arg(calc_port_num('l', 5));
-    qDebug()<<QString("L_4=%1").arg(calc_port_num('l', 4));
-    qDebug()<<QString("L_3=%1").arg(calc_port_num('l', 3));
-    qDebug()<<QString("L_2=%1").arg(calc_port_num('l', 2));
+//    qDebug()<<QString("C_0=%1").arg(calc_port_num('c', 0));
+//    qDebug()<<QString("C_2=%1").arg(calc_port_num('c', 2));
+//    qDebug()<<QString("C_4=%1").arg(calc_port_num('c', 4));
+//    qDebug()<<QString("H_11=%1").arg(calc_port_num('h', 11));
+//    qDebug()<<QString("H_7=%1").arg(calc_port_num('h', 7));
+//    qDebug()<<QString("H_6=%1").arg(calc_port_num('h', 6));
+//    qDebug()<<QString("D_24=%1").arg(calc_port_num('d', 24));
+//    qDebug()<<QString("G_11=%1").arg(calc_port_num('g', 11));
+//    qDebug()<<QString("G_10=%1").arg(calc_port_num('g', 10));
+//    qDebug()<<QString("G_12=%1").arg(calc_port_num('g', 12));
+//    qDebug()<<QString("B_2=%1").arg(calc_port_num('b', 2));
+//    qDebug()<<QString("B_3=%1").arg(calc_port_num('b', 3));
+//    qDebug()<<QString("L_5=%1").arg(calc_port_num('l', 5));
+//    qDebug()<<QString("L_4=%1").arg(calc_port_num('l', 4));
+//    qDebug()<<QString("L_3=%1").arg(calc_port_num('l', 3));
+//    qDebug()<<QString("L_2=%1").arg(calc_port_num('l', 2));
 }
 
 void GpioApi::addOutIO(IO_NUM portNum)
 {
-    ioExport(portNum);
+    if(!ioExport(portNum))
+    {
+        qDebug()<<"[addOutIO]"<<portNum<<"failed.";
+        return;
+    }
     ioDirectionSet(portNum, true);
     listOutIo<<portNum;
 }
@@ -61,10 +66,14 @@ void GpioApi::addOutIO(IO_NUM portNum)
 void GpioApi::setOutIO(GpioApi::IO_NUM portNum ,int val)
 {
     FILE *p=NULL;
-    char str[256];
+    char str[256];qDebug("1");
+    if(listOutIo.indexOf(portNum) == -1)
+    {
+        qDebug()<<"[setOutIO]:"<<portNum<<"not an out io";
+    }qDebug("1");
     sprintf(str, "/sys/class/gpio/gpio%d/value", portNum);
-    p = fopen(str,"w");
-    fprintf(p,"%d",val>0 ? 1 : 0);
+    p = fopen(str,"w");qDebug("2");
+    fprintf(p,"%d",val>0 ? 1 : 0);qDebug("2");
     fclose(p);
 }
 
@@ -131,13 +140,16 @@ int	GpioApi::calc_port_num(char port, int num)
     return port_num;
 }
 
-void GpioApi::ioExport(IO_NUM port_num)
+bool GpioApi::ioExport(IO_NUM port_num)
 {
     FILE *p=NULL;
 
     p = fopen("/sys/class/gpio/export","w");
+    if(p == NULL)
+        return false;
     fprintf(p,"%d",port_num);
     fclose(p);
+    return true;
 }
 
 void GpioApi::ioUnExport(IO_NUM port_num)

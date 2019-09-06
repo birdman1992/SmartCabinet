@@ -142,6 +142,8 @@ void MainWidget::init_huangpo()
     connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet_set, SLOT(getCodeScanData(QByteArray)));
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
+    ledCtrl = new LedCtrl(this);
+
     ui->stackedWidget->addWidget(win_standby);
     ui->stackedWidget->addWidget(win_user_manage);
     ui->stackedWidget->addWidget(win_cabinet_set);

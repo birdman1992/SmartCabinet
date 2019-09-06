@@ -11,23 +11,14 @@ class GpioApi : public QThread
 public:
     enum IO_NUM
     {
-        IO_C_0=64,
-        IO_C_2=66,
-        IO_C_4=68,
-        IO_H_11=235,
-        IO_H_7=231,
-        IO_H_6=230,
-        IO_D_24=120,
-        IO_G_11=203,
-        IO_G_10=202,
-        IO_G_12=204,
-        IO_BEEP=205,
-        IO_B_2=34,
-        IO_B_3=35,
-        IO_L_5=357,
-        IO_L_4=356,
-        IO_L_3=355,
-        IO_L_2=354,
+        J320_L1 = 205,
+        J320_L2 = 204,
+        J320_L3 = 149,
+        J320_L4 = 147,
+        J312_L1 = 159,
+        J312_L2 = 161,
+        J312_L3 = 163,
+        J312_L4 = 165,
     };
 
 public:
@@ -40,7 +31,7 @@ public:
 
 private:
     void run();
-    void ioExport(IO_NUM port_num);//注册io
+    bool ioExport(IO_NUM port_num);//注册io
     void ioUnExport(IO_NUM port_num);//注销io
     void ioDirectionSet(IO_NUM port_num, bool outIo);//设置io方向,outIo true:输出 false:输入
     int calc_port_num(char port, int num);//计算io号
