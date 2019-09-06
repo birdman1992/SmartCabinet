@@ -153,6 +153,8 @@ void MainWidget::init_huangpo()
     connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet_set, SLOT(getCodeScanData(QByteArray)));
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
+    ledCtrl = new LedCtrl(this);
+
     ui->stackedWidget->addWidget(win_standby);
     ui->page_2->layout()->addWidget(win_aio);
     ui->stackedWidget->addWidget(win_user_manage);
@@ -222,7 +224,7 @@ void MainWidget::connect_master()
     connect(cabServer, SIGNAL(accessFailed(QString)), win_cabinet, SLOT(accessFailedMsg(QString)));
     connect(cabServer, SIGNAL(accessSuccess(QString)), win_cabinet, SLOT(accessSuccessMsg(QString)));
     connect(cabServer, SIGNAL(updateGoodsPrice(float,float)), win_cabinet, SLOT(updateFetchPrice(float,float)));
-    connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
+//    connect(cabServer, SIGNAL(timeUpdate()), win_cabinet, SLOT(updateTime()));
     connect(cabServer, SIGNAL(idUpdate()), win_cabinet, SLOT(updateId()));
     connect(cabServer, SIGNAL(goodsCheckRst(QString)), win_cabinet, SLOT(recvGoodsCheckRst(QString)));
     connect(cabServer, SIGNAL(newGoodsList(QString,QString)), win_cabinet, SLOT(newGoodsList(QString,QString)));

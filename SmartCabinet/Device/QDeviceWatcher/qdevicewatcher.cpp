@@ -1,6 +1,7 @@
 #include "qdevicewatcher.h"
 #include <QDebug>
 #include <QRegExp>
+#include <unistd.h>
 
 QDeviceWatcher::QDeviceWatcher(QObject *parent) : QThread(parent)
 {
@@ -72,7 +73,7 @@ void QDeviceWatcher::netLinkInit()
     memset(&sa,0,sizeof(sa));
     sa.nl_family=AF_NETLINK;
     sa.nl_groups=NETLINK_KOBJECT_UEVENT;
-    sa.nl_pid = 0;//getpid(); both is ok
+    sa.nl_pid = getpid(); //both is ok
 
     memset(&msg,0,sizeof(msg));
 
@@ -105,11 +106,12 @@ void QDeviceWatcher::msgFilter(QString msg)
 
     QString devName = msg.mid(index_name, msg.indexOf("\n", index_name)-index_name);
     QString devOpt = msg.mid(index_opt, msg.indexOf("\n", index_opt)-index_opt);
+    qDebug()<<devOpt<<devName;
 
     if(watchDeviceList.indexOf(devName) == -1)
         return;
 
-//    qDebug()<<devOpt<<devName;
+    qDebug()<<devOpt<<devName;
 
     if(devOpt == "add")
         emit deviceAdded(devName);

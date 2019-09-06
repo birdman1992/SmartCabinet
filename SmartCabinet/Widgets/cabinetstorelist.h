@@ -86,17 +86,11 @@ private slots:
 //    void timeOut();
     void itemBind(Goods*, CabinetStoreListItem*);
     void goodsTraceTimeout();
-
     void on_ok_clicked();
-
     void on_back_clicked();
-
     void on_listCache_cellClicked(int row, int column);
-
     void on_back_2_clicked();
-
     void on_stackedWidget_currentChanged(int arg1);
-
     void on_list_part_cellClicked(int row, int column);
 
 signals:

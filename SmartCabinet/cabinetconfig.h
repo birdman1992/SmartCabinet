@@ -44,6 +44,8 @@ public:
     //depart name
     void setDepartName(QString dptName);
     QString getDepartName();
+    QString getApiProName();//获取接口项目名称,默认 spd-web
+    void setApiProName(QString apiName);//设置接口项目名称
 
     QString getCabinetLayout();
     QString getCabinetColMap();

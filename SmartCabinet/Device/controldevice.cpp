@@ -27,6 +27,8 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 
 #endif
     deviceInit();
+    devWater = new QDeviceWatcher(this);
+    devWater->start();
 }
 
 ControlDevice::~ControlDevice()
@@ -42,12 +44,8 @@ ControlDevice::~ControlDevice()
 void ControlDevice::deviceInit()
 {
     qDebug("deviceInit");
-    //初始化锁控:波特率,数据位,奇偶校验,停止位
-//    com_lock_ctrler = new QSerialPort(DEV_LOCK_CTRL);
-//    com_lock_ctrler->com_init(38400,0,8,'N',1);
-//    get_path();
-//    qDebug()<<"[get dev path1]"<<dev_path[0];
-//    qDebug()<<"[get dev path2]"<<dev_path[1];
+    comCardReaderInit(9600, 8, 0, 1);
+    connect(com_card_reader, SIGNAL(readyRead()), this, SLOT(readSerialCardReader()));
     //控制串口初始化
     comLockCtrlInit(38400, 8, 0, 1);
     connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
@@ -137,6 +135,59 @@ void ControlDevice::simulateInit()
 
 void ControlDevice::ctrlCmdInit()
 {
+
+}
+
+void ControlDevice::comCardReaderInit(int baudRate, int dataBits, int Parity, int stopBits)
+{
+    com_card_reader = new QextSerialPort("/dev/ttymxc1");
+    //设置波特率
+    com_card_reader->setBaudRate((BaudRateType)baudRate);
+//    qDebug() << (BaudRateType)baudRate;
+    //设置数据位
+    com_card_reader->setDataBits((DataBitsType)dataBits);
+    //设置校验
+    switch(Parity){
+    case 0:
+        com_card_reader->setParity(PAR_NONE);
+        break;
+    case 1:
+        com_card_reader->setParity(PAR_ODD);
+        break;
+    case 2:
+        com_card_reader->setParity(PAR_EVEN);
+        break;
+    default:
+        com_card_reader->setParity(PAR_NONE);
+        qDebug("set to default : PAR_NONE");
+        break;
+    }
+    //设置停止位
+    switch(stopBits){
+    case 1:
+        com_card_reader->setStopBits(STOP_1);
+        break;
+    case 0:
+        qDebug() << "linux system can't setStopBits : 1.5!";
+        break;
+    case 2:
+        com_card_reader->setStopBits(STOP_2);
+        break;
+    default:
+        com_card_reader->setStopBits(STOP_1);
+        qDebug("set to default : STOP_1");
+        break;
+    }
+    //设置数据流控制
+    com_card_reader->setFlowControl(FLOW_OFF);
+//    com_card_reader->setTimeout(5000);
+
+    if(com_card_reader->open(QIODevice::ReadWrite)){
+        qDebug() <<"/dev/ttymxc1"<<"open success!";
+    }else{
+        qDebug() <<"/dev/ttymxc1"<< "未能打开串口"<<":该串口设备不存在或已被占用" <<  endl ;
+        return;
+    }
 
 }
 
@@ -373,6 +424,15 @@ void ControlDevice::timeout()
 
 void ControlDevice::readCardReaderData(QByteArray qba)
 {
+    QString upStr = QString(qba);
+    qba = upStr.toUpper().toLocal8Bit();
+    qDebug()<<"[readCardReaderData]"<<qba;
+    emit cardReaderData(qba);
+}
+
+void ControlDevice::readSerialCardReader()
+{
+    QByteArray qba = com_card_reader->readAll().toHex();
     QString upStr = QString(qba);
     qba = upStr.toUpper().toLocal8Bit();
     qDebug()<<"[readCardReaderData]"<<qba;

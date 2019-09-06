@@ -93,12 +93,12 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 void CabinetService::on_back_clicked()
 {
     emit winSwitch(INDEX_CAB_SHOW);
-    if(sTest != NULL)
-    {
-        sTest->testFinish();
-        delete sTest;
-        sTest = NULL;
-    }
+//    if(sTest != NULL)
+//    {
+//        sTest->testFinish();
+//        delete sTest;
+//        sTest = NULL;
+//    }
 }
 
 void CabinetService::showEvent(QShowEvent *)
@@ -780,6 +780,7 @@ void CabinetService::on_testServer_clicked()
     sTest = new ServerTest(testApi, QByteArray(), this, NULL);
     connect(sTest, SIGNAL(apiMsg(QString)), ui->api_msg, SLOT(setText(QString)));
     connect(sTest, SIGNAL(pingMsg(QString)), ui->ping_msg, SLOT(setText(QString)));
+    connect(sTest, SIGNAL(responseTime(QString)), ui->response, SLOT(setText(QString)));
     sTest->testStart();
 }
 

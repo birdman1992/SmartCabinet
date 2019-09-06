@@ -428,6 +428,38 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
         <string>测试服务器连接</string>
        </property>
       </widget>
+      <widget class="QFrame" name="frame_10">
+       <property name="geometry">
+        <rect>
+         <x>640</x>
+         <y>160</y>
+         <width>211</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>接口响应时间</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="response">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
      <widget class="QWidget" name="page_1">
       <widget class="QCheckBox" name="checkBox">
@@ -1000,7 +1032,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.5.8.20190410_beta</string>
+        <string>1.5.9.20190718_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">

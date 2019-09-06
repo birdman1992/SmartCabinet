@@ -8,6 +8,7 @@
 #include "Device/Hid/qhid.h"
 #include "Device/Qextserial/qextserialport.h"
 #include "Device/devicesimulate.h"
+#include "Device/QDeviceWatcher/qdevicewatcher.h"
 #include "cabinetconfig.h"
 #include "defines.h"
 //#include "Device/SerialPort/qserialport.h"
@@ -17,7 +18,7 @@
 #else
 //    #define LOG_ON //打开日志
 #endif
-//#define TCP_API  //使用新的api
+#define TCP_API  //使用新的api
 
 typedef struct ui{
     long vid;
@@ -36,9 +37,11 @@ private:
     QHid* hid_code_scan;//扫码设备
     QextSerialPort* com_lock_ctrl;//柜门锁控制器
     QextSerialPort* com_rfid_gateway;//rfid网关
+    QextSerialPort* com_card_reader;//串口读卡器
     DeviceSimulate* dev_simulate;//设备仿真器
     CabinetConfig* config;//全局配置
     QList<QByteArray> lockCtrlCmd;//控制协议
+    QDeviceWatcher* devWater;
     QTimer* timer_beat;
     GoodsCar curCar;
     QTimer timer;
@@ -58,6 +61,7 @@ private:
     int get_path();
     void getDevState();
     void comRfidInit(int baudRate, int dataBits, int Parity, int stopBits);
+    void comCardReaderInit(int baudRate, int dataBits, int Parity, int stopBits);
 signals:
     void cardReaderTimeout();//读卡超时
     void lockCtrlData(QByteArray);//暂无
@@ -78,6 +82,7 @@ private slots:
     void readRfidData(QByteArray);
     void readRfidGatewayData();
     void timeout();
+    void readSerialCardReader();
 };
 
 #endif // CONTROLDEVICE_H

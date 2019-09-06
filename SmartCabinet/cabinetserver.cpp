@@ -180,7 +180,7 @@ void CabinetServer::checkSysTime(QDateTime _time)
     qDebug()<<"[checkSysTime]"<<cmd;
     pro.start(cmd);
     pro.waitForFinished(1000);
-    emit timeUpdate();
+//    emit timeUpdate();
 //    pro.start("clock -w");
     //    pro.waitForFinished(1000);
 }
@@ -1109,7 +1109,7 @@ void CabinetServer::recvListCheck()
         }
         else
         {
-            list->legalList = true;//非法送货单
+            list->legalList = false;//非法送货单
             emit listRst(list);
         }
     }
@@ -2020,18 +2020,13 @@ void CabinetServer::tarFinished(int code)
     if(code == 0)
     {
         qDebug()<<"restart..";
-        QProcess::startDetached("reboot");
+        QProcess::startDetached("/sbin/reboot");
     }
 }
 
 void CabinetServer::sysTimeout()
 {
-//    watchdogTimeout();
-    if(timeIsChecked)
-    {
-        emit timeUpdate();
-    }
-    else
+    if(!timeIsChecked)
     {
 //        sysClock.stop();
 //        disconnect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));

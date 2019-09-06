@@ -41,6 +41,10 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 #ifdef TCP_API
     goodsManager = GoodsManager::manager();
 #endif
+    timeUpdater = new QTimer(this);
+    connect(timeUpdater, SIGNAL(timeout()), this, SLOT(updateTime()));
+    timeUpdater->start(1000);
+
     initVolum();
     initSearchBtns();
 //    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -411,6 +415,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
             return;
         if((optUser->power > 1) && (optUser->power!=3))//0 1 3
             return;
+        if(config->state == STATE_STORE)//禁止绑定至护士长柜格
+            return;
     }
     config->wakeUp(TIMEOUT_BASE);
 //    bool clickRepeat = false;
@@ -564,7 +570,8 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     config->wakeUp(TIMEOUT_FETCH);
 
-//    bool newStore = false;
+    bool newStore;
+    Q_UNUSED(newStore);
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
 
 //    if(scanInfo != QString(code))
@@ -1142,7 +1149,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 void CabinetWidget::recvListInfo(GoodsList *l)
 {
     qDebug("[recvListInfo]");
-    if(l->list_goods.count() == 0)
+    if((l->list_goods.count() == 0) || (!l->legalList))
     {
         config->showMsg(MSG_LIST_ERROR, 1);
         win_store_list->listError(MSG_LIST_ERROR);
@@ -1276,9 +1283,9 @@ void CabinetWidget::updateFetchPrice(float single, float total)
 
 void CabinetWidget::updateTime()
 {
-    showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+    showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
 
-    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0))
+    if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0) && (QTime::currentTime().second() == 0))
     {
         qDebug("[update time]");
         emit reqCheckVersion(false);

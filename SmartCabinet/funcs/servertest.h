@@ -22,23 +22,27 @@ private:
     QNetworkAccessManager* manager;
     QNetworkReply* reply;
     QTimer* tTimer;
+    QTime apiTime;
     QProcess* tProcess;
     QByteArray pData;
     QString pAddress;
     QString serverAddress;
+    int testState;
 
     QString getIpAddress(QString addr);
-    void apiTest();
 
 signals:
     void apiMsg(QString);
     void pingMsg(QString);
+    void responseTime(QString ms);
 
 public slots:
 
 private slots:
+    void apiTest();
     void recvApiRst();
     void recvPingRst();
+    void recvApiError(QNetworkReply::NetworkError);
 };
 
 #endif // SERVERTEST_H
