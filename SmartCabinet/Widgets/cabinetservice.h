@@ -84,6 +84,10 @@ private slots:
 
     void on_scan_all_toggled(bool checked);
 
+//    void on_proName_currentTextChanged(const QString &arg1);
+
+    void on_proName_activated(const QString &arg1);
+
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);

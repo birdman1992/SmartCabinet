@@ -101,9 +101,9 @@ void MainWidget::init_huangpo()
 #else
     connect(win_cab_service, SIGNAL(requireInsertCol(int,int)), cabServer, SLOT(cabColInsert(int,int)));
 #endif
-    connect(win_cab_service, SIGNAL(requireInsertUndo()), cabServer, SLOT(cabInsertUndo()));
+//    connect(win_cab_service, SIGNAL(requireInsertUndo()), cabServer, SLOT(cabInsertUndo()));
     connect(cabServer, SIGNAL(insertRst(bool)), win_cab_service, SLOT(recvInsertColResult(bool)));
-    connect(cabServer, SIGNAL(insertUndoRst(bool)), win_cab_service, SLOT(recvInsertUndoResult(bool)));
+//    connect(cabServer, SIGNAL(insertUndoRst(bool)), win_cab_service, SLOT(recvInsertUndoResult(bool)));
 
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
@@ -111,6 +111,11 @@ void MainWidget::init_huangpo()
 #ifdef TCP_API
     connect_new_api();
 #else
+    //TCP接口,对接肖萍
+    cabTcp = new CabinetTcp(this);
+    connect(cabTcp, SIGNAL(serverDelay(int)), win_cabinet, SLOT(updateDelay(int)));
+    connect(cabTcp, SIGNAL(syncRequire()), cabServer, SLOT(cabInfoSync()));
+    connect(cabTcp, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
     connect_master();
 #endif
     win_aio = new AIOMachine(this);
@@ -144,7 +149,7 @@ void MainWidget::init_huangpo()
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
     connect(win_cabinet_set, SIGNAL(lockTest()), win_cab_service, SLOT(ctrl_boardcast()));
     connect(win_cabinet_set, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
-    connect(win_cabinet_set, SIGNAL(updateServerAddr(QString)),cabServer, SLOT(getServerAddr(QString)));
+    connect(win_cabinet_set, SIGNAL(updateServerAddr()),cabServer, SLOT(getServerAddr()));
     connect(win_cabinet_set, SIGNAL(cabinetClone(QString)), cabServer, SLOT(cabCloneReq(QString)));
     connect(win_cabinet_set, SIGNAL(requireCabRigster()), cabServer, SLOT(cabRegister()));
     connect(cabServer, SIGNAL(regResult(bool)), win_cabinet_set, SLOT(regResult(bool)));
@@ -181,8 +186,6 @@ void MainWidget::init_huangpo()
         ui->stackedWidget->setCurrentIndex(0);
 #endif
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
-//    qDebug()<<QStyleFactory::keys();
-
 }
 
 void MainWidget::connect_master()
@@ -277,7 +280,6 @@ void MainWidget::connect_new_api()
     connect(cabServer, SIGNAL(netState(bool)), win_cabinet, SLOT(updateNetState(bool)));
     connect(cabServer, SIGNAL(sysLock()), win_cabinet, SLOT(sysLock()));
     connect(cabServer, SIGNAL(cabPanelChanged()), win_cabinet, SLOT(cabinetInit()));
-
 }
 
 void MainWidget::aio_connect_mode(bool con)

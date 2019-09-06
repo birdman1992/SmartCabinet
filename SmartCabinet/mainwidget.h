@@ -19,6 +19,7 @@
 
 #include "cabinetconfig.h"
 #include "cabinetserver.h"
+#include "cabinettcp.h"
 #include "tcpserver.h"
 #include "Widgets/standbywidget.h"
 #include "Widgets/userwidget.h"
@@ -66,6 +67,7 @@ private:
     tcpServer* cabServer;
 #else
     CabinetServer* cabServer;
+    CabinetTcp* cabTcp;
 #endif
 
     UserWidget* win_user_manage;//用户管理窗口

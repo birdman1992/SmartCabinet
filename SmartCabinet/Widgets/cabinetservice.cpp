@@ -86,6 +86,12 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 #else
     ui->insert_pos_2->setMaximum(config->list_cabinet.count() - 1);
 #endif
+    QStringList proList;
+    proList<<"spd-web"<<"cheset-admin";
+    ui->proName->addItems(proList);
+    int curIndex = proList.indexOf(config->getApiProName());
+    curIndex = (curIndex<0)?0:curIndex;
+    ui->proName->setCurrentIndex(curIndex);
     return true;
 }
 
@@ -798,4 +804,18 @@ void CabinetService::on_scan_all_toggled(bool checked)
     {
         config->setStoreMode(true);
     }
+}
+
+//void CabinetService::on_proName_currentTextChanged(const QString &arg1)
+//{
+//    qDebug()<<"on_proName_currentTextChanged"<<arg1;
+//    config->setApiProName(arg1);
+//    emit requireUpdateServerAddress();
+//}
+
+void CabinetService::on_proName_activated(const QString &arg1)
+{
+//    qDebug()<<"on_proName_activated"<<arg1;
+    config->setApiProName(arg1);
+    emit requireUpdateServerAddress();
 }

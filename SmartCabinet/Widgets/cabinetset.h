@@ -41,32 +41,20 @@ private slots:
     void on_lock_test_clicked();
     void on_lock_group_clicked(int id);
     void on_pushButton_clicked();
-
     void on_netUpdate_clicked();
-
     void on_netSet_clicked();
-
     void on_devState_toggled(bool checked);
-
     void on_cloneStart_clicked();
-
     void on_regId_clicked();
-
     void on_savePos_clicked();
-
     void on_finish_clicked();
-
     void on_cabType_currentIndexChanged(int index);
-
     void on_tabExp_clicked(const QModelIndex &index);
-
     void on_cabType_2_activated(int index);
-
     void on_cloneId_textChanged(const QString &arg1);
-
     void resetRegState();
-
     void on_aio_mode_toggled(bool checked);
+    void on_apiProName_activated(const QString &arg1);
 
 signals:
     void winSwitch(int index);//窗口切换
@@ -75,7 +63,7 @@ signals:
     //qba[x]=y 表示第x个柜子，柜子序号是0,1,2...连续递增。y是柜子位置信息，1,3,5...单数编号表示主柜左边的位置，双数编号表示主柜右边的位置。
     void setCabinet(QByteArray);
     void cabinetCreated();
-    void updateServerAddr(QString addr);
+    void updateServerAddr();
     void lockTest();
     void requireOpenCase(int,int);
     void cabinetClone(QString id);

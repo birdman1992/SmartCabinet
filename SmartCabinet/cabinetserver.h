@@ -95,6 +95,7 @@ private:
     QString getAbbName(QString fullName);
     void watchdogStart();
     QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
+    QNetworkReply* post(QString url, QByteArray postData);
 
 signals:
     void loginRst(UserInfo*);
@@ -130,7 +131,7 @@ signals:
 
 public slots:
     void cabRegister();
-    void getServerAddr(QString addr);
+    void getServerAddr();
     void userLogin(QString);
     void listCheck(QString);//送货单信息校验
     void cabInfoUpload();//柜子信息上传

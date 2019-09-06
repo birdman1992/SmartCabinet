@@ -15,20 +15,20 @@ void customMessageHandler(QtMsgType type, const char *msg)
         switch (type) {
         //调试信息提示
         case QtDebugMsg:
-                txt = QString("Debug: %1 %2").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
+                txt = QString("Debug: %1 (%2)").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
                 break;
 
         //一般的warning提示
         case QtWarningMsg:
-                txt = QString("Warning: %1 %2").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
+                txt = QString("Warning: %1 (%2)").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
         break;
         //严重错误提示
         case QtCriticalMsg:
-                txt = QString("Critical: %1 %2").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
+                txt = QString("Critical: %1 (%2)").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
         break;
         //致命错误提示
         case QtFatalMsg:
-                txt = QString("Fatal: %1 %2").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
+                txt = QString("Fatal: %1 (%2)").arg(msg).arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz"));
                 abort();
         }
 

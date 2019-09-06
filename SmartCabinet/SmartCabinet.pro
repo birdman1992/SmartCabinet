@@ -109,7 +109,8 @@ SOURCES += main.cpp\
     aio/aiooverview.cpp \
     funcs/screenshot.cpp \
     gpio/gpioapi.cpp \
-    Device/ledctrl.cpp
+    Device/ledctrl.cpp \
+    cabinettcp.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -196,7 +197,8 @@ HEADERS  += mainwidget.h \
     aio/aiooverview.h \
     funcs/screenshot.h \
     gpio/gpioapi.h \
-    Device/ledctrl.h
+    Device/ledctrl.h \
+    cabinettcp.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
