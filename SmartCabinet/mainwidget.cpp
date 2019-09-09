@@ -119,7 +119,7 @@ void MainWidget::init_huangpo()
     connect_master();
 #endif
     win_aio = new AIOMachine(this);
-    connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+//    connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
     connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
     connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
@@ -282,33 +282,33 @@ void MainWidget::connect_new_api()
     connect(cabServer, SIGNAL(cabPanelChanged()), win_cabinet, SLOT(cabinetInit()));
 }
 
-void MainWidget::aio_connect_mode(bool con)
-{
-    if(con)
-    {
-        connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_aio, SLOT(recvScanData(QByteArray)), Qt::UniqueConnection);
-        connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_aio, SLOT(recvUserInfo(QByteArray)),Qt::UniqueConnection);
-    }
-    else
-    {
-        disconnect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_aio, SLOT(recvScanData(QByteArray)));
-        disconnect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_aio, SLOT(recvUserInfo(QByteArray)));
-    }
-}
+//void MainWidget::aio_connect_mode(bool con)
+//{
+//    if(con)
+//    {
+//        connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_aio, SLOT(recvScanData(QByteArray)), Qt::UniqueConnection);
+//        connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_aio, SLOT(recvUserInfo(QByteArray)),Qt::UniqueConnection);
+//    }
+//    else
+//    {
+//        disconnect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_aio, SLOT(recvScanData(QByteArray)));
+//        disconnect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_aio, SLOT(recvUserInfo(QByteArray)));
+//    }
+//}
 
-void MainWidget::cab_connect_mode(bool con)
-{
-    if(con)
-    {
-        connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)), Qt::UniqueConnection);
-        connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)),Qt::UniqueConnection);
-    }
-    else
-    {
-        disconnect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
-        disconnect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
-    }
-}
+//void MainWidget::cab_connect_mode(bool con)
+//{
+//    if(con)
+//    {
+//        connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)), Qt::UniqueConnection);
+//        connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)),Qt::UniqueConnection);
+//    }
+//    else
+//    {
+//        disconnect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet, SLOT(recvScanData(QByteArray)));
+//        disconnect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet, SLOT(recvUserInfo(QByteArray)));
+//    }
+//}
 
 MainWidget::~MainWidget()
 {
@@ -325,17 +325,17 @@ void MainWidget::paintEvent(QPaintEvent*)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-void MainWidget::on_stackedWidget_currentChanged(int arg1)
-{
-    qDebug()<<"[Current main stack]"<<arg1;
-    if(arg1 == INDEX_AIO)
-    {
-        aio_connect_mode(true);
-        cab_connect_mode(false);
-    }
-    else if(arg1 == INDEX_CAB_SHOW)
-    {
-        aio_connect_mode(false);
-        cab_connect_mode(true);
-    }
-}
+//void MainWidget::on_stackedWidget_currentChanged(int arg1)
+//{
+//    qDebug()<<"[Current main stack]"<<arg1;
+//    if(arg1 == INDEX_AIO)
+//    {
+//        aio_connect_mode(true);
+//        cab_connect_mode(false);
+//    }
+//    else if(arg1 == INDEX_CAB_SHOW)
+//    {
+//        aio_connect_mode(false);
+//        cab_connect_mode(true);
+//    }
+//}
