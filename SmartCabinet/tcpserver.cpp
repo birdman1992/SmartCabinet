@@ -738,6 +738,7 @@ void tcpServer::recvListCheck()
             info = parGoods(item);
             list->addGoods(info);
         }
+        list->legalList = true;
         emit listRst(list);
         cJSON_Delete(json);
     }
