@@ -18,7 +18,7 @@
 #else
 //    #define LOG_ON //打开日志
 #endif
-#define TCP_API  //使用新的api
+//#define TCP_API  //使用新的api
 
 typedef struct ui{
     long vid;
