@@ -70,7 +70,7 @@ void GpioApi::setOutIO(GpioApi::IO_NUM portNum ,int val)
     if(listOutIo.indexOf(portNum) == -1)
     {
         qDebug()<<"[setOutIO]:"<<portNum<<"not an out io";
-    }qDebug("1");
+    }
     sprintf(str, "/sys/class/gpio/gpio%d/value", portNum);
     p = fopen(str,"w");
     fprintf(p,"%d",val>0 ? 1 : 0);

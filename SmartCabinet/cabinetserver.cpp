@@ -760,11 +760,11 @@ void CabinetServer::requireAioOverview()
 {
     QString cabId = config->getCabinetId();
     QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
-    QString nUrl = ApiAddress+QString(API_AIO_OVERVIEW)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_AIO_OVERVIEW);
     replyCheck(reply_aio_overview);
-    reply_aio_overview = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_aio_overview = post(nUrl, qba);
     connect(reply_aio_overview, SIGNAL(finished()), this, SLOT(recvAioOverview()));
-    qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
+    qDebug()<<"[requireAioOverview]"<<nUrl<<qba;
 }
 
 void CabinetServer::requireAioData(int cevent)
@@ -791,9 +791,9 @@ void CabinetServer::requireAioData(int cevent)
         break;
     }
 
-    QString nUrl = ApiAddress+apiPath+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+apiPath;
     replyCheck(reply_aio_data);
-    reply_aio_data = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_aio_data = post(nUrl, qba);
     connect(reply_aio_data, SIGNAL(finished()), this, SLOT(recvAioData()));
     qDebug()<<"[requireAioData]"<<cevent<<nUrl<<qba;
 }

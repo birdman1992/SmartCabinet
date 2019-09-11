@@ -2,6 +2,7 @@
 #define LEDCTRL_H
 
 #include <QObject>
+#include <QTimer>
 #include "gpio/gpioapi.h"
 
 class LedCtrl : public QObject
@@ -15,7 +16,11 @@ signals:
 
 private:
     GpioApi* ioManager;
+    QTimer* ledTimer;
+    int state;
 
+private slots:
+    void ledTimeout();
 
 };
 
