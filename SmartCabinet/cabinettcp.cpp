@@ -115,8 +115,8 @@ void CabinetTcp::heartBeat()
                                 \"type\": \"1\",\
                                 \"data\": \"\",\
                                 \"code\": \"%2\"\
-                                \"temperature\": \"%3\"\
-                                \"humidity\": \"%4\"\
+                                \"temperature\": %3\
+                                \"humidity\": %4\
                                }\n").arg(timeStamp()).arg(config->getCabinetId()).arg(temp).arg(hum).toLocal8Bit();
     socket->write(qba);
     beatWait = true;

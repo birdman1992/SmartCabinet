@@ -162,8 +162,8 @@ void MainWidget::init_huangpo()
 
     tempDev = new TempDev(this);
     connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));
-    connect(tempDev, SIGNAL(updateHumString(QString)), cabTcp, SLOT(updateHum(QString)));
-    connect(tempDev, SIGNAL(updateTempString(QString)), cabTcp, SLOT(updateTemp(QString)));
+    connect(tempDev, SIGNAL(updateHum(float)), cabTcp, SLOT(updateHum(float)));
+    connect(tempDev, SIGNAL(updateTemp(float)), cabTcp, SLOT(updateTemp(float)));
 
     ui->stackedWidget->addWidget(win_standby);
     ui->page_2->layout()->addWidget(win_aio);
