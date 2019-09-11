@@ -160,6 +160,11 @@ void MainWidget::init_huangpo()
 
     ledCtrl = new LedCtrl(this);
 
+    tempDev = new TempDev(this);
+    connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));
+    connect(tempDev, SIGNAL(updateHumString(QString)), cabTcp, SLOT(updateHum(QString)));
+    connect(tempDev, SIGNAL(updateTempString(QString)), cabTcp, SLOT(updateTemp(QString)));
+
     ui->stackedWidget->addWidget(win_standby);
     ui->page_2->layout()->addWidget(win_aio);
     ui->stackedWidget->addWidget(win_user_manage);

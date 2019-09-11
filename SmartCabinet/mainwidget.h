@@ -29,6 +29,7 @@
 #include "Widgets/checktable.h"
 #include "Widgets/goodsapply.h"
 #include "Widgets/dayreport.h"
+#include "Device/tempdev.h"
 #include "aio/aiomachine.h"
 #include "Cabinet/cabinetwidget.h"
 #include "MxAuthor/authormanager.h"
@@ -83,6 +84,7 @@ private:
     RouteRepair* routeRepair;//路由修复
     ControlDevice* ctrlUi;
     LedCtrl* ledCtrl;
+    TempDev* tempDev;
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框

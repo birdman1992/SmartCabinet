@@ -47,7 +47,7 @@ void ControlDevice::deviceInit()
     comCardReaderInit(9600, 8, 0, 1);
     connect(com_card_reader, SIGNAL(readyRead()), this, SLOT(readSerialCardReader()));
     //控制串口初始化
-    comLockCtrlInit(38400, 8, 0, 1);
+    comLockCtrlInit(9600, 8, 0, 1);
     connect(com_lock_ctrl, SIGNAL(readyRead()), this, SLOT(readLockCtrlData()));
 //    int ret = com_lock_ctrl->write(QByteArray("test"));
 //    qDebug()<<"[write to lock]"<<DEV_LOCK_CTRL<<ret<<QByteArray("test");
@@ -399,6 +399,7 @@ void ControlDevice::readLockCtrlData()
     QByteArray qba = com_lock_ctrl->readAll();
     qDebug()<<"[readLockCtrlData]"<<qba.toHex();
 //    emit lockCtrlData(qba);
+    emit tempData(qba);
 }
 
 void ControlDevice::readRfidGatewayData()

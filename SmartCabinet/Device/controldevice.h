@@ -68,6 +68,7 @@ signals:
     void cardReaderData(QByteArray);//当前可用
     void codeScanData(QByteArray);//当前可用
     void readyListData(QString listCode);//预备存入单号
+    void tempData(QByteArray);
 
 public slots:
     void openCase(int seqNum, int index);//柜格映射IO参数

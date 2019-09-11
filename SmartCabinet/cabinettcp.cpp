@@ -4,6 +4,8 @@
 
 CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
 {
+    temp = 0;
+    hum = 0;
     beatWait = false;
     beatTimer = new QTimer(this);
     connect(beatTimer, SIGNAL(timeout()), this, SLOT(heartBeat()));
@@ -13,6 +15,16 @@ CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectChanged(QAbstractSocket::SocketState)));
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
     socket->connectToHost(config->getServerIp(), TCP_PORT);
+}
+
+void CabinetTcp::updateTemp(float t)
+{
+    temp = t;
+}
+
+void CabinetTcp::updateHum(float h)
+{
+    hum = h;
 }
 
 qint64 CabinetTcp::timeStamp()
@@ -103,10 +115,12 @@ void CabinetTcp::heartBeat()
                                 \"type\": \"1\",\
                                 \"data\": \"\",\
                                 \"code\": \"%2\"\
-                               }\n").arg(timeStamp()).arg(config->getCabinetId()).toLocal8Bit();
+                                \"temperature\": \"%3\"\
+                                \"humidity\": \"%4\"\
+                               }\n").arg(timeStamp()).arg(config->getCabinetId()).arg(temp).arg(hum).toLocal8Bit();
     socket->write(qba);
     beatWait = true;
-    qDebug()<<"[heartBeat]";
+    qDebug()<<"[heartBeat]"<<qba;
 }
 
 void CabinetTcp::parHeartBeat(cJSON* json)

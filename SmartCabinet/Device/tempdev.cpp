@@ -1,4 +1,5 @@
 #include "tempdev.h"
+#include <QDebug>
 
 TempDev::TempDev(QObject *parent) : QObject(parent)
 {
@@ -22,8 +23,16 @@ void TempDev::setHumLabel(QLabel *lab)
         humLabel = lab;
 }
 
+//03b91acd1a083d05
 void TempDev::recvTempData(QByteArray tempData)
 {
+    if(tempData.size() != 8)
+        return;
+    tempInteger = tempData[4];
+    tempDecimals = tempData[5];
+    humInteger = tempData[6];
+    humDecimals = tempData[7];
+
     QString tempStr = dataToString(tempInteger, tempDecimals, QString("℃"));
     QString humStr = dataToString(humInteger, humDecimals, QString("%RH"));
 
@@ -34,6 +43,8 @@ void TempDev::recvTempData(QByteArray tempData)
 
     emit updateTempString(tempStr);
     emit updateHumString(humStr);
+    emit updateTemp((float)tempInteger + 0.1 * tempDecimals);
+    emit updateHum((float)humInteger + 0.1 * humDecimals);
 }
 
 QString TempDev::dataToString(int dataInteger, int dataDecimals, QString unit)

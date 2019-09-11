@@ -21,6 +21,8 @@ signals:
     //recvTempData槽将触发温湿度更新信号
     void updateTempString(QString);//更新温度,字符串形式
     void updateHumString(QString);//更新湿度,字符串形式
+    void updateTemp(float);//更新温度,字符串形式
+    void updateHum(float);//更新湿度,字符串形式
 
 private:
     int tempInteger;//温度：整数部分
