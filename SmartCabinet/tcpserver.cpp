@@ -728,6 +728,8 @@ void tcpServer::recvListCheck()
     if(statusCode == 200)
     {
         cJSON* json = cJSON_Parse(qba.data());
+        if(json == NULL)
+            return;
         cJSON* data = cJSON_GetObjectItem(json, "data");
         int itemNum = cJSON_GetArraySize(data);
         GoodsList* list = new GoodsList;
@@ -828,6 +830,8 @@ void tcpServer::recvGoodsStoreList()
     reply_goods_access = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
 
     if(statusCode == 200)
     {
