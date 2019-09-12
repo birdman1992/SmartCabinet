@@ -107,11 +107,11 @@ SOURCES += main.cpp\
     aio/aiomachine.cpp \
     aio/aiobutton.cpp \
     aio/aiooverview.cpp \
-    funcs/screenshot.cpp \
     gpio/gpioapi.cpp \
     Device/ledctrl.cpp \
     cabinettcp.cpp \
-    Device/tempdev.cpp
+    Device/tempdev.cpp \
+    funcs/systool.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -196,11 +196,11 @@ HEADERS  += mainwidget.h \
     aio/aiomachine.h \
     aio/aiobutton.h \
     aio/aiooverview.h \
-    funcs/screenshot.h \
     gpio/gpioapi.h \
     Device/ledctrl.h \
     cabinettcp.h \
-    Device/tempdev.h
+    Device/tempdev.h \
+    funcs/systool.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

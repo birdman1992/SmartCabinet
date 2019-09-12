@@ -1,7 +1,7 @@
 #include "aiomachine.h"
 #include "ui_aiomachine.h"
 #include <QDebug>
-#include "funcs/screenshot.h"
+#include "funcs/systool.h"
 #define MAX_TABLE_ROW 15
 
 AIOMachine::AIOMachine(QWidget *parent) :
@@ -48,7 +48,7 @@ void AIOMachine::magicCmd(QString cmd)
     if(cmd == QString(MAGIC_CAL))
         emit tsCalReq();
     if(cmd == QString(MAGIC_SHOT))
-        ScreenShot::singleShot();
+        SysTool::singleShot();
 }
 
 void AIOMachine::recvScanData(QByteArray)

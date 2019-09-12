@@ -7,6 +7,7 @@ LedCtrl::LedCtrl(QObject *parent) : QObject(parent)
     ioManager->addOutIO(GpioApi::J312_L2);
     ioManager->addOutIO(GpioApi::J312_L3);
     ioManager->addOutIO(GpioApi::J312_L4);
+    ioManager->addOutIO(GpioApi::J313_FAN);
 
     ioManager->setOutIO(GpioApi::J312_L1, 1);
     ioManager->setOutIO(GpioApi::J312_L2, 1);
@@ -17,6 +18,14 @@ LedCtrl::LedCtrl(QObject *parent) : QObject(parent)
     ledTimer = new QTimer(this);
     connect(ledTimer, SIGNAL(timeout()), this, SLOT(ledTimeout()));
     ledTimer->start(500);
+}
+
+void LedCtrl::fanSwitch(bool fanOn)
+{
+    if(fanOn)
+        ioManager->setOutIO(GpioApi::J313_FAN, 1);
+    else
+        ioManager->setOutIO(GpioApi::J313_FAN, 0);
 }
 
 void LedCtrl::ledTimeout()

@@ -5,7 +5,7 @@
 #include <QWidget>
 #include "defines.h"
 #include "Device/controldevice.h"
-#include "funcs/screenshot.h"
+#include "funcs/systool.h"
 
 //提示信息
 
@@ -334,7 +334,7 @@ void CabinetWidget::magicCmd(QString cmd)
     if(cmd == QString(MAGIC_CAL))
         emit tsCalReq();
     if(cmd == QString(MAGIC_SHOT))
-        ScreenShot::singleShot();
+        SysTool::singleShot();
 }
 
 bool posSort(Cabinet *A, Cabinet *B)
@@ -1291,6 +1291,16 @@ void CabinetWidget::updateFetchPrice(float single, float total)
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    float cupTemp = SysTool::getCpuTemp();
+    qDebug()<<"[cpu temp]:"<<cupTemp<<"℃";
+    if(cupTemp > 38.0)
+    {
+        emit cpuFanOn(true);
+    }
+    else
+    {
+        emit cpuFanOn(false);
+    }
 
     if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0) && (QTime::currentTime().second() == 0))
     {

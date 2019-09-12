@@ -101,6 +101,7 @@ signals:
     void tsCalReq();
     void setSpecialCase(QPoint);
     void reqCheckVersion(bool);
+    void cpuFanOn(bool);
 
 private slots:
     void setMenuHide(bool ishide);

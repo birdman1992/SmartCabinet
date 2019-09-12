@@ -159,6 +159,7 @@ void MainWidget::init_huangpo()
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ledCtrl = new LedCtrl(this);
+    connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
 
     tempDev = new TempDev(this);
     connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));

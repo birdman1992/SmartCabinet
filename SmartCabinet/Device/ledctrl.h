@@ -11,6 +11,7 @@ class LedCtrl : public QObject
 public:
     explicit LedCtrl(QObject *parent = 0);
 public slots:
+    void fanSwitch(bool fanOn);
 
 signals:
 

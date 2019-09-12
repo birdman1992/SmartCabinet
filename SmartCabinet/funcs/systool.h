@@ -3,9 +3,10 @@
 
 #include <QObject>
 
-namespace ScreenShot
+namespace SysTool
 {
     void singleShot();
+    float getCpuTemp();
 }
 
 #endif // SCREENSHOT_H
