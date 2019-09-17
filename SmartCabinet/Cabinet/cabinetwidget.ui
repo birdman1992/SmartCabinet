@@ -2054,12 +2054,12 @@ background-color: rgb(36, 221, 149);
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="12,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,12,0">
       <property name="spacing">
-       <number>0</number>
+       <number>3</number>
       </property>
       <property name="leftMargin">
-       <number>0</number>
+       <number>40</number>
       </property>
       <property name="topMargin">
        <number>0</number>
@@ -2070,6 +2070,39 @@ background-color: rgb(36, 221, 149);
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="text">
+         <string>Ping:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="delay">
+        <property name="styleSheet">
+         <string notr="true">#delay::checked{
+border:0px solid rgb(140, 158, 175);
+color: rgb(147, 224, 0);
+}
+#delay::!checked{
+border:0px solid rgb(140, 158, 175);
+color: rgb(238, 0, 0);
+}</string>
+        </property>
+        <property name="text">
+         <string>0ms</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="horizontalSpacer_3">
         <property name="orientation">

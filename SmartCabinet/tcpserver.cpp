@@ -1,3 +1,6 @@
+/*
+对接胡江文的接口
+*/
 #include "tcpserver.h"
 #include <QDebug>
 #include <QTime>

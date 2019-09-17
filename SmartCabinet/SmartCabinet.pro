@@ -105,7 +105,8 @@ SOURCES += main.cpp\
     Widgets/stroebyitem.cpp \
     manager/storelistmanager.cpp \
     gpio/gpioapi.cpp \
-    Device/ledctrl.cpp
+    Device/ledctrl.cpp \
+    cabinettcp.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -188,7 +189,8 @@ HEADERS  += mainwidget.h \
     Widgets/stroebyitem.h \
     manager/storelistmanager.h \
     gpio/gpioapi.h \
-    Device/ledctrl.h
+    Device/ledctrl.h \
+    cabinettcp.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

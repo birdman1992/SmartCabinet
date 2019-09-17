@@ -49,6 +49,7 @@ public:
     void setCabinetType(int type);
     int getCabinetType();
     QPoint getScreenPos();
+    QString getScreenConfig();
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
     void setScreenPos(int col, int row);
@@ -61,6 +62,7 @@ public:
     QString getPyCh(QString str);
     QString getCabinetId();
     QString getServerAddress();
+    QString getServerIp();
     void insertGoods(GoodsInfo* info, int row, int col);
     void syncGoods(GoodsInfo* info, int row, int col);
     void setServerAddress(QString addr);
@@ -134,6 +136,7 @@ private:
     QString curVersion;
     QString cabinetId;
     QString serverAddr;
+    QString serverIp;
     QString optName;//操作者卡号
     QString secOpt;//第二操作人
     LockManager* lockManager;

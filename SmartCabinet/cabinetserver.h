@@ -89,6 +89,7 @@ private:
     void accessLoop();
     QString getAbbName(QString fullName);
     void watchdogStart();
+    QNetworkReply* post(QString url, QByteArray postData);
 
 signals:
     void loginRst(UserInfo*);
@@ -121,7 +122,7 @@ signals:
 
 public slots:
     void cabRegister();
-    void getServerAddr(QString addr);
+    void getServerAddr();
     void userLogin(QString);
     void listCheck(QString);//送货单信息校验
     void cabInfoUpload();//柜子信息上传
