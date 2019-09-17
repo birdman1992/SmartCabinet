@@ -39,14 +39,16 @@ bool CabinetTcp::packageIsComplete(QByteArray qba)
 
 void CabinetTcp::connectChanged(QAbstractSocket::SocketState state)
 {
-    qDebug()<<"[connectChanged]:"<<state;
+//    qDebug()<<"[connectChanged]:"<<state;
     if(state == QAbstractSocket::ConnectedState)
     {
+        qDebug()<<"[connectChanged]:"<<state;
         beatTimer->start(10000);//10s
         heartBeat();
     }
     else if(state == QAbstractSocket::UnconnectedState)
     {
+        qDebug()<<"[connectChanged]:"<<state;
         QTimer::singleShot(2000, this, SLOT(reconnect()));
         beatTimer->stop();
         emit serverDelay(0);

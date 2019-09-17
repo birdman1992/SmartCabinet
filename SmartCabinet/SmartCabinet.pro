@@ -106,7 +106,8 @@ SOURCES += main.cpp\
     manager/storelistmanager.cpp \
     gpio/gpioapi.cpp \
     Device/ledctrl.cpp \
-    cabinettcp.cpp
+    cabinettcp.cpp \
+    Device/fingerprint.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -190,7 +191,8 @@ HEADERS  += mainwidget.h \
     manager/storelistmanager.h \
     gpio/gpioapi.h \
     Device/ledctrl.h \
-    cabinettcp.h
+    cabinettcp.h \
+    Device/fingerprint.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
