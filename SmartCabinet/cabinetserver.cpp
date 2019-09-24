@@ -216,7 +216,7 @@ void CabinetServer::replyCheck(QNetworkReply *reply)
 void CabinetServer::netTimeStart()
 {
     netFlag = false;
-    QTimer::singleShot(10000,this,SLOT(netTimeout()));
+    QTimer::singleShot(2000,this,SLOT(netTimeout()));
 }
 
 void CabinetServer::localCacheAccess()

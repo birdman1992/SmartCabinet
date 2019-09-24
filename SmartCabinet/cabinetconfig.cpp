@@ -149,7 +149,7 @@ void CabinetConfig::showMsg(QString msg, bool iswarnning)
 
 QString CabinetConfig::getCabinetId()
 {
-    qDebug()<<"[getCabinetId]"<<cabinetId<<&cabinetId;
+//    qDebug()<<"[getCabinetId]"<<cabinetId<<&cabinetId;
     return cabinetId;
 }
 

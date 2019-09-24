@@ -6,6 +6,7 @@
 #include "defines.h"
 #include "Device/controldevice.h"
 #include "funcs/systool.h"
+#include "defines.h"
 
 //提示信息
 
@@ -136,6 +137,8 @@ void CabinetWidget::cabLock()
     config->clearSearch();
     config->wakeUp(0);
     emit checkLockState();
+    if(config->getCabinetMode() == "aio")
+        emit stack_switch(INDEX_AIO);
 }
 
 void CabinetWidget::cabInit()
@@ -753,6 +756,32 @@ void CabinetWidget::caseUnlock()
     clickLock = false;
 }
 
+void CabinetWidget::switchCabinetState(CabState state)
+{
+    config->state = state;
+    switch(state)
+    {
+    case STATE_FETCH:
+        caseClicked(0,0);
+        break;
+    case STATE_STORE:
+        break;
+    case STATE_REFUN:
+        caseClicked(0,0);
+        break;
+    case STATE_CHECK:
+        break;
+    case STATE_LIST:
+        break;
+    case STATE_REBIND:
+        break;
+    case STATE_SPEC:
+        break;
+    default:
+        break;
+    }
+}
+
 //void CabinetWidget::on_fetch_clicked()
 //{
 //    waitForCardReader = true;
@@ -1110,7 +1139,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 {
 //    calCheck(QString(qba));
 
-    if(this->isHidden())
+    if(this->isHidden() && (config->getCabinetMode() != "aio"))
     {
         qDebug()<<"recvUserInfo"<<qba<<"ignore..";
         return;
@@ -1292,7 +1321,7 @@ void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
     float cupTemp = SysTool::getCpuTemp();
-    qDebug()<<"[cpu temp]:"<<cupTemp<<"℃";
+//    qDebug()<<"[cpu temp]:"<<cupTemp<<"℃";
     if(cupTemp > 38.0)
     {
         emit cpuFanOn(true);

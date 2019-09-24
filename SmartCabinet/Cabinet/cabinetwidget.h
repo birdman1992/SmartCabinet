@@ -44,6 +44,7 @@ public:
     void caseUnlock();
 
 public slots:
+    void switchCabinetState(CabState state);
     void caseClicked(int caseIndex, int cabSeqNum);//柜格下标,柜子顺序编号
     void recvScanData(QByteArray);
     void updateScanState(bool);
@@ -102,6 +103,7 @@ signals:
     void setSpecialCase(QPoint);
     void reqCheckVersion(bool);
     void cpuFanOn(bool);
+    void stack_switch(int index);
 
 private slots:
     void setMenuHide(bool ishide);

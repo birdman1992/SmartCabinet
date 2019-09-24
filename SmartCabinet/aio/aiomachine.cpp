@@ -2,6 +2,7 @@
 #include "ui_aiomachine.h"
 #include <QDebug>
 #include "funcs/systool.h"
+#include "defines.h"
 #define MAX_TABLE_ROW 15
 
 AIOMachine::AIOMachine(QWidget *parent) :
@@ -451,4 +452,20 @@ void AIOMachine::on_aio_quit_clicked()
 void AIOMachine::on_tab_back_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
+}
+
+void AIOMachine::on_aio_fetch_clicked()
+{
+//    emit stack_switch(INDEX_CAB_SHOW);
+    emit cabinetStateChange(STATE_FETCH);
+//    config->state = STATE_FETCH;
+//    emit aio_fetch(0, 0);
+}
+
+void AIOMachine::on_aio_return_clicked()
+{
+    emit cabinetStateChange(STATE_REFUN);
+//    emit aio_return(true);
+//    emit stack_switch(INDEX_CAB_SHOW);
+//    emit aio_fetch(0, 0);//模拟一次点击
 }

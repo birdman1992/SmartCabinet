@@ -108,6 +108,7 @@ void MainWidget::init_huangpo()
     //智能柜展示界面
     win_cabinet = new CabinetWidget(this);
     win_cabinet->installGlobalConfig(cabinetConf);
+    connect(win_cabinet, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 #ifdef TCP_API
     connect_new_api();
 #else
@@ -127,6 +128,10 @@ void MainWidget::init_huangpo()
     connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
     connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)));
     connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
+    connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
+//    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
+//    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
+//    connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
     win_aio->sysLock();
 
@@ -156,6 +161,7 @@ void MainWidget::init_huangpo()
     connect(cabServer, SIGNAL(cloneResult(bool,QString)), win_cabinet_set, SLOT(cloneResult(bool,QString)));
     connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cabinet_set, SLOT(getCardId(QByteArray)));
     connect(ctrlUi, SIGNAL(codeScanData(QByteArray)), win_cabinet_set, SLOT(getCodeScanData(QByteArray)));
+
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
     ledCtrl = new LedCtrl(this);

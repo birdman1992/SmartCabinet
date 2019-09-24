@@ -557,6 +557,6 @@ void ControlDevice::getDevState()
 {
     config->setCardReaderState(cardReaderState);
     config->setCodeScanState(scanState);
-    qDebug()<<"[rfid dev]"<<cardReaderState;
+    qDebug()<<"[reader dev]"<<cardReaderState;
     qDebug()<<"[scan dev]"<<scanState;
 }

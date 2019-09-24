@@ -167,7 +167,7 @@ padding-right:2px;</string>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_overview">
       <property name="styleSheet">
@@ -730,7 +730,7 @@ color: rgb(255, 255, 255);</string>
             <bool>true</bool>
            </attribute>
            <attribute name="verticalHeaderVisible">
-            <bool>true</bool>
+            <bool>false</bool>
            </attribute>
           </widget>
          </item>

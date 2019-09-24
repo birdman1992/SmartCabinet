@@ -50,6 +50,7 @@ public slots:
 signals:
     void requireUserCheck(QString);//请求身份验证
     void tsCalReq();//屏幕校准请求
+    void cabinetStateChange(CabState state);
 
 private:
     enum colMark
@@ -84,6 +85,9 @@ signals:
     void click_event(int);
     void reqCheckVersion(bool);
     void reqUpdateOverview();
+    void aio_fetch(int, int);
+    void aio_return(bool);
+    void stack_switch(int index);
 
 private slots:
     void on_aio_quit_clicked();
@@ -125,6 +129,8 @@ private slots:
     void loginTimeout();
     void updateTime();
     void on_tab_back_clicked();
+    void on_aio_fetch_clicked();
+    void on_aio_return_clicked();
 };
 
 #endif // AIOMACHINE_H

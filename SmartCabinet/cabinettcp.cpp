@@ -42,7 +42,7 @@ bool CabinetTcp::packageIsComplete(QByteArray qba)
 {
     int leftCount = qba.count('{');
     int rightCount = qba.count('}');
-    qDebug()<<"packageIsComplete"<<leftCount<<rightCount;
+//    qDebug()<<"packageIsComplete"<<leftCount<<rightCount;
     if(leftCount == rightCount)
         return true;
     else
@@ -73,7 +73,7 @@ void CabinetTcp::reconnect()
 void CabinetTcp::readData()
 {
     QByteArray qba = socket->readAll();
-    qDebug()<<"[TCP DATA]:"<<qba;
+//    qDebug()<<"[TCP DATA]:"<<qba;
     tcpCache.append(qba);
     if(!packageIsComplete(tcpCache))
     {
@@ -120,7 +120,7 @@ void CabinetTcp::heartBeat()
                                }\n").arg(timeStamp()).arg(config->getCabinetId()).arg(temp).arg(hum).toLocal8Bit();
     socket->write(qba);
     beatWait = true;
-    qDebug()<<"[heartBeat]"<<qba;
+//    qDebug()<<"[heartBeat]"<<qba;
 }
 
 void CabinetTcp::parHeartBeat(cJSON* json)
@@ -128,7 +128,7 @@ void CabinetTcp::parHeartBeat(cJSON* json)
     beatWait = false;
     QString session = QString(cJSON_GetObjectItem(json, "session")->valuestring);
     qint64 delay = timeDelay(session);
-    qDebug()<<"[delay]:"<<delay<<"ms";
+//    qDebug()<<"[delay]:"<<delay<<"ms";
     emit serverDelay(delay);
 }
 
