@@ -46,6 +46,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
     cur_manager = new UserInfo();
+    sqlManager = new SqlManager(this);
     checkList = NULL;
     pacUpdate = NULL;
     reply_register = NULL;

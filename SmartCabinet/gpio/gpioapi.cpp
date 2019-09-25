@@ -66,14 +66,16 @@ void GpioApi::addOutIO(IO_NUM portNum)
 void GpioApi::setOutIO(GpioApi::IO_NUM portNum ,int val)
 {
     FILE *p=NULL;
-    char str[256];qDebug("1");
+    char str[256];
     if(listOutIo.indexOf(portNum) == -1)
     {
         qDebug()<<"[setOutIO]:"<<portNum<<"not an out io";
-    }qDebug("1");
+    }
     sprintf(str, "/sys/class/gpio/gpio%d/value", portNum);
-    p = fopen(str,"w");qDebug("2");
-    fprintf(p,"%d",val>0 ? 1 : 0);qDebug("2");
+    p = fopen(str,"w");
+    if(p == NULL)
+        return;
+    fprintf(p,"%d",val>0 ? 1 : 0);
     fclose(p);
 }
 

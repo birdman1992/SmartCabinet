@@ -20,6 +20,7 @@
 #include "Structs/versioninfo.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
+#include "sql/sqlmanager.h"
 
 
 class CabinetServer : public QObject
@@ -57,6 +58,7 @@ private:
     QNetworkReply* reply_download;
     QNetworkReply* reply_store_trace;
     CheckList* checkList;
+    SqlManager* sqlManager;
     QFile* pacUpdate;
     QString regId;
     QString logId;

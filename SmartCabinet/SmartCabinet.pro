@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network printsupport
+QT       += core gui network printsupport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -106,7 +106,8 @@ SOURCES += main.cpp\
     manager/storelistmanager.cpp \
     gpio/gpioapi.cpp \
     Device/ledctrl.cpp \
-    cabinettcp.cpp
+    cabinettcp.cpp \
+    sql/sqlmanager.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -190,7 +191,8 @@ HEADERS  += mainwidget.h \
     manager/storelistmanager.h \
     gpio/gpioapi.h \
     Device/ledctrl.h \
-    cabinettcp.h
+    cabinettcp.h \
+    sql/sqlmanager.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
