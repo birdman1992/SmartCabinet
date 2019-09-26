@@ -18,10 +18,15 @@ public:
     QString id;//耗材id
     QString packageId;
     QString unit;//计数单位
+    QString size;
     int goodsType;//打包规格
     int num;//耗材数量
     int outNum;//取出数量
+    int col;
+    int row;
+    int price;
     QString Py;
+    QStringList traceIds;
 };
 
 class CabinetInfo//单个柜格的耗材信息
