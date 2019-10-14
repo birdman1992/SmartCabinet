@@ -2,6 +2,7 @@
 #include "ui_casepanel.h"
 #include <qdebug.h>
 #include <QPainter>
+#include <QRegExp>
 
 CasePanel::CasePanel(bool doubleCol, QWidget *parent) :
     QWidget(parent),
@@ -75,19 +76,61 @@ void CasePanel::setText(QStringList text)
 
     QString left;
     QString right;
+    int maxLine = getMaxLine();
+    cur_show = text;
     qDebug()<<"[setText]"<<text<<text.count();
 
-    int i = 0;
-    for(i=0; i<text.count(); i++)
+    if(showDoubleCol)
     {
-        if(!(i%2))
-            left += text.at(i) + "\n";
+        if(cur_show.count() > maxLine)
+            ui->right->show();
         else
-            right += text.at(i) + "\n";
+            ui->right->hide();
+        for(int i=0; i<cur_show.count(); i++)
+        {
+            if(i<maxLine)
+            {
+                QString str = getShowStr(cur_show.at(i));
+                if(str.isEmpty())
+                    continue;
+                left += str;
+                if(i<(maxLine-1)&&(i<cur_show.count()-1))
+                    left += "\n";
+            }
+            else if(i<(2*maxLine))
+            {
+                QString str = getShowStr(cur_show.at(i));
+                if(str.isEmpty())
+                    continue;
+                right += str;
+                if(i<(2*maxLine-1)&&(i<cur_show.count()-1))
+                    right += "\n";
+            }
+            else
+                break;
+        }
+        ui->left->setText(left);
+        ui->right->setText(right);
     }
-
-    ui->left->setText(left);
-    ui->right->setText(right);
+    else
+    {
+        ui->right->hide();
+        for(int i=0; i<cur_show.count(); i++)
+        {
+            if(i<maxLine)
+            {
+                QString str = getShowStr(cur_show.at(i));
+                if(str.isEmpty())
+                    continue;
+                left += str;
+                if((i<maxLine-1) && (i<cur_show.count()-1))
+                    left += "\n";
+            }
+            else
+                break;
+        }
+        ui->left->setText(left);
+    }
 }
 
 void CasePanel::setText(QList<GoodsInfo *> list)
@@ -168,6 +211,8 @@ void CasePanel::updatePanel()
 {
     if(isSpec)
         return;
+    setText(cur_show);
+    return;
 //    qDebug()<<"[updatePanel]";
     QString left;
     QString right;
@@ -250,6 +295,27 @@ QString CasePanel::getShowStr(GoodsInfo *info)
     str += strTail;
 
     return str;
+}
+
+//缩短形如  [物品名]×[数量]形式的字符串
+QString CasePanel::getShowStr(QString goodsStr)
+{
+    QRegExp rex;
+    rex.setPattern("(.*)(×.*)");
+    if(goodsStr.indexOf(rex) == -1)
+        return goodsStr;
+
+    int maxWidth = this->width();
+    if(ui->right->isVisible())
+    {
+        maxWidth = maxWidth/2;
+    }
+    maxWidth = maxWidth - getStringWidth(rex.cap(2)) - 10;
+//    qDebug()<<"[getshow str]"<<showDoubleCol<<ui->left->width()<<ui->right->width()<<this->width()<<getStringWidth(strTail);
+
+    QString ret = geteElidedText(*font, rex.cap(1), maxWidth);
+    ret += rex.cap(2);
+    return ret;
 }
 
 int CasePanel::getMaxLine()

@@ -26,6 +26,7 @@ void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
     posNum = pos;
 //    caseNum = num;
     isMainCabinet = mainCab;
+    ui->tableWidget->clear();
 
     if(!isMainCabinet)
     {
@@ -46,7 +47,7 @@ void Cabinet::CabinetInit(int _width, int seq, int pos, int, bool mainCab)
     }
 }
 
-void Cabinet::CabinetInit(QString cLayout, int seq, int sPos)
+void Cabinet::CabinetInit(QString cLayout, int seq, bool doubleCol, int sPos)
 {
     seqNum = seq;
     caseNum = cLayout.length();
@@ -58,7 +59,6 @@ void Cabinet::CabinetInit(QString cLayout, int seq, int sPos)
     if(!isMainCabinet)
     {
         cabSplit(cLayout, ui->tableWidget);
-        return;
     }
     else
     {
@@ -67,6 +67,14 @@ void Cabinet::CabinetInit(QString cLayout, int seq, int sPos)
         logo->setWordWrap(true);
         logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"WenQuanYi Micro Hei Mono\";");
         ui->tableWidget->setCellWidget(sPos,0,logo);
+    }
+
+    for(int i=0; i<ui->tableWidget->rowCount(); i++)
+    {
+        CasePanel* lab = new CasePanel(doubleCol);
+        ui->tableWidget->setCellWidget(i, 0, lab);
+        setCaseState(i, 0);
+        lab->setText(SqlManager::getCaseText(seqNum, i));
     }
 }
 
@@ -226,8 +234,7 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
         CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
 //        QLabel* lab = (QLabel*)ui->tableWidget->cellWidget(caseIndex,0);
 //        lab->setWordWrap(true);
-        lab->setText(list_case.at(caseIndex)->list_goods);//->caseShowStr(lab->caseFont(), caseWidth/2));
-//        ui->tableWidget->item(caseIndex,0)->setText(list_case.at(caseIndex)->caseShowStr());
+        lab->setText(list_case.at(caseIndex)->list_goods);
     }
     else
     {
@@ -251,8 +258,11 @@ void Cabinet::addCase(GoodsInfo *info, int caseIndex, bool doubleCol)//doubleCol
 
 void Cabinet::updateCase(int caseIndex)
 {
+    if(isMainCabinet && (caseIndex == screenPos))
+        return;
+
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
-    lab->setText(list_case.at(caseIndex)->list_goods);
+    lab->setText(SqlManager::getCaseText(seqNum, caseIndex));
 }
 
 void Cabinet::updateCabinet()
@@ -284,6 +294,14 @@ void Cabinet::setCtrlWord(int caseIndex, QByteArray seq, QByteArray index)
         list_case[caseIndex]->ctrlIndex = index[caseIndex];
 
     qDebug()<<list_case[caseIndex]->ctrlSeq<<list_case[caseIndex]->ctrlIndex;
+}
+
+void Cabinet::setCtrlWord(QByteArray seq, QByteArray index)
+{
+    for(int i=0; i<list_case.count(); i++)
+    {
+        setCtrlWord(i, seq, index);
+    }
 }
 
 int Cabinet::getMaxshowNum(int caseIndex)
@@ -391,8 +409,9 @@ void Cabinet::updateCabinetCase(CaseAddress addr)
         return;
 
     qDebug()<<"[updateCabinetCase]"<<addr.cabinetSeqNum<<addr.caseIndex;
-    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
-    lab->setText(list_case.at(addr.caseIndex)->list_goods);
+    updateCase(addr.caseIndex);
+//    CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(addr.caseIndex,0);
+//    lab->setText(list_case.at(addr.caseIndex)->list_goods);
 }
 
 int Cabinet::cabinetPosNum()
@@ -552,9 +571,9 @@ void Cabinet::caseDraw(int _type)
 
 void Cabinet::setCaseState(int index, int numState)
 {
-    if(index > list_case.count())
+    if(index >= ui->tableWidget->rowCount())
         return;
-//    qDebug()<<"setCaseState"<<index<<numState;
+    qDebug()<<"setCaseState"<<index<<numState;
     state = numState;
     checkFlag[index] = numState;
 

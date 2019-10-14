@@ -32,9 +32,11 @@ private:
     bool showDoubleCol;
     bool isSpec;//特殊柜
     QFont* font;
+    QStringList cur_show;
     QList<GoodsInfo *> list_show;
     QString geteElidedText(QFont _font, QString str, int MaxWidth);
     QString getShowStr(GoodsInfo* info);
+    QString getShowStr(QString goodsStr);
     int getMaxLine();
     int getStringWidth(QString str);
     void updatePanel();

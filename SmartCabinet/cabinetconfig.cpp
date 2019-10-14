@@ -480,7 +480,7 @@ void CabinetConfig::readCabinetConfig()
                     curLayout = "331111";
                     Cabinet* cab = new Cabinet();
                     int pos = settings.value(QString("Cab0PosNum")).toInt();
-                    cab->CabinetInit(curLayout,i,1);
+                    cab->CabinetInit(curLayout,i,(cabNum <= 5),1);
                     cab->setCabPos(pos);
                     cab->setPosType(0);
                     list_cabinet<<cab;
@@ -491,7 +491,7 @@ void CabinetConfig::readCabinetConfig()
                     curLayout = "31111111";
                     Cabinet* cab = new Cabinet();
                     int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-                    cab->CabinetInit(curLayout,i);
+                    cab->CabinetInit(curLayout,i,(cabNum <= 5));
                     cab->setCabPos(pos);
                     list_cabinet<<cab;
                     cab->setPosType(0);
@@ -521,7 +521,7 @@ void CabinetConfig::readCabinetConfig()
                 {
                     Cabinet* cab = new Cabinet();
                     int pos = settings.value(QString("Cab%1PosNum").arg(i)).toInt();
-                    cab->CabinetInit(layoutList.at(i),i);
+                    cab->CabinetInit(layoutList.at(i),i,(cabNum <= 5));
                     cab->setCabPos(pos);
                     cab->setPosType(0);
                     list_cabinet<<cab;
@@ -551,72 +551,49 @@ void CabinetConfig::readCabinetConfig()
         for(i=0; i<cabNum; i++)
         {
             Cabinet* cab = new Cabinet();
-            cab->CabinetInit(layoutList.at(i),i);
+            cab->CabinetInit(layoutList.at(i),i, (cabNum <= 5));
             cab->setCabPos(i);
             cab->setPosType(1);
+
+            QByteArray ctrlSeq = lockManager->getLockCtrlSeq(i);
+            QByteArray ctrlIndex = lockManager->getLockCtrlIndex(i);
+            cab->setCtrlWord(ctrlSeq, ctrlIndex);
+
             list_cabinet<<cab;
         }
         list_cabinet[sPos.x()]->setScreenPos(sPos.y());
     }
-//    settings.beginGroup("Cabinet0");
-//    QByteArray ctrlSeq = settings.value("ctrlSeq", QByteArray()).toByteArray();
-//    QByteArray ctrlIndex = settings.value("ctrlIndex", QByteArray()).toByteArray();
 
-//    for(j=0; j<CAB_CASE_1_NUM; j++)
+//    for(i=0; i<cabNum; i++)
 //    {
-//        int arr_size = settings.beginReadArray(QString("case%1").arg(j));
-
-//        for(k=0; k<arr_size; k++)
+//        settings.beginGroup(QString("Cabinet%1").arg(i));
+//        QByteArray ctrlSeq = lockManager->getLockCtrlSeq(i);
+//        QByteArray ctrlIndex = lockManager->getLockCtrlIndex(i);
+//        for(j=0; j<list_cabinet.at(i)->getCaseNum(); j++)
 //        {
-//            settings.setArrayIndex(k);
-//            GoodsInfo* info = new GoodsInfo;
-//            info->abbName = settings.value("abbName", QString()).toString();
-//            info->name = settings.value("name").toString();
-//            info->num = settings.value("num").toInt();
-//            info->outNum = 0;
-//            info->id = settings.value("id").toString();
-//            info->unit = settings.value("unit").toString();
-//            info->packageId = settings.value("packageId").toString();
-//            info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-//            info->goodsType = getGoodsType(info->packageId);
-//            qDebug()<<"[getGoodsType]"<<info->packageId<<info->goodsType;
-//            list_cabinet[0]->addCase(info,j,(cabNum <= 3));//qDebug()<<"[read conf]"<<j;
-//            list_cabinet[0]->setCtrlWord(j, ctrlSeq, ctrlIndex);
+//            int arr_size = settings.beginReadArray(QString("case%1").arg(j));
+
+//            for(k=0; k<arr_size; k++)
+//            {
+//                settings.setArrayIndex(k);
+//                GoodsInfo* info = new GoodsInfo;
+//                info->abbName = settings.value("abbName", QString()).toString();
+//                info->name = settings.value("name", QString()).toString();
+//                info->outNum = 0;
+//                info->num = settings.value("num", 0).toInt();
+//                info->id = settings.value("id", QString()).toString();
+//                info->unit = settings.value("unit", QString()).toString();
+//                info->packageId = settings.value("packageId",QString()).toString();
+//                info->goodsType = getGoodsType(info->packageId);
+//                info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
+//                list_cabinet[i]->addCase(info,j,(cabNum <= 5));
+//            }
+//            list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
+//            settings.endArray();
 //        }
-//        settings.endArray();
+//        settings.endGroup();
 //    }
-//    settings.endGroup();
-
-    for(i=0; i<cabNum; i++)
-    {
-        settings.beginGroup(QString("Cabinet%1").arg(i));
-        QByteArray ctrlSeq = lockManager->getLockCtrlSeq(i);
-        QByteArray ctrlIndex = lockManager->getLockCtrlIndex(i);
-        for(j=0; j<list_cabinet.at(i)->getCaseNum(); j++)
-        {
-            int arr_size = settings.beginReadArray(QString("case%1").arg(j));
-
-            for(k=0; k<arr_size; k++)
-            {
-                settings.setArrayIndex(k);
-                GoodsInfo* info = new GoodsInfo;
-                info->abbName = settings.value("abbName", QString()).toString();
-                info->name = settings.value("name", QString()).toString();
-                info->outNum = 0;
-                info->num = settings.value("num", 0).toInt();
-                info->id = settings.value("id", QString()).toString();
-                info->unit = settings.value("unit", QString()).toString();
-                info->packageId = settings.value("packageId",QString()).toString();
-                info->goodsType = getGoodsType(info->packageId);
-                info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-                list_cabinet[i]->addCase(info,j,(cabNum <= 5));
-            }
-            list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
-            settings.endArray();
-        }
-        settings.endGroup();
-    }
-    creatCabinetJson();
+//    creatCabinetJson();
 
     specPos = getSpecialCase();
     setSpecialCase(specPos, false);

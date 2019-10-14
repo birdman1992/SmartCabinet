@@ -91,7 +91,8 @@ private:
     void accessLoop();
     QString getAbbName(QString fullName);
     void watchdogStart();
-    QNetworkReply* post(QString url, QByteArray postData);
+    QNetworkReply* post(QString url, QByteArray postData, qint64 timeStamp=0);
+    qint64 getApiMark();
 
 signals:
     void loginRst(UserInfo*);

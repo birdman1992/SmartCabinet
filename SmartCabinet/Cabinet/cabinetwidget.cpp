@@ -36,6 +36,9 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_refund = new CabinetRefund();
     win_net_set = new NetworkSet();
     win_check_warnning = new CheckWarning();
+    sqlManager = SqlManager::manager();
+    sqlManager->selectAllGoods();
+
     connect(win_check_warnning, SIGNAL(pushCheck()), this, SLOT(checkPush()));
 #ifdef TCP_API
     goodsManager = GoodsManager::manager();

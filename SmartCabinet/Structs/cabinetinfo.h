@@ -3,6 +3,7 @@
 #include <QString>
 #include <QList>
 #include <QFont>
+#include <QStringList>
 
 class GoodsInfo
 {

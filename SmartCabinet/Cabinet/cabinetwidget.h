@@ -23,6 +23,7 @@
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
 #include "manager/goodsmanager.h"
+#include "sql/sqlmanager.h"
 
 bool posSort(Cabinet* A, Cabinet* B);
 
@@ -139,6 +140,7 @@ protected:
 private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;
+    SqlManager* sqlManager;
     CheckWarning* win_check_warnning;
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件

@@ -1,6 +1,5 @@
 #include "cabinetinfo.h"
 #include <QDebug>
-#include <QStringList>
 #include <QFontMetrics>
 
 

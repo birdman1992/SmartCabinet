@@ -10,6 +10,7 @@
 #include "Structs/cabinetinfo.h"
 #include "Structs/caseaddress.h"
 #include "Widgets/casepanel.h"
+#include "sql/sqlmanager.h"
 
 namespace Ui {
 class Cabinet;
@@ -24,7 +25,7 @@ public:
     ~Cabinet();
 
     void CabinetInit(int _width, int seq, int pos, int num, bool mainCab);//顺序编号,位置编号,柜格数,是否为主柜
-    void CabinetInit(QString cLayout, int seq, int sPos=-1);
+    void CabinetInit(QString cLayout, int seq, bool doubleCol, int sPos=-1);
     void setCabPos(int pos);
     void setSpecCase(int index, bool spec);
     int getUnCheckNum();
@@ -41,6 +42,7 @@ public:
     void updateCase(int caseIndex);
     void updateCabinet();
     void setCtrlWord(int caseIndex, QByteArray seq, QByteArray index);
+    void setCtrlWord(QByteArray seq, QByteArray index);
     int getMaxshowNum(int caseIndex);
     bool haveEmptyPos(int caseIndex);
 
