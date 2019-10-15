@@ -96,11 +96,22 @@ QPoint SqlManager::getGoodsPos(QString packageId)
 }
 
 //ApiLog:接口日志表 [time_stamp|url|data]
-void SqlManager::newApiLog(QString url, QByteArray data, quint64 time_stamp)
+void SqlManager::newApiLog(QString url, QByteArray data, quint64 time_stamp, bool need_resend)
 {
-    QString cmd = QString("INSERT INTO ApiLog(time_stamp,url,data) VALUES(%1,'%2','%3');").arg(time_stamp).arg(url).arg(data);
+    QString cmd;
+    if(!need_resend)
+        cmd = QString("INSERT INTO ApiLog(time_stamp,url,data,need_resend) VALUES(%1,'%2','%3',%4);").arg(time_stamp).arg(url).arg(QString(data)).arg(0);
+    else
+        cmd = QString("INSERT INTO ApiLog(time_stamp,url,data,need_resend) VALUES(%1,'%2','%3');").arg(time_stamp).arg(url).arg(QString(data));
     QSqlQuery query(db_cabinet);
     queryExec(query, cmd, "newApiLog");
+}
+
+void SqlManager::apiComplete(quint64 timeStamp)
+{
+    QString cmd = QString("UPDATE ApiLog SET state='complete' where time_stamp=%1").arg(timeStamp);
+    QSqlQuery query(db_cabinet);
+    queryExec(query, cmd, "apiComplete");
 }
 
 bool SqlManager::waitForSync()
@@ -352,7 +363,8 @@ void SqlManager::createTable()
                               sup_name CHAR(50) DEFAULT('NULL'),\
                               state_local INT(3) DEFAULT(1),\
                               state_remote INT(3) DEFAULT(1),\
-                              store_list CHAR(20) DEFAULT('NULL')\
+                              store_list CHAR(20) DEFAULT('NULL'),\
+                              check_time_stamp INT(15) DEFAULT(0)\
                               );");
 //        qDebug()<<cmd;
         if(query.exec(cmd))
@@ -391,14 +403,16 @@ void SqlManager::createTable()
         }
     }
 
-    //ApiLog:接口日志表 [time_stamp|url|data]
+    //ApiLog:接口日志表 [time_stamp|url|data|state|need_resend]
     if(tables.indexOf("ApiLog") == -1)
     {
         QSqlQuery query(db_cabinet);
         QString cmd = QString("create table ApiLog(\
                               time_stamp INT(15) PRIMARY KEY NOT NULL,\
                               url CHAR(150) NOT NULL,\
-                              data CHAR(2048) DEFAULT('NULL')\
+                              data CHAR(2048) DEFAULT('NULL'),\
+                              state CHAR(10) DEFAULT('wait'),\
+                              need_resend INT(1) DEFAULT(1)\
                               );");
         if(query.exec(cmd))
         {

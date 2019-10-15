@@ -21,7 +21,8 @@ public:
     QSqlQuery selectAllGoods();
     static QStringList getCaseText(int col, int row);
     static QPoint getGoodsPos(QString packageId);
-    static void newApiLog(QString url, QByteArray data, quint64 time_stamp);
+    static void newApiLog(QString url, QByteArray data, quint64 time_stamp, bool need_resend=true);
+    static void apiComplete(quint64 timeStamp);
     bool waitForSync();
 
     enum RepState{
@@ -55,7 +56,7 @@ private:
 
     void initDatabase();
     void createTable();
-    bool queryExec(QSqlQuery q, QString cmd, QString msg=QString());
+    static bool queryExec(QSqlQuery q, QString cmd, QString msg=QString());
 };
 
 #endif // SQLMANAGER_H

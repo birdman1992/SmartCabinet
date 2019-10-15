@@ -91,7 +91,7 @@ private:
     void accessLoop();
     QString getAbbName(QString fullName);
     void watchdogStart();
-    QNetworkReply* post(QString url, QByteArray postData, qint64 timeStamp=0);
+    QNetworkReply* post(QString url, QByteArray postData, qint64 timeStamp=0, bool need_resend=true);
     qint64 getApiMark();
 
 signals:
@@ -187,6 +187,7 @@ private slots:
     void netTimeout();
     int watchdogTimeout();
     void tarFinished(int code);
+    void apiComplete(cJSON* json);
 };
 
 #endif // CABINETSERVER_H
