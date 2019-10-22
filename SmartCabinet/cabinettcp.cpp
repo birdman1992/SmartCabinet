@@ -39,7 +39,7 @@ bool CabinetTcp::packageIsComplete(QByteArray qba)
 
 void CabinetTcp::connectChanged(QAbstractSocket::SocketState state)
 {
-    qDebug()<<"[connectChanged]:"<<state;
+//    qDebug()<<"[connectChanged]:"<<state;
     if(state == QAbstractSocket::ConnectedState)
     {
         beatTimer->start(10000);//10s
@@ -106,7 +106,7 @@ void CabinetTcp::heartBeat()
                                }\n").arg(timeStamp()).arg(config->getCabinetId()).toLocal8Bit();
     socket->write(qba);
     beatWait = true;
-    qDebug()<<"[heartBeat]";
+//    qDebug()<<"[heartBeat]";
 }
 
 void CabinetTcp::parHeartBeat(cJSON* json)

@@ -9,9 +9,11 @@
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
+
+#define DEV_TEMP "/dev/ttymxc1"     //温度
 #define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
 #define DEV_RFID_CTRL "/dev/ttymxc4"    //rfid网关串口
-//#define DEV_LOCK_CTRL "/dev/ttymxc3"   //开发板右侧串口
+#define TTY_CARD_READER "/dev/ttymxc3"   //开发板右侧串口
 #define DEV_CARD_READER "/dev/hidraw0"
 #define DEV_CODE_SCAN "/dev/hidraw1"
 
@@ -140,7 +142,7 @@ void ControlDevice::ctrlCmdInit()
 
 void ControlDevice::comCardReaderInit(int baudRate, int dataBits, int Parity, int stopBits)
 {
-    com_card_reader = new QextSerialPort("/dev/ttymxc1");
+    com_card_reader = new QextSerialPort(TTY_CARD_READER);
     //设置波特率
     com_card_reader->setBaudRate((BaudRateType)baudRate);
 //    qDebug() << (BaudRateType)baudRate;
@@ -183,7 +185,9 @@ void ControlDevice::comCardReaderInit(int baudRate, int dataBits, int Parity, in
 //    com_card_reader->setTimeout(5000);
 
     if(com_card_reader->open(QIODevice::ReadWrite)){
-        qDebug() <<"/dev/ttymxc1"<<"open success!";
+        qDebug() <<TTY_CARD_READER<<"open success!";
+        cardReaderState =  true;
+        qDebug()<<"[CARD READER] open success";
     }else{
         qDebug() <<"/dev/ttymxc1"<< "未能打开串口"<<":该串口设备不存在或已被占用" <<  endl ;
         return;

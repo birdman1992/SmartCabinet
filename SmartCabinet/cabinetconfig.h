@@ -122,6 +122,7 @@ public:
 private:
     CabinetConfig();
     static CabinetConfig* c;
+    bool netState;
     bool cardReaderIsOk;
     bool codeScanIsOk;
     bool firstUse;//第一次使用

@@ -100,7 +100,7 @@ int get_path(void)
 	USBINFO* usb_info = (USBINFO *)malloc(sizeof(USBINFO));
 	struct dirent *pFile = NULL;
 
-	if ((pDir=opendir("/dev/")) == NULL)
+	if ((pDir=opendir("/dev/input")) == NULL)
 	{
 		printf("Update: Open update directory error!");
 		return 0;
@@ -113,7 +113,7 @@ int get_path(void)
 			{
 				if(strstr(pFile->d_name,"event")!=NULL)
 				{
-					sprintf(path,"/dev/%s",pFile->d_name);
+					sprintf(path,"/dev/input/%s",pFile->d_name);
 					printf("path:%s\n", path);
 					get_dev_info(path,usb_info);
 					if(usb_info->vid==3944 && usb_info->pid==22630)	// touch
