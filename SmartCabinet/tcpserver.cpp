@@ -731,6 +731,8 @@ void tcpServer::recvListCheck()
     if(statusCode == 200)
     {
         cJSON* json = cJSON_Parse(qba.data());
+        if(json == NULL)
+            return;
         cJSON* data = cJSON_GetObjectItem(json, "data");
         int itemNum = cJSON_GetArraySize(data);
         GoodsList* list = new GoodsList;
@@ -741,6 +743,7 @@ void tcpServer::recvListCheck()
             info = parGoods(item);
             list->addGoods(info);
         }
+        list->legalList = true;
         emit listRst(list);
         cJSON_Delete(json);
     }
@@ -830,6 +833,8 @@ void tcpServer::recvGoodsStoreList()
     reply_goods_access = NULL;
 
     cJSON* json = cJSON_Parse(qba.data());
+    if(json == NULL)
+        return;
 
     if(statusCode == 200)
     {

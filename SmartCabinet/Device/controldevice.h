@@ -16,7 +16,7 @@
 #ifdef PC
     #define SIMULATE_ON  //打开仿真
 #else
-//    #define LOG_ON //打开日志
+    #define LOG_ON //打开日志
 #endif
 //#define TCP_API  //使用新的api
 
@@ -38,6 +38,7 @@ private:
     QextSerialPort* com_lock_ctrl;//柜门锁控制器
     QextSerialPort* com_rfid_gateway;//rfid网关
     QextSerialPort* com_card_reader;//串口读卡器
+    QextSerialPort* com_temp_hum;//串口温湿度传感器
     DeviceSimulate* dev_simulate;//设备仿真器
     CabinetConfig* config;//全局配置
     QList<QByteArray> lockCtrlCmd;//控制协议
@@ -62,6 +63,8 @@ private:
     void getDevState();
     void comRfidInit(int baudRate, int dataBits, int Parity, int stopBits);
     void comCardReaderInit(int baudRate, int dataBits, int Parity, int stopBits);
+    void comTempInit(int baudRate, int dataBits, int Parity, int stopBits);
+    QByteArray tty2UsbData(QByteArray ttyData);
 signals:
     void cardReaderTimeout();//读卡超时
     void lockCtrlData(QByteArray);//暂无
@@ -84,6 +87,7 @@ private slots:
     void readRfidGatewayData();
     void timeout();
     void readSerialCardReader();
+    void readTempHum();
 };
 
 #endif // CONTROLDEVICE_H

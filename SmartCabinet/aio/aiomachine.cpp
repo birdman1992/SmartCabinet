@@ -26,6 +26,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
 
     loginState = false;
     optUser = NULL;
+    sysTime = NULL;
     config = CabinetConfig::config();
     setAioInfo(config->getDepartName(), config->getCabinetId());
     if(config->getCabinetMode() == "aio")
@@ -42,6 +43,17 @@ AIOMachine::~AIOMachine()
 {
     win_access->deleteLater();
     delete ui;
+}
+
+void AIOMachine::showEvent(QShowEvent *)
+{
+    setAioInfo(config->getDepartName(), config->getCabinetId());
+    if((config->getCabinetMode() == "aio") && (sysTime == NULL))
+    {
+        sysTime = new QTimer(this);
+        connect(sysTime, SIGNAL(timeout()), this, SLOT(updateTime()));
+        sysTime->start(1000);
+    }
 }
 
 void AIOMachine::magicCmd(QString cmd)

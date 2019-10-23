@@ -33,6 +33,7 @@ private:
     CabinetConfig* config;
     QTimer* beatTimer;
     bool beatWait;//等待心跳返回，不发送下一个心跳包
+    bool onLine;
     QByteArray tcpCache;
     float temp;
     float hum;

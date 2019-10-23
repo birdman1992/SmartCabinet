@@ -105,6 +105,7 @@ void CabinetSet::cloneResult(bool isSuccess, QString msg)
         return;
     }
     ui->cloneMsg->setText(msg);
+    resetRegState();
 }
 
 void CabinetSet::regResult(bool isSuccess)
@@ -120,6 +121,7 @@ void CabinetSet::regResult(bool isSuccess)
     else
     {
         ui->regMsg->setText("ID注册失败");
+        resetRegState();
     }
 }
 
@@ -392,6 +394,8 @@ void CabinetSet::on_savePos_clicked()
     if(!(initStep & 1))
     {
         ui->posMsg->setText("请先配置服务器地址");
+        if(ui->aio_mode->isChecked())
+            ui->aio_mode->setChecked(false);
         return;
     }
     if(list_layout.isEmpty() || screenPos.x()<0 || screenPos.y()<0)

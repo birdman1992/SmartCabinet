@@ -6,6 +6,7 @@ CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
 {
     temp = 0;
     hum = 0;
+    onLine = false;
     beatWait = false;
     beatTimer = new QTimer(this);
     connect(beatTimer, SIGNAL(timeout()), this, SLOT(heartBeat()));
@@ -51,17 +52,25 @@ bool CabinetTcp::packageIsComplete(QByteArray qba)
 
 void CabinetTcp::connectChanged(QAbstractSocket::SocketState state)
 {
-    qDebug()<<"[connectChanged]:"<<state;
     if(state == QAbstractSocket::ConnectedState)
     {
+        onLine = true;
         beatTimer->start(10000);//10s
         heartBeat();
+        qDebug()<<"[connectChanged]:"<<state;
     }
     else if(state == QAbstractSocket::UnconnectedState)
     {
         QTimer::singleShot(2000, this, SLOT(reconnect()));
         beatTimer->stop();
-        emit serverDelay(0);
+
+        if(onLine)
+        {
+            qDebug()<<"[connectChanged]:"<<state;
+            emit serverDelay(0);
+        }
+
+        onLine = false;
     }
 }
 
@@ -120,7 +129,9 @@ void CabinetTcp::heartBeat()
                                }\n").arg(timeStamp()).arg(config->getCabinetId()).arg(temp).arg(hum).toLocal8Bit();
     socket->write(qba);
     beatWait = true;
+
 //    qDebug()<<"[heartBeat]"<<qba;
+
 }
 
 void CabinetTcp::parHeartBeat(cJSON* json)

@@ -125,6 +125,7 @@ private:
     void sysUnlock();
 
     void magicCmd(QString cmd);
+    void showEvent(QShowEvent *);
 private slots:
     void loginTimeout();
     void updateTime();
