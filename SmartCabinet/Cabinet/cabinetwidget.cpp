@@ -1322,11 +1322,11 @@ void CabinetWidget::updateTime()
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
     float cupTemp = SysTool::getCpuTemp();
 //    qDebug()<<"[cpu temp]:"<<cupTemp<<"℃";
-    if(cupTemp > 38.0)
+    if(cupTemp > 41.0)
     {
         emit cpuFanOn(true);
     }
-    else
+    else if(cupTemp < 39.0)
     {
         emit cpuFanOn(false);
     }

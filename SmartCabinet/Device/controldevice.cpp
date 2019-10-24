@@ -47,7 +47,7 @@ void ControlDevice::deviceInit()
 {
     qDebug("deviceInit");
     comTempInit(9600, 8, 0, 1);
-
+    connect(com_temp_hum, SIGNAL(readyRead()), this, SLOT(readTempHum()));
 
     comCardReaderInit(9600, 8, 0, 1);
     connect(com_card_reader, SIGNAL(readyRead()), this, SLOT(readSerialCardReader()));
@@ -181,11 +181,11 @@ void ControlDevice::comTempInit(int baudRate, int dataBits, int Parity, int stop
 //    com_temp_hum->setTimeout(5000);
 
     if(com_temp_hum->open(QIODevice::ReadWrite)){
-        qDebug() <<TTY_CARD_READER<<"open success!";
+        qDebug() <<DEV_TEMP<<"open success!";
         cardReaderState =  true;
-        qDebug()<<"[CARD READER] open success";
+        qDebug()<<"[DEV_TEMP] open success";
     }else{
-        qDebug() <<"/dev/ttymxc1"<< "未能打开串口"<<":该串口设备不存在或已被占用" <<  endl ;
+        qDebug() <<DEV_TEMP<< "未能打开串口"<<":该串口设备不存在或已被占用" <<  endl ;
         return;
     }
 
@@ -238,9 +238,9 @@ void ControlDevice::comCardReaderInit(int baudRate, int dataBits, int Parity, in
     if(com_card_reader->open(QIODevice::ReadWrite)){
         qDebug() <<TTY_CARD_READER<<"open success!";
         cardReaderState =  true;
-        qDebug()<<"[CARD READER] open success";
+        qDebug()<<"[TTY_CARD_READER] open success";
     }else{
-        qDebug() <<"/dev/ttymxc1"<< "未能打开串口"<<":该串口设备不存在或已被占用" <<  endl ;
+        qDebug() <<TTY_CARD_READER<< "未能打开串口"<<":该串口设备不存在或已被占用" <<  endl ;
         return;
     }
 
@@ -488,11 +488,9 @@ void ControlDevice::readCardReaderData(QByteArray qba)
 
 void ControlDevice::readTempHum()
 {
-    QByteArray qba = com_temp_hum->readAll().toHex();
-    QString upStr = QString(qba);
-    qba = upStr.toUpper().toLocal8Bit();
-    qDebug()<<"[readCardReaderData]"<<qba;
-    emit cardReaderData(qba);
+    QByteArray qba = com_temp_hum->readAll();
+//    qDebug()<<"[readTempHum]"<<qba.toHex();
+    emit tempData(qba);
 }
 
 QByteArray ControlDevice::tty2UsbData(QByteArray ttyData)

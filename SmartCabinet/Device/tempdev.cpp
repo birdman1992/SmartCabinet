@@ -41,6 +41,7 @@ void TempDev::recvTempData(QByteArray tempData)
     if(humLabel != NULL)
         humLabel->setText(humStr);
 
+//    qDebug()<<tempStr<<humStr;
     emit updateTempString(tempStr);
     emit updateHumString(humStr);
     emit updateTemp((float)tempInteger + 0.1 * tempDecimals);
