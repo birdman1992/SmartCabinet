@@ -10,7 +10,7 @@
 #include "Structs/goodslist.h"
 #include "Structs/cabinetinfo.h"
 
-#define DB_CABINET "Cabinet"
+#define DB_CABINET "/home/config/Cabinet.sql"
 
 class SqlManager : public QObject
 {

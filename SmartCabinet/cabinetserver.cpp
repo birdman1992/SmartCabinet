@@ -945,7 +945,7 @@ void CabinetServer::recvUserLogin()
         }
 
         cJSON* json_info = cJSON_GetArrayItem(json_data,0);
-        info->id = cJSON_GetObjectItem(json_info,"id")->valueint;
+//        info->id = cJSON_GetObjectItem(json_info,"id")->valueint;
         info->cardId = QString(cJSON_GetObjectItem(json_info,"cardId")->valuestring);
         info->departId = QString(cJSON_GetObjectItem(json_info,"departId")->valuestring);
         info->identityId = QString(cJSON_GetObjectItem(json_info,"identityId")->valuestring);

@@ -7,7 +7,7 @@ class UserInfo
 public:
     UserInfo();
     QString name;
-    int id;
+//    int id;
     QString cardId;
     QString departId;
     int power;//0 超级管理员, 1 仓库员工, 2 医院管理, 3 医院员工
