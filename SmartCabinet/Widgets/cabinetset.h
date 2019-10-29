@@ -41,31 +41,19 @@ private slots:
     void on_lock_test_clicked();
     void on_lock_group_clicked(int id);
     void on_pushButton_clicked();
-
     void on_netUpdate_clicked();
-
     void on_netSet_clicked();
-
     void on_devState_toggled(bool checked);
-
     void on_cloneStart_clicked();
-
     void on_regId_clicked();
-
     void on_savePos_clicked();
-
     void on_finish_clicked();
-
     void on_cabType_currentIndexChanged(int index);
-
     void on_tabExp_clicked(const QModelIndex &index);
-
     void on_cabType_2_activated(int index);
-
     void on_cloneId_textChanged(const QString &arg1);
-
     void resetRegState();
-
+    void on_aio_mode_toggled(bool checked);
     void on_apiProName_activated(const QString &arg1);
 
 signals:
@@ -100,6 +88,7 @@ private:
     void cabSplit(QString scale, QTableWidget* table);
     int getBaseCount(QString scale);
     void warningSelScreen(bool waringOn);
+    void layoutInit();
 };
 
 #endif // CABINETSET_H

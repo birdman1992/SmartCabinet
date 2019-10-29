@@ -20,6 +20,8 @@ public:
     explicit CabinetTcp(QObject *parent = 0);
 
 public slots:
+    void updateTemp(float);
+    void updateHum(float);
 
 signals:
     void serverDelay(int ms);//服务延迟,0为超时
@@ -31,7 +33,10 @@ private:
     CabinetConfig* config;
     QTimer* beatTimer;
     bool beatWait;//等待心跳返回，不发送下一个心跳包
+    bool onLine;
     QByteArray tcpCache;
+    float temp;
+    float hum;
 
 private:
     qint64 timeStamp();

@@ -105,6 +105,7 @@ void CabinetSet::cloneResult(bool isSuccess, QString msg)
         return;
     }
     ui->cloneMsg->setText(msg);
+    resetRegState();
 }
 
 void CabinetSet::regResult(bool isSuccess)
@@ -120,6 +121,7 @@ void CabinetSet::regResult(bool isSuccess)
     else
     {
         ui->regMsg->setText("ID注册失败");
+        resetRegState();
     }
 }
 
@@ -392,6 +394,8 @@ void CabinetSet::on_savePos_clicked()
     if(!(initStep & 1))
     {
         ui->posMsg->setText("请先配置服务器地址");
+        if(ui->aio_mode->isChecked())
+            ui->aio_mode->setChecked(false);
         return;
     }
     if(list_layout.isEmpty() || screenPos.x()<0 || screenPos.y()<0)
@@ -414,7 +418,10 @@ void CabinetSet::on_savePos_clicked()
 void CabinetSet::on_finish_clicked()
 {
     emit cabinetCreated();
-    emit winSwitch(INDEX_CAB_SHOW);
+    if(config->getCabinetMode() == "cabinet")
+        emit winSwitch(INDEX_CAB_SHOW);
+    else
+        emit winSwitch(INDEX_AIO);
     config->cabVoice.voicePlay(VOICE_WELCOME);
     sTest->testFinish();
     sTest->deleteLater();
@@ -511,6 +518,66 @@ void CabinetSet::on_cloneId_textChanged(const QString &arg1)
 void CabinetSet::resetRegState()
 {
     ui->regId->setEnabled(true);
+}
+
+void CabinetSet::layoutInit()
+{
+    ui->add_right->setEnabled(true);
+    ui->clear->setEnabled(true);
+    ui->savePos->setEnabled(true);
+    if(!list_cabinet.isEmpty())
+    {
+        foreach(QTableWidget* w, list_cabinet)
+        {
+            ui->cabs->layout()->removeWidget(w);
+            w->deleteLater();
+        }
+        list_cabinet.clear();
+        list_layout.clear();
+    }
+    warningSelScreen(false);
+    screenPos = QPoint(-1,-1);
+    needSelScreen = true;
+}
+
+void CabinetSet::on_aio_mode_toggled(bool checked)
+{
+    if(checked)
+    {
+        ui->cabType_2->hide();
+        ui->label_22->hide();
+        config->setCabinetMode("aio");
+        layoutInit();
+        screenPos.setX(0);
+        screenPos.setY(1);
+
+        QTableWidget* tab = new QTableWidget();
+        tab->setSelectionMode(QAbstractItemView::NoSelection);
+        tab->resize(10,ui->cabs->geometry().height()-12);
+
+        ui->cabs->layout()->addWidget(tab);
+        cabSplit("1111", tab);
+        list_layout<<QString("1111");
+        list_cabinet<<tab;
+
+        needSelScreen = false;
+        QTableWidgetItem* item = new QTableWidgetItem();
+        item->setBackgroundColor(QColor(62, 155, 255));
+        tab->setItem(screenPos.y(),0,item);
+        warningSelScreen(false);
+        ui->add_right->setEnabled(false);
+        ui->clear->setEnabled(false);
+        ui->savePos->setEnabled(false);
+        on_savePos_clicked();
+    }
+    else
+    {
+        layoutInit();
+        ui->cabType_2->show();
+        ui->label_22->show();
+        config->setCabinetMode("cabinet");
+        initStep &= ~(1<<1);
+    }
 }
 
 void CabinetSet::on_apiProName_activated(const QString &arg1)

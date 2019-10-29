@@ -104,10 +104,15 @@ SOURCES += main.cpp\
     funcs/operationrecorder.cpp \
     Widgets/stroebyitem.cpp \
     manager/storelistmanager.cpp \
+    aio/aiomachine.cpp \
+    aio/aiobutton.cpp \
+    aio/aiooverview.cpp \
     gpio/gpioapi.cpp \
     Device/ledctrl.cpp \
     cabinettcp.cpp \
-    sql/sqlmanager.cpp
+    sql/sqlmanager.cpp \
+    Device/tempdev.cpp \
+    funcs/systool.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -189,10 +194,15 @@ HEADERS  += mainwidget.h \
     funcs/operationrecorder.h \
     Widgets/stroebyitem.h \
     manager/storelistmanager.h \
+    aio/aiomachine.h \
+    aio/aiobutton.h \
+    aio/aiooverview.h \
     gpio/gpioapi.h \
     Device/ledctrl.h \
     cabinettcp.h \
-    sql/sqlmanager.h
+    sql/sqlmanager.h \
+    Device/tempdev.h \
+    funcs/systool.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -227,7 +237,8 @@ FORMS    += mainwidget.ui \
     Widgets/dayreport.ui \
     Widgets/keyboad.ui \
     Widgets/goodsapply.ui \
-    Widgets/stroebyitem.ui
+    Widgets/stroebyitem.ui \
+    aio/aiomachine.ui
 
 RESOURCES += \
     image.qrc

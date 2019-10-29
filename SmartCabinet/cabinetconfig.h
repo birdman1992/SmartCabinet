@@ -41,6 +41,9 @@ public:
     void setSecondUser(QString userId);
     void setStoreMode(bool needScanAll);
     bool getStoreMode();//return need scanALL
+    //depart name
+    void setDepartName(QString dptName);
+    QString getDepartName();
     QString getApiProName();//获取接口项目名称,默认 spd-web
     void setApiProName(QString apiName);//设置接口项目名称
 
@@ -52,6 +55,8 @@ public:
     QString getScreenConfig();
     QList<QByteArray> getFetchList();
     void setCabinetId(QString id);
+    QString getCabinetMode();
+    void setCabinetMode(QString cMode);
     void setScreenPos(int col, int row);
     void setCabLayout(QString layout);
     void showMsg(QString msg, bool iswarnning);
@@ -114,6 +119,7 @@ public:
     CabState state;
     VoicePlayer cabVoice;
     QString regId;
+    bool netState;
 //    QList<>
 
     QString scanDataTrans(QString code);
@@ -135,6 +141,7 @@ private:
     int cabinetType;
     QString curVersion;
     QString cabinetId;
+    QString cabinetMode;
     QString serverAddr;
     QString serverIp;
     QString optName;//操作者卡号

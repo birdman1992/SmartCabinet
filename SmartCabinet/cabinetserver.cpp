@@ -40,6 +40,13 @@
 #define API_VERSION_CHECK "/sarkApi/cheset/get/package"  //检查更新包
 #define API_GOODS_TRACE  "/sarkApi/Cheset/doSaveTraceId"  //物品存入跟踪
 
+#define API_AIO_OVERVIEW "/sarkApi/Cheset/collect/goods"  //一体机数据总览
+#define API_AIO_EXPIRED "/sarkApi/Cheset/effective/goods" //一体机近效期物品
+#define API_AIO_GOODS   "/sarkApi/Cheset/cabinet/query/goods" //科室物品
+#define API_AIO_TODAY_IN    "/sarkApi/Cheset/take/goods"    //今日入库数据
+#define API_AIO_TODAY_OUT   "/sarkApi/Cheset/consume/goods" //今日出库数据
+#define API_AIO_WARNING_REP     "/sarkApi/Cheset/warn/goods" //智能柜库存预警
+
 
 
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
@@ -69,6 +76,8 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_day_report = NULL;
     reply_download = NULL;
     reply_store_trace = NULL;
+    reply_aio_overview = NULL;
+    reply_aio_data = NULL;
     versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
@@ -216,7 +225,7 @@ void CabinetServer::replyCheck(QNetworkReply *reply)
 void CabinetServer::netTimeStart()
 {
     netFlag = false;
-    QTimer::singleShot(10000,this,SLOT(netTimeout()));
+    QTimer::singleShot(2000,this,SLOT(netTimeout()));
 }
 
 void CabinetServer::localCacheAccess()
@@ -273,6 +282,23 @@ void CabinetServer::watchdogStart()
     watdogClock.start(10000);
     watchdogTimeout();
     connect(&watdogClock, SIGNAL(timeout()), this, SLOT(watchdogTimeout()));
+}
+
+QVariant CabinetServer::getCjsonItem(cJSON *json, QByteArray key, QVariant defaultRet)
+{
+    cJSON* j = cJSON_GetObjectItem(json, key.data());
+    if(j == NULL)
+        return defaultRet;
+
+    if(j->type == cJSON_Number)
+    {
+        return QVariant(j->valuedouble);
+    }
+    else if(j->type == cJSON_String)
+    {
+        return QVariant(j->valuestring);
+    }
+    return defaultRet;
 }
 
 QNetworkReply *CabinetServer::post(QString url, QByteArray postData, qint64 timeStamp, bool need_resend)
@@ -333,7 +359,7 @@ void CabinetServer::listCheck(QString code)
     QByteArray qba = QString("{\"barcode\":\"%1\",\"timeStamp\":%2}").arg(code).arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_LIST_CHECK_NEW);//+'?'+qba.toBase64();
     barCode = code;
-    qDebug()<<"[listCheck]"<<nUrl;
+    qDebug()<<"[listCheck]"<<nUrl<<qba;
     replyCheck(reply_list_check);
     reply_list_check = post(nUrl, qba, timeStamp, false);
 //    reply_list_check = manager->get(QNetworkRequest(QUrl(nUrl)));
@@ -401,9 +427,10 @@ void CabinetServer::cabColInsert(int pos, int num)
 
 void CabinetServer::cabinetBind(int seqNum, int index, QString goodsId)
 {
-    if(!networkState)
+    sqlManager->bindGoodsId(seqNum, index, goodsId);
+    if(!config->netState)
     {
-        emit bindRst(false);
+        emit bindRst(true);
         return;
     }
     qint64 timeStamp = getApiMark();
@@ -770,6 +797,48 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
     qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
 }
 
+void CabinetServer::requireAioOverview()
+{
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
+    QString nUrl = ApiAddress+QString(API_AIO_OVERVIEW);
+    replyCheck(reply_aio_overview);
+    reply_aio_overview = post(nUrl, qba);
+    connect(reply_aio_overview, SIGNAL(finished()), this, SLOT(recvAioOverview()));
+    qDebug()<<"[requireAioOverview]"<<nUrl<<qba;
+}
+
+void CabinetServer::requireAioData(int cevent)
+{
+    QString cabId = config->getCabinetId();
+    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
+    qDebug()<<"requireAioData"<<cevent;
+    aio_state = (AIOMachine::cEvent)cevent;
+
+    QString apiPath;
+    switch(cevent)
+    {
+    case AIOMachine::click_num_expired:apiPath = QString(API_AIO_EXPIRED);
+        break;
+    case AIOMachine::click_num_goods:apiPath = QString(API_AIO_GOODS);
+        break;
+    case AIOMachine::click_num_today_in:apiPath = QString(API_AIO_TODAY_IN);
+        break;
+    case AIOMachine::click_num_today_out:apiPath = QString(API_AIO_TODAY_OUT);
+        break;
+    case AIOMachine::click_num_warning_rep:apiPath = QString(API_AIO_WARNING_REP);
+        break;
+    default:
+        break;
+    }
+
+    QString nUrl = ApiAddress+apiPath;
+    replyCheck(reply_aio_data);
+    reply_aio_data = post(nUrl, qba);
+    connect(reply_aio_data, SIGNAL(finished()), this, SLOT(recvAioData()));
+    qDebug()<<"[requireAioData]"<<cevent<<nUrl<<qba;
+}
+
 void CabinetServer::checkUpdate(bool needConfirm)
 {
     qint64 timeStamp = getApiMark();
@@ -945,6 +1014,15 @@ void CabinetServer::recvUserLogin()
         }
 
         cJSON* json_info = cJSON_GetArrayItem(json_data,0);
+        cJSON* dpt_name = cJSON_GetObjectItem(json_info, "departName");
+        if(dpt_name != NULL)
+        {
+            info->departName = QString(dpt_name->valuestring);
+        }
+        else
+        {
+            info->departName = QString();
+        }
 //        info->id = cJSON_GetObjectItem(json_info,"id")->valueint;
         info->cardId = QString(cJSON_GetObjectItem(json_info,"cardId")->valuestring);
         info->departId = QString(cJSON_GetObjectItem(json_info,"departId")->valuestring);
@@ -1189,10 +1267,12 @@ void CabinetServer::recvListAccess()
         return;
 
     apiComplete(json);
+
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     if(json_rst->type == cJSON_True)
     {
         goodsCarScan();
+        SqlManager::listStoreAffirm()
         qDebug()<<"ACCESS success";
         cJSON* data = cJSON_GetObjectItem(json, "data");
         int listCount = cJSON_GetArraySize(data);
@@ -1880,6 +1960,87 @@ void CabinetServer::recvUpdatePac()
     pacUpdate->write(qba);
 }
 
+void CabinetServer::recvAioOverview()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_aio_overview->readAll());
+    reply_aio_overview->deleteLater();
+    reply_aio_overview = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvAioOverview]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    cJSON* json_data = cJSON_GetObjectItem(json,"data");
+    QString msg = QString::fromUtf8(cJSON_GetObjectItem(json, "msg")->valuestring);
+    AIOOverview* ret = NULL;
+
+    if(json_rst->type == cJSON_True)
+    {
+        ret = new AIOOverview;
+        ret->chesetGoodsCount = cJSON_GetObjectItem(json_data, "chesetGoodsCount")->valueint;
+        ret->lifeTimeGoodsCount = cJSON_GetObjectItem(json_data, "lifeTimeGoodsCount")->valueint;
+        ret->warnGoodsCount = cJSON_GetObjectItem(json_data, "warnGoodsCount")->valueint;
+        ret->inSumCount = cJSON_GetObjectItem(json_data, "inSumCount")->valuedouble;
+        ret->outSumCount = cJSON_GetObjectItem(json_data, "outSumCount")->valuedouble;
+    }
+    emit aioOverview(msg, ret);
+}
+
+void CabinetServer::recvAioData()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_aio_data->readAll());
+    reply_aio_data->deleteLater();
+    reply_aio_data = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvAioData]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    cJSON* json_data = cJSON_GetObjectItem(json,"data");
+    QString msg = QString::fromUtf8(cJSON_GetObjectItem(json, "msg")->valuestring);
+    QList<GoodsInfo*> ret;
+
+    if(json_rst->type == cJSON_True)
+    {
+       int dataSize = cJSON_GetArraySize(json_data);
+       for(int i=0; i<dataSize; i++)
+       {
+            cJSON* jGoods = cJSON_GetArrayItem(json_data, i);
+            GoodsInfo* info = new GoodsInfo;
+            info->name = getCjsonItem(jGoods, "goodsName", QString()).toString();
+            info->id = getCjsonItem(jGoods, "goodsId", QString()).toString();
+            info->size = getCjsonItem(jGoods, "size", QString()).toString();
+            info->proName = getCjsonItem(jGoods, "producerName", QString()).toString();
+            info->supName = getCjsonItem(jGoods, "supplyName", QString()).toString();
+            info->unit = getCjsonItem(jGoods, "unit", QString()).toString();
+            info->aioInNum = getCjsonItem(jGoods, "inCount", QString()).toString();
+            info->aioOutNum = getCjsonItem(jGoods, "goodsCount", QString()).toString();
+            info->goodsType = getCjsonItem(jGoods, "packageType", 1).toInt();
+            info->threshold = getCjsonItem(jGoods, "threshold", 0).toInt();
+            info->maxThreshold = getCjsonItem(jGoods, "maxThreshold", 0).toInt();
+            info->batch = getCjsonItem(jGoods, "batchNumber", QString()).toString();
+            info->lifeDay = getCjsonItem(jGoods, "lifeDay", 0).toInt();
+            info->productTime = getCjsonItem(jGoods, "productTime", 0).toInt();
+            info->lifeTime = getCjsonItem(jGoods, "lifeTime", 0).toInt();
+            info->packageCount = getCjsonItem(jGoods, "packageCount", 0).toInt();
+            info->goodsCount = getCjsonItem(jGoods, "goodsCount", 0).toInt();
+            info->price = getCjsonItem(jGoods, "price", 0.0).toFloat();
+            info->sumCount = getCjsonItem(jGoods, "sumCount", 0.0).toFloat();
+            info->optName = getCjsonItem(jGoods, "optName", QString()).toString();
+            info->optTime = getCjsonItem(jGoods, "optTime", QString()).toString();
+            info->traceId = getCjsonItem(jGoods, "traceId", QString()).toString();
+            ret<<info;
+       }
+    }
+    else
+    {
+        ret.clear();
+    }
+    emit aioData(msg, aio_state, ret);
+}
+
 void CabinetServer::updatePacFinish()
 {
     qDebug()<<"[updatePacFinish]"<<versionInfo->pacFile;
@@ -1912,7 +2073,7 @@ void CabinetServer::netTimeout()
     else
         networkState = false;
 
-    qDebug()<<"netstate"<<networkState;
+//    qDebug()<<"netstate"<<networkState;
     emit netState(networkState);
     if(networkState)
     {
@@ -1971,13 +2132,13 @@ void CabinetServer::tarFinished(int code)
     }
 }
 
-void CabinetServer::apiComplete(cJSON *json)
+QByteArray CabinetServer::apiComplete(cJSON *json)
 {
     cJSON* jTime = cJSON_GetObjectItem(json, "timeStamp");
     if(jTime == NULL)
         return;
 
-    sqlManager->apiComplete(jTime->valuedouble);
+    return sqlManager->apiComplete(jTime->valuedouble);
 }
 
 void CabinetServer::sysTimeout()

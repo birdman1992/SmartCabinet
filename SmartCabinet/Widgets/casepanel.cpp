@@ -65,7 +65,7 @@ void CasePanel::paintEvent(QPaintEvent*)
 
 void CasePanel::resizeEvent(QResizeEvent *)
 {
-    qDebug()<<"resize"<<ui->left->width();
+//    qDebug()<<"resize"<<ui->left->width();
     updatePanel();
 }
 
@@ -78,7 +78,7 @@ void CasePanel::setText(QStringList text)
     QString right;
     int maxLine = getMaxLine();
     cur_show = text;
-    qDebug()<<"[setText]"<<text<<text.count();
+//    qDebug()<<"[setText]"<<text<<text.count();
 
     if(showDoubleCol)
     {

@@ -261,8 +261,16 @@ void Cabinet::updateCase(int caseIndex)
     if(isMainCabinet && (caseIndex == screenPos))
         return;
 
+    if(caseIndex >= ui->tableWidget->rowCount())
+        return;
+
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
     lab->setText(SqlManager::getCaseText(seqNum, caseIndex));
+}
+
+int Cabinet::rowCount()
+{
+    return ui->tableWidget->rowCount();
 }
 
 void Cabinet::updateCabinet()
@@ -312,8 +320,8 @@ int Cabinet::getMaxshowNum(int caseIndex)
 
 bool Cabinet::haveEmptyPos(int caseIndex)
 {
-    qDebug()<<"haveEmptyPos"<<list_case[caseIndex]->list_goods.count()<<getMaxshowNum(caseIndex);
-    if(list_case[caseIndex]->list_goods.count() < getMaxshowNum(caseIndex))
+    qDebug()<<"haveEmptyPos"<<SqlManager::getShowCountByCase(seqNum, caseIndex) << getMaxshowNum(caseIndex);
+    if(SqlManager::getShowCountByCase(seqNum, caseIndex) < getMaxshowNum(caseIndex))
         return true;
     else
         return false;
@@ -573,7 +581,7 @@ void Cabinet::setCaseState(int index, int numState)
 {
     if(index >= ui->tableWidget->rowCount())
         return;
-    qDebug()<<"setCaseState"<<index<<numState;
+//    qDebug()<<"setCaseState"<<index<<numState;
     state = numState;
     checkFlag[index] = numState;
 

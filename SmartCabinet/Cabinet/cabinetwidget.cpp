@@ -5,6 +5,8 @@
 #include <QWidget>
 #include "defines.h"
 #include "Device/controldevice.h"
+#include "funcs/systool.h"
+#include "defines.h"
 
 //提示信息
 
@@ -49,8 +51,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 
     initVolum();
     initSearchBtns();
-    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
-    connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
+//    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
+//    connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
     connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
 
     connect(win_cab_list_view, SIGNAL(requireAccessList(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
@@ -138,6 +140,8 @@ void CabinetWidget::cabLock()
     config->clearSearch();
     config->wakeUp(0);
     emit checkLockState();
+    if(config->getCabinetMode() == "aio")
+        emit stack_switch(INDEX_AIO);
 }
 
 void CabinetWidget::cabInit()
@@ -152,10 +156,11 @@ void CabinetWidget::cabInit()
 
 void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
 {
+
 //    qDebug()<<"bind"<<info.id<<info.abbName;
 //    info.goodsType = config->getGoodsType(info.packageId);
 //    qDebug()<<info.goodsType;
-    config->list_cabinet[seq]->setCaseName(info, index);
+//    config->list_cabinet[seq]->setCaseName(info, index);
 //    emit requireCaseBind(seq, index, info.packageId);
 }
 
@@ -335,6 +340,8 @@ void CabinetWidget::magicCmd(QString cmd)
 {
     if(cmd == QString(MAGIC_CAL))
         emit tsCalReq();
+    if(cmd == QString(MAGIC_SHOT))
+        SysTool::singleShot();
 }
 
 bool posSort(Cabinet *A, Cabinet *B)
@@ -378,6 +385,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     int i=0;
     qDebug()<<"index"<<index;
     qSort(cabinets.begin(),cabinets.end(),posSort);
+    list_cabinet = cabinets;
 
     ui->cabinet_layout->addStretch();
     for(i=0; i<cabinets.count(); i++)
@@ -574,10 +582,10 @@ void CabinetWidget::recvScanData(QByteArray qba)
     Q_UNUSED(newStore);
     QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
 
-    if(scanInfo != QString(code))
-    {
-        newStore = true;
-    }
+//    if(scanInfo != QString(code))
+//    {
+//        newStore = true;
+//    }
     scanInfo = QString(code);
     fullScanInfo = QString(qba);
 #ifdef TCP_API
@@ -703,7 +711,8 @@ void CabinetWidget::updateDelay(int delay)
 {
     updateNetState(delay);
     ui->delay->setText(QString("%1ms").arg(delay));
-    ui->delay->setChecked(((delay<100) && (delay>0)));
+    config->netState = ((delay<100) && (delay>0));
+    ui->delay->setChecked(config->netState);
 }
 
 void CabinetWidget::showEvent(QShowEvent *)
@@ -751,6 +760,40 @@ void CabinetWidget::caseLock()
 void CabinetWidget::caseUnlock()
 {
     clickLock = false;
+}
+
+void CabinetWidget::updateCase(int col, int row)
+{
+    if(col >= list_cabinet.count())
+        return;
+
+    list_cabinet[col]->updateCase(row);
+}
+
+void CabinetWidget::switchCabinetState(CabState state)
+{
+    config->state = state;
+    switch(state)
+    {
+    case STATE_FETCH:
+        caseClicked(0,0);
+        break;
+    case STATE_STORE:
+        break;
+    case STATE_REFUN:
+        caseClicked(0,0);
+        break;
+    case STATE_CHECK:
+        break;
+    case STATE_LIST:
+        break;
+    case STATE_REBIND:
+        break;
+    case STATE_SPEC:
+        break;
+    default:
+        break;
+    }
 }
 
 //void CabinetWidget::on_fetch_clicked()
@@ -1110,7 +1153,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 {
 //    calCheck(QString(qba));
 
-    if(this->isHidden())
+    if(this->isHidden() && (config->getCabinetMode() != "aio"))
     {
         qDebug()<<"recvUserInfo"<<qba<<"ignore..";
         return;
@@ -1291,6 +1334,16 @@ void CabinetWidget::updateFetchPrice(float single, float total)
 void CabinetWidget::updateTime()
 {
     showCurrentTime(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    float cupTemp = SysTool::getCpuTemp();
+//    qDebug()<<"[cpu temp]:"<<cupTemp<<"℃";
+    if(cupTemp > 41.0)
+    {
+        emit cpuFanOn(true);
+    }
+    else if(cupTemp < 39.0)
+    {
+        emit cpuFanOn(false);
+    }
 
     if((QDateTime::currentDateTime().time().hour() == 4) && (QTime::currentTime().minute() == 0) && (QTime::currentTime().second() == 0))
     {
@@ -1462,6 +1515,9 @@ void CabinetWidget::checkPush()
 
 void CabinetWidget::recvUserCheckRst(UserInfo* info)
 {
+    if(info == NULL)
+        return;
+
     cabInit();
     waitForCodeScan = false;
     waitForGoodsListCode = false;

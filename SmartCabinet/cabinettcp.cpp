@@ -4,6 +4,9 @@
 
 CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
 {
+    temp = 0;
+    hum = 0;
+    onLine = false;
     beatWait = false;
     beatTimer = new QTimer(this);
     connect(beatTimer, SIGNAL(timeout()), this, SLOT(heartBeat()));
@@ -13,6 +16,16 @@ CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectChanged(QAbstractSocket::SocketState)));
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
     socket->connectToHost(config->getServerIp(), TCP_PORT);
+}
+
+void CabinetTcp::updateTemp(float t)
+{
+    temp = t;
+}
+
+void CabinetTcp::updateHum(float h)
+{
+    hum = h;
 }
 
 qint64 CabinetTcp::timeStamp()
@@ -30,7 +43,7 @@ bool CabinetTcp::packageIsComplete(QByteArray qba)
 {
     int leftCount = qba.count('{');
     int rightCount = qba.count('}');
-    qDebug()<<"packageIsComplete"<<leftCount<<rightCount;
+//    qDebug()<<"packageIsComplete"<<leftCount<<rightCount;
     if(leftCount == rightCount)
         return true;
     else
@@ -39,17 +52,25 @@ bool CabinetTcp::packageIsComplete(QByteArray qba)
 
 void CabinetTcp::connectChanged(QAbstractSocket::SocketState state)
 {
-    qDebug()<<"[connectChanged]:"<<state;
     if(state == QAbstractSocket::ConnectedState)
     {
+        onLine = true;
         beatTimer->start(10000);//10s
         heartBeat();
+        qDebug()<<"[connectChanged]:"<<state;
     }
     else if(state == QAbstractSocket::UnconnectedState)
     {
         QTimer::singleShot(2000, this, SLOT(reconnect()));
         beatTimer->stop();
-        emit serverDelay(0);
+
+        if(onLine)
+        {
+            qDebug()<<"[connectChanged]:"<<state;
+            emit serverDelay(0);
+        }
+
+        onLine = false;
     }
 }
 
@@ -61,7 +82,7 @@ void CabinetTcp::reconnect()
 void CabinetTcp::readData()
 {
     QByteArray qba = socket->readAll();
-    qDebug()<<"[TCP DATA]:"<<qba;
+//    qDebug()<<"[TCP DATA]:"<<qba;
     tcpCache.append(qba);
     if(!packageIsComplete(tcpCache))
     {
@@ -102,11 +123,15 @@ void CabinetTcp::heartBeat()
                                 \"session\": \"%1\",\
                                 \"type\": \"1\",\
                                 \"data\": \"\",\
-                                \"code\": \"%2\"\
-                               }\n").arg(timeStamp()).arg(config->getCabinetId()).toLocal8Bit();
+                                \"code\": \"%2\",\
+                                \"temperature\": %3,\
+                                \"humidity\": %4\
+                               }\n").arg(timeStamp()).arg(config->getCabinetId()).arg(temp).arg(hum).toLocal8Bit();
     socket->write(qba);
     beatWait = true;
-    qDebug()<<"[heartBeat]";
+
+//    qDebug()<<"[heartBeat]"<<qba;
+
 }
 
 void CabinetTcp::parHeartBeat(cJSON* json)
@@ -114,7 +139,7 @@ void CabinetTcp::parHeartBeat(cJSON* json)
     beatWait = false;
     QString session = QString(cJSON_GetObjectItem(json, "session")->valuestring);
     qint64 delay = timeDelay(session);
-    qDebug()<<"[delay]:"<<delay<<"ms";
+//    qDebug()<<"[delay]:"<<delay<<"ms";
     emit serverDelay(delay);
 }
 

@@ -88,7 +88,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>3983089286</string>
+        <string>D86B5005</string>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_3">
@@ -146,7 +146,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>709960</string>
+        <string>993908</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_3">

@@ -1,0 +1,27 @@
+
+case "$1" in
+start)
+	pppd call quectel-ppp > /tmp/ppp.log &
+	sleep 5
+	gateway=$(cat /tmp/ppp.log | sed -n 's/remote IP address \(.*\)/\1/p')
+	route add default gw $gateway
+	;;
+
+stop)
+	killall pppd
+	;;
+
+restart)
+	killall pppd
+	pppd call quectel-ppp > /tmp/ppp.log &
+	sleep 5
+	gateway=$(cat /tmp/ppp.log | sed -n 's/remote IP address \(.*\)/\1/p')
+	route add default gw $gateway
+	;;
+
+*)
+	echo "Usage: ppp_test {start|stop}"
+	exit 1
+	;;
+
+esac

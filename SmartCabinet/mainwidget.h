@@ -29,6 +29,8 @@
 #include "Widgets/checktable.h"
 #include "Widgets/goodsapply.h"
 #include "Widgets/dayreport.h"
+#include "Device/tempdev.h"
+#include "aio/aiomachine.h"
 #include "Cabinet/cabinetwidget.h"
 #include "MxAuthor/authormanager.h"
 #include "funcs/routerepair.h"
@@ -56,6 +58,9 @@ public slots:
 
 protected:
 
+private slots:
+//    void on_stackedWidget_currentChanged(int arg1);
+
 private:
     Ui::MainWidget *ui;
     CabinetConfig* cabinetConf;
@@ -75,9 +80,11 @@ private:
     CheckTable* win_check_table;//盘点表格窗口
     GoodsApply* win_goods_apply;//请货窗口
     DayReport* win_day_report;//日清单窗口
+    AIOMachine* win_aio;
     RouteRepair* routeRepair;//路由修复
     ControlDevice* ctrlUi;
     LedCtrl* ledCtrl;
+    TempDev* tempDev;
 
     QStackedWidget *stack;             //堆栈窗体
     QListWidget *list;                 //列表框
@@ -86,6 +93,8 @@ private:
     void init_huangpo();
     void connect_master();
     void connect_new_api();
+    void aio_connect_mode(bool con);
+    void cab_connect_mode(bool con);
     void paintEvent(QPaintEvent *);
 };
 

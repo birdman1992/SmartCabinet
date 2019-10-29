@@ -107,16 +107,46 @@ void SqlManager::newApiLog(QString url, QByteArray data, quint64 time_stamp, boo
     queryExec(query, cmd, "newApiLog");
 }
 
-void SqlManager::apiComplete(quint64 timeStamp)
+QByteArray SqlManager::apiComplete(quint64 timeStamp)
 {
     QString cmd = QString("UPDATE ApiLog SET state='complete' where time_stamp=%1").arg(timeStamp);
     QSqlQuery query(db_cabinet);
     queryExec(query, cmd, "apiComplete");
+    return apiData(timeStamp);
+}
+
+QByteArray SqlManager::apiData(quint64 timeStamp)
+{
+    QString cmd = QString("SELECT data FROM ApiLog where time_stamp=%1").arg(timeStamp);
+    QSqlQuery query(db_cabinet);
+    queryExec(query, cmd, "apiComplete");
+    if(query.next())
+        return query.value(0).toByteArray();
+    return QByteArray();
 }
 
 bool SqlManager::waitForSync()
 {
     return needSync;
+}
+
+void SqlManager::bindGoodsId(int col, int row, QString goodsId)
+{
+    QString cmd = QString("UPDATE GoodsInfo SET cab_col=%1,cab_row=%2 WHERE package_id=%3").arg(col).arg(row).arg(goodsId);
+    QSqlQuery query(db_cabinet);
+    queryExec(query, cmd, "bindGoodsId");
+}
+
+int SqlManager::getShowCountByCase(int col, int row)
+{
+    int ret = 0;
+    QString cmd = QString("select COUNT(*) show_count FROM GoodsInfo WHERE cab_col=%1 AND cab_row=%2 ").arg(col).arg(row);
+    QSqlQuery query(db_cabinet);
+    queryExec(query, cmd, "getShowCountByCase");
+
+    if(query.next())
+        ret = query.value(0).toInt();
+    return ret;
 }
 
 /*
@@ -309,7 +339,7 @@ void SqlManager::bindGoodsPackage(QString packageId, int col, int row)
 void SqlManager::listStoreAffirm(QString listCode, RepState state)
 {
     QSqlQuery query(db_cabinet);
-    if(state && local_rep)//本地存入
+    if(state & local_rep)//本地存入
     {
         QString cmd = QString("UPDATE CodeInfo SET state_local=1 WHERE store_list='%1';").arg(listCode);
         if(!query.exec(cmd))
@@ -317,7 +347,7 @@ void SqlManager::listStoreAffirm(QString listCode, RepState state)
             qDebug()<<"[listStoreAffirm failed]"<<query.lastError().text();
         }
     }
-    if(state && remote_rep)//远程存入
+    if(state & remote_rep)//远程存入
     {
         QString cmd = QString("UPDATE CodeInfo SET state_remote=1 WHERE store_list='%1';").arg(listCode);
         if(!query.exec(cmd))
@@ -347,7 +377,7 @@ void SqlManager::initDatabase()
 /*
 CodeInfo:条码信息表 [code|package_id|batch_number|pro_name|sup_name|state_local|state_remote|store_list]
 GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]
-ApiLog:接口日志表 [time_stamp|url|data]
+ApiLog:接口日志表 [time_stamp|url|data|]
 */
 void SqlManager::createTable()
 {

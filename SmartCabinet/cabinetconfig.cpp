@@ -107,6 +107,25 @@ void CabinetConfig::setCabinetId(QString id)
     //    qDebug()<<"[setCabinetId]"<<cabId<<&cabId<<&id;
 }
 
+//CabinetMode:cabinet&aio
+QString CabinetConfig::getCabinetMode()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString cMode = settings.value("CabinetMode",QString("cabinet")).toString();
+    settings.sync();
+    qDebug()<<"getCabinetMode:"<<cMode;
+//    cabinetMode = cMode;
+    return cMode;
+}
+
+void CabinetConfig::setCabinetMode(QString cMode)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("CabinetMode",QVariant(cMode));
+    settings.sync();
+    cabinetMode = cMode;
+}
+
 void CabinetConfig::setScreenPos(int col, int row)
 {
     screenPos.setX(col);
@@ -130,7 +149,7 @@ void CabinetConfig::showMsg(QString msg, bool iswarnning)
 
 QString CabinetConfig::getCabinetId()
 {
-    qDebug()<<"[getCabinetId]"<<cabinetId<<&cabinetId;
+//    qDebug()<<"[getCabinetId]"<<cabinetId<<&cabinetId;
     return cabinetId;
 }
 
@@ -689,6 +708,21 @@ bool CabinetConfig::getStoreMode()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     return settings.value("StoreMode", false).toBool();
+}
+
+void CabinetConfig::setDepartName(QString dptName)
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    settings.setValue("DepartName", dptName);
+    settings.sync();
+}
+
+QString CabinetConfig::getDepartName()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    QString ret = settings.value("DepartName",QString()).toString();
+    qDebug()<<"[DepartName]"<<ret<<ret.isEmpty();
+    return ret;
 }
 
 QString CabinetConfig::getApiProName()

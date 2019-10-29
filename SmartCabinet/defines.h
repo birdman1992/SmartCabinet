@@ -11,6 +11,7 @@
 #define CAB_CACHE "/home/config/cache.ini"
 
 #define MAGIC_CAL "ff00010acc"
+#define MAGIC_SHOT "ff00010add"
 
 //全屏显示  unuse
 #define SHOW_FULLSCREEN
@@ -24,6 +25,7 @@
 /*模拟无服务器状态*/
 //#define NO_SERVER
 
+#define INDEX_AIO 1
 #define INDEX_STANDBY 2
 #define INDEX_USER_MANAGE 3
 #define INDEX_CAB_SET 4

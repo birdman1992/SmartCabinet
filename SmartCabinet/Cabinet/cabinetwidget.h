@@ -43,8 +43,10 @@ public:
     bool installGlobalConfig(CabinetConfig *globalConfig);
     void caseLock();
     void caseUnlock();
+    void updateCase(int col, int row);
 
 public slots:
+    void switchCabinetState(CabState state);
     void caseClicked(int caseIndex, int cabSeqNum);//柜格下标,柜子顺序编号
     void recvScanData(QByteArray);
     void updateScanState(bool);
@@ -102,6 +104,8 @@ signals:
     void tsCalReq();
     void setSpecialCase(QPoint);
     void reqCheckVersion(bool);
+    void cpuFanOn(bool);
+    void stack_switch(int index);
 
 private slots:
     void setMenuHide(bool ishide);
@@ -146,6 +150,7 @@ private:
     QSlider* volume;//音量控件
     QString curCard;
     QTimer* timeUpdater;
+    QList<Cabinet *> list_cabinet;
     int tsCalFlag;
 
     bool volPressed;
