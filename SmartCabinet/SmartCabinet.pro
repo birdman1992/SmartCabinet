@@ -106,7 +106,10 @@ SOURCES += main.cpp\
     manager/storelistmanager.cpp \
     gpio/gpioapi.cpp \
     Device/ledctrl.cpp \
-    cabinettcp.cpp
+    cabinettcp.cpp \
+    FingerPrint/qsocketcan.cpp \
+    FingerPrint/fingerprint.cpp \
+    FingerPrint/cmdpack.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -190,7 +193,10 @@ HEADERS  += mainwidget.h \
     manager/storelistmanager.h \
     gpio/gpioapi.h \
     Device/ledctrl.h \
-    cabinettcp.h
+    cabinettcp.h \
+    FingerPrint/qsocketcan.h \
+    FingerPrint/fingerprint.h \
+    FingerPrint/cmdpack.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -225,7 +231,8 @@ FORMS    += mainwidget.ui \
     Widgets/dayreport.ui \
     Widgets/keyboad.ui \
     Widgets/goodsapply.ui \
-    Widgets/stroebyitem.ui
+    Widgets/stroebyitem.ui \
+    FingerPrint/fingerprint.ui
 
 RESOURCES += \
     image.qrc
