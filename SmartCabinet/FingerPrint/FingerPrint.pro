@@ -1,10 +1,10 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-09-23T13:55:09
+# Project created by QtCreator 2019-10-30T10:42:16
 #
 #-------------------------------------------------
 
-QT       += core gui serialbus
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,8 +24,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        fingerset.cpp
+    fingerprint.cpp \
+    qsocketcan.cpp \
+    cmdpack.cpp
 
-HEADERS  += fingerset.h
+HEADERS  += fingerprint.h \
+    qsocketcan.h \
+    cmdpack.h
 
-FORMS    += fingerset.ui
+FORMS    += fingerprint.ui
+

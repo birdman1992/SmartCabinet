@@ -18,6 +18,9 @@ AIOMachine::AIOMachine(QWidget *parent) :
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
     connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
 
+    win_fingerPrint = new FingerPrint(this);
+    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), this, SIGNAL(requireOpenLock(int,int)));
+
     ui->page_overview->setWindowOpacity(1);
     ui->page_overview->setAttribute(Qt::WA_TranslucentBackground);
     ui->page_table->setWindowOpacity(1);

@@ -16,6 +16,7 @@
 #include "Structs/userinfo.h"
 #include "aiooverview.h"
 #include "Widgets/cabinetaccess.h"
+#include "FingerPrint/fingerprint.h"
 
 namespace Ui {
 class AIOMachine;
@@ -51,6 +52,7 @@ signals:
     void requireUserCheck(QString);//请求身份验证
     void tsCalReq();//屏幕校准请求
     void cabinetStateChange(CabState state);
+    void requireOpenLock(int seq, int index);
 
 private:
     enum colMark
@@ -102,6 +104,7 @@ private:
     UserInfo* optUser;
     CabinetConfig* config;
     QTimer* sysTime;
+    FingerPrint* win_fingerPrint;
     bool loginState;
     int curPage;
 

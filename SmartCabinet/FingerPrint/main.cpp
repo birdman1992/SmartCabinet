@@ -1,10 +1,10 @@
-#include "fingerset.h"
+#include "fingerprint.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    FingerSet w;
+    FingerPrint w;
     w.show();
 
     return a.exec();

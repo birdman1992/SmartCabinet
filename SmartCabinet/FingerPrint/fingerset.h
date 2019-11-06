@@ -2,7 +2,6 @@
 #define FINGERSET_H
 
 #include <QWidget>
-#include <QCanBus>
 
 namespace Ui {
 class FingerSet;

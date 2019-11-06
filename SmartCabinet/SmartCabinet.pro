@@ -111,7 +111,10 @@ SOURCES += main.cpp\
     Device/ledctrl.cpp \
     cabinettcp.cpp \
     Device/tempdev.cpp \
-    funcs/systool.cpp
+    funcs/systool.cpp \
+    FingerPrint/qsocketcan.cpp \
+    FingerPrint/fingerprint.cpp \
+    FingerPrint/cmdpack.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -200,7 +203,10 @@ HEADERS  += mainwidget.h \
     Device/ledctrl.h \
     cabinettcp.h \
     Device/tempdev.h \
-    funcs/systool.h
+    funcs/systool.h \
+    FingerPrint/qsocketcan.h \
+    FingerPrint/fingerprint.h \
+    FingerPrint/cmdpack.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -236,7 +242,8 @@ FORMS    += mainwidget.ui \
     Widgets/keyboad.ui \
     Widgets/goodsapply.ui \
     Widgets/stroebyitem.ui \
-    aio/aiomachine.ui
+    aio/aiomachine.ui \
+    FingerPrint/fingerprint.ui
 
 RESOURCES += \
     image.qrc

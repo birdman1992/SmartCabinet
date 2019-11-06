@@ -120,6 +120,7 @@ void MainWidget::init_huangpo()
     connect_master();
 #endif
     win_aio = new AIOMachine(this);
+    connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
     connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
     connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));

@@ -86,7 +86,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     fWatchdog = -1;
     checkId = -1;
 #ifndef SIMULATE_ON
-//    watchdogStart();
+    watchdogStart();
 #endif
     connect(&tarProcess, SIGNAL(finished(int)), this, SLOT(tarFinished(int)));
 }
