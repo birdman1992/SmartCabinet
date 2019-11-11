@@ -107,6 +107,7 @@ void CabinetWidget::paintEvent(QPaintEvent*)
 
 void CabinetWidget::cabLock()
 {
+    emit updateLoginState(false);
     tsCalFlag = 0;
     optUser = NULL;
     ui->userInfo->setText("请刷卡使用");
@@ -1508,6 +1509,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     waitForCodeScan = false;
     waitForGoodsListCode = false;
     msgClear();
+    emit updateLoginState(true);
     optUser = info;
     curCard = optUser->cardId;
 //    tsCalFlag = 0;

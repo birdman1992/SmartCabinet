@@ -15,6 +15,7 @@ public:
 signals:
     void canData(int id, QByteArray data);
     void moduleActive(int id);
+    void doorState(int id, bool isOpen);
 
 private:
     int s;//fd

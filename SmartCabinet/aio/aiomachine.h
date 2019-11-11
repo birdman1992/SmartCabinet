@@ -53,6 +53,7 @@ signals:
     void tsCalReq();//屏幕校准请求
     void cabinetStateChange(CabState state);
     void requireOpenLock(int seq, int index);
+    void updateLoginState(bool isLogin);
 
 private:
     enum colMark
@@ -104,7 +105,7 @@ private:
     UserInfo* optUser;
     CabinetConfig* config;
     QTimer* sysTime;
-    FingerPrint* win_fingerPrint;
+//    FingerPrint* win_fingerPrint;
     bool loginState;
     int curPage;
 

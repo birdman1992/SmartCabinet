@@ -7,8 +7,8 @@
 class CmdPack
 {
 public:
-    CmdPack(quint8 _sid, quint8 _did, quint16 _cmd, quint16 _len, QByteArray _data = QByteArray());
-    CmdPack(quint16 _cmd, quint16 _len, QByteArray _data = QByteArray());
+    CmdPack(quint8 _sid, quint8 _did, quint16 _cmd, QByteArray _data = QByteArray());
+    CmdPack(quint16 _cmd, QByteArray _data = QByteArray());
     QByteArray packData();
 
 private:
@@ -26,11 +26,10 @@ class ResponsePack
 public:
     ResponsePack(QByteArray _data = QByteArray());
     QByteArray appendData(QByteArray _data);
+    void initData(QByteArray _data);
     quint16 getMagicCode();
 
-private:
     QByteArray packData;
-
     quint16 prefix;//包识别码
     quint8 sid;//源标识
     quint8 did;//目标标识

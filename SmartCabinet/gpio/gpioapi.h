@@ -16,7 +16,7 @@ public:
         J320_L3 = 149,//引出IO口
         J320_L4 = 147,//引出IO口
         J313_FAN = 158,//风扇控制IO口
-        J312_L1 = 159,//LED灯控制IO口,GPIO5_IO31
+        J312_L1 = 159,//LED灯控制IO口,GPIO5_IO31靠电池第一脚
         J312_L2 = 161,//LED灯控制IO口,GPIO6_IO01
         J312_L3 = 163,//LED灯控制IO口
         J312_L4 = 165,//LED灯控制IO口

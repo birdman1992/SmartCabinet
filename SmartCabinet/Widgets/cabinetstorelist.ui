@@ -99,7 +99,7 @@ color: rgb(46, 52, 54);
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="cur_list">
             <property name="styleSheet">
              <string notr="true">font: 75 26px &quot;WenQuanYi Micro Hei&quot;;</string>
             </property>

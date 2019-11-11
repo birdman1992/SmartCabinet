@@ -74,6 +74,7 @@ public slots:
 
 
 signals:
+    void updateLoginState(bool isLogin);//登录状态更新,登入亮灯，登出灭灯
     void winSwitch(int);
     void goodsAccess(CaseAddress, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)
     void requireUserCheck(QString);//请求身份验证

@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
     fingerprint.cpp \
     qsocketcan.cpp \
-    cmdpack.cpp
+    cmdpack.cpp \
+    userprintmanager.cpp
 
 HEADERS  += fingerprint.h \
     qsocketcan.h \
-    cmdpack.h
+    cmdpack.h \
+    userprintmanager.h
 
 FORMS    += fingerprint.ui
 

@@ -16,6 +16,7 @@
 QSocketCan::QSocketCan(QObject *parent):
     QThread(parent)
 {
+    s = -1;
     initCacheList();
 }
 
@@ -32,6 +33,7 @@ void QSocketCan::run()
     if ((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0)
     {
         perror("Create socket failed");
+        s = -1;
         exit(-1);
     }
 
@@ -72,15 +74,18 @@ void QSocketCan::run()
             qDebug()<<"[can frame]"<<canFrame.toHex();
             QByteArray pac = list_cache[id]->appendData(canFrame);
             quint16 mCode = list_cache[id]->getMagicCode();
-            if(mCode == 0x0000)//关门
+//            qDebug()<<"<<<mcode>>>"<<mCode<<(mCode & 0xff00)<<(mCode & 0x00ff);
+            if((mCode & 0xff00) == 0x0000)//关门
             {
                 qDebug()<<"[close] door:"<<id;
+                emit doorState(id, false);
             }
-            else if(mCode == 0x0100)//开门
+            else if((mCode & 0xff00) == 0x0100)//开门
             {
                 qDebug()<<"[open] door:"<<id;
+                emit doorState(id, true);
             }
-            else if(mCode == 0x0101)//指纹模块触发
+            if((mCode & 0x00ff) == 0x0001)//指纹模块触发
             {
                 qDebug()<<"[module active]:"<<id;
                 emit moduleActive(id);
@@ -105,6 +110,9 @@ void QSocketCan::run()
 void QSocketCan::sendData(quint32 canId, QByteArray canData)
 {
 //    struct ifreq ifr;
+    if(s == -1)
+        return;
+
     struct can_frame frame;
     int errorFlag;
     /* configure can_id and can data length */

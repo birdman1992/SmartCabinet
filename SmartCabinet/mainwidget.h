@@ -39,6 +39,7 @@
 #include "ShowInf/showinf.h"
 #include "PrimaryUser/primaryuser.h"
 #include "PrimaryUser/userinf.h"
+#include "FingerPrint/fingerprint.h"
 
 namespace Ui {
 class MainWidget;
@@ -80,6 +81,7 @@ private:
     CheckTable* win_check_table;//盘点表格窗口
     GoodsApply* win_goods_apply;//请货窗口
     DayReport* win_day_report;//日清单窗口
+    FingerPrint* win_fingerPrint;
     AIOMachine* win_aio;
     RouteRepair* routeRepair;//路由修复
     ControlDevice* ctrlUi;

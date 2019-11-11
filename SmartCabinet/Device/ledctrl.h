@@ -12,6 +12,7 @@ public:
     explicit LedCtrl(QObject *parent = 0);
 public slots:
     void fanSwitch(bool fanOn);
+    void ledSwitch(int id, bool ledOn);
 
 signals:
 

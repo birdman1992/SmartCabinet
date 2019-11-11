@@ -167,11 +167,16 @@ void MainWidget::init_huangpo()
 
     ledCtrl = new LedCtrl(this);
     connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
+    connect(win_cabinet, SIGNAL(updateLoginState(bool)), ledCtrl, SLOT(ledSwitch(bool)));//登入登出控制led
 
     tempDev = new TempDev(this);
     connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));
     connect(tempDev, SIGNAL(updateHum(float)), cabTcp, SLOT(updateHum(float)));
     connect(tempDev, SIGNAL(updateTemp(float)), cabTcp, SLOT(updateTemp(float)));
+
+    win_fingerPrint = new FingerPrint();
+    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
+    connect(win_fingerPrint, SIGNAL(doorState(int, bool)), ledCtrl, SLOT(ledSwitch(int, bool)));//开关门控制led
 
     ui->stackedWidget->addWidget(win_standby);
     ui->page_2->layout()->addWidget(win_aio);
@@ -325,6 +330,7 @@ void MainWidget::cab_connect_mode(bool con)
 
 MainWidget::~MainWidget()
 {
+    delete win_fingerPrint;
     delete ui;
     //--写入配置信息
 //    writeSettings();

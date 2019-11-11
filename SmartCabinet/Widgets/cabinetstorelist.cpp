@@ -99,6 +99,7 @@ void CabinetStoreList::storeStart(GoodsList *l)
         delete list_store;
 
     list_store = l;
+    ui->cur_list->setText(list_store->barcode);
     storeManager->creatStoreCache(list_store);
     CabinetStoreListItem* item;
     int i = 0;

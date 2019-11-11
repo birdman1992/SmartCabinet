@@ -192,8 +192,8 @@ void CabinetSet::on_clear_clicked()
 
 void CabinetSet::on_save_clicked()
 {
-    emit updateServerAddr();
     config->setServerAddress(ui->serverAddr->text());
+    emit updateServerAddr();
     initStep = 1;
     if(sTest != NULL)
         delete sTest;

@@ -18,8 +18,8 @@ AIOMachine::AIOMachine(QWidget *parent) :
     connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
     connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
 
-    win_fingerPrint = new FingerPrint(this);
-    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), this, SIGNAL(requireOpenLock(int,int)));
+//    win_fingerPrint = new FingerPrint(this);
+//    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), this, SIGNAL(requireOpenLock(int,int)));
 
     ui->page_overview->setWindowOpacity(1);
     ui->page_overview->setAttribute(Qt::WA_TranslucentBackground);
@@ -94,6 +94,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     if(user == NULL)
         return;
 
+    emit updateLoginState(true);
     optUser = user;
     loginState = true;
     if(config->getDepartName().isEmpty())
@@ -391,6 +392,7 @@ void AIOMachine::sysLock()
     loginState = false;
     optUser = NULL;
     emit reqUpdateOverview();
+    emit updateLoginState(false);
     //    ui->frame_quit->hide();
 }
 
