@@ -527,7 +527,8 @@ void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 
 void CabinetServer::goodsCheckReq()
 {
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
+    QString optId = config->getOptId();
+    QByteArray qba = QString("{\"departCode\":\"%1\", \"optName\":\"%2\"}").arg(cabId).arg(optId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CHECK_CREAT);//+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
     reply_goods_check = post(nUrl, qba);
@@ -541,7 +542,8 @@ void CabinetServer::goodsCheckFinish()
     if(checkId == -1)
         return;
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
+    QString optId = config->getOptId();
+    QByteArray qba = QString("{\"departCode\":\"%1\", \"optName\":\"%2\"}").arg(cabId).arg(optId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CHECK_END);//+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
     reply_goods_check = post(nUrl, qba);
@@ -1934,8 +1936,8 @@ void CabinetServer::recvAioData()
             info->maxThreshold = getCjsonItem(jGoods, "maxThreshold", 0).toInt();
             info->batch = getCjsonItem(jGoods, "batchNumber", QString()).toString();
             info->lifeDay = getCjsonItem(jGoods, "lifeDay", 0).toInt();
-            info->productTime = getCjsonItem(jGoods, "productTime", 0).toInt();
-            info->lifeTime = getCjsonItem(jGoods, "lifeTime", 0).toInt();
+            info->productTime = getCjsonItem(jGoods, "productTime", QString()).toString();
+            info->lifeTime = getCjsonItem(jGoods, "lifeTime", QString()).toString();
             info->packageCount = getCjsonItem(jGoods, "packageCount", 0).toInt();
             info->goodsCount = getCjsonItem(jGoods, "goodsCount", 0).toInt();
             info->price = getCjsonItem(jGoods, "price", 0.0).toFloat();

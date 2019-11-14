@@ -71,6 +71,7 @@ public slots:
     void recvCheckCreatRst(bool, QString msg);//new_api
     void recvCheckFinishRst(bool, QString msg);
     void recvGoodsTraceRst(bool, QString msg, QString goodsCode);
+    void on_check_clicked(bool checked);
 
 
 signals:
@@ -121,7 +122,7 @@ private slots:
     void on_service_clicked(bool checked);
     void on_refund_clicked(bool checked);
     void on_cut_clicked();
-    void on_check_clicked(bool checked);
+//    void on_check_clicked(bool checked);
 //    void on_check_toggled(bool checked);
     void on_search_clicked();
     void on_search_back_clicked();
@@ -210,6 +211,7 @@ private:
     void calCheck(QString card);
     void magicCmd(QString cmd);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
+    bool isListCode(QByteArray qba);
 };
 
 #endif // CABINETWIDGET_H

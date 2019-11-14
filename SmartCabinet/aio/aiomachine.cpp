@@ -1,9 +1,10 @@
 #include "aiomachine.h"
 #include "ui_aiomachine.h"
 #include <QDebug>
+#include <QTimer>
 #include "funcs/systool.h"
 #include "defines.h"
-#define MAX_TABLE_ROW 15
+#define MAX_TABLE_ROW 100
 
 AIOMachine::AIOMachine(QWidget *parent) :
     QWidget(parent),
@@ -12,6 +13,9 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->setupUi(this);
     initNumLabel();
     initColMap();
+    ui->aio_check_in->hide();
+    winActive = true;
+    QWidget::installEventFilter(this);
 
     win_access = new CabinetAccess();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -32,6 +36,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     sysTime = NULL;
     config = CabinetConfig::config();
     setAioInfo(config->getDepartName(), config->getCabinetId());
+    config->msgLab = ui->msg;
     if(config->getCabinetMode() == "aio")
     {
         sysTime = new QTimer(this);
@@ -51,6 +56,7 @@ AIOMachine::~AIOMachine()
 void AIOMachine::showEvent(QShowEvent *)
 {
     setAioInfo(config->getDepartName(), config->getCabinetId());
+    emit reqUpdateOverview();
     if((config->getCabinetMode() == "aio") && (sysTime == NULL))
     {
         sysTime = new QTimer(this);
@@ -67,11 +73,18 @@ void AIOMachine::magicCmd(QString cmd)
         SysTool::singleShot();
 }
 
-void AIOMachine::recvScanData(QByteArray)
+//unuse
+void AIOMachine::recvScanData(QByteArray qba)
 {
-
     if(loginState == false)
         return;
+
+    if((qba.indexOf("CK") == 0) && (qba.indexOf("-") == -1))//存货单
+    {
+
+    }
+
+    qDebug()<<config->state;
 
     switch(config->state)
     {
@@ -84,6 +97,56 @@ void AIOMachine::recvScanData(QByteArray)
     case STATE_STORE:
 
         break;
+    default:
+        break;
+    }
+}
+
+void AIOMachine::setPowState(int power)
+{
+    ui->aio_day_report->hide();//日清单
+    ui->aio_check->hide();//盘点单
+    ui->aio_check_create->hide();//盘点
+    ui->aio_return->hide();//退货
+    ui->aio_check_in->hide();//消耗登记
+
+    switch(power)
+    {
+    case 0://超级管理员:|补货|退货|服务|退出|
+        ui->aio_day_report->show();
+        ui->aio_check->show();
+        ui->aio_return->show();
+        ui->aio_check_create->show();
+        break;
+
+    case 1://护士长:|退货|退出|
+        ui->aio_day_report->show();
+        ui->aio_check->show();
+        ui->aio_return->show();
+//        ui->aio_check_create->show();
+        break;
+
+    case 2://护士:|退出|
+        ui->aio_day_report->show();
+        ui->aio_check->show();
+//        ui->aio_return->show();
+//        ui->aio_check_create->show();
+        break;
+
+    case 3://管理员:|补货|退货|退出|
+        ui->aio_day_report->show();
+        ui->aio_check->show();
+        ui->aio_return->show();
+        ui->aio_check_create->show();
+        break;
+
+    case 4://医院员工:|退出|
+        ui->aio_day_report->show();
+        ui->aio_check->show();
+//        ui->aio_return->show();
+//        ui->aio_check_create->show();
+        break;
+
     default:
         break;
     }
@@ -106,6 +169,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
 
     ui->aio_hello->setText(QString("您好！%1").arg(user->name));
     config->state = STATE_FETCH;
+    setPowState(optUser->power);
     sysUnlock();
 }
 
@@ -133,6 +197,25 @@ void AIOMachine::paintEvent(QPaintEvent*)
 
 bool AIOMachine::eventFilter(QObject *obj, QEvent *e)
 {
+    if(obj == this)
+    {
+        if(e->type() == QEvent::WindowActivate)
+        {
+            if(config->state == STATE_CHECK)//如果在盘点状态就结束盘点
+            {
+                emit aio_check(false);
+            }
+            if(!winActive)//窗口被激活，排除初始显示被激活的情况
+            {
+                config->state = STATE_FETCH;
+            }
+            winActive = true;
+        }
+        else if(e->type() == QEvent::WindowDeactivate)
+        {
+            winActive = false;
+        }
+    }
     if(e->type() == QEvent::MouseButtonRelease)
     {
         cEvent eventNum = (cEvent)l_num_label.indexOf((QLabel*)obj);
@@ -219,7 +302,7 @@ void AIOMachine::setNumLabel(AIOOverview *overview)
 
 void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*>listInfo)
 {
-    qDebug()<<"[showTable]"<<colNames;
+//    qDebug()<<"[showTable]"<<colNames;
     if(!cur_list.isEmpty())
     {
         qDeleteAll(cur_list.begin(), cur_list.end());
@@ -232,6 +315,7 @@ void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*
     curPage = 0;
     int rowCount = listInfo.count()>MAX_TABLE_ROW?MAX_TABLE_ROW:listInfo.count();
     int colCount = colNames.count();
+    ui->info_table->clear();
     ui->info_table->setRowCount(rowCount);
     ui->info_table->setColumnCount(colCount);
     ui->info_table->setHorizontalHeaderLabels(colNames);
@@ -239,7 +323,8 @@ void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*
     int colIndex = 0;
     int rowIndex = 0;
 
-    foreach (GoodsInfo* info, listInfo)
+    QList<GoodsInfo*> showList = listPage(curPage);
+    foreach (GoodsInfo* info, showList)
     {
         colIndex = 0;
         foreach (QString col, colNames)
@@ -263,7 +348,7 @@ void AIOMachine::showNumExpired(QList<GoodsInfo *> lInfo)
     colNames<<listColName.at(batchNumber);
     colNames<<listColName.at(goodsSize);
     colNames<<listColName.at(unit);
-    colNames<<listColName.at(productTime);
+//    colNames<<listColName.at(productTime);
     colNames<<listColName.at(supplyName);
     colNames<<listColName.at(packageType);
     colNames<<listColName.at(lifeDay);
@@ -344,6 +429,7 @@ void AIOMachine::showNumWarningRep(QList<GoodsInfo *> lInfo)
 QString AIOMachine::getGoodsInfoText(GoodsInfo *info, QString key)
 {
     colMark mark = mapColName.value(key, unknow);
+//    qDebug()<<mark<<key<<info->productTime;
 
     switch(mark)
     {
@@ -393,6 +479,7 @@ void AIOMachine::sysLock()
     optUser = NULL;
     emit reqUpdateOverview();
     emit updateLoginState(false);
+    emit logout();
     //    ui->frame_quit->hide();
 }
 
@@ -434,6 +521,22 @@ void AIOMachine::recvAioData(QString msg, AIOMachine::cEvent e, QList<GoodsInfo 
     }
 }
 
+void AIOMachine::updateTemp(QString temp)
+{
+    ui->lab_temp->setText(QString("%1\n当前温度").arg(temp));
+}
+
+void AIOMachine::updateHum(QString hum)
+{
+    ui->lab_hum->setText(QString("%1\n当前湿度").arg(hum));
+}
+
+void AIOMachine::winMsg(QString msg)
+{
+    ui->msg->setText(msg);
+    QTimer::singleShot(4000, ui->msg, SLOT(clear()));
+}
+
 void AIOMachine::sysUnlock()
 {
     ui->frame_aio->show();
@@ -471,13 +574,10 @@ void AIOMachine::on_tab_back_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-void AIOMachine::on_aio_fetch_clicked()
-{
-//    emit stack_switch(INDEX_CAB_SHOW);
-    emit cabinetStateChange(STATE_FETCH);
-//    config->state = STATE_FETCH;
-//    emit aio_fetch(0, 0);
-}
+//void AIOMachine::on_aio_fetch_clicked()
+//{
+//    emit cabinetStateChange(STATE_FETCH);
+//}
 
 void AIOMachine::on_aio_return_clicked()
 {
@@ -485,4 +585,29 @@ void AIOMachine::on_aio_return_clicked()
 //    emit aio_return(true);
 //    emit stack_switch(INDEX_CAB_SHOW);
 //    emit aio_fetch(0, 0);//模拟一次点击
+}
+
+void AIOMachine::on_aio_check_clicked()
+{
+    emit cabinetStateChange(CMD_CHECK_SHOW);
+}
+
+void AIOMachine::on_aio_day_report_clicked()
+{
+    emit cabinetStateChange(CMD_DAY_REPORT_SHOW);
+}
+
+void AIOMachine::on_aio_check_create_clicked()
+{
+    emit aio_check(true);
+}
+
+void AIOMachine::on_tab_last_clicked()
+{
+
+}
+
+void AIOMachine::on_tab_next_clicked()
+{
+
 }

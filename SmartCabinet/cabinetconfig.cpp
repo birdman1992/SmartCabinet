@@ -16,6 +16,7 @@ CabinetConfig* CabinetConfig::c = new CabinetConfig;
 CabinetConfig::CabinetConfig()
 {
     lockManager = NULL;
+    msgLab = NULL;
 }
 
 CabinetConfig::~CabinetConfig()
@@ -145,6 +146,11 @@ void CabinetConfig::setCabLayout(QString layout)
 void CabinetConfig::showMsg(QString msg, bool iswarnning)
 {
     list_cabinet[screenPos.x()]->showMsg(msg, iswarnning);
+    if(msgLab != NULL)
+    {
+        msgLab->setText(msg);
+        QTimer::singleShot(4000, msgLab, SLOT(clear()));
+    }
 }
 
 QString CabinetConfig::getCabinetId()

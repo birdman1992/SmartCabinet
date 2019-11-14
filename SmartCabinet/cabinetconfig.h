@@ -25,6 +25,8 @@ enum CabState
     STATE_CHECK = 5,//盘点状态
     STATE_REBIND = 6,//重新绑定
     STATE_SPEC = 7,//配置特殊柜
+    CMD_CHECK_SHOW = 8,//显示盘点单
+    CMD_DAY_REPORT_SHOW = 9,//显示结算单
 };
 
 class CabinetConfig
@@ -119,6 +121,7 @@ public:
     CabState state;
     VoicePlayer cabVoice;
     QString regId;
+    QLabel* msgLab;
 //    QList<>
 
     QString scanDataTrans(QString code);

@@ -119,22 +119,39 @@ void MainWidget::init_huangpo()
     connect(cabTcp, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openCase(int,int)));
     connect_master();
 #endif
-    win_aio = new AIOMachine(this);
-    connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
-    connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
-    connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
-    connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
-    connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
-    connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
-    connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
-    connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)));
-    connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
-    connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
-//    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
-//    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
-//    connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
-    win_aio->sysLock();
+    ledCtrl = new LedCtrl(this);
+    connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
+    connect(win_cabinet, SIGNAL(updateLoginState(bool)), ledCtrl, SLOT(ledSwitch(bool)));//登入登出控制led
+
+    tempDev = new TempDev(this);
+    connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));
+    connect(tempDev, SIGNAL(updateHum(float)), cabTcp, SLOT(updateHum(float)));
+    connect(tempDev, SIGNAL(updateTemp(float)), cabTcp, SLOT(updateTemp(float)));
+
+    if(cabinetConf->getCabinetMode() == "aio")
+    {
+        win_aio = new AIOMachine(this);
+        connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
+        connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+        connect(win_aio, SIGNAL(aio_check(bool)), win_cabinet, SLOT(on_check_clicked(bool)));
+        connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
+        connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
+        connect(win_aio, SIGNAL(logout()), win_cabinet, SLOT(sysLock()));
+        connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
+        connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
+        connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
+        connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)));
+        connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
+        connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
+        connect(tempDev, SIGNAL(updateHumString(QString)), win_aio, SLOT(updateHum(QString)));
+        connect(tempDev, SIGNAL(updateTempString(QString)), win_aio, SLOT(updateTemp(QString)));
+    //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
+    //    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
+    //    connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+        ui->page_2->layout()->addWidget(win_aio);
+//        win_aio->sysLock();
+    }
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -165,21 +182,12 @@ void MainWidget::init_huangpo()
 
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
-    ledCtrl = new LedCtrl(this);
-    connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
-    connect(win_cabinet, SIGNAL(updateLoginState(bool)), ledCtrl, SLOT(ledSwitch(bool)));//登入登出控制led
-
-    tempDev = new TempDev(this);
-    connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));
-    connect(tempDev, SIGNAL(updateHum(float)), cabTcp, SLOT(updateHum(float)));
-    connect(tempDev, SIGNAL(updateTemp(float)), cabTcp, SLOT(updateTemp(float)));
 
     win_fingerPrint = new FingerPrint();
     connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_fingerPrint, SIGNAL(doorState(int, bool)), ledCtrl, SLOT(ledSwitch(int, bool)));//开关门控制led
 
     ui->stackedWidget->addWidget(win_standby);
-    ui->page_2->layout()->addWidget(win_aio);
     ui->stackedWidget->addWidget(win_user_manage);
     ui->stackedWidget->addWidget(win_cabinet_set);
     ui->stackedWidget->addWidget(win_cabinet);

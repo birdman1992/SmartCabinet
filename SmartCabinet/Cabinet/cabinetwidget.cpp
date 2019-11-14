@@ -292,6 +292,10 @@ void CabinetWidget::checkStart()
     ui->search->hide();
     ui->reply->hide();
     ui->quit->hide();
+    if(config->getCabinetMode() == "aio")
+    {
+        switchCabinetState(STATE_CHECK);
+    }
 #else
     config->state = STATE_CHECK;
     waitForCodeScan = true;
@@ -444,11 +448,14 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(curGoods == NULL)
             return;
 
-        if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
+        if(config->getCabinetMode() != "aio")
         {
-            caseUnlock();
-            config->showMsg(MSG_FULL, 1);
-            return;
+            if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
+            {
+                caseUnlock();
+                config->showMsg(MSG_FULL, 1);
+                return;
+            }
         }
 //        GoodsInfo info;
         bindInfo.abbName = curGoods->abbName;
@@ -533,7 +540,6 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //            config->showMsg(MSG_FULL, 1);
 //            return;
 //        }
-
         if(rebindGoods == NULL)
         {
             waitForCodeScan = true;
@@ -558,14 +564,39 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     }
 }
 
+bool CabinetWidget::isListCode(QByteArray qba)
+{
+    if((qba.indexOf("CK") == 0) && (qba.indexOf("-") == -1))//存货单
+    {
+        return true;
+    }
+    return false;
+}
+
 void CabinetWidget::recvScanData(QByteArray qba)
 {qDebug()<<"recvScanData"<<qba<<qba.toHex();
     magicCmd(QString(qba));
+    if(config->getCabinetMode() == "aio")//一体机模式，无需通过按钮进入存取货模式
+    {
+        if(optUser == NULL)//未登录
+            return;
+
+        if(isListCode(qba))//是存货单，进入存模式
+        {
+            waitForGoodsListCode = true;
+            switchCabinetState(STATE_STORE);
+        }
+        if(config->state == STATE_FETCH)
+            switchCabinetState(config->state);
+        waitForCodeScan = true;
+    }
+
     if(!waitForCodeScan)
     {
         qDebug()<<"[CabinetWidget]"<<"scan data not need";
         return;
     }
+
     if(waitForGoodsListCode && (!config->getStoreMode()))//不用扫描全部物品的模式,扫描全部物品的模式下由存货窗口接管此信号的发射
     {
         qDebug()<<"requireGoodsListCheck";
@@ -760,23 +791,33 @@ void CabinetWidget::caseUnlock()
 void CabinetWidget::switchCabinetState(CabState state)
 {
     config->state = state;
+    qDebug()<<"[switchCabinetState]"<<state;
     switch(state)
     {
     case STATE_FETCH:
         caseClicked(0,0);
         break;
     case STATE_STORE:
+        on_store_clicked(true);
         break;
     case STATE_REFUN:
         caseClicked(0,0);
         break;
     case STATE_CHECK:
+        caseClicked(0,0);
         break;
     case STATE_LIST:
         break;
     case STATE_REBIND:
+        caseClicked(0,0);
         break;
     case STATE_SPEC:
+        break;
+    case CMD_CHECK_SHOW:
+        emit requireCheckShow();
+        break;
+    case CMD_DAY_REPORT_SHOW:
+        emit requireDayReportShow();
         break;
     default:
         break;
@@ -903,7 +944,11 @@ void CabinetWidget::on_check_clicked(bool checked)
             msg = QString("还有%1个柜格未盘点").arg(uckNum);
         else
             msg = QString("柜格已全部盘点，可以提交");
-        win_check_warnning->warnningMsg(msg, true);
+
+        if(config->getCabinetMode() != "aio")
+            win_check_warnning->warnningMsg(msg, true);
+        else
+            emit goodsCheckFinish();
     }
 #else
     if(checked)
@@ -1364,7 +1409,7 @@ void CabinetWidget::sysLock()
     ui->check->setChecked(false);
     ui->search->setChecked(false);
     this->show();
-    qDebug("1");
+//    qDebug("1");
     cabLock();
 }
 
@@ -1467,8 +1512,12 @@ void CabinetWidget::cabinetBind(Goods *goods)
     curGoods = goods;
     clickLock = false;
     setMenuHide(true);
-    win_store_list->hide();
+
     config->showMsg(MSG_STORE_SELECT, false);
+    if(config->getCabinetMode() == "aio")
+        caseClicked(0,0);
+    else
+        win_store_list->hide();
 }
 
 void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)

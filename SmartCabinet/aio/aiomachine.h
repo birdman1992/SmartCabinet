@@ -47,6 +47,9 @@ public slots:
     void sysLock();//系统锁定
     void recvAioOverview(QString msg, AIOOverview* overview);
     void recvAioData(QString msg,AIOMachine::cEvent e,QList<GoodsInfo*> lInfo);
+    void updateTemp(QString);
+    void updateHum(QString);
+    void winMsg(QString);
 
 signals:
     void requireUserCheck(QString);//请求身份验证
@@ -91,6 +94,8 @@ signals:
     void aio_fetch(int, int);
     void aio_return(bool);
     void stack_switch(int index);
+    void logout();
+    void aio_check(bool);
 
 private slots:
     void on_aio_quit_clicked();
@@ -105,9 +110,11 @@ private:
     UserInfo* optUser;
     CabinetConfig* config;
     QTimer* sysTime;
+    bool winActive;
 //    FingerPrint* win_fingerPrint;
     bool loginState;
     int curPage;
+    QList<GoodsInfo*> showList;
 
     void paintEvent(QPaintEvent *);
     bool eventFilter(QObject *, QEvent *);
@@ -130,12 +137,18 @@ private:
 
     void magicCmd(QString cmd);
     void showEvent(QShowEvent *);
+    void setPowState(int power);
 private slots:
     void loginTimeout();
     void updateTime();
     void on_tab_back_clicked();
-    void on_aio_fetch_clicked();
+//    void on_aio_fetch_clicked();
     void on_aio_return_clicked();
+    void on_aio_check_clicked();
+    void on_aio_day_report_clicked();
+    void on_aio_check_create_clicked();
+    void on_tab_last_clicked();
+    void on_tab_next_clicked();
 };
 
 #endif // AIOMACHINE_H

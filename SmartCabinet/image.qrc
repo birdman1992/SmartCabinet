@@ -60,6 +60,10 @@
         <file>image/aio/btn_bottom_check.png</file>
         <file>image/aio/bg_new.png</file>
         <file>image/aio/bg_list.png</file>
+        <file>image/aio/btn_bottom_stock.png</file>
+        <file>image/aio/btn_bottom_null.png</file>
+        <file>image/aio/btn_bottom_inventory.png</file>
+        <file>image/aio/btn_bottom_dailyList.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

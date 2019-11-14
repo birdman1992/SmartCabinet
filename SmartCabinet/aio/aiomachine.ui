@@ -16,6 +16,9 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -57,6 +60,57 @@ border-image: url(:/image/image/aio/bg_new.png);
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QFrame" name="frame_3">
+       <property name="minimumSize">
+        <size>
+         <width>800</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_7">
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="msg">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">font: 16px &quot;WenQuanYi Micro Hei Mono&quot;;
+color: rgb(252, 233, 79);</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <widget class="QFrame" name="frame">
@@ -167,7 +221,7 @@ padding-right:2px;</string>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_overview">
       <property name="styleSheet">
@@ -391,6 +445,18 @@ padding-bottom:10px;
             </property>
             <item>
              <widget class="QFrame" name="frame_aio">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
               <layout class="QHBoxLayout" name="aio_btn_layout">
                <property name="leftMargin">
                 <number>1</number>
@@ -402,22 +468,34 @@ padding-bottom:10px;
                 <number>0</number>
                </property>
                <item>
-                <widget class="QPushButton" name="aio_fetch">
+                <widget class="QPushButton" name="aio_check_create">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>234</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>234</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="focusPolicy">
                   <enum>Qt::NoFocus</enum>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">#aio_fetch{
-border-image: url(:/image/image/aio/btn_bottom_pick.png);
+                  <string notr="true">#aio_check_create{
+	border-image: url(:/image/image/aio/btn_bottom_inventory.png);
 }
-#aio_fetch:pressed{
-border-image: url(:/image/image/aio/btn_bottom_pick.png);
+#aio_check_create:pressed{
+	border-image: url(:/image/image/aio/btn_bottom_inventory.png);
 margin:5px;
 }</string>
                  </property>
@@ -429,10 +507,22 @@ margin:5px;
                <item>
                 <widget class="QPushButton" name="aio_check">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>234</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>234</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="focusPolicy">
                   <enum>Qt::NoFocus</enum>
@@ -452,22 +542,34 @@ margin:5px;
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="aio_wind_up">
+                <widget class="QPushButton" name="aio_day_report">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>234</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>234</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="focusPolicy">
                   <enum>Qt::NoFocus</enum>
                  </property>
                  <property name="styleSheet">
-                  <string notr="true">#aio_wind_up{
-border-image: url(:/image/image/aio/btn_bottom_settlement.png);
+                  <string notr="true">#aio_day_report{
+border-image: url(:/image/image/aio/btn_bottom_dailyList.png);
 }
-#aio_wind_up:pressed{
-border-image: url(:/image/image/aio/btn_bottom_settlement.png);
+#aio_day_report:pressed{
+border-image: url(:/image/image/aio/btn_bottom_dailyList.png);
 margin:5px;
 }
 </string>
@@ -480,10 +582,22 @@ margin:5px;
                <item>
                 <widget class="QPushButton" name="aio_return">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>234</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>234</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="focusPolicy">
                   <enum>Qt::NoFocus</enum>
@@ -505,10 +619,22 @@ margin:5px;
                <item>
                 <widget class="QPushButton" name="aio_check_in">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>234</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>234</width>
+                   <height>16777215</height>
+                  </size>
                  </property>
                  <property name="focusPolicy">
                   <enum>Qt::NoFocus</enum>
@@ -527,6 +653,22 @@ margin:5px;
                  </property>
                 </widget>
                </item>
+               <item>
+                <spacer name="horizontalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>2</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
               </layout>
              </widget>
             </item>
@@ -536,11 +678,11 @@ margin:5px;
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeType">
-               <enum>QSizePolicy::Preferred</enum>
+               <enum>QSizePolicy::Expanding</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>50</width>
+                <width>5000</width>
                 <height>20</height>
                </size>
               </property>
@@ -684,6 +826,9 @@ color: rgb(255, 255, 255);</string>
              <height>110</height>
             </size>
            </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
            <property name="styleSheet">
             <string notr="true">border-image: url(:/image/image/aio/list_back_bg.png);</string>
            </property>
@@ -727,7 +872,7 @@ color: rgb(255, 255, 255);</string>
             <enum>QAbstractItemView::SelectRows</enum>
            </property>
            <attribute name="horizontalHeaderStretchLastSection">
-            <bool>true</bool>
+            <bool>false</bool>
            </attribute>
            <attribute name="verticalHeaderVisible">
             <bool>false</bool>
@@ -760,6 +905,9 @@ color: rgb(255, 255, 255);</string>
                <height>74</height>
               </size>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="styleSheet">
               <string notr="true">border-image: url(:/image/image/aio/btn_previous.png);</string>
              </property>
@@ -775,6 +923,9 @@ color: rgb(255, 255, 255);</string>
                <width>226</width>
                <height>74</height>
               </size>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">border-image: url(:/image/image/aio/btn_next.png);</string>

@@ -128,6 +128,7 @@ signals:
     //aio
     void aioOverview(QString, AIOOverview*);
     void aioData(QString, AIOMachine::cEvent, QList<GoodsInfo*>);
+    void aioMsg(QString);
 
 public slots:
     void cabRegister();
