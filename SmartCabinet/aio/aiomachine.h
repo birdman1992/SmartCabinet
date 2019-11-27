@@ -149,6 +149,7 @@ private slots:
     void on_aio_check_create_clicked();
     void on_tab_last_clicked();
     void on_tab_next_clicked();
+    void on_setting_clicked();
 };
 
 #endif // AIOMACHINE_H

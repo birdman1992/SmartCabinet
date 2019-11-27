@@ -114,7 +114,8 @@ SOURCES += main.cpp\
     funcs/systool.cpp \
     FingerPrint/qsocketcan.cpp \
     FingerPrint/fingerprint.cpp \
-    FingerPrint/cmdpack.cpp
+    FingerPrint/cmdpack.cpp \
+    FingerPrint/userprintmanager.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -206,7 +207,8 @@ HEADERS  += mainwidget.h \
     funcs/systool.h \
     FingerPrint/qsocketcan.h \
     FingerPrint/fingerprint.h \
-    FingerPrint/cmdpack.h
+    FingerPrint/cmdpack.h \
+    FingerPrint/userprintmanager.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \

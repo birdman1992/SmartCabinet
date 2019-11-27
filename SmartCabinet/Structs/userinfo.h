@@ -7,7 +7,7 @@ class UserInfo
 public:
     UserInfo();
     QString name;
-    int id;
+//    int id;
     QString cardId;
     QString departId;
     QString departName;

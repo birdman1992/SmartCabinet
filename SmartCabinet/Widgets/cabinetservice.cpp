@@ -33,6 +33,12 @@ CabinetService::CabinetService(QWidget *parent) :
     connect(win_ctrl_config,SIGNAL(lockCtrl(int,int)),this, SIGNAL(requireOpenLock(int,int)));
     connect(win_ctrl_config, SIGNAL(updateBtn()), this,SLOT(updateBtn()));
 
+    win_fingerPrint = new FingerPrint(this);
+    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), this, SIGNAL(requireOpenLock(int,int)));
+    connect(win_fingerPrint, SIGNAL(doorState(int, bool)), this, SIGNAL(doorState(int, bool)));//开关门控制led
+    connect(win_fingerPrint, SIGNAL(userCardActive(QByteArray)), this, SIGNAL(userCardActive(QByteArray)));
+    ui->frame_finger->layout()->addWidget(win_fingerPrint);
+
     initStack();
     initGroup();
     showVerInfo();
@@ -87,7 +93,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
     ui->insert_pos_2->setMaximum(config->list_cabinet.count() - 1);
 #endif
     QStringList proList;
-    proList<<"spd-web"<<"cheset-admin";
+    proList<<"spd-web"<<"cheset-admin"<<"hos-admin";
     ui->proName->addItems(proList);
     int curIndex = proList.indexOf(config->getApiProName());
     curIndex = (curIndex<0)?0:curIndex;
@@ -98,7 +104,10 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 
 void CabinetService::on_back_clicked()
 {
-    emit winSwitch(INDEX_CAB_SHOW);
+    if(config->getCabinetMode() == "aio")
+        emit winSwitch(INDEX_CAB_SERVICE);
+    else
+        emit winSwitch(INDEX_CAB_SHOW);
 //    if(sTest != NULL)
 //    {
 //        sTest->testFinish();
@@ -420,6 +429,11 @@ void CabinetService::recvVersionInfo(bool needUpdate, QString version)
         updateOk = false;
         ui->version_msg->setText(QString("当前是最新版本"));
     }
+}
+
+void CabinetService::recvCurCardId(QByteArray cardId)
+{
+    win_fingerPrint->recvCurCardId(cardId);
 }
 
 void CabinetService::ctrl_lock(int id)

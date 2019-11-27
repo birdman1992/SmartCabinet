@@ -96,6 +96,9 @@ void MainWidget::init_huangpo()
     connect(win_cab_service, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_cab_service, SIGNAL(requireClear()), this, SLOT(cabinetClear()));
     connect(win_cab_service, SIGNAL(requireUpdateServerAddress()), cabServer, SLOT(updateAddress()));
+    connect(win_cab_service, SIGNAL(userCardActive(QByteArray)), ctrlUi, SIGNAL(cardReaderData(QByteArray)));
+    connect(ctrlUi, SIGNAL(cardReaderData(QByteArray)), win_cab_service, SLOT(recvCurCardId(QByteArray)));
+
 #ifdef TCP_API
     connect(win_cab_service, SIGNAL(requireInsertCol(int,QString)), cabServer, SLOT(cabColInsert(int,QString)));
 #else
@@ -123,6 +126,7 @@ void MainWidget::init_huangpo()
     ledCtrl = new LedCtrl(this);
     connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
     connect(win_cabinet, SIGNAL(updateLoginState(bool)), ledCtrl, SLOT(ledSwitch(bool)));//登入登出控制led
+    connect(win_cab_service, SIGNAL(doorState(int,bool)), ledCtrl, SLOT(ledSwitch(int,bool)));
 
     tempDev = new TempDev(this);
     connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));
@@ -134,7 +138,9 @@ void MainWidget::init_huangpo()
         win_aio = new AIOMachine(this);
         connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
         connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+        connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
         connect(win_aio, SIGNAL(aio_check(bool)), win_cabinet, SLOT(on_check_clicked(bool)));
+        connect(win_aio, SIGNAL(service_show()), win_cab_service, SLOT(show()));
         connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
         connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
         connect(win_aio, SIGNAL(logout()), win_cabinet, SLOT(sysLock()));
@@ -148,7 +154,6 @@ void MainWidget::init_huangpo()
         connect(tempDev, SIGNAL(updateTempString(QString)), win_aio, SLOT(updateTemp(QString)));
     //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
     //    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
-    //    connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
         ui->page_2->layout()->addWidget(win_aio);
 //        win_aio->sysLock();
     }
@@ -183,9 +188,9 @@ void MainWidget::init_huangpo()
 //    connect(win_cabinet_set, SIGNAL(setCabinet(QByteArray)), cabinetConf, SLOT(creatCabinetConfig(QByteArray)));
 
 
-    win_fingerPrint = new FingerPrint();
-    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
-    connect(win_fingerPrint, SIGNAL(doorState(int, bool)), ledCtrl, SLOT(ledSwitch(int, bool)));//开关门控制led
+//    win_fingerPrint = new FingerPrint();
+//    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
+//    connect(win_fingerPrint, SIGNAL(doorState(int, bool)), ledCtrl, SLOT(ledSwitch(int, bool)));//开关门控制led
 
     ui->stackedWidget->addWidget(win_standby);
     ui->stackedWidget->addWidget(win_user_manage);

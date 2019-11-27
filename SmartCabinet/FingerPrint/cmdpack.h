@@ -7,8 +7,9 @@
 class CmdPack
 {
 public:
-    CmdPack(quint8 _sid, quint8 _did, quint16 _cmd, QByteArray _data = QByteArray());
     CmdPack(quint16 _cmd, QByteArray _data = QByteArray());
+    CmdPack(quint8 _sid, quint8 _did, quint16 _cmd, QByteArray _data = QByteArray());
+
     QByteArray packData();
 
 private:

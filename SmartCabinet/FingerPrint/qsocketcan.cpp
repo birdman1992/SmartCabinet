@@ -11,12 +11,13 @@
 #include <linux/can/raw.h>
 
 #include <QDebug>
-#include <QByteArray>
+QMutex dataLock;
 
 QSocketCan::QSocketCan(QObject *parent):
     QThread(parent)
 {
     s = -1;
+    canState = 0;
     initCacheList();
 }
 
@@ -63,6 +64,9 @@ void QSocketCan::run()
         exit(-3);
     }
 
+    qDebug("can device ok");
+    emit canDevOK();
+
     /* keep reading */
     while(1)
     {
@@ -71,7 +75,7 @@ void QSocketCan::run()
         {
             int id = frame.can_id & 0x0f;
             QByteArray canFrame = QByteArray((char*)frame.data, frame.can_dlc);
-            qDebug()<<"[can frame]"<<canFrame.toHex();
+//            qDebug()<<"[can frame]"<<id<<canFrame.toHex();
             QByteArray pac = list_cache[id]->appendData(canFrame);
             quint16 mCode = list_cache[id]->getMagicCode();
 //            qDebug()<<"<<<mcode>>>"<<mCode<<(mCode & 0xff00)<<(mCode & 0x00ff);
@@ -93,8 +97,9 @@ void QSocketCan::run()
 
             if(!pac.isEmpty())
             {
+//                qDebug()<<"[canData]"<<id<<pac.length()<<":"<<pac.toHex();
                 emit canData(id, pac);
-                qDebug()<<"[canData]"<<id<<":"<<pac.toHex();
+                sendNextData(id);
             }
 //            printf("%s ID=%#x data length=%d\n", ifr.ifr_name, frame.can_id, frame.can_dlc);
 //            for (int i=0; i < frame.can_dlc; i++)
@@ -107,7 +112,7 @@ void QSocketCan::run()
     return;
 }
 
-void QSocketCan::sendData(quint32 canId, QByteArray canData)
+void QSocketCan::sendCanData(int canId, QByteArray canData)
 {
 //    struct ifreq ifr;
     if(s == -1)
@@ -128,35 +133,99 @@ void QSocketCan::sendData(quint32 canId, QByteArray canData)
         if(datalen - sendPos > 8)
         {
             memcpy(frame.data, canData.data()+sendPos, 8);
-            errorFlag = 20;
+            errorFlag = 2000;
             while((write(s, &frame, sizeof(frame)) != sizeof(frame)) && errorFlag)
                 errorFlag--;
             if(errorFlag == 0)
             {
+                qDebug()<<QByteArray((char*)frame.data, frame.can_dlc).toHex();
                 qWarning()<<"[SocketCan]:send data failed!";
                 return;
             }
-            qDebug()<<QByteArray((char*)frame.data, frame.can_dlc).toHex();
+//            qDebug()<<QByteArray((char*)frame.data, frame.can_dlc).toHex();
             sendPos += 8;
         }
         else//最后一帧
         {
             frame.can_dlc = datalen - sendPos;
             memcpy(frame.data, canData.data()+sendPos, frame.can_dlc);
-            errorFlag = 20;
+            errorFlag = 2000;
             while((write(s, &frame, sizeof(frame)) != sizeof(frame)) && errorFlag)
                 errorFlag--;
             if(errorFlag == 0)
             {
+                qDebug()<<QByteArray((char*)frame.data, frame.can_dlc).toHex();
                 qWarning()<<"[SocketCan]:send data failed!";
                 return;
             }
-            qDebug()<<QByteArray((char*)frame.data, frame.can_dlc).toHex();
+//            qDebug()<<QByteArray((char*)frame.data, frame.can_dlc).toHex();
             sendPos += frame.can_dlc;
         }
     }
 
-    qDebug()<<"[SocketCan] send data:"<<canData.toHex();
+//    qDebug()<<"sendPos"<<sendPos;
+    canLock(canId);
+    qDebug()<<"[SocketCan]"<<canId<<"send data:"<<canData.toHex();
+}
+
+void QSocketCan::sendNextData(int canId)
+{
+    if(list_data[canId].isEmpty())
+    {
+        canUnlock(canId);
+        return;
+    }
+
+    sendCanData(canId, list_data[canId].takeFirst());
+}
+
+void QSocketCan::sendData(int canId, QByteArray canData)
+{
+    if(canIsLock(canId))
+    {
+        list_data[canId]<<canData;
+        return;
+    }
+
+    sendCanData(canId, canData);
+}
+
+void QSocketCan::canLock(int canId)
+{
+    if(canId > 31)
+        return;
+
+    dataLock.lock();
+    canState |= 1<<canId;
+    dataLock.unlock();
+    qDebug()<<"[LOCK]"<<canState;
+}
+
+void QSocketCan::canUnlock(int canId)
+{
+    if(canId > 31)
+        return;
+
+    dataLock.lock();
+    canState &= ~(1<<canId);
+    dataLock.unlock();
+    qDebug()<<"[ULOCK]"<<canState;
+}
+
+bool QSocketCan::canIsLock(int canId)
+{
+    dataLock.lock();
+    bool ret = canState & (1<<canId);
+    dataLock.unlock();
+    qDebug()<<"[RLOCK]"<<canState;
+    return ret;
+}
+
+void QSocketCan::lockClear()
+{
+    dataLock.lock();
+    canState = 0;
+    dataLock.unlock();
 }
 
 void QSocketCan::initCacheList()
@@ -170,5 +239,7 @@ void QSocketCan::initCacheList()
     for(int i=0; i<16; i++)
     {
         list_cache<<new ResponsePack;
+        QList<QByteArray> l;
+        list_data<<l;
     }
 }

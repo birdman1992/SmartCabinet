@@ -75,7 +75,7 @@ bool CabinetSet::installGlobalConfig(CabinetConfig *globalConfig)
     checkDevice();
 
     QStringList proList;
-    proList<<"spd-web"<<"cheset-admin";
+    proList<<"spd-web"<<"cheset-admin"<<"hos-admin";
     ui->apiProName->addItems(proList);
     ui->apiProName->setCurrentIndex(0);
 

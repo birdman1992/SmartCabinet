@@ -15,6 +15,7 @@
 #include "Widgets/cabinetctrlconfig.h"
 #include "manager/cabinetmanager.h"
 #include "funcs/servertest.h"
+#include "FingerPrint/fingerprint.h"
 
 bool posSort(Cabinet *A, Cabinet *B);
 
@@ -41,6 +42,8 @@ signals:
     void requireUpdateServerAddress();
     void checkVersion(bool needConfirm);
     void updateStart();
+    void doorState(int, bool);
+    void userCardActive(QByteArray cardId);
 
 private slots:
     void on_back_clicked();
@@ -94,6 +97,7 @@ public slots:
     void recvInsertUndoResult(bool success);
     void tsCalibration();
     void recvVersionInfo(bool needUpdate, QString version);
+    void recvCurCardId(QByteArray cardId);
 
 private:
     Ui::CabinetService *ui;
@@ -101,6 +105,7 @@ private:
     CabinetManager* cabManager;
     QTableWidget* nTab;
     ServerTest* sTest;
+    FingerPrint* win_fingerPrint;
     QString insert_layout;
     int insert_pos;
     QString dev_ip;

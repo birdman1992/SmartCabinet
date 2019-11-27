@@ -611,3 +611,8 @@ void AIOMachine::on_tab_next_clicked()
 {
 
 }
+
+void AIOMachine::on_setting_clicked()
+{
+    emit stack_switch(INDEX_CAB_SERVICE);
+}

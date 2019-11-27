@@ -13,6 +13,10 @@ CmdPack::CmdPack(quint8 _sid, quint8 _did, quint16 _cmd, QByteArray _data):
         data = QByteArray(16, 0);
         data.replace(0, _data.size(), _data);
     }
+    else
+    {
+        data = _data;
+    }
 }
 
 CmdPack::CmdPack(quint16 _cmd, QByteArray _data):
@@ -26,6 +30,12 @@ CmdPack::CmdPack(quint16 _cmd, QByteArray _data):
         data = QByteArray(16, 0);
         data.replace(0, _data.size(), _data);
     }
+    else
+    {
+        data = _data;
+//        len -=2;
+    }
+//    qDebug()<<"cmdpack"<<data.toHex();
 }
 
 /*
@@ -83,6 +93,7 @@ QByteArray ResponsePack::appendData(QByteArray _data)
 {
     magicCode = 0xffff;
     packData.append(_data);
+//    qDebug()<<"prefix"<<prefix<<packData.toHex();
 
     if(prefix == 0)//等待包头
     {
@@ -114,8 +125,11 @@ QByteArray ResponsePack::appendData(QByteArray _data)
         ret = *(quint16*)pos;
     }
 
-    int dataLen = len<14?14:len;//data的长度
-    if(packData.size() < (dataLen + 12))//需要等待更多数据
+    int dataLen = len;
+    if(prefix != 0x5aa5)
+        dataLen = len<16?16:len;//data的长度
+//    qDebug()<<packData.size()<<(dataLen+10);
+    if(packData.size() < (dataLen + 10))//需要等待更多数据
         return QByteArray();
 
     //开始完整包校验
@@ -124,18 +138,18 @@ QByteArray ResponsePack::appendData(QByteArray _data)
     {
         cks = (cks + packData[i]) & 0xffff;
     }
-    quint16 packCks = *(quint16*)(packData.data() + dataLen + 10);
+    quint16 packCks = *(quint16*)(packData.data() + dataLen + 8);
     if(cks != packCks)
     {
-        qDebug()<<"[ResponsePack] pack check error:"<<cks<<packCks;
+        qDebug()<<"[ResponsePack] pack check error:"<<cks<<packCks<<(dataLen + 8);
+        packData.remove(0, len+10);
         prefix = 0;
         len = 0;
-        packData.remove(0, len+10);
         return QByteArray();
     }
     prefix = 0;
     len = 0;
-    data = packData.mid(8, len);
+    data = packData.mid(10, len-2);
 //    qDebug()<<"packdata:"<<packData.mid(0, dataLen+10).toHex();
     QByteArray ret = packData.left(dataLen+10);
     packData.remove(0, dataLen+10);
@@ -146,6 +160,7 @@ void ResponsePack::initData(QByteArray _data)
 {
     magicCode = 0xffff;
     packData.append(_data);
+//    qDebug()<<"prefix"<<prefix<<packData.toHex();
 
     if(prefix == 0)//等待包头
     {
@@ -175,11 +190,10 @@ void ResponsePack::initData(QByteArray _data)
         len = *(quint16*)pos;
         pos += 2;
         ret = *(quint16*)pos;
-        qDebug()<<"ret"<<ret;
     }
 
-    int dataLen = len<14?14:len;//data的长度
-    if(packData.size() < (dataLen + 12))//需要等待更多数据
+    int dataLen = len<16?16:len;//data的长度
+    if(packData.size() < (dataLen + 10))//需要等待更多数据
         return;
 
     //开始完整包校验
@@ -188,16 +202,17 @@ void ResponsePack::initData(QByteArray _data)
     {
         cks = (cks + packData[i]) & 0xffff;
     }
-    quint16 packCks = *(quint16*)(packData.data() + dataLen + 10);
+    quint16 packCks = *(quint16*)(packData.data() + dataLen + 8);
     if(cks != packCks)
     {
         qDebug()<<"[ResponsePack] pack check error:"<<cks<<packCks;
+        packData.remove(0, len+10);
         prefix = 0;
         len = 0;
-        packData.remove(0, len+10);
         return;
     }
-    data = packData.mid(8, len);
+    data = packData.mid(10, len-2);
+
 }
 
 quint16 ResponsePack::getMagicCode()
