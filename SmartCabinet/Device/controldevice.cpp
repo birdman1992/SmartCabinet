@@ -2,6 +2,7 @@
 #include <linux/hidraw.h>
 #include <linux/hiddev.h>
 #include <linux/input.h>
+#include <arpa/inet.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -9,6 +10,7 @@
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <QTimer>
 
 #define DEV_TEMP "/dev/ttymxc1"     //温度
 #define DEV_LOCK_CTRL "/dev/ttymxc2"   //底板串口
@@ -414,6 +416,15 @@ void ControlDevice::openLock(int seqNum, int index)
     qba[3] = index;
 
     lockCtrl(seqNum, index);
+}
+
+void ControlDevice::openLed(quint16 ledState)
+{
+    QByteArray qba = QByteArray::fromHex("8a0000a8");
+    char* pos = qba.data()+1;
+    *(quint16*)pos = htons(ledState);
+    qDebug()<<"[openLed]"<<qba.toHex();
+    com_lock_ctrl->write(qba);
 }
 
 void ControlDevice::getLockState()

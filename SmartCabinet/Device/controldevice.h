@@ -76,6 +76,7 @@ signals:
 public slots:
     void openCase(int seqNum, int index);//柜格映射IO参数
     void openLock(int seqNum, int index);//直接锁控IO参数
+    void openLed(quint16 ledState);
     void getLockState();
     void readyForNewCar(GoodsCar car);
 
