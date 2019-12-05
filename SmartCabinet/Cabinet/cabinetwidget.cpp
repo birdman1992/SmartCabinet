@@ -639,7 +639,6 @@ void CabinetWidget::recvScanData(QByteArray qba)
             qDebug()<<"[fetch]"<<"scan data not find";
             config->showMsg(MSG_GOODS_NOT_FIND, 1);
             win_access->showTips(MSG_GOODS_NOT_FIND, 1);
-//            win_access->fetchFailed(MSG_GOODS_NOT_FIND);
             return;
         }
         if(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
