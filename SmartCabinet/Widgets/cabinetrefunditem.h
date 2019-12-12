@@ -14,7 +14,7 @@ class CabinetRefundItem : public QWidget
     Q_OBJECT
 
 public:
-    explicit CabinetRefundItem(GoodsInfo* info, QWidget *parent = 0);//物品名，包id
+    explicit CabinetRefundItem(Goods* info, QWidget *parent = 0);//物品名，包id
     ~CabinetRefundItem();
     int itemNum();
     QString itemId();

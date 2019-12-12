@@ -23,6 +23,7 @@
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
 #include "manager/goodsmanager.h"
+#include "sql/sqlmanager.h"
 
 bool posSort(Cabinet* A, Cabinet* B);
 
@@ -42,6 +43,7 @@ public:
     bool installGlobalConfig(CabinetConfig *globalConfig);
     void caseLock();
     void caseUnlock();
+    void updateCase(int col, int row);
 
 public slots:
     void switchCabinetState(CabState state);
@@ -77,7 +79,7 @@ public slots:
 signals:
     void updateLoginState(bool isLogin);//登录状态更新,登入亮灯，登出灭灯
     void winSwitch(int);
-    void goodsAccess(CaseAddress, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)
+    void goodsAccess(QPoint, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)
     void requireUserCheck(QString);//请求身份验证
     void requireGoodsListCheck(QString);//请求送货单验证
     void requireOpenCase(int seqNum, int index);
@@ -144,11 +146,13 @@ protected:
 private:
     Ui::CabinetWidget *ui;
     CabinetConfig* config;
+    SqlManager* sqlManager;
     CheckWarning* win_check_warnning;
     QButtonGroup groupBtn;
     QSlider* volume;//音量控件
     QString curCard;
     QTimer* timeUpdater;
+    QList<Cabinet *> list_cabinet;
     int tsCalFlag;
 
     bool volPressed;
@@ -162,7 +166,7 @@ private:
     int selectCase;//选中的柜格编号
     int bindCab;
     int bindCase;
-    GoodsInfo bindInfo;
+    Goods bindInfo;
     GoodsManager* goodsManager;
 
     int storeNum;
@@ -180,7 +184,7 @@ private:
     QMessageBox* msgBox;
     GoodsList* curStoreList;
     Goods* curGoods;
-    GoodsInfo* rebindGoods;
+    QString rebindGoods;
     CabinetAccess* win_access;//存取窗口
     CabinetListView* win_cab_list_view;//柜子列表视图窗口
     CabinetCheck* win_check;//盘点窗口
@@ -196,7 +200,7 @@ private:
     void paintEvent(QPaintEvent *);
     void cabLock();
     void cabInit();
-    void cabInfoBind(int seq, int index, GoodsInfo info);
+    void cabInfoBind(int seq, int index, QString info);
     void initAccessState();
     void initSearchBtns();
     void initVolum();

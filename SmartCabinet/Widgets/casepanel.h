@@ -20,7 +20,7 @@ public:
     ~CasePanel();
     void setCheckState(bool checked);
     void setText(QStringList text);
-    void setText(QList<GoodsInfo*> list);
+    void setText(QList<Goods*> list);
     QFont caseFont();
     int labWidth();
     int maxShowNum();
@@ -32,9 +32,11 @@ private:
     bool showDoubleCol;
     bool isSpec;//特殊柜
     QFont* font;
-    QList<GoodsInfo *> list_show;
+    QStringList cur_show;
+    QList<Goods *> list_show;
     QString geteElidedText(QFont _font, QString str, int MaxWidth);
-    QString getShowStr(GoodsInfo* info);
+    QString getShowStr(Goods* info);
+    QString getShowStr(QString goodsStr);
     int getMaxLine();
     int getStringWidth(QString str);
     void updatePanel();

@@ -26,7 +26,7 @@ public:
     void setAccessModel(bool store);//true:存 false:取
     void setStoreList(GoodsList* list);
     void clickOpen(QString goodsId);
-    void clickOpen(CabinetInfo* info);
+    void clickOpen();
     void scanOpen(QString goodsId, QString goodsCode=QString());
     void save();
     void storeFailed(QString msg);

@@ -26,7 +26,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     waitForCheckFinish = false;
     waitForInit = true;
     loginState = false;
-    rebindGoods = NULL;
+    rebindGoods = QString();
     curStoreList = NULL;
     msgBox = NULL;
     selectCase = -1;
@@ -38,6 +38,9 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_refund = new CabinetRefund();
     win_net_set = new NetworkSet();
     win_check_warnning = new CheckWarning();
+    sqlManager = SqlManager::manager();
+    sqlManager->selectAllGoods();
+
     connect(win_check_warnning, SIGNAL(pushCheck()), this, SLOT(checkPush()));
 #ifdef TCP_API
     goodsManager = GoodsManager::manager();
@@ -152,12 +155,21 @@ void CabinetWidget::cabInit()
     ui->search->setChecked(false);
 }
 
-void CabinetWidget::cabInfoBind(int seq, int index, GoodsInfo info)
+void CabinetWidget::cabInfoBind(int seq, int index, QString info)
 {
+    QPoint addr = SqlManager::searchByPackageId(info);
+    SqlManager::bindGoodsId(seq, index, info);
+    config->list_cabinet[seq]->updateCase(index);
+    if((addr.x() < 0) | (addr.y() < 0))
+        return;
+    if(addr.x() >= config->list_cabinet.count())
+        return;
+
+    config->list_cabinet[addr.x()]->updateCase(addr.y());
 //    qDebug()<<"bind"<<info.id<<info.abbName;
 //    info.goodsType = config->getGoodsType(info.packageId);
 //    qDebug()<<info.goodsType;
-    config->list_cabinet[seq]->setCaseName(info, index);
+//    config->list_cabinet[seq]->setCaseName(info, index);
 //    emit requireCaseBind(seq, index, info.packageId);
 }
 
@@ -236,7 +248,7 @@ void CabinetWidget::rebindRecover()
 //    config->list_cabinet[rebind_old_addr.cabinetSeqNum]->setCaseName(*rebindGoods, rebind_old_addr.caseIndex);
 
 //    rebindOver();
-    rebindGoods = NULL;
+    rebindGoods = QString();
     rebind_new_addr.clear();
     rebind_old_addr.clear();
     config->showMsg(MSG_REBIND_SCAN,0);
@@ -245,12 +257,13 @@ void CabinetWidget::rebindRecover()
 void CabinetWidget::rebindOver()
 {
     qDebug("rebindOver");
-    config->removeConfig(rebind_old_addr);
-    config->setConfig(rebind_new_addr, rebindGoods);
+//    config->removeConfig(rebind_old_addr);
+//    config->setConfig(rebind_new_addr, rebindGoods);
 
-    rebindGoods = NULL;
-    rebind_new_addr.clear();
-    rebind_old_addr.clear();
+//    rebindGoods = NULL;
+//    rebind_new_addr.clear();
+//    rebind_old_addr.clear();
+    rebindGoods = QString();
     config->showMsg(MSG_REBIND_SCAN,0);
 }
 
@@ -386,6 +399,7 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     int i=0;
     qDebug()<<"index"<<index;
     qSort(cabinets.begin(),cabinets.end(),posSort);
+    list_cabinet = cabinets;
 
     ui->cabinet_layout->addStretch();
     for(i=0; i<cabinets.count(); i++)
@@ -457,27 +471,13 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
                 return;
             }
         }
-//        GoodsInfo info;
-        bindInfo.abbName = curGoods->abbName;
-        bindInfo.name = curGoods->name;
-        bindInfo.id = curGoods->goodsId;
-        bindInfo.packageId = curGoods->packageBarcode;
-        bindInfo.unit = curGoods->unit;
-        bindInfo.num = 0;
-        bindInfo.Py = config->getPyCh(bindInfo.name);
-        bindInfo.goodsType = config->getGoodsType(bindInfo.packageId);
-        bindCab = selectCab;
-        bindCase = selectCase;
-        qDebug()<<"[pinyin]"<<bindInfo.Py;
-//        cabInfoBind(selectCab, selectCase, info);
-        emit requireCaseBind(bindCab, bindCase, bindInfo.packageId);
+
+        cabInfoBind(selectCab, selectCase, curGoods->packageId);
+        emit requireCaseBind(selectCab, selectCase, curGoods->packageId);
         config->showMsg(MSG_EMPTY,0);
-//        config->list_cabinet[selectCab]->setCaseName(info, selectCase);
-//        config->list_cabinet[selectCab]->consumableIn(selectCase);
-//        config->showMsg(MSG_STORE, false);
-//        win_access->clickOpen(curGoods->goodsId);
+//        config->list_cabinet[selectCab]->updateCase(selectCase);
     }
-    else if(config->state == STATE_FETCH)
+    else if((config->state == STATE_FETCH) || (config->state == STATE_BACK))
     {
 //        if(!clickRepeat)//如果该柜格没有存放药品
 //        {qDebug()<<"empty";
@@ -499,10 +499,10 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         waitForCodeScan = true;
         clickLock = false;
         scanInfo = QString();
-        CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
+//        CabinetInfo* info = config->list_cabinet[cabSeqNum]->list_case[caseIndex];
         win_access->setNetworkState(ui->netState->isChecked());
         win_access->setAccessModel(false);
-        win_access->clickOpen(info);
+        win_access->clickOpen();
 //        config->showMsg(MSG_FETCH_SCAN, false);
     }
     else if(config->state == STATE_REFUN)
@@ -540,20 +540,20 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //            config->showMsg(MSG_FULL, 1);
 //            return;
 //        }
-        if(rebindGoods == NULL)
+        if(rebindGoods.isEmpty())
         {
             waitForCodeScan = true;
             return;
         }
-        if(rebind_new_addr.cabinetSeqNum>=0)
-            return;
-        rebind_new_addr.cabinetSeqNum = selectCab;
-        rebind_new_addr.caseIndex = selectCase;
-        rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
+//        if(rebind_new_addr.cabinetSeqNum>=0)
+//            return;
+//        rebind_new_addr.cabinetSeqNum = selectCab;
+//        rebind_new_addr.caseIndex = selectCase;
+//        rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
 
 //        config->removeConfig(rebind_old_addr);
-        emit requireCaseRebind(selectCab, selectCase, rebindGoods->packageId);
-//        cabInfoBind(selectCab, selectCase, *rebindGoods);
+        emit requireCaseRebind(selectCab, selectCase, rebindGoods);
+        cabInfoBind(selectCab, selectCase, rebindGoods);
     }
     else if(config->state == STATE_SPEC)
     {
@@ -574,21 +574,21 @@ bool CabinetWidget::isListCode(QByteArray qba)
 }
 
 void CabinetWidget::recvScanData(QByteArray qba)
-{qDebug()<<"recvScanData"<<qba<<qba.toHex();
+{qDebug()<<"recvScanData"<<qba<<qba.toHex()<<config->state;
     magicCmd(QString(qba));
     if(config->getCabinetMode() == "aio")//一体机模式，无需通过按钮进入存取货模式
     {
         if(optUser == NULL)//未登录
             return;
 
-        if(isListCode(qba))//是存货单，进入存模式
-        {
-            waitForGoodsListCode = true;
-            switchCabinetState(STATE_STORE);
-        }
-        if(config->state == STATE_FETCH)
-            switchCabinetState(config->state);
-        waitForCodeScan = true;
+//        if(isListCode(qba))//是存货单，进入存模式
+//        {
+//            waitForGoodsListCode = true;
+//            switchCabinetState(STATE_STORE);
+//        }
+//        if(config->state == STATE_FETCH)
+        switchCabinetState(config->state);
+//        waitForCodeScan = true;
     }
 
     if(!waitForCodeScan)
@@ -607,20 +607,21 @@ void CabinetWidget::recvScanData(QByteArray qba)
 
     bool newStore;
     Q_UNUSED(newStore);
-    QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
+//    QByteArray code = scanDataTrans(qba);//截取去掉唯一码,xxx-xxxxxxx-xx-xxxx  ->  xxxxxxx-xx
 
 //    if(scanInfo != QString(code))
 //    {
 //        newStore = true;
 //    }
-    scanInfo = QString(code);
     fullScanInfo = QString(qba);
+    scanInfo = SqlManager::getGoodsId(fullScanInfo);
+
 #ifdef TCP_API
     scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
 #else
     scanGoodsId = scanInfo;
 #endif
-    qDebug()<<scanInfo<<fullScanInfo;
+    qDebug()<<scanInfo<<fullScanInfo<<config->state;
 
     if(config->state == STATE_STORE)
     {
@@ -632,27 +633,22 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_FETCH)
     {/*qDebug("fetch");*/
-        CaseAddress addr = config->checkCabinetByBarCode(scanGoodsId);
+        QPoint addr = SqlManager::searchByCode(fullScanInfo);
+        Goods* info = SqlManager::searchGoodsByCode(fullScanInfo);
 
-        if(addr.cabinetSeqNum == -1)
+        if(info == NULL)
         {
             qDebug()<<"[fetch]"<<"scan data not find";
             config->showMsg(MSG_GOODS_NOT_FIND, 1);
             win_access->showTips(MSG_GOODS_NOT_FIND, 1);
             return;
         }
-        if(config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num>0)//物品未取完
+        SqlManager::scanFetch(fullScanInfo, SqlManager::no_rep, SqlManager::mask_all);
+        list_cabinet[addr.x()]->updateCase(addr.y());
+        if(SqlManager::getGoodsCount(info->packageId)>0)//物品未取完
         {
-            if(!ui->netState->isChecked())
-            {
-                win_access->scanOpen(scanGoodsId, fullScanInfo);
-                emit goodsAccess(addr,fullScanInfo, 1, 1);
-            }
-            else
-            {
-                win_access->scanOpen(scanGoodsId);          
-                emit goodsAccess(addr,fullScanInfo, 1, 1);
-            }
+            win_access->scanOpen(scanGoodsId, fullScanInfo);
+            emit goodsAccess(addr,fullScanInfo, 1, 1);
         }
         else
         {
@@ -688,14 +684,29 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_REBIND)
     {
-        rebind_old_addr = config->checkCabinetByBarCode(scanGoodsId);
-        if(rebind_old_addr.cabinetSeqNum == -1)
-            return;
-
         config->showMsg(MSG_REBIND_SELECT, 0);
-        rebindGoods = config->list_cabinet[rebind_old_addr.cabinetSeqNum]->list_case[rebind_old_addr.caseIndex]->list_goods.takeAt(rebind_old_addr.goodsIndex);
+        rebindGoods = scanGoodsId;
         waitForCodeScan = false;
-//        config->removeConfig(rebind_old_addr);
+    }
+    else if(config->state == STATE_BACK)
+    {
+        QPoint addr = SqlManager::searchByCode(fullScanInfo);
+        Goods* info = SqlManager::searchGoodsByCode(fullScanInfo);
+        if((addr.x() >= 0) && (addr.y() >= 0))
+        {
+            SqlManager::scanFetch(fullScanInfo, SqlManager::all_rep, SqlManager::mask_all);
+            list_cabinet[addr.x()]->updateCase(addr.y());
+        }
+
+//        if(info == NULL)
+//        {
+//            qDebug()<<"[fetch]"<<"scan data not find";
+//            config->showMsg(MSG_GOODS_NOT_FIND, 1);
+//            win_access->showTips(MSG_GOODS_NOT_FIND, 1);
+//            return;
+//        }
+        win_access->scanOpen(scanGoodsId, fullScanInfo);
+        emit goodsAccess(addr,fullScanInfo, 1, 16);
     }
 
 }
@@ -737,7 +748,8 @@ void CabinetWidget::updateDelay(int delay)
 {
     updateNetState(delay);
     ui->delay->setText(QString("%1ms").arg(delay));
-    ui->delay->setChecked(((delay<100) && (delay>0)));
+    config->netState = ((delay<100) && (delay>0));
+    ui->delay->setChecked(config->netState);
 }
 
 void CabinetWidget::showEvent(QShowEvent *)
@@ -787,6 +799,14 @@ void CabinetWidget::caseUnlock()
     clickLock = false;
 }
 
+void CabinetWidget::updateCase(int col, int row)
+{
+    if(col >= list_cabinet.count())
+        return;
+
+    list_cabinet[col]->updateCase(row);
+}
+
 void CabinetWidget::switchCabinetState(CabState state)
 {
     config->state = state;
@@ -794,15 +814,22 @@ void CabinetWidget::switchCabinetState(CabState state)
     switch(state)
     {
     case STATE_FETCH:
+        clickLock = false;
         caseClicked(0,0);
         break;
     case STATE_STORE:
         on_store_clicked(true);
         break;
     case STATE_REFUN:
+        clickLock = false;
         caseClicked(0,0);
         break;
     case STATE_CHECK:
+        clickLock = false;
+        caseClicked(0,0);
+        break;
+    case STATE_BACK:
+        clickLock = false;
         caseClicked(0,0);
         break;
     case STATE_LIST:
@@ -995,30 +1022,32 @@ void CabinetWidget::updateNetState(bool connected)
 
 void CabinetWidget::saveStore(Goods *goods, int num)
 {qDebug("[saveStore]");
-    CaseAddress addr = config->checkCabinetByName(goods->name);
-//    config->list_cabinet[addr.cabinetSeqNUM]->consumableIn(addr,num);
-    emit goodsAccess(addr, goods->packageBarcode, num, 2);
-    scanInfo.clear();
-    curStoreList->goodsIn(goods->packageBarcode, num);
+    Q_UNUSED(goods);
+    Q_UNUSED(num);
+//    CaseAddress addr = config->checkCabinetByName(goods->name);
 
-    if(curStoreList->isFinished())
-        config->showMsg(MSG_EMPTY, false);
-    else
-        config->showMsg(MSG_STORE, false);
-//    initAccessState();
+//    emit goodsAccess(addr, goods->packageBarcode, num, 2);
+//    scanInfo.clear();
+//    curStoreList->goodsIn(goods->packageBarcode, num);
+
+//    if(curStoreList->isFinished())
+//        config->showMsg(MSG_EMPTY, false);
+//    else
+//        config->showMsg(MSG_STORE, false);
+
 }
 
 void CabinetWidget::saveFetch(QString name, int num)
 {
-    if(num<=0)
-        return;
+    Q_UNUSED(name);
+    Q_UNUSED(num);
+//    if(num<=0)
+//        return;
 
-    CaseAddress addr = config->checkCabinetByName(name);
-//    config->list_cabinet[addr.cabinetSeqNUM]->consumableOut(addr,num);
-    clickLock = false;
-    emit requireOpenCase(addr.cabinetSeqNum, addr.caseIndex);
-    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, 1);
-//    initAccessState();
+//    CaseAddress addr = config->checkCabinetByName(name);
+//    clickLock = false;
+//    emit requireOpenCase(addr.cabinetSeqNum, addr.caseIndex);
+//    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, 1);
 }
 
 void CabinetWidget::warningMsgBox(QString title, QString msg)
@@ -1267,7 +1296,7 @@ void CabinetWidget::recvBindRst(bool rst)
             CaseAddress addr;
             addr.cabinetSeqNum = bindCab;
             addr.caseIndex = bindCase;
-            cabInfoBind(bindCab, bindCase, bindInfo);
+//            cabInfoBind(bindCab, bindCase, bindInfo);
 
             win_store_list->show();
             setMenuHide(false);
@@ -1300,17 +1329,15 @@ void CabinetWidget::recvGoodsCheckRst(QString msg)
 
 void CabinetWidget::recvGoodsNumInfo(QString goodsId, int num)
 {
-    CaseAddress addr = config->checkCabinetByBarCode(goodsId);
-    if(num == -1)
+    QPoint pos = SqlManager::searchByPackageId(goodsId);
+    if(pos.x() == -1)
     {
-        num = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->num - 1;
-    }
-    qDebug()<<goodsId<<num<<config->state<<addr.cabinetSeqNum;
-    if(addr.cabinetSeqNum == -1)
+        qDebug()<<"[recvGoodsNumInfo]:search goodsId failed";
         return;
+    }
     else
     {
-        config->list_cabinet[addr.cabinetSeqNum]->updateGoodsNum(addr, num);
+        config->list_cabinet[pos.x()]->updateCase(pos.y());
         if(config->state == STATE_LIST)
             win_cab_list_view->fetchSuccess();
         else if(config->state == STATE_STORE)
@@ -1344,6 +1371,10 @@ void CabinetWidget::accessFailedMsg(QString msg)
     else if(config->state == STATE_REFUN)
     {
         win_refund->refundRst(msg);
+    }
+    else if(config->state == STATE_BACK)
+    {
+        win_access->fetchFailed(msg);
     }
     qDebug()<<msg;
 }
@@ -1556,6 +1587,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     cabInit();
     waitForCodeScan = false;
     waitForGoodsListCode = false;
+    rebindGoods = QString();
     msgClear();
     emit updateLoginState(true);
     optUser = info;

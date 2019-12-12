@@ -13,16 +13,38 @@ public:
     Goods(QString _goodsId, QString goodsName, int goodsNum);
     Goods(Goods* goods);
     QStringList codes;
-    QString name;
-    QString abbName;
-    QString goodsId;
+    QString name;//耗材名
+    QString abbName;//简称
+    QString goodsId;//耗材id
+    QString packageId;//包ID
     QString size;//规格
-    QString unit;
-    QString packageBarcode;
+    QString unit;//计数单位
     QString roomName;
     QString proName;//生产商
     QString supName;//供应商
+    QString optName;//操作人
+    QString optTime;//操作时间
+    QString batch;//批次
+    QString traceId;//条码
+    int lifeDay;//效期天数
+    QString productTime;//生产日期
+    QString lifeTime;//有效期至
+    int threshold;//预警数据(包)
+    int maxThreshold;//最大数量(包)
+    int goodsType;//打包规格
+    int packageCount;//包数
+    int goodsCount;//拆散数量
+    int num;//耗材数量
+    int outNum;//取出数量
+    int col;
+    int row;
+    float price;//单价
+    float sumCount;//总价
+    QString aioInNum;//入库数
+    QString aioOutNum;//出库数
 
+    QString listCode;
+    QString Py;
     QPoint pos;
     int packageType;
     int batchNumber;
@@ -34,6 +56,7 @@ public:
     int curNum;//未写入柜子信息的已存入数量
     int storeNum;//写入柜子信息的已存入数量
     bool finish;
+    QString nameWithType();
 };
 
 class GoodsList

@@ -53,7 +53,6 @@ void CabinetCheck::checkScan(QString scanId, QString fullId)
         return;
     }
 
-
     for(i=0; i<list_item.count(); i++)
     {
 //        qDebug()<<list_item.at(i)->itemId()<<scanId;
@@ -81,20 +80,21 @@ void CabinetCheck::checkStart(CaseAddress addr)
     ui->msg->setText("");
     ui->ok->setText("提交");
 
-    curCheckCab = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex];
     curAddr.cabinetSeqNum = addr.cabinetSeqNum;
     curAddr.caseIndex = addr.caseIndex;
+    QList<Goods*>list_goods = SqlManager::getGoodsList(addr.cabinetSeqNum, addr.caseIndex);
 
     int i = 0;
-    ui->checktable->setRowCount(curCheckCab->list_goods.count());
+    ui->checktable->setRowCount(list_goods.count());
     ui->checktable->setColumnCount(1);
 
-    for(i=0; i<curCheckCab->list_goods.count(); i++)
+    for(i=0; i<list_goods.count(); i++)
     {
-        CabinetCheckItem* item = new CabinetCheckItem(curCheckCab->list_goods.at(i));
+        CabinetCheckItem* item = new CabinetCheckItem(list_goods.at(i));
         ui->checktable->setCellWidget(i, 0, item);
         list_item<<item;
     }
+    qDeleteAll(list_goods.begin(), list_goods.end());
 
     this->show();
 }

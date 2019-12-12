@@ -2,7 +2,7 @@
 #include "ui_cabinetcheckitem.h"
 #include <QPainter>
 
-CabinetCheckItem::CabinetCheckItem(GoodsInfo* info, QWidget *parent) :
+CabinetCheckItem::CabinetCheckItem(Goods* info, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CabinetCheckItem)
 {

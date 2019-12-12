@@ -46,7 +46,7 @@ public slots:
     void recvUserInfo(QByteArray qba);//接收用户信息
     void sysLock();//系统锁定
     void recvAioOverview(QString msg, AIOOverview* overview);
-    void recvAioData(QString msg,AIOMachine::cEvent e,QList<GoodsInfo*> lInfo);
+    void recvAioData(QString msg,AIOMachine::cEvent e,QList<Goods*> lInfo);
     void updateTemp(QString);
     void updateHum(QString);
     void winMsg(QString);
@@ -105,7 +105,7 @@ private:
     CabinetAccess* win_access;
     QMap<QString, colMark> mapColName;
     QList<QLabel*> l_num_label;
-    QList<GoodsInfo*> cur_list;
+    QList<Goods*> cur_list;
     QStringList listColName;
     UserInfo* optUser;
     CabinetConfig* config;
@@ -114,24 +114,30 @@ private:
 //    FingerPrint* win_fingerPrint;
     bool loginState;
     int curPage;
-    QList<GoodsInfo*> showList;
+    int curState;
+    QStringList optList;
+    QMap<QString, int> curStateText;
+    QList<Goods*> showList;
 
     void paintEvent(QPaintEvent *);
     bool eventFilter(QObject *, QEvent *);
     void initNumLabel();
     void initColMap();
+    void initStateMap();
+    void updateState();
+    void nextState();
     void setAioInfo(QString departName, QString departId);
     void setNumLabel(AIOOverview* overview);
-    void showTable(QString title, QStringList colNames, QList<GoodsInfo*>);
-    void showNumExpired(QList<GoodsInfo*> lInfo);
-    void showNumGoods(QList<GoodsInfo*> lInfo);
-    void showNumTodayIn(QList<GoodsInfo*> lInfo);
-    void showNumTodayOut(QList<GoodsInfo*> lInfo);
-    void showNumWarningRep(QList<GoodsInfo*> lInfo);
-    void showLabTemp(QList<GoodsInfo*> lInfo);
-    void showLabHum(QList<GoodsInfo*> lInfo);
-    QString getGoodsInfoText(GoodsInfo* info, QString key);
-    QList<GoodsInfo*> listPage(unsigned int pageNum);
+    void showTable(QString title, QStringList colNames, QList<Goods*>);
+    void showNumExpired(QList<Goods*> lInfo);
+    void showNumGoods(QList<Goods*> lInfo);
+    void showNumTodayIn(QList<Goods*> lInfo);
+    void showNumTodayOut(QList<Goods*> lInfo);
+    void showNumWarningRep(QList<Goods*> lInfo);
+    void showLabTemp(QList<Goods*> lInfo);
+    void showLabHum(QList<Goods*> lInfo);
+    QString getGoodsInfoText(Goods* info, QString key);
+    QList<Goods*> listPage(unsigned int pageNum);
 
     void sysUnlock();
 
@@ -150,6 +156,7 @@ private slots:
     void on_tab_last_clicked();
     void on_tab_next_clicked();
     void on_setting_clicked();
+    void on_cur_state_clicked();
 };
 
 #endif // AIOMACHINE_H

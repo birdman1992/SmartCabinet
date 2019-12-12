@@ -492,6 +492,71 @@ padding-bottom:10px;
                 <number>0</number>
                </property>
                <item>
+                <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="cur_state">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>158</width>
+                     <height>158</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>158</width>
+                     <height>158</height>
+                    </size>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::NoFocus</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton{
+border: 20px outset  grey;
+color: rgb(255, 255, 255);
+background-color:rgb(44,193,243);
+font: 75 61px &quot;WenQuanYi Micro Hei Mono&quot;;
+}
+
+QPushButton::pressed{
+border: 20px inset  grey;
+color: rgb(255, 255, 255);
+background-color:rgb(44,193,243);
+font: 75 61px &quot;WenQuanYi Micro Hei Mono&quot;;
+}
+
+</string>
+                   </property>
+                   <property name="text">
+                    <string>存</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
                 <widget class="QPushButton" name="aio_check_create">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">

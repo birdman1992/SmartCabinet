@@ -76,15 +76,15 @@ void CabinetRefund::refundStart(CaseAddress addr)
     ui->msg->setText("");
     ui->ok->setText("提交");
 
-    curRefundCab = config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex];
     curAddr.cabinetSeqNum = addr.cabinetSeqNum;
     curAddr.caseIndex = addr.caseIndex;
+    QList<Goods*> list_goods = SqlManager::getGoodsList(addr.cabinetSeqNum, addr.caseIndex);
 
     int i = 0;
-    ui->checktable->setRowCount(curRefundCab->list_goods.count());
+    ui->checktable->setRowCount(list_goods.count());
     ui->checktable->setColumnCount(1);
 
-    for(i=0; i<curRefundCab->list_goods.count(); i++)
+    for(i=0; i<list_goods.count(); i++)
     {
         CabinetRefundItem* item = new CabinetRefundItem(curRefundCab->list_goods.at(i));
         ui->checktable->setCellWidget(i, 0, item);

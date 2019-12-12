@@ -20,6 +20,7 @@
 #include "Structs/versioninfo.h"
 #include "Widgets/cabinetcheckitem.h"
 #include "Widgets/cabinetstorelistitem.h"
+#include "sql/sqlmanager.h"
 #include "aio/aiooverview.h"
 #include "aio/aiomachine.h"
 
@@ -62,6 +63,7 @@ private:
     QNetworkReply* reply_aio_data;
     AIOMachine::cEvent aio_state;
     CheckList* checkList;
+    SqlManager* sqlManager;
     QFile* pacUpdate;
     QString regId;
     QString logId;
@@ -94,8 +96,9 @@ private:
     void accessLoop();
     QString getAbbName(QString fullName);
     void watchdogStart();
+    QNetworkReply* post(QString url, QByteArray postData, qint64 timeStamp=0, bool need_resend=true);
+    qint64 getApiMark();
     QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
-    QNetworkReply* post(QString url, QByteArray postData);
 
 signals:
     void loginRst(UserInfo*);
@@ -127,7 +130,7 @@ signals:
     void updateCheckRst(bool needUpdate, QString version);
     //aio
     void aioOverview(QString, AIOOverview*);
-    void aioData(QString, AIOMachine::cEvent, QList<GoodsInfo*>);
+    void aioData(QString, AIOMachine::cEvent, QList<Goods*>);
     void aioMsg(QString);
 
 public slots:
@@ -141,7 +144,7 @@ public slots:
     void cabInfoSync();//柜子数据同步
     void cabColInsert(int pos, int num);
     void cabinetBind(int, int, QString);
-    void goodsAccess(CaseAddress, QString, int, int optType);
+    void goodsAccess(QPoint, QString, int, int optType);
     void listAccess(QStringList list, int optType);
     void goodsCheckReq();
     void goodsCheckFinish();
@@ -199,6 +202,7 @@ private slots:
     void netTimeout();
     int watchdogTimeout();
     void tarFinished(int code);
+    QByteArray apiComplete(cJSON* json);
 };
 
 #endif // CABINETSERVER_H

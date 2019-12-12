@@ -105,7 +105,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 void CabinetService::on_back_clicked()
 {
     if(config->getCabinetMode() == "aio")
-        emit winSwitch(INDEX_CAB_SERVICE);
+        emit winSwitch(INDEX_AIO);
     else
         emit winSwitch(INDEX_CAB_SHOW);
 //    if(sTest != NULL)
@@ -248,13 +248,13 @@ void CabinetService::creatCtrlConfig()
     {
         QVBoxLayout* layout = new QVBoxLayout();
 
-        for(j=0; j<list_temp[i]->list_case.count(); j++)
+        for(j=0; j<list_temp[i]->rowCount(); j++)
         {
             QString layoutStrech = list_temp.at(i)->getLayout();
             QPushButton* btn = new QPushButton(this);
             btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
             btn->setMaximumWidth(400);
-            QString str = QString("序号：%1\nIO号：%2").arg(list_temp.at(i)->list_case.at(j)->ctrlSeq).arg(list_temp.at(i)->list_case.at(j)->ctrlIndex);
+            QString str = QString("序号：%1\nIO号：%2").arg(list_temp.at(i)->ctrlSeq(j)).arg(list_temp.at(i)->ctrlIndex(j));
             btn->setText(str);
             layout->addWidget(btn);
             l_lock_conf.addButton(btn,((list_temp.at(i)->getSeqNum()<<8)+j));
@@ -272,12 +272,12 @@ void CabinetService::creatCtrlConfig()
         if(!config->list_cabinet[i]->isInLeft())
             continue;
 
-        for(j=0; j<config->list_cabinet[i]->list_case.count(); j++)
+        for(j=0; j<config->list_cabinet[i]->rowCount(); j++)
         {
                 QPushButton* btn = new QPushButton(this);
                 btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
                 btn->setMaximumWidth(400);
-                QString str = QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlSeq).arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlIndex);
+                QString str = QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(i)->ctrlSeq(j)).arg(config->list_cabinet.at(i)->ctrlIndex(j));
                 btn->setText(str);
                 layout->addWidget(btn);
                 l_lock_conf.addButton(btn,(i<<8)+j);
@@ -293,12 +293,12 @@ void CabinetService::creatCtrlConfig()
         if((config->list_cabinet[i]->isInLeft()))
             continue;
 
-        for(j=0; j<config->list_cabinet[i]->list_case.count(); j++)
+        for(j=0; j<config->list_cabinet[i]->rowCount(); j++)
         {
                 QPushButton* btn = new QPushButton(this);
                 btn->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
                 btn->setMaximumWidth(400);
-                QString str = QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlSeq).arg(config->list_cabinet.at(i)->list_case.at(j)->ctrlIndex);
+                QString str = QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(i)->ctrlSeq(j)).arg(config->list_cabinet.at(i)->ctrlIndex(j));
                 btn->setText(str);
                 layout->addWidget(btn);
                 l_lock_conf.addButton(btn,(i<<8)+j);
@@ -568,10 +568,10 @@ void CabinetService::updateBtn()
 
     if(seq >= config->list_cabinet.count())
         return;
-    if(index >= config->list_cabinet[seq]->list_case.count())
+    if(index >= config->list_cabinet[seq]->rowCount())
         return;
 
-    btn->setText(QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(seq)->list_case.at(index)->ctrlSeq).arg(config->list_cabinet.at(seq)->list_case.at(index)->ctrlIndex));
+    btn->setText(QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(seq)->ctrlSeq(index)).arg(config->list_cabinet.at(seq)->ctrlIndex(index)));
 }
 
 void CabinetService::on_rebind_clicked()

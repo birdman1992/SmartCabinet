@@ -192,18 +192,18 @@ void tcpServer::parGoodsInfo(cJSON *json)
     for(int i=0; i<userCount; i++)
     {
         cJSON* item = cJSON_GetArrayItem(json, i);
-        GoodsInfo* info = new GoodsInfo();
+        Goods* info = new Goods();
         int row = cJSON_GetObjectItem(item, "row")->valueint;
         int col = cJSON_GetObjectItem(item, "col")->valueint;
         info->abbName = QString(cJSON_GetObjectItem(item, "shortening")->valuestring);
         info->name = QString(cJSON_GetObjectItem(item, "goods_name")->valuestring);
         info->num = cJSON_GetObjectItem(item,"store_num")->valueint;
         info->outNum = 0;
-        info->id = QString(cJSON_GetObjectItem(item, "goods_id")->valuestring);
+        info->goodsId = QString(cJSON_GetObjectItem(item, "goods_id")->valuestring);
         info->goodsType = cJSON_GetObjectItem(item, "package_type")->valueint;
         info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
         info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-        info->packageId = info->id;
+        info->packageId = info->goodsId;
 
         if(info->goodsType<10)
             info->packageId += "-0"+QString::number(info->goodsType);
@@ -214,7 +214,7 @@ void tcpServer::parGoodsInfo(cJSON *json)
 //            info->abbName = getAbbName(info->name);
             info->abbName = info->name;
 
-        qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->id<<info->packageId<<info->num<<info->unit;
+        qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->goodsId<<info->packageId<<info->num<<info->unit;
         config->syncGoods(info, row, col);
     }
 }
@@ -231,9 +231,9 @@ Goods *tcpServer::parGoods(cJSON *json)
     ret->takeCount = cJSON_GetObjectItem(json,"count")->valueint;//packageCount
     ret->totalNum = ret->takeCount;
     if(ret->packageType<10)
-        ret->packageBarcode = ret->goodsId + "-0" + QString::number(ret->packageType);
+        ret->packageId = ret->goodsId + "-0" + QString::number(ret->packageType);
     else
-        ret->packageBarcode = ret->goodsId + "-" + QString::number(ret->packageType);
+        ret->packageId = ret->goodsId + "-" + QString::number(ret->packageType);
 
     cJSON* codeList = cJSON_GetObjectItem(json, "package_codes");
     int listSize = cJSON_GetArraySize(codeList);

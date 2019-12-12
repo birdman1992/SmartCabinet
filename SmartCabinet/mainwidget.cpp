@@ -36,10 +36,10 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<CabinetStoreListItem*> >("QList<CabinetStoreListItem*>");
     qRegisterMetaType<QList<CabinetCheckItem*> >("QList<CabinetCheckItem*>");
     qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
-    qRegisterMetaType<QList<GoodsInfo*> >("QList<GoodsInfo*>");
+    qRegisterMetaType<QList<Goods*> >("QList<GoodsInfo*>");
     qRegisterMetaType<AIOMachine::cEvent>("AIOMachine::cEvent");
 
-
+    win_aio = NULL;
 
     //智能柜配置
     cabinetConf = CabinetConfig::config();
@@ -147,7 +147,7 @@ void MainWidget::init_huangpo()
         connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
         connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
         connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
-        connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<GoodsInfo*>)));
+        connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<Goods*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<Goods*>)));
         connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
         connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
         connect(tempDev, SIGNAL(updateHumString(QString)), win_aio, SLOT(updateHum(QString)));
@@ -231,7 +231,7 @@ void MainWidget::connect_master()
     connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
     connect(win_cabinet, SIGNAL(requireCaseBind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
     connect(win_cabinet, SIGNAL(requireCaseRebind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
-    connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,int)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,int)));
+    connect(win_cabinet, SIGNAL(goodsAccess(QPoint,QString,int,int)), cabServer, SLOT(goodsAccess(QPoint,QString,int,int)));
     connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
     connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
     connect(win_cabinet, SIGNAL(checkCase(QStringList,CaseAddress)), cabServer, SLOT(goodsCheck(QStringList,CaseAddress)));
@@ -283,7 +283,7 @@ void MainWidget::connect_new_api()
     connect(win_cabinet, SIGNAL(requireGoodsListCheck(QString)), cabServer, SLOT(listCheck(QString)));
     connect(win_cabinet, SIGNAL(requireCaseBind(int,int,QString)), cabServer, SLOT(cabinetBind(int,int,QString)));
     connect(win_cabinet, SIGNAL(requireCaseRebind(int,int,QString)), cabServer, SLOT(cabinetRebind(int,int,QString)));
-    connect(win_cabinet, SIGNAL(goodsAccess(CaseAddress,QString,int,int)), cabServer, SLOT(goodsAccess(CaseAddress,QString,int,int)));
+    connect(win_cabinet, SIGNAL(goodsAccess(QPoint,QString,int,int)), cabServer, SLOT(goodsAccess(QPoint,QString,int,int)));
     connect(win_cabinet, SIGNAL(requireAccessList(QStringList,int)), cabServer, SLOT(listAccess(QStringList,int)));
     connect(win_cabinet, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), cabServer, SLOT(goodsCheck(QList<CabinetCheckItem*>,CaseAddress)));
     connect(win_cabinet, SIGNAL(checkCase(QStringList,CaseAddress)), cabServer, SLOT(goodsCheck(QStringList,CaseAddress)));
@@ -371,3 +371,31 @@ void MainWidget::paintEvent(QPaintEvent*)
 //        cab_connect_mode(true);
 //    }
 //}
+
+void MainWidget::on_stackedWidget_currentChanged(int arg1)
+{
+    if((arg1 == INDEX_AIO) && win_aio == NULL)
+    {
+        win_aio = new AIOMachine(this);
+        connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
+        connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+        connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+        connect(win_aio, SIGNAL(aio_check(bool)), win_cabinet, SLOT(on_check_clicked(bool)));
+        connect(win_aio, SIGNAL(service_show()), win_cab_service, SLOT(show()));
+        connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
+        connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
+        connect(win_aio, SIGNAL(logout()), win_cabinet, SLOT(sysLock()));
+        connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
+        connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
+        connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
+        connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<Goods*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<Goods*>)));
+        connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
+        connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
+        connect(tempDev, SIGNAL(updateHumString(QString)), win_aio, SLOT(updateHum(QString)));
+        connect(tempDev, SIGNAL(updateTempString(QString)), win_aio, SLOT(updateTemp(QString)));
+        //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
+        //    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
+        ui->page_2->layout()->addWidget(win_aio);
+        //        win_aio->sysLock();
+    }
+}

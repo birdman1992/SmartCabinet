@@ -65,7 +65,7 @@ GoodsList *StoreListManager::recoverGoodsList(QString listCode)
         goods->name = getConfig(configGroup+"name", QString()).toString();
         goods->size = getConfig(configGroup+"size", QString()).toString();
         goods->packageType = getConfig(configGroup+"packageType", 1).toInt();
-        goods->packageBarcode = getConfig(configGroup+"packageBarcode", QString()).toString();
+        goods->packageId = getConfig(configGroup+"packageBarcode", QString()).toString();
         goods->proName = getConfig(configGroup+"proName", QString()).toString();
         goods->supName = getConfig(configGroup+"supName", QString()).toString();
         goods->totalNum = getConfig(configGroup+"totalNum", 0).toInt();
@@ -88,11 +88,11 @@ void StoreListManager::creatStoreCache(GoodsList *goodsList)
     //save goods info
     foreach (Goods* goods, goodsList->list_goods)
     {
-        QString configGroup = goods->packageBarcode + "/";
+        QString configGroup = goods->packageId + "/";
         setConfig(configGroup+"name", goods->name);
         setConfig(configGroup+"size", goods->size);
         setConfig(configGroup+"packageType", goods->packageType);
-        setConfig(configGroup+"packageBarcode", goods->packageBarcode);
+        setConfig(configGroup+"packageBarcode", goods->packageId);
         setConfig(configGroup+"proName", goods->proName);
         setConfig(configGroup+"supName", goods->supName);
         setConfig(configGroup+"totalNum", goods->totalNum);

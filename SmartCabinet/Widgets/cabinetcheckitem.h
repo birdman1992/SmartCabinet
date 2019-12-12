@@ -14,7 +14,7 @@ class CabinetCheckItem : public QWidget
     Q_OBJECT
 
 public:
-    explicit CabinetCheckItem(GoodsInfo* info, QWidget *parent = 0);//物品名，包id
+    explicit CabinetCheckItem(Goods* info, QWidget *parent = 0);//物品名，包id
     ~CabinetCheckItem();
     int itemNum();
     QString itemId();

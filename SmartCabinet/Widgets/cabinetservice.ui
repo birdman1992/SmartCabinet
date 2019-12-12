@@ -1032,7 +1032,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.5.9.20190809_beta</string>
+        <string>1.6.0.20191212_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
@@ -1612,12 +1612,6 @@ background-color: rgb(105, 157, 255);</string>
          </widget>
         </item>
        </layout>
-       <zorder></zorder>
-       <zorder>proName</zorder>
-       <zorder>label_11</zorder>
-       <zorder>label_13</zorder>
-       <zorder>frame_11</zorder>
-       <zorder>frame_7</zorder>
       </widget>
      </widget>
      <widget class="QWidget" name="page">

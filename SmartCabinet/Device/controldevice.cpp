@@ -359,11 +359,11 @@ void ControlDevice::openCase(int seqNum, int index)
     qDebug()<<"openCase"<<seqNum<<index;
     if((seqNum<0) || (seqNum>=config->list_cabinet.count()))
         return;
-    if((index<0) || (index>=config->list_cabinet[seqNum]->list_case.count()))
+    if((index<0) || (index>=config->list_cabinet[seqNum]->rowCount()))
         return;
 
-    int ctrl_seqNum = config->list_cabinet[seqNum]->list_case[index]->ctrlSeq;
-    int ctrl_index = config->list_cabinet[seqNum]->list_case[index]->ctrlIndex;
+    int ctrl_seqNum = config->list_cabinet[seqNum]->ctrlSeq(index);
+    int ctrl_index = config->list_cabinet[seqNum]->ctrlIndex(index);
 
     lockCtrl(ctrl_seqNum, ctrl_index);
 }

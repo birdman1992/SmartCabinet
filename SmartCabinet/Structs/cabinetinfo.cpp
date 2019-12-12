@@ -1,6 +1,5 @@
 #include "cabinetinfo.h"
 #include <QDebug>
-#include <QStringList>
 #include <QFontMetrics>
 
 
@@ -53,7 +52,7 @@ int CabinetInfo::goodsIdSearch(QString id)
 
     for(i=0; i<list_goods.count(); i++)
     {
-        if(list_goods.at(i)->id == id)
+        if(list_goods.at(i)->goodsId == id)
         {
             return i;
         }
@@ -115,53 +114,58 @@ QStringList CabinetInfo::caseShowStr(QFont font, int maxWidth)
     return ret;
 }
 
-GoodsInfo::GoodsInfo()
-{
-    outNum = 0;
-}
+//Goods::Goods()
+//{
+//    outNum = 0;
+//    col = 0;
+//    row = 0;
+//}
 
-GoodsInfo::GoodsInfo(GoodsInfo &info)
-{
-    name = info.name;
-    id = info.id;
-    num = info.num;
-    packageId = info.packageId;
-    unit = info.unit;
-    Py = info.Py;
-    goodsType = info.goodsType;
-    abbName = info.abbName;
-    outNum = 0;
-}
+//Goods::Goods(Goods &info)
+//{
+//    name = info.name;
+//    goodsId = info.goodsId;
+//    num = info.num;
+//    packageId = info.packageId;
+//    unit = info.unit;
+//    Py = info.Py;
+//    goodsType = info.goodsType;
+//    abbName = info.abbName;
+//    outNum = 0;
+//    size = info.size;
+//    col = info.col;
+//    row = info.row;
+//}
 
-void GoodsInfo::resetInfo(GoodsInfo &info)
-{
-    name = info.name;
-    id = info.id;
-    num = info.num;
-    packageId = info.packageId;
-    unit = info.unit;
-    Py = info.Py;
-    goodsType = info.goodsType;
-    abbName = info.abbName;
-    outNum = info.outNum;
-}
+//void Goods::resetInfo(Goods &info)
+//{
+//    name = info.name;
+//    goodsId = info.goodsId;
+//    num = info.num;
+//    packageId = info.packageId;
+//    unit = info.unit;
+//    Py = info.Py;
+//    goodsType = info.goodsType;
+//    abbName = info.abbName;
+//    outNum = info.outNum;
+//}
 
-QString GoodsInfo::nameWithType()
-{
-    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(goodsType));
-}
+//QString Goods::nameWithType()
+//{
+//    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(goodsType));
+//}
 
-GoodsInfo& GoodsInfo::operator=(GoodsInfo &info)
-{
-    this->name = info.name;
-    this->id = info.id;
-    this->num = info.num;
-    this->packageId = info.packageId;
-    this->unit = info.unit;
-    this->Py = info.Py;
-    this->goodsType = info.goodsType;
-    this->abbName = info.abbName;
-    this->outNum = info.outNum;
-    qDebug()<<"[operator=]"<<this->packageId<<this->num;
-    return *this;
-}
+//Goods& Goods::operator=(Goods &info)
+//{
+//    this->name = info.name;
+//    this->goodsId = info.goodsId;
+//    this->num = info.num;
+//    this->packageId = info.packageId;
+//    this->unit = info.unit;
+//    this->Py = info.Py;
+//    this->goodsType = info.goodsType;
+//    this->abbName = info.abbName;
+//    this->outNum = info.outNum;
+//    qDebug()<<"[operator=]"<<this->packageId<<this->num;
+//    return *this;
+//}

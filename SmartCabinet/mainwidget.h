@@ -62,6 +62,8 @@ protected:
 private slots:
 //    void on_stackedWidget_currentChanged(int arg1);
 
+    void on_stackedWidget_currentChanged(int arg1);
+
 private:
     Ui::MainWidget *ui;
     CabinetConfig* cabinetConf;

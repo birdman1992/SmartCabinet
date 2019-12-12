@@ -73,6 +73,9 @@ void GpioApi::setOutIO(GpioApi::IO_NUM portNum ,int val)
     }
     sprintf(str, "/sys/class/gpio/gpio%d/value", portNum);
     p = fopen(str,"w");
+    if(p == NULL)
+        return;
+
     fprintf(p,"%d",val>0 ? 1 : 0);
     fclose(p);
 }

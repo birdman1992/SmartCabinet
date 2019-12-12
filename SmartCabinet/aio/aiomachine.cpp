@@ -14,8 +14,11 @@ AIOMachine::AIOMachine(QWidget *parent) :
     initNumLabel();
     initColMap();
     ui->aio_check_in->hide();
+    ui->setting->hide();
     winActive = true;
     QWidget::installEventFilter(this);
+    initStateMap();
+    curState = 0;
 
     win_access = new CabinetAccess();
     connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -29,6 +32,10 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->page_overview->setAttribute(Qt::WA_TranslucentBackground);
     ui->page_table->setWindowOpacity(1);
     ui->page_table->setAttribute(Qt::WA_TranslucentBackground);
+
+    ui->aio_return->hide();
+    ui->aio_check_create->hide();
+    ui->aio_check->hide();
 //    ui->info_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
     loginState = false;
@@ -109,40 +116,47 @@ void AIOMachine::setPowState(int power)
     ui->aio_check_create->hide();//盘点
     ui->aio_return->hide();//退货
     ui->aio_check_in->hide();//消耗登记
+    ui->setting->hide();
+    optList.clear();
+    curState = 0;
 
     switch(power)
     {
     case 0://超级管理员:|补货|退货|服务|退出|
         ui->aio_day_report->show();
-        ui->aio_check->show();
-        ui->aio_return->show();
-        ui->aio_check_create->show();
+        ui->setting->show();
+//        ui->aio_check->show();
+//        ui->aio_return->show();
+//        ui->aio_check_create->show();
+        optList<<"取"<<"存"<<"还";
         break;
 
     case 1://护士长:|退货|退出|
         ui->aio_day_report->show();
-        ui->aio_check->show();
-        ui->aio_return->show();
+//        ui->aio_check->show();
+//        ui->aio_return->show();
+        optList<<"取"<<"还";
 //        ui->aio_check_create->show();
         break;
 
     case 2://护士:|退出|
         ui->aio_day_report->show();
-        ui->aio_check->show();
-//        ui->aio_return->show();
-//        ui->aio_check_create->show();
+//        ui->aio_check->show();
+        optList<<"取"<<"还";
         break;
 
     case 3://管理员:|补货|退货|退出|
         ui->aio_day_report->show();
-        ui->aio_check->show();
-        ui->aio_return->show();
-        ui->aio_check_create->show();
+//        ui->aio_check->show();
+//        ui->aio_return->show();
+//        ui->aio_check_create->show();
+        optList<<"取"<<"存"<<"还";
         break;
 
     case 4://医院员工:|退出|
         ui->aio_day_report->show();
-        ui->aio_check->show();
+//        ui->aio_check->show();
+        optList<<"取"<<"还";
 //        ui->aio_return->show();
 //        ui->aio_check_create->show();
         break;
@@ -170,6 +184,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     ui->aio_hello->setText(QString("您好！%1").arg(user->name));
     config->state = STATE_FETCH;
     setPowState(optUser->power);
+    updateState();
     sysUnlock();
 }
 
@@ -281,7 +296,36 @@ void AIOMachine::initColMap()
     mapColName.insert("批次", batchNumber);
     mapColName.insert("条码", traceId);
     listColName<<"物品编码"<<"物品名称"<<"包类型"<<"生产商"<<"供应商"<<"规格"<<"单位"<<"预警数量"<<"最大数量"<<"包数"<<"耗材数量"<<"效期天数"<<"有效期至"<<"生产日期"<<"单价"<<"总价"<<"入库数"<<"出库数"<<"操作人"<<"操作时间"<<"批次"<<"条码";
-//    qDebug()<<"[listColName]"<<listColName;
+    //    qDebug()<<"[listColName]"<<listColName;
+}
+
+//1取货2存货3退货16还货
+void AIOMachine::initStateMap()
+{
+    curStateText.clear();
+    curStateText.insert("取", 2);
+    curStateText.insert("存", 1);
+    curStateText.insert("退", 3);
+    curStateText.insert("还", 10);
+}
+
+void AIOMachine::updateState()
+{
+    QString stateStr = optList.at(curState);
+    ui->cur_state->setText(stateStr);
+    config->state = (CabState)curStateText.value(stateStr,1);
+    qDebug()<<"[updateState]"<<stateStr<<config->state;
+}
+
+void AIOMachine::nextState()
+{
+    curState = optList.indexOf(ui->cur_state->text());
+    if((curState<0) || (curState >= optList.count()-1))
+        curState = 0;
+    else
+        curState++;
+
+    updateState();
 }
 
 void AIOMachine::setAioInfo(QString departName, QString departId)
@@ -300,7 +344,7 @@ void AIOMachine::setNumLabel(AIOOverview *overview)
     //    ui->lab_hum->setText(QString("%1\n耗材品种（个）").arg(overview->chesetGoodsCount));
 }
 
-void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*>listInfo)
+void AIOMachine::showTable(QString title, QStringList colNames, QList<Goods*>listInfo)
 {
 //    qDebug()<<"[showTable]"<<colNames;
     if(!cur_list.isEmpty())
@@ -323,8 +367,8 @@ void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*
     int colIndex = 0;
     int rowIndex = 0;
 
-    QList<GoodsInfo*> showList = listPage(curPage);
-    foreach (GoodsInfo* info, showList)
+    QList<Goods*> showList = listPage(curPage);
+    foreach (Goods* info, showList)
     {
         colIndex = 0;
         foreach (QString col, colNames)
@@ -339,7 +383,7 @@ void AIOMachine::showTable(QString title, QStringList colNames, QList<GoodsInfo*
     ui->info_table->resizeColumnsToContents();
 }
 
-void AIOMachine::showNumExpired(QList<GoodsInfo *> lInfo)
+void AIOMachine::showNumExpired(QList<Goods *> lInfo)
 {
     QString title = "近效期物品";
     QStringList colNames;
@@ -357,7 +401,7 @@ void AIOMachine::showNumExpired(QList<GoodsInfo *> lInfo)
     showTable(title, colNames, lInfo);
 }
 
-void AIOMachine::showNumGoods(QList<GoodsInfo *> lInfo)
+void AIOMachine::showNumGoods(QList<Goods *> lInfo)
 {
     QString title = "库存物品";
     QStringList colNames;
@@ -373,7 +417,7 @@ void AIOMachine::showNumGoods(QList<GoodsInfo *> lInfo)
     showTable(title, colNames, lInfo);
 }
 
-void AIOMachine::showNumTodayIn(QList<GoodsInfo *> lInfo)
+void AIOMachine::showNumTodayIn(QList<Goods *> lInfo)
 {
     QString title = "今日入库";
     QStringList colNames;
@@ -390,7 +434,7 @@ void AIOMachine::showNumTodayIn(QList<GoodsInfo *> lInfo)
     showTable(title, colNames, lInfo);
 }
 
-void AIOMachine::showNumTodayOut(QList<GoodsInfo *> lInfo)
+void AIOMachine::showNumTodayOut(QList<Goods *> lInfo)
 {
     QString title = "今日出库";
     QStringList colNames;
@@ -410,7 +454,7 @@ void AIOMachine::showNumTodayOut(QList<GoodsInfo *> lInfo)
     showTable(title, colNames, lInfo);
 }
 
-void AIOMachine::showNumWarningRep(QList<GoodsInfo *> lInfo)
+void AIOMachine::showNumWarningRep(QList<Goods *> lInfo)
 {
     QString title = "库存预警";
     QStringList colNames;
@@ -426,14 +470,14 @@ void AIOMachine::showNumWarningRep(QList<GoodsInfo *> lInfo)
     showTable(title, colNames, lInfo);
 }
 
-QString AIOMachine::getGoodsInfoText(GoodsInfo *info, QString key)
+QString AIOMachine::getGoodsInfoText(Goods *info, QString key)
 {
     colMark mark = mapColName.value(key, unknow);
 //    qDebug()<<mark<<key<<info->productTime;
 
     switch(mark)
     {
-    case goodsId:return info->id;//物品编码
+    case goodsId:return info->goodsId;//物品编码
     case goodsName:return info->name;//物品名称
     case packageType:return QString("%1").arg(info->goodsType);//包类型
     case proName:return info->proName;//生产商
@@ -462,7 +506,7 @@ QString AIOMachine::getGoodsInfoText(GoodsInfo *info, QString key)
     return QString();
 }
 
-QList<GoodsInfo *> AIOMachine::listPage(unsigned int pageNum)
+QList<Goods *> AIOMachine::listPage(unsigned int pageNum)
 {
     int firstIndex = pageNum * MAX_TABLE_ROW;
     int pageLen = (cur_list.count() - firstIndex);
@@ -494,7 +538,7 @@ void AIOMachine::recvAioOverview(QString msg, AIOOverview *overview)
     delete overview;
 }
 
-void AIOMachine::recvAioData(QString msg, AIOMachine::cEvent e, QList<GoodsInfo *> lInfo)
+void AIOMachine::recvAioData(QString msg, AIOMachine::cEvent e, QList<Goods *> lInfo)
 {
     if(lInfo.isEmpty())//接口调用失败
     {
@@ -540,7 +584,6 @@ void AIOMachine::winMsg(QString msg)
 void AIOMachine::sysUnlock()
 {
     ui->frame_aio->show();
-
     //    ui->frame_quit->show();
 }
 
@@ -615,4 +658,9 @@ void AIOMachine::on_tab_next_clicked()
 void AIOMachine::on_setting_clicked()
 {
     emit stack_switch(INDEX_CAB_SERVICE);
+}
+
+void AIOMachine::on_cur_state_clicked()
+{
+    nextState();
 }

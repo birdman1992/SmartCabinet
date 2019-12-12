@@ -40,8 +40,8 @@ void StroeByItem::updateStoreList()
     //get goods pos
     foreach(Goods* goods,curList->list_goods)
     {
-        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
-        goods->pos = QPoint(addr.cabinetSeqNum, addr.caseIndex);
+        QPoint addr = SqlManager::searchByPackageId(goods->packageId);
+        goods->pos = QPoint(addr.x(), addr.y());
     }
 
     //sort by pos

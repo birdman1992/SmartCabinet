@@ -24,8 +24,8 @@ void GoodsList::addGoods(Goods *_goods)
     else
     {
         list_goods<<_goods;
-        map_goods.insert(_goods->packageBarcode, _goods);
-        qDebug()<<"[addtoMap]"<<_goods->packageBarcode<<_goods->abbName;
+        map_goods.insert(_goods->packageId, _goods);
+        qDebug()<<"[addtoMap]"<<_goods->packageId<<_goods->abbName;
         //       map_goods.insert(_goods->goodsId, _goods);
     }
 }
@@ -58,7 +58,7 @@ bool GoodsList::goodsIsRepeat(Goods *_goods, int *index)
 
     for(i=0; i<list_goods.count(); i++)
     {
-        if(list_goods.at(i)->packageBarcode == _goods->packageBarcode)
+        if(list_goods.at(i)->packageId == _goods->packageId)
         {
             if(index != NULL)
                 *index = i;
@@ -122,7 +122,7 @@ Goods::Goods(Goods *goods)
     unit = goods->unit;
     pos = goods->pos;
     codes = goods->codes;
-    packageBarcode = goods->packageBarcode;
+    packageId = goods->packageId;
     roomName = goods->roomName;
     packageType = goods->packageType;
     batchNumber = goods->batchNumber;
@@ -133,4 +133,9 @@ Goods::Goods(Goods *goods)
     curNum = goods->curNum;//未写入柜子信息的已存入数量
     storeNum = goods->storeNum;//写入柜子信息的已存入数量
     finish = goods->finish;
+}
+
+QString Goods::nameWithType()
+{
+    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(goodsType));
 }

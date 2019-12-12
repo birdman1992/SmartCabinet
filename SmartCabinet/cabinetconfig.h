@@ -27,6 +27,7 @@ enum CabState
     STATE_SPEC = 7,//配置特殊柜
     CMD_CHECK_SHOW = 8,//显示盘点单
     CMD_DAY_REPORT_SHOW = 9,//显示结算单
+    STATE_BACK = 10,//还货
 };
 
 class CabinetConfig
@@ -70,8 +71,8 @@ public:
     QString getCabinetId();
     QString getServerAddress();
     QString getServerIp();
-    void insertGoods(GoodsInfo* info, int row, int col);
-    void syncGoods(GoodsInfo* info, int row, int col);
+    void insertGoods(Goods* info, int row, int col);
+    void syncGoods(Goods* info, int row, int col);
     void setServerAddress(QString addr);
     int getUncheckCaseNum();
     int getSysVolem();
@@ -101,13 +102,13 @@ public:
     void creatCabinetConfig(QStringList cabLayout, QPoint screenPos);
     void clearGoodsConfig();
 //    void writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo* info);
-    CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置,如未搜索到，返回坐标为-1
-    CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
-    CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
+//    CaseAddress checkCabinetByName(QString name);//根据名字搜索柜格位置,如未搜索到，返回坐标为-1
+//    CaseAddress checkCabinetByBarCode(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
+//    CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
     int getCaseWidth();
     void removeConfig(CaseAddress addr);
-    void setConfig(CaseAddress addr, GoodsInfo* info);
+    void setConfig(CaseAddress addr, Goods* info);
     QByteArray creatCabinetJson();
     QByteArray getCabinetPos();
     QByteArray getCabinetSize();
@@ -122,6 +123,7 @@ public:
     VoicePlayer cabVoice;
     QString regId;
     QLabel* msgLab;
+    bool netState;
 //    QList<>
 
     QString scanDataTrans(QString code);
@@ -130,7 +132,6 @@ public:
 private:
     CabinetConfig();
     static CabinetConfig* c;
-    bool netState;
     bool cardReaderIsOk;
     bool codeScanIsOk;
     bool firstUse;//第一次使用

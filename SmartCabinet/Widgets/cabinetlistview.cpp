@@ -152,21 +152,7 @@ void CabinetListView::clearList()
 
 void CabinetListView::getCabList()
 {
-    int i,j,k;
-
-    for(i=0; i<config->list_cabinet.count(); i++)
-    {
-        Cabinet* cab = config->list_cabinet[i];
-        for(j=0; j<cab->list_case.count(); j++)
-        {
-            CabinetInfo* info = cab->list_case[j];
-            for(k=0; k<info->list_goods.count(); k++)
-            {
-                GoodsInfo* goods = info->list_goods[k];
-                list_goods<<new GoodsInfo(*goods);
-            }
-        }
-    }
+    list_goods = SqlManager::getGoodsList();
 }
 
 void CabinetListView::updateCabList(QString filter)
@@ -225,15 +211,15 @@ void CabinetListView::on_back_clicked()
 
 void CabinetListView::on_list_goods_clicked(const QModelIndex &index)
 {
-    GoodsInfo* info = list_filted[index.row()];
+    Goods* info = list_filted[index.row()];
 
     if(packIsSelected(info->packageId))
         return;
 
     ui->msg->setText("");
     CabinetListItem* item = new CabinetListItem(info->nameWithType(), info->packageId);
-    CaseAddress addr = config->checkCabinetByBarCode(info->packageId);
-    emit requireOpenCase(addr.cabinetSeqNum, addr.caseIndex);
+    QPoint addr = SqlManager::searchByPackageId(info->packageId);
+    emit requireOpenCase(addr.x(), addr.y());
     selectMap.insert(info->packageId, item);
 
     int listSize = ui->list_select->rowCount();

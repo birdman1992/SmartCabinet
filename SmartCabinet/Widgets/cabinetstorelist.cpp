@@ -114,11 +114,12 @@ void CabinetStoreList::storeStart(GoodsList *l)
         CaseAddress addr;
         addr.setAddress(goods->pos);
 #else
-        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
-        goods->pos = QPoint(addr.cabinetSeqNum, addr.caseIndex);
+//        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
+//        goods->pos = QPoint(addr.cabinetSeqNum, addr.caseIndex);
+        goods->pos = SqlManager::getGoodsPos(goods->packageId);
 #endif
         qDebug()<<"storeStart"<<goods->abbName<<goods->pos;
-        item = new CabinetStoreListItem(goods, addr);
+        item = new CabinetStoreListItem(goods, goods->pos);
         connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
         connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
         addItem(item);
@@ -380,7 +381,7 @@ void CabinetStoreList::saveList()
         return;
     foreach(Goods* goods, list_store->list_goods)
     {
-        manager->addGoodsCodes(goods->packageBarcode, goods->codes);
+        manager->addGoodsCodes(goods->packageId, goods->codes);
     }
 }
 
@@ -400,8 +401,8 @@ void CabinetStoreList::storeContinue(GoodsList *l)
         CaseAddress addr;
         addr.setAddress(goods->pos);
 #else
-        CaseAddress addr = config->checkCabinetByBarCode(goods->packageBarcode);
-        goods->pos = QPoint(addr.cabinetSeqNum, addr.caseIndex);
+        QPoint addr = SqlManager::searchByPackageId(goods->packageId);
+        goods->pos = QPoint(addr.x(), addr.y());
 #endif
         qDebug()<<"storeStart"<<goods->abbName<<goods->pos;
         item = new CabinetStoreListItem(goods, addr);
@@ -452,7 +453,7 @@ void CabinetStoreList::updateStoreList(QList<CabinetStoreListItem *> l)
 
 void CabinetStoreList::updateScanGoods(Goods *goods)
 {
-    ui->goods_id->setText(goods->packageBarcode);
+    ui->goods_id->setText(goods->packageId);
     ui->goods_name->setText(goods->name);
     ui->goods_size->setText(goods->size);
     ui->goods_producer->setText(goods->proName);
@@ -529,7 +530,9 @@ void CabinetStoreList::on_ok_clicked()
         {
             if(list_store == NULL)
                 return;
-            newMsg("正在提交");
+
+            SqlManager::listStoreAffirm(list_store->barcode, SqlManager::local_rep);//本地确认存货
+            newMsg("已存入本地库存,正在提交..");
             ui->ok->setEnabled(false);
             emit storeList(list_item);
         }
@@ -543,7 +546,9 @@ void CabinetStoreList::on_ok_clicked()
     {
         if(list_store == NULL)
             return;
-        newMsg("正在提交");
+
+        SqlManager::listStoreAffirm(list_store->barcode, SqlManager::local_rep);//本地确认存货
+        newMsg("已存入本地库存,正在提交..");
         ui->ok->setEnabled(false);
         emit storeList(list_item);
     }

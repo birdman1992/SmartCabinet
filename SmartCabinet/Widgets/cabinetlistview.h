@@ -55,8 +55,8 @@ private:
     QButtonGroup groupSearch;
     QMap<QString, CabinetListItem*> selectMap;
     CabinetConfig* config;
-    QList<GoodsInfo*> list_goods;
-    QList<GoodsInfo*> list_filted;//过滤后物品列表
+    QList<Goods*> list_goods;
+    QList<Goods*> list_filted;//过滤后物品列表
 
     void paintEvent(QPaintEvent *);
     void showEvent(QShowEvent* );

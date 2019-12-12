@@ -424,6 +424,8 @@ void CabinetSet::on_finish_clicked()
         emit winSwitch(INDEX_AIO);
     config->cabVoice.voicePlay(VOICE_WELCOME);
     sTest->testFinish();
+    sTest->deleteLater();
+    sTest = NULL;
 }
 
 void CabinetSet::on_cabType_currentIndexChanged(int)

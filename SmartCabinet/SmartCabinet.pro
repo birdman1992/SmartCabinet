@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network printsupport
+QT       += core gui network printsupport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -110,6 +110,7 @@ SOURCES += main.cpp\
     gpio/gpioapi.cpp \
     Device/ledctrl.cpp \
     cabinettcp.cpp \
+    sql/sqlmanager.cpp \
     Device/tempdev.cpp \
     funcs/systool.cpp \
     FingerPrint/qsocketcan.cpp \
@@ -203,6 +204,7 @@ HEADERS  += mainwidget.h \
     gpio/gpioapi.h \
     Device/ledctrl.h \
     cabinettcp.h \
+    sql/sqlmanager.h \
     Device/tempdev.h \
     funcs/systool.h \
     FingerPrint/qsocketcan.h \

@@ -3,45 +3,50 @@
 #include <QString>
 #include <QList>
 #include <QFont>
+#include <QStringList>
+#include "goodslist.h"
 
-class GoodsInfo
-{
-public:
-    GoodsInfo();
-    GoodsInfo(GoodsInfo &info);
-    void resetInfo(GoodsInfo &info);
-    QString nameWithType();
-    GoodsInfo &operator=(GoodsInfo &info);
+//class Goods
+//{
+//public:
+//    Goods();
+//    Goods(Goods &info);
+//    void resetInfo(Goods &info);
+//    QString nameWithType();
+//    Goods &operator=(Goods &info);
 
-    QString abbName;//简称
-    QString name;//耗材名
-    QString id;//耗材id
-    QString packageId;
-    QString unit;//计数单位
-    QString proName;//生产商
-    QString supName;//供应商
-    QString optName;//操作人
-    QString optTime;//操作时间
-    QString size;//规格
-    QString batch;//批次
-    QString traceId;//条码
-    int lifeDay;//效期天数
-    QString productTime;//生产日期
-    QString lifeTime;//有效期至
-    int threshold;//预警数据(包)
-    int maxThreshold;//最大数量(包)
-    int goodsType;//打包规格
-    int packageCount;//包数
-    int goodsCount;//拆散数量
-    int num;//耗材数量
-    int outNum;//取出数量
-    float price;//单价
-    float sumCount;//总价
-    QString aioInNum;//入库数
-    QString aioOutNum;//出库数
+//    QString abbName;//简称
+//    QString name;//耗材名
+//    QString goodsId;//耗材id
+//    QString packageId;
+//    QString unit;//计数单位
+//    QString proName;//生产商
+//    QString supName;//供应商
+//    QString optName;//操作人
+//    QString optTime;//操作时间
+//    QString size;//规格
+//    QString batch;//批次
+//    QString traceId;//条码
+//    int lifeDay;//效期天数
+//    QString productTime;//生产日期
+//    QString lifeTime;//有效期至
+//    int threshold;//预警数据(包)
+//    int maxThreshold;//最大数量(包)
+//    int goodsType;//打包规格
+//    int packageCount;//包数
+//    int goodsCount;//拆散数量
+//    int num;//耗材数量
+//    int outNum;//取出数量
+//    int col;
+//    int row;
+//    float price;//单价
+//    float sumCount;//总价
+//    QString aioInNum;//入库数
+//    QString aioOutNum;//出库数
 
-    QString Py;
-};
+//    QString Py;
+//    QStringList codes;
+//};
 
 class CabinetInfo//单个柜格的耗材信息
 {
@@ -55,7 +60,7 @@ public:
     int ctrlIndex;
     void clearFetchNum();
     QStringList caseShowStr(QFont font, int maxWidth);
-    QList<GoodsInfo*> list_goods;
+    QList<Goods*> list_goods;
 private:
     QString geteElidedText(QFont font, QString str, int MaxWidth);
 };

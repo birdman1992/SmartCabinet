@@ -2,7 +2,7 @@
 #include "ui_cabinetrefunditem.h"
 #include <QPainter>
 
-CabinetRefundItem::CabinetRefundItem(GoodsInfo* info, QWidget *parent) :
+CabinetRefundItem::CabinetRefundItem(Goods* info, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CabinetRefundItem)
 {
