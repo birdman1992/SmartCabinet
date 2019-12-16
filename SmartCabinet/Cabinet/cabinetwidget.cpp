@@ -40,6 +40,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     win_check_warnning = new CheckWarning();
     sqlManager = SqlManager::manager();
     sqlManager->selectAllGoods();
+    lastOptTime = QTime::currentTime();
+    screenProState = false;
 
     connect(win_check_warnning, SIGNAL(pushCheck()), this, SLOT(checkPush()));
 #ifdef TCP_API
@@ -807,6 +809,16 @@ void CabinetWidget::updateCase(int col, int row)
     list_cabinet[col]->updateCase(row);
 }
 
+void CabinetWidget::updateOptStamp()
+{
+    lastOptTime = QTime::currentTime();
+    if(screenProState)
+    {
+        screenProState = false;
+        emit screenPro(screenProState);
+    }
+}
+
 void CabinetWidget::switchCabinetState(CabState state)
 {
     config->state = state;
@@ -1411,6 +1423,11 @@ void CabinetWidget::updateTime()
     {
         qDebug("[update time]");
         emit reqCheckVersion(false);
+    }
+    if((lastOptTime.secsTo(QTime::currentTime()) > 180) && (!screenProState))
+    {
+        screenProState = true;
+        emit screenPro(screenProState);
     }
 }
 

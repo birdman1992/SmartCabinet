@@ -44,6 +44,7 @@ public:
     void caseLock();
     void caseUnlock();
     void updateCase(int col, int row);
+    void updateOptStamp();//更新操作时间戳
 
 public slots:
     void switchCabinetState(CabState state);
@@ -75,10 +76,10 @@ public slots:
     void recvGoodsTraceRst(bool, QString msg, QString goodsCode);
     void on_check_clicked(bool checked);
 
-
 signals:
     void updateLoginState(bool isLogin);//登录状态更新,登入亮灯，登出灭灯
     void winSwitch(int);
+    void screenPro(bool);//屏保状态
     void goodsAccess(QPoint, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)
     void requireUserCheck(QString);//请求身份验证
     void requireGoodsListCheck(QString);//请求送货单验证
@@ -152,6 +153,8 @@ private:
     QSlider* volume;//音量控件
     QString curCard;
     QTimer* timeUpdater;
+    QTime lastOptTime;
+    bool screenProState;
     QList<Cabinet *> list_cabinet;
     int tsCalFlag;
 

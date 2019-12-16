@@ -273,16 +273,16 @@ margin:5px;
           <number>10</number>
          </property>
          <property name="leftMargin">
-          <number>68</number>
+          <number>58</number>
          </property>
          <property name="topMargin">
-          <number>120</number>
+          <number>140</number>
          </property>
          <property name="rightMargin">
-          <number>68</number>
+          <number>58</number>
          </property>
          <property name="bottomMargin">
-          <number>80</number>
+          <number>100</number>
          </property>
          <item>
           <widget class="QLabel" name="num_goods">
@@ -457,7 +457,7 @@ padding-bottom:10px;
            <property name="frameShadow">
             <enum>QFrame::Raised</enum>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="16,5,3">
+           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,5,3">
             <property name="leftMargin">
              <number>68</number>
             </property>
@@ -492,69 +492,48 @@ padding-bottom:10px;
                 <number>0</number>
                </property>
                <item>
-                <layout class="QVBoxLayout" name="verticalLayout_8">
-                 <property name="leftMargin">
-                  <number>0</number>
+                <widget class="QPushButton" name="cur_state">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <item>
-                  <widget class="QPushButton" name="cur_state">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>158</width>
-                     <height>158</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>158</width>
-                     <height>158</height>
-                    </size>
-                   </property>
-                   <property name="focusPolicy">
-                    <enum>Qt::NoFocus</enum>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton{
-border: 20px outset  grey;
-color: rgb(255, 255, 255);
-background-color:rgb(44,193,243);
-font: 75 61px &quot;WenQuanYi Micro Hei Mono&quot;;
+                 <property name="minimumSize">
+                  <size>
+                   <width>243</width>
+                   <height>158</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>158</width>
+                   <height>234</height>
+                  </size>
+                 </property>
+                 <property name="focusPolicy">
+                  <enum>Qt::NoFocus</enum>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">#cur_state{
+	border-image:url(:/image/image/aio/btn_bottom_null.png);
+	font: 75 80px &quot;WenQuanYi Micro Hei Mono&quot;;
+border-bottom:35px;
+	color: rgb(255, 255, 255);
 }
 
-QPushButton::pressed{
-border: 20px inset  grey;
+#cur_state:pressed{
+	border-image: url(:/image/image/aio/btn_bottom_null.png);
+font: 75 60px &quot;WenQuanYi Micro Hei Mono&quot;;
+margin:5px;
+border-bottom:35px;
 color: rgb(255, 255, 255);
-background-color:rgb(44,193,243);
-font: 75 61px &quot;WenQuanYi Micro Hei Mono&quot;;
-}
-
-</string>
-                   </property>
-                   <property name="text">
-                    <string>存</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="verticalSpacer_4">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
+}</string>
+                 </property>
+                 <property name="text">
+                  <string>存</string>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="aio_check_create">

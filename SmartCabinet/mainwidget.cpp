@@ -28,6 +28,7 @@ void MainWidget::globalTouch()
 {
     qDebug()<<"[globalTouch]";
     cabinetConf->clearTimeoutFlag();
+    win_cabinet->updateOptStamp();
 }
 
 void MainWidget::init_huangpo()
@@ -38,6 +39,8 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
     qRegisterMetaType<QList<Goods*> >("QList<GoodsInfo*>");
     qRegisterMetaType<AIOMachine::cEvent>("AIOMachine::cEvent");
+
+    win_screenPro = new ScreenPro;
 
     win_aio = NULL;
 
@@ -112,6 +115,7 @@ void MainWidget::init_huangpo()
     win_cabinet = new CabinetWidget(this);
     win_cabinet->installGlobalConfig(cabinetConf);
     connect(win_cabinet, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    connect(win_cabinet, SIGNAL(screenPro(bool)), win_screenPro, SLOT(updateProState(bool)));
 #ifdef TCP_API
     connect_new_api();
 #else

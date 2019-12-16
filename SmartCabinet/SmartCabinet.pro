@@ -116,7 +116,8 @@ SOURCES += main.cpp\
     FingerPrint/qsocketcan.cpp \
     FingerPrint/fingerprint.cpp \
     FingerPrint/cmdpack.cpp \
-    FingerPrint/userprintmanager.cpp
+    FingerPrint/userprintmanager.cpp \
+    Widgets/screenpro.cpp
 
 
 HEADERS  += mainwidget.h \
@@ -210,7 +211,8 @@ HEADERS  += mainwidget.h \
     FingerPrint/qsocketcan.h \
     FingerPrint/fingerprint.h \
     FingerPrint/cmdpack.h \
-    FingerPrint/userprintmanager.h
+    FingerPrint/userprintmanager.h \
+    Widgets/screenpro.h
 
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
@@ -247,7 +249,8 @@ FORMS    += mainwidget.ui \
     Widgets/goodsapply.ui \
     Widgets/stroebyitem.ui \
     aio/aiomachine.ui \
-    FingerPrint/fingerprint.ui
+    FingerPrint/fingerprint.ui \
+    Widgets/screenpro.ui
 
 RESOURCES += \
     image.qrc
