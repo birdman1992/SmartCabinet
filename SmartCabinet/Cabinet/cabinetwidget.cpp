@@ -827,6 +827,7 @@ void CabinetWidget::switchCabinetState(CabState state)
     {
     case STATE_FETCH:
         clickLock = false;
+        waitForGoodsListCode = false;
         caseClicked(0,0);
         break;
     case STATE_STORE:

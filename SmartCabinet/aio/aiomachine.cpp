@@ -128,7 +128,7 @@ void AIOMachine::setPowState(int power)
 //        ui->aio_check->show();
 //        ui->aio_return->show();
 //        ui->aio_check_create->show();
-        optList<<"取"<<"存"<<"还";
+        optList<<"存"<<"取"<<"还";
         break;
 
     case 1://护士长:|退货|退出|
@@ -150,7 +150,7 @@ void AIOMachine::setPowState(int power)
 //        ui->aio_check->show();
 //        ui->aio_return->show();
 //        ui->aio_check_create->show();
-        optList<<"取"<<"存"<<"还";
+        optList<<"存"<<"取"<<"还";
         break;
 
     case 4://医院员工:|退出|
@@ -319,12 +319,12 @@ void AIOMachine::updateState()
 
 void AIOMachine::nextState()
 {
-    curState = optList.indexOf(ui->cur_state->text());
+    curState = optList.indexOf(ui->cur_state->text());qDebug()<<"cur state1"<<curState;
     if((curState<0) || (curState >= optList.count()-1))
         curState = 0;
     else
         curState++;
-
+    qDebug()<<"cur state2"<<curState;
     updateState();
 }
 
