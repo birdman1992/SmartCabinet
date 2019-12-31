@@ -6,6 +6,8 @@
 
 QSqlDatabase SqlManager::db_cabinet = QSqlDatabase();
 SqlManager* SqlManager::m = new SqlManager;
+QSqlQuery* pubQuery = NULL;
+int queryNum = 0;
 
 SqlManager::SqlManager(QObject *parent) : QObject(parent)
 {
@@ -107,7 +109,7 @@ QPoint SqlManager::searchByCode(QString code)
 {
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select GoodsInfo.cab_col,GoodsInfo.cab_row FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE codeInfo.code='%1';").arg(code);
-    if(!queryExec(&query, cmd, "searchByCode"))
+    if(!queryExec(&query, "searchByCode", cmd))
         return QPoint(-1,-1);
 
     int row=-1, col=-1;
@@ -126,7 +128,7 @@ Goods *SqlManager::searchGoodsByCode(QString code)
     Goods* info = NULL;
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,CodeInfo.code,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE codeInfo.code='%1';").arg(code);
-    if(!queryExec(&query, cmd, "searchGoodsByCode"))
+    if(!queryExec(&query, "searchGoodsByCode", cmd))
         return info;
 
     if(!query.next())
@@ -157,7 +159,7 @@ QList<Goods *> SqlManager::getGoodsList()
     ret.clear();
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,CodeInfo.code,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id;");
-    if(!queryExec(&query, cmd, "getGoodsList"))
+    if(!queryExec(&query, "getGoodsList", cmd))
         return ret;
 
     while(query.next())
@@ -189,7 +191,7 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
     ret.clear();
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,CodeInfo.code,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2;").arg(col).arg(row);
-    if(!queryExec(&query, cmd, "getGoodsList"))
+    if(!queryExec(&query, "getGoodsList", cmd))
         return ret;
 
     while(query.next())
@@ -219,17 +221,16 @@ QString SqlManager::getGoodsId(QString code)
     QString ret = QString();
     QString cmd = QString("select package_id FROM codeInfo WHERE code='%1'").arg(code);
     QSqlQuery query(db_cabinet);
-    if(!queryExec(&query, cmd, "getGoodsId"))
+    if(!queryExec(&query, "getGoodsId", cmd))
     {
-        qDebug("A");
         return QString();
     }
     qDebug()<<query.isActive()<<query.isSelect();
 
     if(query.next())
         ret = query.value(0).toString();
-    else
-        qDebug("B");
+//    else
+//        qDebug("B");
     return ret;
 }
 
@@ -237,7 +238,7 @@ QStringList SqlManager::getCaseText(int col, int row)
 {
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select GoodsInfo.abbname,COUNT(*) package_count,GoodsInfo.cab_col,GoodsInfo.cab_row FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 GROUP BY GoodsInfo.package_id;").arg(col).arg(row);
-    if(!queryExec(&query, cmd, "getCaseText"))
+    if(!queryExec(&query, "getCaseText", cmd))
         return QStringList();
 
     QStringList last_show_list;
@@ -257,7 +258,7 @@ int SqlManager::getGoodsCount(QString packageId)
 {
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select COUNT(*) package_count FROM CodeInfo WHERE package_id='%1' AND state_local=1;").arg(packageId);
-    if(!queryExec(&query, cmd, "getGoodsCount"))
+    if(!queryExec(&query, "getGoodsCount", cmd))
         return 0;
 
     if(query.next())
@@ -270,7 +271,7 @@ QPoint SqlManager::getGoodsPos(QString packageId)
 {
     QString cmd = QString("select cab_col,cab_row from GoodsInfo WHERE package_id='%1';").arg(packageId);
     QSqlQuery query(db_cabinet);
-    if(!queryExec(&query, cmd, "getGoodsPos"))
+    if(!queryExec(&query, "getGoodsPos", cmd))
         return QPoint(-1,-1);
 
     QPoint ret = QPoint(-1, -1);
@@ -291,14 +292,14 @@ void SqlManager::newApiLog(QString url, QByteArray data, quint64 time_stamp, boo
     else
         cmd = QString("INSERT INTO ApiLog(time_stamp,url,data,need_resend) VALUES(%1,'%2','%3',%4);").arg(time_stamp).arg(url).arg(QString(data)).arg(1);
     QSqlQuery query(db_cabinet);
-    queryExec(&query, cmd, "newApiLog");
+    queryExec(&query, "newApiLog", cmd);
 }
 
 QByteArray SqlManager::apiComplete(quint64 timeStamp)
 {
     QString cmd = QString("UPDATE ApiLog SET state='complete' where time_stamp=%1").arg(timeStamp);
     QSqlQuery query(db_cabinet);
-    queryExec(&query, cmd, "apiComplete");
+    queryExec(&query, "apiComplete", cmd);
     return apiData(timeStamp);
 }
 
@@ -306,7 +307,7 @@ QByteArray SqlManager::apiData(quint64 timeStamp)
 {
     QString cmd = QString("SELECT data FROM ApiLog where time_stamp=%1").arg(timeStamp);
     QSqlQuery query(db_cabinet);
-    queryExec(&query, cmd, "apiComplete");
+    queryExec(&query, "apiComplete", cmd);
     if(query.next())
         return query.value(0).toByteArray();
     return QByteArray();
@@ -321,7 +322,7 @@ void SqlManager::bindGoodsId(int col, int row, QString goodsId)
 {
     QString cmd = QString("UPDATE GoodsInfo SET cab_col=%1,cab_row=%2 WHERE package_id='%3'").arg(col).arg(row).arg(goodsId);
     QSqlQuery query(db_cabinet);
-    queryExec(&query, cmd, "bindGoodsId");
+    queryExec(&query, "bindGoodsId", cmd);
 }
 
 int SqlManager::getShowCountByCase(int col, int row)
@@ -329,11 +330,63 @@ int SqlManager::getShowCountByCase(int col, int row)
     int ret = 0;
     QString cmd = QString("select COUNT(*) show_count FROM GoodsInfo WHERE cab_col=%1 AND cab_row=%2 ").arg(col).arg(row);
     QSqlQuery query(db_cabinet);
-    queryExec(&query, cmd, "getShowCountByCase");
+    queryExec(&query, "getShowCountByCase", cmd);
 
     if(query.next())
         ret = query.value(0).toInt();
     return ret;
+}
+
+//EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state]
+void SqlManager::insertRfidMark(QString epc, QString goodsCode)
+{
+    QSqlQuery query(db_cabinet);
+    query.prepare("INSERT INTO EpcINfo(epc_code, goods_code) VALUES(:epc_code, :goods_code)");
+    query.bindValue(0, epc);
+    query.bindValue(1, goodsCode);
+    queryExec(&query, "insertRfidMark");
+}
+
+void SqlManager::updateRfid(QString epc, quint32 stamp, QString optId, int state)
+{
+    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3 WHERE epc_code='%4'").arg(stamp).arg(optId).arg(state).arg(epc);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "updateRfid", cmd);
+}
+
+void SqlManager::updateRfidsStart()
+{
+    if(pubQuery == NULL)//
+    {
+        pubQuery = new QSqlQuery(db_cabinet);
+        pubQuery->exec("BEGIN;");
+    }
+    queryNum++;//同时执行的事务数
+}
+
+void SqlManager::updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state)
+{
+    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3 WHERE epc_code='%4'").arg(stamp).arg(optId).arg(state).arg(epc);
+    queryExec(pubQuery, "updateRfid", cmd);
+}
+
+void SqlManager::updateRfidsFinish()
+{
+    queryNum--;
+    if(queryNum == 0)//没有别的正在执行的事务
+    {
+        pubQuery->exec("COMMIT;");
+        delete pubQuery;
+        pubQuery = NULL;
+    }
+}
+//[epc_code|goods_code|time_stamp|state]
+QSqlQuery SqlManager::getRfidTable()
+{
+    QString cmd = QString("SELECT epc_code, goods_code, time_stamp state from EpcInfo");
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "getRfidTable", cmd);
+    return query;
 }
 
 /*
@@ -529,7 +582,7 @@ void SqlManager::listStoreAffirm(QString listCode, RepState state)
     if(state & local_rep)//本地存入
     {
         QString cmd = QString("UPDATE CodeInfo SET state_local=1 WHERE store_list='%1';").arg(listCode);
-        if(!queryExec(&query, cmd, "listStoreAffirm"))
+        if(!queryExec(&query, "listStoreAffirm", cmd))
         {
             qDebug()<<"[listStoreAffirm failed]"<<query.lastError().text();
         }
@@ -537,7 +590,7 @@ void SqlManager::listStoreAffirm(QString listCode, RepState state)
     if(state & remote_rep)//远程存入
     {
         QString cmd = QString("UPDATE CodeInfo SET state_remote=1 WHERE store_list='%1';").arg(listCode);
-        if(!queryExec(&query, cmd, "listStoreAffirm"))
+        if(!queryExec(&query, "listStoreAffirm", cmd))
         {
             qDebug()<<"[listStoreAffirm failed]"<<query.lastError().text();
         }
@@ -564,6 +617,7 @@ void SqlManager::initDatabase()
 /*
 CodeInfo:条码信息表 [code|package_id|batch_number|pro_name|sup_name|state_local|state_remote|store_list]
 GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]
+EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state|]
 ApiLog:接口日志表 [time_stamp|url|data|need_resend]
 */
 void SqlManager::createTable()
@@ -613,10 +667,34 @@ void SqlManager::createTable()
         if(query.exec(cmd))
         {
             qDebug()<<"[create table]"<<"GoodsInfo"<<"success";
+            needSync = true;
         }
         else
         {
             qDebug()<<"[create table]"<<"GoodsInfo"<<"failed"<<query.lastError();
+        }
+    }
+
+    if(tables.indexOf("EpcInfo") == -1)
+    {
+        QSqlQuery query(db_cabinet);
+        QString cmd = QString("create table EpcInfo(\
+                              epc_code CHAR(15) PRIMARY KEY NOT NULL,\
+                              goods_code CHAR(15) NOT NULL,\
+                              time_stamp INT(10) DEFAULT(0),\
+                              opt_id CHAR(15) DEFAULT('NULL'),\
+                              state INT(2) DEFAULT(0),\
+                              row INT(2) DEFAULT(-1),\
+                              col INT(2) DEFAULT(-1)\
+                              );");
+        if(query.exec(cmd))
+        {
+            qDebug()<<"[create table]"<<"EpcInfo"<<"success";
+            needSync = true;
+        }
+        else
+        {
+            qDebug()<<"[create table]"<<"EpcInfo"<<"failed"<<query.lastError();
         }
     }
 
@@ -634,6 +712,7 @@ void SqlManager::createTable()
         if(query.exec(cmd))
         {
             qDebug()<<"[create table]"<<"ApiLog"<<"success";
+            needSync = true;
         }
         else
         {
@@ -642,13 +721,25 @@ void SqlManager::createTable()
     }
 }
 
-bool SqlManager::queryExec(QSqlQuery* q, QString cmd, QString msg)
+bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)
 {
-    if(!q->exec(cmd))
+    if(cmd.isEmpty())
     {
-//        qDebug()<<q->lastQuery();
-        qDebug()<<"[sqlite]"<<msg<<"failed"<<q->lastError();
-        return false;
+        if(!q->exec())
+        {
+            //        qDebug()<<q->lastQuery();
+            qDebug()<<"[sqlite]"<<msg<<"failed"<<q->lastError();
+            return false;
+        }
+    }
+    else
+    {
+        if(!q->exec(cmd))
+        {
+            //        qDebug()<<q->lastQuery();
+            qDebug()<<"[sqlite]"<<msg<<"failed"<<q->lastError();
+            return false;
+        }
     }
 //    qDebug()<<q->lastQuery();
     return true;

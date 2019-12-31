@@ -186,6 +186,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     setPowState(optUser->power);
     updateState();
     sysUnlock();
+    emit reqUpdateOverview();
 }
 
 void AIOMachine::recvUserInfo(QByteArray qba)
@@ -518,6 +519,7 @@ QList<Goods *> AIOMachine::listPage(unsigned int pageNum)
 void AIOMachine::sysLock()
 {
     ui->frame_aio->hide();
+    ui->setting->hide();
     ui->aio_hello->clear();
     loginState = false;
     optUser = NULL;

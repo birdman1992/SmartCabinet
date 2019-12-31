@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,8 +24,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        frmrfid.cpp
+        frmrfid.cpp \
+    rfidmanager.cpp \
+    rfidreader.cpp \
+    rfidpackage.cpp \
+    checkmanager.cpp \
+    ../../sql/sqlmanager.cpp \
+    ../../Structs/goodslist.cpp
 
-HEADERS  += frmrfid.h
+HEADERS  += frmrfid.h \
+    rfidmanager.h \
+    rfidreader.h \
+    rfidpackage.h \
+    checkmanager.h \
+    ../../sql/sqlmanager.h \
+    ../../Structs/goodslist.h
 
 FORMS    += frmrfid.ui
+
+INCLUDEPATH += ../../

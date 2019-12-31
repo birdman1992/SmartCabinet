@@ -19,7 +19,7 @@ public:
     static SqlManager* manager();
     ~SqlManager();
     QSqlQuery selectAllGoods();
-
+    /*goodsInfo  codesInfo*/
     static QPoint searchByCode(QString code);
     static Goods* searchGoodsByCode(QString code);
     static QList<Goods*> getGoodsList();
@@ -31,10 +31,18 @@ public:
     static void newApiLog(QString url, QByteArray data, quint64 time_stamp, bool need_resend=true);
     static QByteArray apiComplete(quint64 timeStamp);
     static QByteArray apiData(quint64 timeStamp);
-//    static void listStore
     bool waitForSync();
     static void bindGoodsId(int col, int row, QString goodsId);
     static int getShowCountByCase(int col, int row);//获取柜格显示的包类型数量
+
+    /*epcInfo*/
+    //EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state]
+    static void insertRfidMark(QString epc, QString goodsCode);
+    static void updateRfid(QString epc, quint32 stamp, QString optId, int state);
+    static void updateRfidsStart();
+    static void updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state);
+    static void updateRfidsFinish();
+    static QSqlQuery getRfidTable();
 
     enum RepState{
         no_rep=0,//没有库存
@@ -67,7 +75,7 @@ private:
 
     void initDatabase();
     void createTable();
-    static bool queryExec(QSqlQuery *q, QString cmd, QString msg=QString());
+    static bool queryExec(QSqlQuery *q, QString msg=QString(), QString cmd=QString());
 };
 
 #endif // SQLMANAGER_H

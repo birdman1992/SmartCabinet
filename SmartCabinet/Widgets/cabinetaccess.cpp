@@ -214,6 +214,7 @@ void CabinetAccess::scanOpen(QString goodsId, QString goodsCode)
 //        qDebug()<<"fetch outnum"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
         ui->name->setText(curGoods->name);
         ui->info->setText(goodsCode);
+        qDebug()<<"goodsCOde"<<goodsCode;
         //        ui->tip->setText("正在取出");
         if(networkState)
         {
@@ -393,6 +394,7 @@ void CabinetAccess::recvOptGoodsNum(int num)
     }
     else if(config->state == STATE_FETCH)
     {
+        return;
         ui->info->setText(QString("已取出，剩余%1×(%2)%3").arg(SqlManager::getGoodsCount(curGoods->packageId)).arg(curGoods->goodsType).arg(curGoods->unit));
         showTips("取出成功", false);
     }
