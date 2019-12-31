@@ -7,6 +7,11 @@
 
 RfidManager::RfidManager(QObject *parent) : QObject(parent)
 {
+    table_in = NULL;
+    table_out = NULL;
+    table_back = NULL;
+    table_con = NULL;
+
     QHostAddress serverAddr = QHostAddress("192.168.0.7");
     testReader = new RfidReader(serverAddr, 1111, 3, this);
     connect(testReader, SIGNAL(reportEpc(QString,int)), this, SLOT(testUpdateEpc(QString)));
@@ -38,13 +43,28 @@ void RfidManager::stopScan()
     testReader->scanStop();
 }
 
-void RfidManager::epcCheck()
+void RfidManager::epcCheck(quint32 cutOffStamp, int row, int col)
 {
-    quint32 stampLine = QDateTime::currentMSecsSinceEpoch();
+    QSqlQuery query = SqlManager::checkRfid(cutOffStamp, row, col);
+
+}
+
+void RfidManager::epcSync()
+{
+    SqlManager::updateRfidsStart();
     foreach (EpcInfo* info, map_rfid)
     {
-        info->lastStamp;
+        SqlManager::updateRfidsSingle(info->epcId, info->lastStamp, info->lastOpt, info->state, info->rowPos, info->colPos);
     }
+    SqlManager::updateRfidsFinish();
+}
+
+void RfidManager::initTableViews(QTableWidget *in, QTableWidget *out, QTableWidget *back, QTableWidget *con)
+{
+    table_in = in;
+    table_out = out;
+    table_back = back;
+    table_con = con;
 }
 
 void RfidManager::newRfidMark(QString epc, QString goodsCode)

@@ -37,11 +37,13 @@ public:
 
     /*epcInfo*/
     //EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state]
-    static void insertRfidMark(QString epc, QString goodsCode);
-    static void updateRfid(QString epc, quint32 stamp, QString optId, int state);
+    static void insertRfidMark(QString epc, QString goodsCode, QString goodsId);
+    static void updateRfid(QString epc, quint32 stamp, QString optId, int state, int row, int col);
     static void updateRfidsStart();
-    static void updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state);
+    static void updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state, int row, int col);
     static void updateRfidsFinish();
+    static QSqlQuery checkRfid(quint32 cutOffStamp, int row=0, int col=0);
+    static QSqlQuery checkRfid(QString epcCode);
     static QSqlQuery getRfidTable();
 
     enum RepState{

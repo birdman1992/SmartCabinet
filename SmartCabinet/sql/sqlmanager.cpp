@@ -337,19 +337,20 @@ int SqlManager::getShowCountByCase(int col, int row)
     return ret;
 }
 
-//EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state]
-void SqlManager::insertRfidMark(QString epc, QString goodsCode)
+//EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state|row|col]
+void SqlManager::insertRfidMark(QString epc, QString goodsCode, QString goodsId)
 {
     QSqlQuery query(db_cabinet);
-    query.prepare("INSERT INTO EpcINfo(epc_code, goods_code) VALUES(:epc_code, :goods_code)");
+    query.prepare("INSERT INTO EpcINfo(epc_code, goods_code, goods_id) VALUES(:epc_code, :goods_code, :goods_id)");
     query.bindValue(0, epc);
     query.bindValue(1, goodsCode);
+    query.bindValue(2, goodsId);
     queryExec(&query, "insertRfidMark");
 }
 
-void SqlManager::updateRfid(QString epc, quint32 stamp, QString optId, int state)
+void SqlManager::updateRfid(QString epc, quint32 stamp, QString optId, int state, int row, int col)
 {
-    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3 WHERE epc_code='%4'").arg(stamp).arg(optId).arg(state).arg(epc);
+    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3, row=%4, col=%5 WHERE epc_code='%6'").arg(stamp).arg(optId).arg(state).arg(row).arg(col).arg(epc);
     QSqlQuery query(db_cabinet);
     queryExec(&query, "updateRfid", cmd);
 }
@@ -364,9 +365,9 @@ void SqlManager::updateRfidsStart()
     queryNum++;//同时执行的事务数
 }
 
-void SqlManager::updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state)
+void SqlManager::updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state, int row, int col)
 {
-    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3 WHERE epc_code='%4'").arg(stamp).arg(optId).arg(state).arg(epc);
+    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3, row=%4, col=%5 WHERE epc_code='%6'").arg(stamp).arg(optId).arg(state).arg(row).arg(col).arg(epc);
     queryExec(pubQuery, "updateRfid", cmd);
 }
 
@@ -380,6 +381,28 @@ void SqlManager::updateRfidsFinish()
         pubQuery = NULL;
     }
 }
+
+//GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]
+//EpcInfo:RFID标签表 [epc_code|goods_code|goods_id|time_stamp|opt_id|state|row|col]
+//[物品|条码|RFID|规格|操作人|时间]
+//获取取出物品列表
+QSqlQuery SqlManager::checkRfid(quint32 cutOffStamp, int row, int col)
+{
+    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.row=%1 AND EI.col=%2 AND EI.time_stamp<%3").arg(row).arg(col).arg(cutOffStamp);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "checkRfid", cmd);
+    return query;
+}
+
+//根据EPC获取物品信息
+QSqlQuery SqlManager::checkRfid(QString epcCode)
+{
+    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code=%1").arg(epcCode);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "checkRfid", cmd);
+    return query;
+}
+
 //[epc_code|goods_code|time_stamp|state]
 QSqlQuery SqlManager::getRfidTable()
 {
@@ -617,7 +640,7 @@ void SqlManager::initDatabase()
 /*
 CodeInfo:条码信息表 [code|package_id|batch_number|pro_name|sup_name|state_local|state_remote|store_list]
 GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]
-EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state|]
+EpcInfo:RFID标签表 [epc_code|goods_code|goods_id|time_stamp|opt_id|state|row|col]
 ApiLog:接口日志表 [time_stamp|url|data|need_resend]
 */
 void SqlManager::createTable()
@@ -681,11 +704,12 @@ void SqlManager::createTable()
         QString cmd = QString("create table EpcInfo(\
                               epc_code CHAR(15) PRIMARY KEY NOT NULL,\
                               goods_code CHAR(15) NOT NULL,\
+                              goods_id CHAR(15) NOT NULL,\
                               time_stamp INT(10) DEFAULT(0),\
                               opt_id CHAR(15) DEFAULT('NULL'),\
                               state INT(2) DEFAULT(0),\
-                              row INT(2) DEFAULT(-1),\
-                              col INT(2) DEFAULT(-1)\
+                              row INT(2) DEFAULT(0),\
+                              col INT(2) DEFAULT(0)\
                               );");
         if(query.exec(cmd))
         {
