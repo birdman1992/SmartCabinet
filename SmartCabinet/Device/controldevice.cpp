@@ -434,10 +434,17 @@ void ControlDevice::readCardReaderData(QByteArray qba)
     emit cardReaderData(qba);
 }
 
+QByteArray ControlDevice::tty2UsbData(QByteArray ttyData)
+{
+    return ttyData.mid(6,8);
+}
+
+//0209019B4193A6E703->9B4193A6
 void ControlDevice::readSerialCardReader()
 {
     QByteArray qba = com_card_reader->readAll().toHex();
-    QString upStr = QString(qba);
+    QByteArray usbCartId = tty2UsbData(qba);
+    QString upStr = QString(usbCartId);
     qba = upStr.toUpper().toLocal8Bit();
     qDebug()<<"[readCardReaderData]"<<qba;
     emit cardReaderData(qba);

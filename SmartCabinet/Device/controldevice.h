@@ -62,6 +62,7 @@ private:
     void getDevState();
     void comRfidInit(int baudRate, int dataBits, int Parity, int stopBits);
     void comCardReaderInit(int baudRate, int dataBits, int Parity, int stopBits);
+    QByteArray tty2UsbData(QByteArray ttyData);
 signals:
     void cardReaderTimeout();//读卡超时
     void lockCtrlData(QByteArray);//暂无
