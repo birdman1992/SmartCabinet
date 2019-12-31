@@ -33,6 +33,7 @@ public:
     void initEpc();//程序启动初始化EPC标签
     void startScan();//开始扫描
     void stopScan();//结束扫描
+    void epcCheck();//盘点标签
 
 public slots:
     void newRfidMark(QString epc, QString goodsCode);

@@ -38,6 +38,15 @@ void RfidManager::stopScan()
     testReader->scanStop();
 }
 
+void RfidManager::epcCheck()
+{
+    quint32 stampLine = QDateTime::currentMSecsSinceEpoch();
+    foreach (EpcInfo* info, map_rfid)
+    {
+        info->lastStamp;
+    }
+}
+
 void RfidManager::newRfidMark(QString epc, QString goodsCode)
 {
     if(map_rfid.contains(epc))
