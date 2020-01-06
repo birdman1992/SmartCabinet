@@ -2,6 +2,11 @@
 #define FRMRFID_H
 
 #include <QWidget>
+#include <QTableWidget>
+#include <QTabWidget>
+#include <QList>
+#include <QStringList>
+#include <QTimer>
 #include "rfidmanager.h"
 
 namespace Ui {
@@ -14,17 +19,32 @@ class FrmRfid : public QWidget
 
 public:
     explicit FrmRfid(QWidget *parent = 0);
+    void setLoginState(bool login);
     ~FrmRfid();
 
 private slots:
+    void testSlot();
     void updateEpcInfo(EpcInfo*);
+    void showTabs(TableMark tabMark);
+    void accessSuccess(QString msg);
+    void accessFailed(QString msg);
     void on_scan_clicked();
     void on_stop_clicked();
+    void on_OK_clicked();
+    void on_fresh_clicked();
+    void on_pushButton_clicked();
 
 private:
     Ui::FrmRfid *ui;
     RfidManager* rfManager;
+    QTabWidget* win_tabs;
+    bool isLogin;
+    QStringList list_win_name;
+    QList<QTableWidget*> tabs;
     void updateTableRow(int rowIndex, EpcInfo*);
+    void initTabs();
+    void showEvent(QShowEvent *);
 };
+
 
 #endif // FRMRFID_H

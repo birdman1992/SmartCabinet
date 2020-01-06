@@ -20,10 +20,12 @@ AIOMachine::AIOMachine(QWidget *parent) :
     initStateMap();
     curState = 0;
 
-    win_access = new CabinetAccess();
-    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
-    connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
-    connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
+    win_rfid = new FrmRfid();
+
+//    win_access = new CabinetAccess();
+//    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
+//    connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
+//    connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
 
 //    win_fingerPrint = new FingerPrint(this);
 //    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), this, SIGNAL(requireOpenLock(int,int)));
@@ -56,7 +58,8 @@ AIOMachine::AIOMachine(QWidget *parent) :
 
 AIOMachine::~AIOMachine()
 {
-    win_access->deleteLater();
+    win_rfid->deleteLater();
+//    win_access->deleteLater();
     delete ui;
 }
 

@@ -77,7 +77,7 @@ public slots:
     void on_check_clicked(bool checked);
 
 signals:
-    void updateLoginState(bool isLogin);//登录状态更新,登入亮灯，登出灭灯
+    void updateLoginState(int id, bool isLogin);//登录状态更新,登入亮灯，登出灭灯
     void winSwitch(int);
     void screenPro(bool);//屏保状态
     void goodsAccess(QPoint, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)

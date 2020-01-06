@@ -3,9 +3,12 @@
 
 #include <QObject>
 #include <QMap>
+#include <QTime>
 #include <QTableWidget>
+#include <QScrollBar>
 #include "rfidreader.h"
 #include "sql/sqlmanager.h"
+#include "cabinetconfig.h"
 
 
 enum EpcState{
@@ -17,6 +20,7 @@ enum EpcState{
 
 enum TableMark
 {
+    tab_no = 0,
     tab_in = 1,//放入表
     tab_out = 2,//取出表
     tab_back = 4,//还回表
@@ -41,19 +45,22 @@ class RfidManager : public QObject
     Q_OBJECT
 public:
     explicit RfidManager(QObject *parent = 0);
-    void initEpc();//程序启动初始化EPC标签
+    void initColName();
     void startScan();//开始扫描
     void stopScan();//结束扫描
-    void epcCheck(quint32 cutOffStamp, int row=0, int col=0);//盘点标签
+    void epcCheck(int row=0, int col=0);//盘点标签
     void epcSync();//同步标签信息
     void initTableViews(QTableWidget* in=NULL, QTableWidget* out=NULL, QTableWidget* back=NULL, QTableWidget* con=NULL);
 
 public slots:
-    void newRfidMark(QString epc, QString goodsCode);
+    void newRfidMark(QString epc, QString goodsCode, QString goodsId);
+    void clsFinish();//结束结算
+    void doorStateChanged(int id, bool isOpen);
 
 signals:
     void updateEpcInfo(EpcInfo*);
     void epcStateChanged(TableMark changedTableMark);
+    void epcAccess(QStringList epcs, int optType);
 
 private:
     RfidReader* testReader;
@@ -61,18 +68,34 @@ private:
     QTableWidget* table_in;
     QTableWidget* table_back;
     QTableWidget* table_con;
+    CabinetConfig* config;
     QMap<QString, EpcInfo*> map_rfid;
+    QMap<QString, QString> map_col_name;
     QList<RfidReader*> list_device;
     QStringList list_epc;
     QStringList list_new;//新发现的标签
     QStringList list_out;//取出的标签
     QStringList list_back;//还回的标签
     QStringList list_con;//登记消耗的标签
+    quint32 clsStamp;
+    quint32 doorState;
+    quint16 insideAnt;
+    quint16 outsideAnt;
+    QTime scanTimer;
+    bool flagCorct;//数据矫正标志
+    bool flagInit;//初始化标志
+    bool flagScan;//扫描状态
     int clsTime;//结算延迟
+    int tabMark;
+    void listShow(QStringList epcs, QTableWidget* table, TableMark mark);
+    void queryShow(QSqlQuery query, QTableWidget* table);
+    void recordClear();
 
 private slots:
-    void updateEpc(QString epc, int colPos);
-    void testUpdateEpc(QString, int colPos);
+    void initEpc();//程序启动初始化EPC标签
+    void updateEpc(QString epc, int ant);
+    void testUpdateEpc(QString, int ant);
+    void clsTimeOut();
 };
 
 #endif // RFIDMANAGER_H

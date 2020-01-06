@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "defines.h"
 #include "Device/controldevice.h"
+#include "manager/signalmanager.h"
 //#define RECV_DEBUG
 
 //#define SERVER_ADDR "http://175.11.185.181"
@@ -55,6 +56,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     cur_manager = new UserInfo();
     sqlManager = SqlManager::manager();
 
+    cur_user = NULL;
     checkList = NULL;
     pacUpdate = NULL;
     reply_register = NULL;
@@ -94,6 +96,10 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     if(sqlManager->waitForSync())
         QTimer::singleShot(2000, this, SLOT(cabInfoSync()));
 
+    SignalManager* sigMan = SignalManager::manager();
+    connect(sigMan, SIGNAL(epcAccess(QStringList, int)), this, SLOT(listAccess(QStringList, int)));
+    connect(this, SIGNAL(accessSuccess(QString)), sigMan, SIGNAL(accessSuccess(QString)));
+    connect(this, SIGNAL(accessFailed(QString)), sigMan, SIGNAL(accessFailed(QString)));
 }
 
 CabinetServer::~CabinetServer()
@@ -483,7 +489,7 @@ void CabinetServer::goodsAccess(QPoint addr, QString id, int num, int optType)
     }
 }
 
-void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 refund:3
+void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 refund:3 back:16
 {
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();

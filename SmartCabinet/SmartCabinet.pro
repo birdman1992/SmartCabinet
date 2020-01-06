@@ -31,6 +31,11 @@ LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 }
 
 SOURCES += main.cpp\
+    Rfid/RfidTest/checkmanager.cpp \
+    Rfid/RfidTest/frmrfid.cpp \
+    Rfid/RfidTest/rfidmanager.cpp \
+    Rfid/RfidTest/rfidpackage.cpp \
+    Rfid/RfidTest/rfidreader.cpp \
         mainwidget.cpp \
     Cabinet/cabinetpanel.cpp \
     Device/Qextserial/qextserialport.cpp \
@@ -38,6 +43,7 @@ SOURCES += main.cpp\
     Device/Hid/qhid.cpp \
     Device/controldevice.cpp \
     Device/devicesimulate.cpp \
+    manager/signalmanager.cpp \
     medinf.cpp \
     Widgets/standbywidget.cpp \
     Widgets/userwidget.cpp \
@@ -128,6 +134,12 @@ HEADERS  += mainwidget.h \
     Device/Hid/qhid.h \
     Device/controldevice.h \
     Device/devicesimulate.h \
+    Rfid/RfidTest/checkmanager.h \
+    Rfid/RfidTest/frmrfid.h \
+    Rfid/RfidTest/rfidmanager.h \
+    Rfid/RfidTest/rfidpackage.h \
+    Rfid/RfidTest/rfidreader.h \
+    manager/signalmanager.h \
     medinf.h \
     Widgets/standbywidget.h \
     Widgets/userwidget.h \
@@ -217,6 +229,7 @@ HEADERS  += mainwidget.h \
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
     Device/devicesimulate.ui \
+    Rfid/RfidTest/frmrfid.ui \
     Widgets/standbywidget.ui \
     Widgets/userwidget.ui \
     Widgets/cabinetset.ui \

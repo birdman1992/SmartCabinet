@@ -17,6 +17,7 @@
 #include "aiooverview.h"
 #include "Widgets/cabinetaccess.h"
 #include "FingerPrint/fingerprint.h"
+#include "Rfid/RfidTest/frmrfid.h"
 
 namespace Ui {
 class AIOMachine;
@@ -103,6 +104,7 @@ private slots:
 private:
     Ui::AIOMachine *ui;
     CabinetAccess* win_access;
+    FrmRfid* win_rfid;
     QMap<QString, colMark> mapColName;
     QList<QLabel*> l_num_label;
     QList<Goods*> cur_list;

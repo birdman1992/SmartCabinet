@@ -6,6 +6,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlQueryModel>
 
 #include "Structs/goodslist.h"
 #include "Structs/cabinetinfo.h"
@@ -44,6 +45,7 @@ public:
     static void updateRfidsFinish();
     static QSqlQuery checkRfid(quint32 cutOffStamp, int row=0, int col=0);
     static QSqlQuery checkRfid(QString epcCode);
+    static QSqlQuery checkRfid(QStringList epcCodes);
     static QSqlQuery getRfidTable();
 
     enum RepState{
@@ -64,6 +66,7 @@ public:
     void replaceGoodsInfo(Goods* info, QString listCode, RepState state=no_rep, RepMask stateMask=mask_no);
     static void listStoreAffirm(QString listCode, RepState state);//送货单确认存入
     static QPoint searchByPackageId(QString packageId);
+
 public slots:
 
 signals:

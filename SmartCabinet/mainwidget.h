@@ -8,6 +8,7 @@
 #include "Cabinet/cabinetpanel.h"
 #include <QPushButton>
 #include <QSettings>
+#include "Rfid/RfidTest/rfidmanager.h"
 #include "Device/controldevice.h"
 #include "Device/ledctrl.h"
 #include "medinf.h"

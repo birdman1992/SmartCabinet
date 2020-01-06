@@ -337,7 +337,7 @@ int SqlManager::getShowCountByCase(int col, int row)
     return ret;
 }
 
-//EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state|row|col]
+//EpcInfo:RFID标签表 [epc_code|goods_code|goods_id|time_stamp|opt_id|state|row|col]
 void SqlManager::insertRfidMark(QString epc, QString goodsCode, QString goodsId)
 {
     QSqlQuery query(db_cabinet);
@@ -346,11 +346,12 @@ void SqlManager::insertRfidMark(QString epc, QString goodsCode, QString goodsId)
     query.bindValue(1, goodsCode);
     query.bindValue(2, goodsId);
     queryExec(&query, "insertRfidMark");
+    qDebug()<<query.lastQuery();
 }
 
 void SqlManager::updateRfid(QString epc, quint32 stamp, QString optId, int state, int row, int col)
 {
-    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3, row=%4, col=%5 WHERE epc_code='%6'").arg(stamp).arg(optId).arg(state).arg(row).arg(col).arg(epc);
+    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, row=%4, col=%5 WHERE epc_code='%6'").arg(stamp).arg(optId).arg(state).arg(row).arg(col).arg(epc);
     QSqlQuery query(db_cabinet);
     queryExec(&query, "updateRfid", cmd);
 }
@@ -367,7 +368,7 @@ void SqlManager::updateRfidsStart()
 
 void SqlManager::updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state, int row, int col)
 {
-    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id=%2, state=%3, row=%4, col=%5 WHERE epc_code='%6'").arg(stamp).arg(optId).arg(state).arg(row).arg(col).arg(epc);
+    QString cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, row=%4, col=%5 WHERE epc_code='%6'").arg(stamp).arg(optId).arg(state).arg(row).arg(col).arg(epc);
     queryExec(pubQuery, "updateRfid", cmd);
 }
 
@@ -397,7 +398,17 @@ QSqlQuery SqlManager::checkRfid(quint32 cutOffStamp, int row, int col)
 //根据EPC获取物品信息
 QSqlQuery SqlManager::checkRfid(QString epcCode)
 {
-    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code=%1").arg(epcCode);
+    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN %1").arg(epcCode);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "checkRfid", cmd);
+    return query;
+}
+
+//根据EPC获取物品信息
+QSqlQuery SqlManager::checkRfid(QStringList epcCodes)
+{
+    QString epcCode = epcCodes.join("','");
+    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN ('%1')").arg(epcCode);
     QSqlQuery query(db_cabinet);
     queryExec(&query, "checkRfid", cmd);
     return query;
@@ -406,7 +417,7 @@ QSqlQuery SqlManager::checkRfid(QString epcCode)
 //[epc_code|goods_code|time_stamp|state]
 QSqlQuery SqlManager::getRfidTable()
 {
-    QString cmd = QString("SELECT epc_code, goods_code, time_stamp state from EpcInfo");
+    QString cmd = QString("SELECT epc_code, goods_code, time_stamp, state from EpcInfo");
     QSqlQuery query(db_cabinet);
     queryExec(&query, "getRfidTable", cmd);
     return query;
@@ -751,7 +762,7 @@ bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)
     {
         if(!q->exec())
         {
-            //        qDebug()<<q->lastQuery();
+            qDebug()<<q->lastQuery();
             qDebug()<<"[sqlite]"<<msg<<"failed"<<q->lastError();
             return false;
         }
@@ -760,7 +771,7 @@ bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)
     {
         if(!q->exec(cmd))
         {
-            //        qDebug()<<q->lastQuery();
+            qDebug()<<q->lastQuery();
             qDebug()<<"[sqlite]"<<msg<<"failed"<<q->lastError();
             return false;
         }

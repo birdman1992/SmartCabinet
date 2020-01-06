@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
+    ../../manager/signalmanager.cpp \
         frmrfid.cpp \
     rfidmanager.cpp \
     rfidreader.cpp \
@@ -33,6 +34,7 @@ SOURCES += main.cpp\
     ../../Structs/goodslist.cpp
 
 HEADERS  += frmrfid.h \
+    ../../manager/signalmanager.h \
     rfidmanager.h \
     rfidreader.h \
     rfidpackage.h \

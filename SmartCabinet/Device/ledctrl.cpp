@@ -31,7 +31,7 @@ void LedCtrl::fanSwitch(bool fanOn)
 
 void LedCtrl::ledSwitch(int id, bool ledOn)
 {
-    qDebug()<<"[led switch]"<<ledOn;
+    qDebug()<<"[led switch]"<<id<<ledOn;
     if(ledOn)
     {
         ioManager->setOutIO(GpioApi::J312_L1, 1);

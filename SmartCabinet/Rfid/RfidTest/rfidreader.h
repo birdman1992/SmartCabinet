@@ -20,9 +20,11 @@ public slots:
     void sendCmd(QByteArray data);
 
 signals:
-    void reportEpc(QString epc, int col);
+    void reportEpc(QString epc, int ant);
 private:
     int colPos;
+    int curAnt;
+    bool flagInit;
     QTcpSocket* skt;
     RfidResponse response;
 
@@ -31,6 +33,7 @@ private slots:
     void recvData();
     void dataParse(char mid, QByteArray paramData);
     void parseEpc(QByteArray epcData);
+    void parseAnt(QByteArray antData);
 };
 
 #endif // RFIDREADER_H

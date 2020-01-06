@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#include "manager/signalmanager.h"
 
 #include <QDebug>
 QMutex dataLock;
@@ -19,6 +20,8 @@ QSocketCan::QSocketCan(QObject *parent):
     s = -1;
     canState = 0;
     initCacheList();
+    SignalManager* sigMan = SignalManager::manager();
+    connect(this, SIGNAL(doorState(int, bool)), sigMan, SIGNAL(doorState(int, bool)));
 }
 
 void QSocketCan::run()
@@ -198,7 +201,7 @@ void QSocketCan::canLock(int canId)
     dataLock.lock();
     canState |= 1<<canId;
     dataLock.unlock();
-    qDebug()<<"[LOCK]"<<canState;
+//    qDebug()<<"[LOCK]"<<canState;
 }
 
 void QSocketCan::canUnlock(int canId)
@@ -209,7 +212,7 @@ void QSocketCan::canUnlock(int canId)
     dataLock.lock();
     canState &= ~(1<<canId);
     dataLock.unlock();
-    qDebug()<<"[ULOCK]"<<canState;
+//    qDebug()<<"[ULOCK]"<<canState;
 }
 
 bool QSocketCan::canIsLock(int canId)
@@ -217,7 +220,7 @@ bool QSocketCan::canIsLock(int canId)
     dataLock.lock();
     bool ret = canState & (1<<canId);
     dataLock.unlock();
-    qDebug()<<"[RLOCK]"<<canState;
+//    qDebug()<<"[RLOCK]"<<canState;
     return ret;
 }
 

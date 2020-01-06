@@ -39,6 +39,8 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
     qRegisterMetaType<QList<Goods*> >("QList<GoodsInfo*>");
     qRegisterMetaType<AIOMachine::cEvent>("AIOMachine::cEvent");
+    qRegisterMetaType<EpcInfo*>("EpcInfo*");
+    qRegisterMetaType<TableMark>("TableMark");
 
     win_screenPro = new ScreenPro;
 
@@ -129,7 +131,7 @@ void MainWidget::init_huangpo()
 
     ledCtrl = new LedCtrl(this);
     connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
-    connect(win_cabinet, SIGNAL(updateLoginState(bool)), ledCtrl, SLOT(ledSwitch(bool)));//登入登出控制led
+    connect(win_cabinet, SIGNAL(updateLoginState(int,bool)), ledCtrl, SLOT(ledSwitch(int,bool)));//登入登出控制led
     connect(win_cab_service, SIGNAL(doorState(int,bool)), ledCtrl, SLOT(ledSwitch(int,bool)));
 
     tempDev = new TempDev(this);
@@ -144,7 +146,7 @@ void MainWidget::init_huangpo()
         connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
         connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
         connect(win_aio, SIGNAL(aio_check(bool)), win_cabinet, SLOT(on_check_clicked(bool)));
-        connect(win_aio, SIGNAL(service_show()), win_cab_service, SLOT(show()));
+//        connect(win_aio, SIGNAL(service_show()), win_cab_service, SLOT(show()));
         connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
         connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
         connect(win_aio, SIGNAL(logout()), win_cabinet, SLOT(sysLock()));
@@ -347,7 +349,7 @@ void MainWidget::cab_connect_mode(bool con)
 
 MainWidget::~MainWidget()
 {
-    delete win_fingerPrint;
+//    delete win_fingerPrint;
     delete ui;
     //--写入配置信息
 //    writeSettings();

@@ -3,6 +3,7 @@
 
 RfidReader::RfidReader(QTcpSocket *s, int col, QObject *parent) : QObject(parent)
 {
+    flagInit = false;
     colPos = col;
     skt = s;
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
@@ -11,6 +12,7 @@ RfidReader::RfidReader(QTcpSocket *s, int col, QObject *parent) : QObject(parent
 
 RfidReader::RfidReader(QHostAddress server, quint16 port, int col, QObject *parent) : QObject(parent)
 {
+    flagInit = false;
     colPos = col;
     skt = new QTcpSocket();
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
@@ -63,6 +65,7 @@ void RfidReader::recvData()
         return;
 
 //    qDebug()<<response.mid<<response.paramData.toHex();
+    dataParse(response.mid, response.paramData);
     while(response.appendData())
     {
         dataParse(response.mid, response.paramData);
@@ -76,6 +79,12 @@ void RfidReader::dataParse(char mid, QByteArray paramData)
     case 0x00://EPC info
         parseEpc(paramData);
         break;
+    case 0x02://current ant
+        parseAnt(paramData);
+        break;
+    case 0xff:
+        flagInit = true;
+        break;
     default:
         break;
     }
@@ -83,6 +92,9 @@ void RfidReader::dataParse(char mid, QByteArray paramData)
 
 void RfidReader::parseEpc(QByteArray epcData)
 {
+    if(!flagInit)
+        return;
+
     quint16 len;
     char* pos = epcData.data();
     //读取变长EPC
@@ -91,5 +103,11 @@ void RfidReader::parseEpc(QByteArray epcData)
     QByteArray epc = QByteArray(pos, len);
     pos += len;
 //    qDebug()<<"[reportEpc]"<<epc.toHex();
-    emit reportEpc(QString(epc.toHex()), colPos);
+    emit reportEpc(QString(epc.toHex().toUpper()), curAnt);
+}
+
+void RfidReader::parseAnt(QByteArray antData)
+{
+    curAnt = antData[0];
+//    qDebug()<<"parseAnt"<<curAnt;
 }
