@@ -645,15 +645,18 @@ void CabinetWidget::recvScanData(QByteArray qba)
             win_access->showTips(MSG_GOODS_NOT_FIND, 1);
             return;
         }
-        SqlManager::scanFetch(fullScanInfo, SqlManager::no_rep, SqlManager::mask_all);
-        list_cabinet[addr.x()]->updateCase(addr.y());
+
         if(SqlManager::getGoodsCount(info->packageId)>0)//物品未取完
         {
+            SqlManager::scanFetch(fullScanInfo, SqlManager::no_rep, SqlManager::mask_all);
+            list_cabinet[addr.x()]->updateCase(addr.y());
             win_access->scanOpen(scanGoodsId, fullScanInfo);
             emit goodsAccess(addr,fullScanInfo, 1, 1);
         }
         else
         {
+            SqlManager::scanFetch(fullScanInfo, SqlManager::no_rep, SqlManager::mask_all);
+            list_cabinet[addr.x()]->updateCase(addr.y());
             win_access->scanOpen(scanGoodsId, fullScanInfo);
             config->showMsg(MSG_GOODS_USE_UP, 1);
             win_access->showTips(MSG_GOODS_USE_UP, 1);
