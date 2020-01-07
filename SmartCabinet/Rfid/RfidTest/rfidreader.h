@@ -10,8 +10,8 @@ class RfidReader : public QObject
 {
     Q_OBJECT
 public:
-    explicit RfidReader(QTcpSocket* s,int col, QObject *parent = 0);
-    explicit RfidReader(QHostAddress server, quint16 port, int col, QObject *parent = 0);
+    explicit RfidReader(QTcpSocket* s,int seq, QObject *parent = 0);
+    explicit RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent = 0);
     void scanStart(quint32 antState, quint8 scanMode);
     void scanStop();
     QString readerIp();
@@ -20,9 +20,9 @@ public slots:
     void sendCmd(QByteArray data);
 
 signals:
-    void reportEpc(QString epc, int ant);
+    void reportEpc(QString epc, int seq, int ant);
 private:
-    int colPos;
+    int readerSeq;
     int curAnt;
     bool flagInit;
     QTcpSocket* skt;

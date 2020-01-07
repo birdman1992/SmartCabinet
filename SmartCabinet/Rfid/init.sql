@@ -63,7 +63,7 @@ INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260902240370E
 INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260901440430E716','262','TEST-MARK');
 INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260900960350EC0F','263','TEST-MARK');
 INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260901560360EDB9','264','TEST-MARK');
-INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260902350450E7CB','265','TEST-MARK');
+INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260901080370EC29','265','TEST-MARK');
 INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260900910480E539','266','TEST-MARK');
 INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260901240350EC4D','267','TEST-MARK');
 INSERT INTO EpcInfo(epc_code,goods_code, goods_id) VALUES('E2000016260902060360EE1A','268','TEST-MARK');

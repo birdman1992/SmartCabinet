@@ -77,6 +77,7 @@ private:
     QStringList list_out;//取出的标签
     QStringList list_back;//还回的标签
     QStringList list_con;//登记消耗的标签
+    QStringList list_ign;//忽略表
     quint32 clsStamp;
     quint32 doorState;
     quint16 insideAnt;
@@ -93,8 +94,8 @@ private:
 
 private slots:
     void initEpc();//程序启动初始化EPC标签
-    void updateEpc(QString epc, int ant);
-    void testUpdateEpc(QString, int ant);
+    void updateEpc(QString epc, int seq, int ant);
+    void testUpdateEpc(QString epc, int seq, int ant);
     void clsTimeOut();
 };
 

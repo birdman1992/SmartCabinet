@@ -1,19 +1,19 @@
 #include "rfidreader.h"
 #include <QDebug>
 
-RfidReader::RfidReader(QTcpSocket *s, int col, QObject *parent) : QObject(parent)
+RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent)
 {
     flagInit = false;
-    colPos = col;
+    readerSeq = seq;
     skt = s;
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
 }
 
-RfidReader::RfidReader(QHostAddress server, quint16 port, int col, QObject *parent) : QObject(parent)
+RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent) : QObject(parent)
 {
     flagInit = false;
-    colPos = col;
+    readerSeq = seq;
     skt = new QTcpSocket();
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
@@ -55,6 +55,7 @@ void RfidReader::scanStart(quint32 antState, quint8 scanMode)
 void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
 {
     qDebug()<<"[RfidReader]"<<state;
+    scanStop();
 }
 
 void RfidReader::recvData()
@@ -102,8 +103,8 @@ void RfidReader::parseEpc(QByteArray epcData)
     len = ntohs(len);
     QByteArray epc = QByteArray(pos, len);
     pos += len;
-//    qDebug()<<"[reportEpc]"<<epc.toHex();
-    emit reportEpc(QString(epc.toHex().toUpper()), curAnt);
+//    qDebug()<<"[reportEpc]"<<epc.toHex()<<readerSeq<<curAnt;
+    emit reportEpc(QString(epc.toHex().toUpper()), readerSeq, curAnt);
 }
 
 void RfidReader::parseAnt(QByteArray antData)
