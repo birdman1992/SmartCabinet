@@ -226,19 +226,25 @@ void CabinetAccess::scanOpen(QString goodsId, QString goodsCode)
     }
     else if(config->state == STATE_REFUN)
     {
-        Goods* goods = SqlManager::searchGoodsByCode(goodsCode);
-        ui->name->setText(goods->name);
+        if(curGoods)
+            delete curGoods;
+
+        curGoods = SqlManager::searchGoodsByCode(goodsCode);
+        curGoods->codes<<goodsCode;
+        ui->name->setText(curGoods->name);
 //        ui->tip->setText("正在退货");
         showTips("正在退货", false);
-        delete goods;
     }
     else if(config->state == STATE_BACK)
     {
-        Goods* goods = SqlManager::searchGoodsByCode(goodsCode);
-        ui->name->setText(goods->name);
+        if(curGoods)
+            delete curGoods;
+
+        curGoods = SqlManager::searchGoodsByCode(goodsCode);
+        curGoods->codes<<goodsCode;
+        ui->name->setText(curGoods->name);
 //        ui->tip->setText("正在退货");
         showTips("正在还货", false);
-        delete goods;
     }
 }
 
@@ -393,7 +399,7 @@ void CabinetAccess::recvOptGoodsNum(int num)
     }
     else if(config->state == STATE_FETCH)
     {
-        ui->info->setText(QString("已取出，剩余%1×(%2)%3").arg(SqlManager::getGoodsCount(curGoods->packageId)).arg(curGoods->goodsType).arg(curGoods->unit));
+        ui->info->setText(QString("已取出，剩余%1×(%2)%3").arg(SqlManager::getGoodsCount(curGoods->packageId)).arg(curGoods->packageType).arg(curGoods->unit));
         showTips("取出成功", false);
     }
     else if(config->state == STATE_REFUN)

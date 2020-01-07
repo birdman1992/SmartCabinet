@@ -103,7 +103,7 @@ QStringList CabinetInfo::caseShowStr(QFont font, int maxWidth)
 
         if(!str.isEmpty())
         {
-            str += QString("(%1)×%2").arg(list_goods.at(i)->goodsType).arg(list_goods.at(i)->num);
+            str += QString("(%1)×%2").arg(list_goods.at(i)->packageType).arg(list_goods.at(i)->num);
 //            str += "\n";
 //            ret += str;
             qDebug()<<"[show str]"<<str;

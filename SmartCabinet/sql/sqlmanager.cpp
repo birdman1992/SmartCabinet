@@ -357,7 +357,7 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
                     VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price)");
     query.bindValue(0, QVariant(info->packageId));
     query.bindValue(1, QVariant(info->goodsId));
-    query.bindValue(2, QVariant(info->goodsType));
+    query.bindValue(2, QVariant(info->packageType));
     query.bindValue(3, QVariant(info->name));
     query.bindValue(4, QVariant(info->abbName));
     query.bindValue(5, QVariant(info->size));

@@ -222,7 +222,7 @@ bool AIOMachine::eventFilter(QObject *obj, QEvent *e)
             }
             if(!winActive)//窗口被激活，排除初始显示被激活的情况
             {
-                config->state = STATE_FETCH;
+                updateState();
             }
             winActive = true;
         }
@@ -479,7 +479,7 @@ QString AIOMachine::getGoodsInfoText(Goods *info, QString key)
     {
     case goodsId:return info->goodsId;//物品编码
     case goodsName:return info->name;//物品名称
-    case packageType:return QString("%1").arg(info->goodsType);//包类型
+    case packageType:return QString("%1").arg(info->packageType);//包类型
     case proName:return info->proName;//生产商
     case supplyName:return info->supName;//供应商
     case goodsSize:return info->size;//规格

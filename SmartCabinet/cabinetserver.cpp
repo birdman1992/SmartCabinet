@@ -1580,15 +1580,15 @@ void CabinetServer::recvCabClone()
             info->num = cJSON_GetObjectItem(item,"packageCount")->valueint;
             info->outNum = 0;
             info->goodsId = QString(cJSON_GetObjectItem(item, "goodsId")->valuestring);
-            info->goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
+            info->packageType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->packageId = info->goodsId;
 
-            if(info->goodsType<10)
-                info->packageId += "-0"+QString::number(info->goodsType);
+            if(info->packageType<10)
+                info->packageId += "-0"+QString::number(info->packageType);
             else
-                info->packageId += "-"+QString::number(info->goodsType);
+                info->packageId += "-"+QString::number(info->packageType);
 
             if(info->abbName.isEmpty())
                 info->abbName = getAbbName(info->name);
@@ -1654,7 +1654,7 @@ void CabinetServer::recvCabSync()
             info->num = cJSON_GetObjectItem(item,"packageCount")->valueint;
             info->outNum = 0;
             info->goodsId = QString(cJSON_GetObjectItem(item, "goodsId")->valuestring);
-            info->goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
+            info->packageType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->packageId = info->goodsId;
@@ -1669,10 +1669,10 @@ void CabinetServer::recvCabSync()
                 info->codes << QString(cJSON_GetArrayItem(jTraceIds, j)->valuestring);
             }
 
-            if(info->goodsType<10)
-                info->packageId += "-0"+QString::number(info->goodsType);
+            if(info->packageType<10)
+                info->packageId += "-0"+QString::number(info->packageType);
             else
-                info->packageId += "-"+QString::number(info->goodsType);
+                info->packageId += "-"+QString::number(info->packageType);
 
             if(info->abbName.isEmpty())
                 info->abbName = getAbbName(info->name);
@@ -2016,7 +2016,7 @@ void CabinetServer::recvAioData()
             info->unit = getCjsonItem(jGoods, "unit", QString()).toString();
             info->aioInNum = getCjsonItem(jGoods, "inCount", QString()).toString();
             info->aioOutNum = getCjsonItem(jGoods, "goodsCount", QString()).toString();
-            info->goodsType = getCjsonItem(jGoods, "packageType", 1).toInt();
+            info->packageType = getCjsonItem(jGoods, "packageType", 1).toInt();
             info->threshold = getCjsonItem(jGoods, "threshold", 0).toInt();
             info->maxThreshold = getCjsonItem(jGoods, "maxThreshold", 0).toInt();
             info->batch = getCjsonItem(jGoods, "batchNumber", QString()).toString();

@@ -137,5 +137,5 @@ Goods::Goods(Goods *goods)
 
 QString Goods::nameWithType()
 {
-    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(goodsType));
+    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(packageType));
 }
