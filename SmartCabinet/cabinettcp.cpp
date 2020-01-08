@@ -1,6 +1,6 @@
 #include "cabinettcp.h"
 
-#define TCP_PORT 9999
+#define TCP_PORT 9099
 
 CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
 {
@@ -16,6 +16,8 @@ CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectChanged(QAbstractSocket::SocketState)));
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
     socket->connectToHost(config->getServerIp(), TCP_PORT);
+//    qDebug()<<"<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<";
+    qDebug()<<"[CabinetTcp]"<<config->getServerIp()<<TCP_PORT;
 }
 
 void CabinetTcp::updateTemp(float t)

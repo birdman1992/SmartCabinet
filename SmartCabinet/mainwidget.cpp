@@ -144,7 +144,6 @@ void MainWidget::init_huangpo()
         connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
         connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
         connect(win_aio, SIGNAL(aio_check(bool)), win_cabinet, SLOT(on_check_clicked(bool)));
-        connect(win_aio, SIGNAL(service_show()), win_cab_service, SLOT(show()));
         connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
         connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
         connect(win_aio, SIGNAL(logout()), win_cabinet, SLOT(sysLock()));
