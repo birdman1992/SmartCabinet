@@ -42,7 +42,7 @@ signals:
     void requireUpdateServerAddress();
     void checkVersion(bool needConfirm);
     void updateStart();
-    void doorState(int, bool);
+    void doorState(int);
     void userCardActive(QByteArray cardId);
 
 private slots:

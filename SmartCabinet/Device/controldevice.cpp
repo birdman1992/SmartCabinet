@@ -416,6 +416,7 @@ void ControlDevice::openLock(int seqNum, int index)
     qba[3] = index;
 
     lockCtrl(seqNum, index);
+//    setLed(seqNum, index);
 }
 
 void ControlDevice::openLed(quint16 ledState)
@@ -500,13 +501,26 @@ void ControlDevice::readCardReaderData(QByteArray qba)
 void ControlDevice::readTempHum()
 {
     QByteArray qba = com_temp_hum->readAll();
-//    qDebug()<<"[readTempHum]"<<qba.toHex();
+    qDebug()<<"[readTempHum]"<<qba.toHex();
     emit tempData(qba);
 }
 
 QByteArray ControlDevice::tty2UsbData(QByteArray ttyData)
 {
     return ttyData.mid(6,8);
+}
+
+void ControlDevice::setLed(int doorState)
+{
+    QByteArray qba = QByteArray::fromHex("8a000000a8");
+    qba[2] = doorState;
+    qba[3] = 0;
+//    qba[1] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlSeq;
+//    qba[3] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlIndex;
+    qDebug()<<"[setLed]"<<qba.toHex();
+#ifndef SIMULATE_ON
+    com_lock_ctrl->write(qba);
+#endif
 }
 
 //0209019B4193A6E703->9B4193A6

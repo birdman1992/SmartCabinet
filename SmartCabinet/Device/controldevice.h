@@ -74,6 +74,8 @@ signals:
     void tempData(QByteArray);
 
 public slots:
+//    void setLed(int seq, int ioState);
+    void setLed(int doorState);
     void openCase(int seqNum, int index);//柜格映射IO参数
     void openLock(int seqNum, int index);//直接锁控IO参数
     void openLed(quint16 ledState);

@@ -6,6 +6,7 @@
 #include <QTime>
 #include <QTableWidget>
 #include <QScrollBar>
+#include <QDateTime>
 #include "rfidreader.h"
 #include "sql/sqlmanager.h"
 #include "cabinetconfig.h"
@@ -32,7 +33,7 @@ public:
     EpcInfo(QString id, QString _goodsCode=QString());
     QString epcId;
     QString goodsCode;//对应物品id
-    quint32 lastStamp;//上次更新的时间戳
+    quint64 lastStamp;//上次更新的时间戳
     EpcState state;//当前状态
     QString lastOpt;//上次操作人
     int colPos;//物品列坐标
@@ -58,12 +59,14 @@ public slots:
     void doorStateChanged(int id, bool isOpen);
 
 signals:
+    void updateInCount(int);
     void updateEpcInfo(EpcInfo*);
     void epcStateChanged(TableMark changedTableMark);
     void epcAccess(QStringList epcs, int optType);
 
 private:
     RfidReader* testReader;
+    RfidReader* testReader2;
     QTableWidget* table_out;
     QTableWidget* table_in;
     QTableWidget* table_back;
@@ -78,7 +81,7 @@ private:
     QStringList list_back;//还回的标签
     QStringList list_con;//登记消耗的标签
     QStringList list_ign;//忽略表
-    quint32 clsStamp;
+    quint64 clsStamp;
     quint32 doorState;
     quint16 insideAnt;
     quint16 outsideAnt;

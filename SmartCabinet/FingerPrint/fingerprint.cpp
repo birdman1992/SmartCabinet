@@ -19,6 +19,7 @@ FingerPrint::FingerPrint(QWidget *parent) :
     curModule = 0;
     ledState = 3;
     curDev = -1;
+    lockState = 0;
 
     manager_user = UserPrintManager::manager();
     ctrlSeq = manager_user->getSeqConfig();
@@ -258,7 +259,19 @@ void FingerPrint::doorStateChanged(int id, bool isOpen)
 {
     if(curState == STATE_CHECK)
         cmdSetLed(id, 2, MODEL_NORMAL);
-    emit doorState(id, isOpen);
+
+    int lastState = lockState;
+
+    if(isOpen)
+    {
+        lockState |= (1<<id);
+    }
+    else
+    {
+        lockState &= ~(1<<id);
+    }
+    if(lastState != lockState)
+        emit doorState(lockState);
 }
 
 void FingerPrint::userCheckPass(int canId, int fingerId)
@@ -589,7 +602,7 @@ void FingerPrint::canDevScan()
 void FingerPrint::on_reg_clicked()
 {
 //    curUserCard = "A8F92201";
-//    curUserName = "Admin";
+    curUserName = "Admin";
     if(curUserCard.isEmpty() || curUserName.isEmpty())
     {
         qDebug()<<"[FingerPrint] reg:no user info";

@@ -12,6 +12,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setAttribute(Qt::WA_TranslucentBackground, true);
     initTabs();
     isLogin = false;
     rfManager = new RfidManager();
@@ -43,6 +44,11 @@ void FrmRfid::testSlot()
 {
     ui->stackedWidget->setCurrentIndex(0);
     this->showFullScreen();
+}
+
+void FrmRfid::updateAntInCount(int count)
+{
+    ui->in_count->setText(QString::number(count));
 }
 
 void FrmRfid::updateEpcInfo(EpcInfo *info)
@@ -144,6 +150,14 @@ void FrmRfid::initTabs()
 void FrmRfid::showEvent(QShowEvent *)
 {
     ui->msg->clear();
+}
+
+void FrmRfid::paintEvent(QPaintEvent *e)
+{
+    Q_UNUSED(e);
+
+    QPainter painter(this);
+    painter.fillRect(rect(), QColor(50,50,50,0));
 }
 
 void FrmRfid::on_OK_clicked()

@@ -130,7 +130,7 @@ void AIOMachine::setPowState(int power)
         ui->setting->show();
 //        ui->aio_check->show();
 //        ui->aio_return->show();
-//        ui->aio_check_create->show();
+        ui->aio_check_create->show();
         optList<<"存"<<"取"<<"还";
         break;
 
@@ -190,6 +190,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     updateState();
     sysUnlock();
     emit reqUpdateOverview();
+//    win_rfid->showFullScreen();
 }
 
 void AIOMachine::recvUserInfo(QByteArray qba)
@@ -647,7 +648,8 @@ void AIOMachine::on_aio_day_report_clicked()
 
 void AIOMachine::on_aio_check_create_clicked()
 {
-    emit aio_check(true);
+//    emit aio_check(true);
+
 }
 
 void AIOMachine::on_tab_last_clicked()

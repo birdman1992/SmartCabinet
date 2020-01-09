@@ -42,7 +42,7 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<EpcInfo*>("EpcInfo*");
     qRegisterMetaType<TableMark>("TableMark");
 
-    win_screenPro = new ScreenPro;
+//    win_screenPro = new ScreenPro;
 
     win_aio = NULL;
 
@@ -117,7 +117,7 @@ void MainWidget::init_huangpo()
     win_cabinet = new CabinetWidget(this);
     win_cabinet->installGlobalConfig(cabinetConf);
     connect(win_cabinet, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
-    connect(win_cabinet, SIGNAL(screenPro(bool)), win_screenPro, SLOT(updateProState(bool)));
+//    connect(win_cabinet, SIGNAL(screenPro(bool)), win_screenPro, SLOT(updateProState(bool)));
 #ifdef TCP_API
     connect_new_api();
 #else
@@ -131,8 +131,8 @@ void MainWidget::init_huangpo()
 
     ledCtrl = new LedCtrl(this);
     connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
-    connect(win_cabinet, SIGNAL(updateLoginState(int,bool)), ledCtrl, SLOT(ledSwitch(int,bool)));//登入登出控制led
-    connect(win_cab_service, SIGNAL(doorState(int,bool)), ledCtrl, SLOT(ledSwitch(int,bool)));
+//    connect(win_cabinet, SIGNAL(updateLoginState(int,bool)), ledCtrl, SLOT(ledSwitch(int,bool)));//登入登出控制led
+    connect(win_cab_service, SIGNAL(doorState(int)), ctrlUi, SLOT(setLed(int)));
 
     tempDev = new TempDev(this);
     connect(ctrlUi, SIGNAL(tempData(QByteArray)), tempDev, SLOT(recvTempData(QByteArray)));

@@ -389,7 +389,7 @@ void SqlManager::updateRfidsFinish()
 //获取取出物品列表
 QSqlQuery SqlManager::checkRfid(quint32 cutOffStamp, int row, int col)
 {
-    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.row=%1 AND EI.col=%2 AND EI.time_stamp<%3").arg(row).arg(col).arg(cutOffStamp);
+    QString cmd = QString("SELECT GI.name, EI.epc_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.row=%1 AND EI.col=%2 AND EI.time_stamp<%3").arg(row).arg(col).arg(cutOffStamp);
     QSqlQuery query(db_cabinet);
     queryExec(&query, "checkRfid", cmd);
     return query;
@@ -398,7 +398,7 @@ QSqlQuery SqlManager::checkRfid(quint32 cutOffStamp, int row, int col)
 //根据EPC获取物品信息
 QSqlQuery SqlManager::checkRfid(QString epcCode)
 {
-    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN %1").arg(epcCode);
+    QString cmd = QString("SELECT GI.name, EI.epc_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN %1").arg(epcCode);
     QSqlQuery query(db_cabinet);
     queryExec(&query, "checkRfid", cmd);
     return query;
@@ -408,7 +408,7 @@ QSqlQuery SqlManager::checkRfid(QString epcCode)
 QSqlQuery SqlManager::checkRfid(QStringList epcCodes)
 {
     QString epcCode = epcCodes.join("','");
-    QString cmd = QString("SELECT GI.name, EI.goods_code, EI.epc_code, GI.size, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN ('%1')").arg(epcCode);
+    QString cmd = QString("SELECT GI.name, EI.epc_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN ('%1')").arg(epcCode);
     QSqlQuery query(db_cabinet);
     queryExec(&query, "checkRfid", cmd);
     return query;

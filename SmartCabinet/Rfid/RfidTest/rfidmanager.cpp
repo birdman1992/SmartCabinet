@@ -30,6 +30,8 @@ RfidManager::RfidManager(QObject *parent) : QObject(parent)
     QHostAddress serverAddr = QHostAddress("192.168.0.8");
     testReader = new RfidReader(serverAddr, 8888, 0, this);
     connect(testReader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+    testReader2 = new RfidReader(QHostAddress("192.168.0.9"), 8888, 0, this);
+    connect(testReader2, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
 //    connect(testReader, SIGNAL(reportEpc(QString,int)), this, SLOT(testUpdateEpc(QString, int)));
     QTimer::singleShot(1000, this, SLOT(initEpc()));
     initColName();
@@ -45,7 +47,7 @@ void RfidManager::initEpc()
     {
         EpcInfo* info = new EpcInfo(query.value(0).toString(), query.value(1).toString());
 //        qDebug()<<info->epcId;
-        info->lastStamp = query.value(2).toUInt();
+        info->lastStamp = query.value(2).toLongLong();
         info->state = (EpcState)query.value(3).toInt();
         map_rfid.insert(info->epcId, info);
 //        qDebug()<<info->state;
@@ -66,17 +68,21 @@ void RfidManager::initColName()
     map_col_name.insert("size", "规格");
     map_col_name.insert("opt_id", "操作人");
     map_col_name.insert("time_stamp", "时间");
+    map_col_name.insert("pro_name", "生产商");
+    map_col_name.insert("sup_name", "供应商");
 }
 
 void RfidManager::startScan()
 {
 //    testReader->scanStop();
+    qDebug()<<"[startScan]";
     testReader->scanStart(insideAnt, 1);
     flagScan = true;
 }
 
 void RfidManager::stopScan()
 {
+    qDebug()<<"[stopScan]";
     testReader->scanStart(outsideAnt|insideAnt, 1);
     clsStamp = QDateTime::currentMSecsSinceEpoch();
     clsTimeOut();
@@ -130,6 +136,7 @@ void RfidManager::doorStateChanged(int id, bool isOpen)
         if(flagScan && (!doorState))//扫描状态且柜门全关
             stopScan();
     }
+    qDebug()<<"close&scan"<<doorState<<flagScan;
 }
 
 void RfidManager::listShow(QStringList epcs, QTableWidget *table, TableMark mark)
@@ -178,6 +185,7 @@ void RfidManager::epcCheck(int row, int col)
     listShow(list_new, table_in, tab_in);
 
     list_ign.clear();
+    emit updateInCount(list_ign.count());
 
     emit epcStateChanged((TableMark)tabMark);
 }
@@ -240,7 +248,9 @@ void RfidManager::queryShow(QSqlQuery query, QTableWidget *table)
             table->setItem(i, j, new QTableWidgetItem(query.value(j).toString()));
 //            qDebug()<<query.value(j).toString();
         }
-        table->item(i, 4)->setText(config->getOptId());
+        table->item(i, 5)->setText(config->getOptId());
+        if(map_rfid.contains(query.value(1).toString()))
+            table->item(i, 6)->setText(QDateTime::fromMSecsSinceEpoch(map_rfid[query.value(1).toString()]->lastStamp).toString("yyyy-MM-dd hh:mm:ss"));
         i++;
     }while(query.next());
     QScrollBar* bar = table->verticalScrollBar();
@@ -248,11 +258,13 @@ void RfidManager::queryShow(QSqlQuery query, QTableWidget *table)
 //    bar->setValue(100);
 //    qDebug()<<"max"<<bar->maximum();
     bar->setValue(bar->maximum());
+    table->resizeColumnsToContents();
 }
 
 void RfidManager::recordClear()
 {
     list_ign.clear();
+    emit updateInCount(list_ign.count());
     list_con.clear();
     list_epc.clear();
     list_new.clear();
@@ -273,7 +285,7 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
 
     bool needUpdateOutList = false;
 
-    if((1<<(ant-1)) & insideAnt)//内部天线
+    if(((1<<(ant-1)) & insideAnt) && (seq == 0))//内部天线
     {
         switch(info->state)
         {
@@ -285,16 +297,20 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
             if(list_new.indexOf(epc) < 0)
             {
                 list_new<<epc;
+                qDebug()<<"[in count]:"<<list_new.count();
                 listShow(list_new, table_in, tab_in);
             }
 //            emit updateEpcInfo(info);
             break;
         case epc_out://还回标签
-            info->lastStamp = QDateTime::currentMSecsSinceEpoch();
-            info->colPos = ant;
-            info->lastOpt = config->getOptId();
-            list_back<<epc;
-            qDebug()<<list_back.count();
+            if(list_back.indexOf(epc) < 0)
+            {
+                info->lastStamp = QDateTime::currentMSecsSinceEpoch();
+                info->colPos = ant;
+                info->lastOpt = config->getOptId();
+                list_back<<epc;
+                qDebug()<<"[back count]:"<<list_back.count();
+            }
 //            emit updateEpcInfo(info);
             break;
         case epc_in://刷新时间戳
@@ -305,7 +321,7 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
 //                info->state = epc_in;
                 info->lastOpt = QString();
                 listShow(list_out, table_out, tab_out);
-                qDebug()<<"remove"<<epc<<list_out.count()<<list_ign.count();
+                qDebug()<<"remove"<<epc<<"[out count]:"<<list_out.count()<<"[ign count]:"<<list_ign.count();
                 if(list_out.isEmpty())
                 {
                     qDebug()<<scanTimer.elapsed()<<"ms";
@@ -320,9 +336,11 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
             break;
         }
     }
-    else if((1<<(ant-1)) & outsideAnt)//外部天线扫描到
+    else if(((1<<(ant-1)) & outsideAnt) || (seq > 0))//外部天线扫描到
     {
         list_ign<<epc;
+        qDebug()<<"[ign count]"<<list_ign.count();
+        emit updateInCount(list_ign.count());
         switch(info->state)
         {
         case epc_in:
@@ -333,6 +351,7 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
                 info->lastOpt = config->getOptId();
                 needUpdateOutList = !(tabMark & tab_out);//原本未显示取出清单
                 listShow(list_out, table_out, tab_out);
+                qDebug()<<"remove"<<epc<<"[out count]:"<<list_out.count()<<"[ign count]:"<<list_ign.count();
                 if(needUpdateOutList)//原本未显示取出清单
                     emit epcStateChanged((TableMark)tabMark);
             }

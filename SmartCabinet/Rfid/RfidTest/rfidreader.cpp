@@ -13,6 +13,7 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent
 RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent) : QObject(parent)
 {
     flagInit = false;
+    flagConnect = false;
     readerSeq = seq;
     skt = new QTcpSocket();
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
@@ -22,8 +23,11 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
 
 void RfidReader::sendCmd(QByteArray data)
 {
-    qDebug()<<"[sendCmd]"<<data.toHex();
-    skt->write(data);
+    if(flagConnect)
+    {
+        qDebug()<<"[sendCmd]"<<data.toHex();
+        skt->write(data);
+    }
 }
 
 void RfidReader::scanStop()
@@ -55,7 +59,20 @@ void RfidReader::scanStart(quint32 antState, quint8 scanMode)
 void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
 {
     qDebug()<<"[RfidReader]"<<state;
-    scanStop();
+    switch(state)
+    {
+    case QAbstractSocket::ConnectedState:
+        flagConnect = true;
+        scanStop();
+        break;
+
+    case QAbstractSocket::UnconnectedState:
+        flagConnect = false;
+        break;
+
+    default:
+        break;
+    }
 }
 
 void RfidReader::recvData()

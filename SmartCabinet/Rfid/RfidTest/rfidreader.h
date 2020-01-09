@@ -25,6 +25,7 @@ private:
     int readerSeq;
     int curAnt;
     bool flagInit;
+    bool flagConnect;
     QTcpSocket* skt;
     RfidResponse response;
 

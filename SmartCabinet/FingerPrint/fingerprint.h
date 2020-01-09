@@ -49,7 +49,7 @@ public slots:
 signals:
     void requireOpenLock(int seq, int index);
     void cmdRet();
-    void doorState(int id, bool isOpen);
+    void doorState(int id);
     void fingerPrintPass(int canId, int fingerId);
     void userCardActive(QByteArray cardId);
 
@@ -96,6 +96,7 @@ private:
     char generateStep;//注册步骤0-2,区分采集的3张图像
     char ledState;
     char curModule;
+    int lockState;
     bool waitSelCurModule;
     int curDev;
 

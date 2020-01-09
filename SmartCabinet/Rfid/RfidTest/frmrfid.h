@@ -7,6 +7,7 @@
 #include <QList>
 #include <QStringList>
 #include <QTimer>
+#include <QPaintEvent>
 #include "rfidmanager.h"
 
 namespace Ui {
@@ -24,6 +25,7 @@ public:
 
 private slots:
     void testSlot();
+    void updateAntInCount(int count);
     void updateEpcInfo(EpcInfo*);
     void showTabs(TableMark tabMark);
     void accessSuccess(QString msg);
@@ -44,6 +46,7 @@ private:
     void updateTableRow(int rowIndex, EpcInfo*);
     void initTabs();
     void showEvent(QShowEvent *);
+    void paintEvent(QPaintEvent*);
 };
 
 

@@ -35,7 +35,7 @@ CabinetService::CabinetService(QWidget *parent) :
 
     win_fingerPrint = new FingerPrint(this);
     connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), this, SIGNAL(requireOpenLock(int,int)));
-    connect(win_fingerPrint, SIGNAL(doorState(int, bool)), this, SIGNAL(doorState(int, bool)));//开关门控制led
+    connect(win_fingerPrint, SIGNAL(doorState(int)), this, SIGNAL(doorState(int)));//开关门控制led
     connect(win_fingerPrint, SIGNAL(userCardActive(QByteArray)), this, SIGNAL(userCardActive(QByteArray)));
     ui->frame_finger->layout()->addWidget(win_fingerPrint);
 
