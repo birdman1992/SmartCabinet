@@ -357,6 +357,19 @@ void CabinetServer::userLogin(QString userId)
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
     apiState = 1;
     netTimeStart();
+
+
+    UserInfo* info = new UserInfo;
+    info->departName = QString();
+    info->cardId = userId;
+    info->name = QString("演示");
+    info->power = 0;
+    qDebug()<<"[recvUserLogin]"<<info->cardId<<info->power;
+    cur_user = info;
+    emit loginRst(info);
+    config->addUser(info);
+    config->wakeUp(TIMEOUT_BASE);
+    networkState = true;
 }
 
 void CabinetServer::listCheck(QString code)

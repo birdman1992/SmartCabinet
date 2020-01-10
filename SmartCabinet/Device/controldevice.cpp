@@ -513,7 +513,7 @@ QByteArray ControlDevice::tty2UsbData(QByteArray ttyData)
 void ControlDevice::setLed(int doorState)
 {
     QByteArray qba = QByteArray::fromHex("8a000000a8");
-    qba[2] = doorState;
+    qba[2] = 0xff;//doorState;
     qba[3] = 0;
 //    qba[1] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlSeq;
 //    qba[3] = config->list_cabinet[seqNum]->list_case[ioNum]->ctrlIndex;
