@@ -19,6 +19,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     rfManager->initTableViews(tabs[0], tabs[1], tabs[2], tabs[3]);
     connect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
     connect(rfManager, SIGNAL(epcStateChanged(TableMark)), this, SLOT(showTabs(TableMark)));
+    connect(rfManager, SIGNAL(updateInCount(int)), this, SLOT(updateAntInCount()));
 
     SignalManager* sigMan = SignalManager::manager();
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));

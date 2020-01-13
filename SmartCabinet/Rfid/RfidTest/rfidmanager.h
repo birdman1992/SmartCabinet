@@ -7,6 +7,7 @@
 #include <QTableWidget>
 #include <QScrollBar>
 #include <QDateTime>
+#include <QList>
 #include "rfidreader.h"
 #include "sql/sqlmanager.h"
 #include "cabinetconfig.h"

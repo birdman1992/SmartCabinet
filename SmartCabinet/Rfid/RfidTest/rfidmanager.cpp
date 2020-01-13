@@ -29,9 +29,13 @@ RfidManager::RfidManager(QObject *parent) : QObject(parent)
 
     QHostAddress serverAddr = QHostAddress("192.168.0.8");
     testReader = new RfidReader(serverAddr, 8888, 0, this);
-    connect(testReader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
-    testReader2 = new RfidReader(QHostAddress("192.168.0.9"), 8888, 0, this);
-    connect(testReader2, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+    testReader2 = new RfidReader(QHostAddress("192.168.0.9"), 8888, 1, this);
+    list_device<<testReader;
+    list_device<<testReader2;
+    foreach (RfidReader* reader, list_device)
+    {
+        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+    }
 //    connect(testReader, SIGNAL(reportEpc(QString,int)), this, SLOT(testUpdateEpc(QString, int)));
     QTimer::singleShot(1000, this, SLOT(initEpc()));
     initColName();
@@ -76,14 +80,20 @@ void RfidManager::startScan()
 {
 //    testReader->scanStop();
     qDebug()<<"[startScan]";
-    testReader->scanStart(insideAnt, 1);
+    foreach(RfidReader* reader, list_device)
+    {
+        reader->scanStart(insideAnt, 1);
+    }
     flagScan = true;
 }
 
 void RfidManager::stopScan()
 {
     qDebug()<<"[stopScan]";
-    testReader->scanStart(outsideAnt|insideAnt, 1);
+    foreach(RfidReader* reader, list_device)
+    {
+        reader->scanStart(outsideAnt|insideAnt, 1);
+    }
     clsStamp = QDateTime::currentMSecsSinceEpoch();
     clsTimeOut();
 //    QTimer::singleShot(clsTime, this, SLOT(clsTimeOut()));
@@ -115,7 +125,11 @@ void RfidManager::clsFinish()
     epcSync();
     recordClear();
     flagCorct = false;
-    testReader->scanStop();
+
+    foreach (RfidReader* reader, list_device)
+    {
+        reader->scanStop();
+    }
     flagScan = false;
 }
 
@@ -336,7 +350,7 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
             break;
         }
     }
-    else if(((1<<(ant-1)) & outsideAnt) || (seq > 0))//外部天线扫描到
+    else if(((1<<(ant-1)) & outsideAnt) || (seq == 0))//外部天线扫描到
     {
         list_ign<<epc;
         qDebug()<<"[ign count]"<<list_ign.count();
