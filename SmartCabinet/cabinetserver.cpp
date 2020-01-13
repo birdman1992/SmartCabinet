@@ -555,7 +555,7 @@ void CabinetServer::goodsCheckReq()
     qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
     QString optId = config->getOptId();
-    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2,\"optName\":%3}").arg(cabId).arg(timeStamp).arg(optId).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2,\"optName\":\"%3\"}").arg(cabId).arg(timeStamp).arg(optId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CHECK_CREAT);//+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
     reply_goods_check = post(nUrl, qba, timeStamp);
