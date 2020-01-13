@@ -236,7 +236,7 @@ QString SqlManager::getGoodsId(QString code)
 QStringList SqlManager::getCaseText(int col, int row)
 {
     QSqlQuery query(db_cabinet);
-    QString cmd = QString("select GoodsInfo.abbname,COUNT(*) package_count,GoodsInfo.cab_col,GoodsInfo.cab_row FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 GROUP BY GoodsInfo.package_id;").arg(col).arg(row);
+    QString cmd = QString("select GoodsInfo.abbname,COUNT(*) package_count,GoodsInfo.cab_col,GoodsInfo.cab_row FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 AND CodeInfo.state_local=1 GROUP BY GoodsInfo.package_id;").arg(col).arg(row);
     if(!queryExec(&query, cmd, "getCaseText"))
         return QStringList();
 

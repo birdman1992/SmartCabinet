@@ -86,7 +86,7 @@ void CabinetRefund::refundStart(CaseAddress addr)
 
     for(i=0; i<list_goods.count(); i++)
     {
-        CabinetRefundItem* item = new CabinetRefundItem(curRefundCab->list_goods.at(i));
+        CabinetRefundItem* item = new CabinetRefundItem(list_goods.at(i));
         ui->checktable->setCellWidget(i, 0, item);
         list_item<<item;
     }
