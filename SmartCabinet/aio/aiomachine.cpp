@@ -220,7 +220,7 @@ bool AIOMachine::eventFilter(QObject *obj, QEvent *e)
             {
                 emit aio_check(false);
             }
-            if((!winActive) && (loginState))//窗口被激活，排除初始显示被激活的情况
+            if((!winActive) && (loginState))//窗口被激活，排除初始显示被激活的情况,排除未登录情况
             {
                 updateState();
             }
