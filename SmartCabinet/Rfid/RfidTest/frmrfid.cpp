@@ -79,6 +79,7 @@ void FrmRfid::showTabs(TableMark tabMark)
     {
         win_tabs->clear();
         this->hide();
+        qDebug()<<"[showTabs]"<<"empty tabMark";
         rfManager->clsFinish();
         return;
     }

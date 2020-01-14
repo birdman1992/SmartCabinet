@@ -299,7 +299,7 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
 
     bool needUpdateOutList = false;
 
-    if(((1<<(ant-1)) & insideAnt) && (seq == 0))//内部天线
+    if((1<<(ant-1)) & insideAnt)//内部天线
     {
         switch(info->state)
         {
