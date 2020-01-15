@@ -408,7 +408,7 @@ QSqlQuery SqlManager::checkRfid(QString epcCode)
 QSqlQuery SqlManager::checkRfid(QStringList epcCodes)
 {
     QString epcCode = epcCodes.join("','");
-    QString cmd = QString("SELECT GI.name, EI.epc_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN ('%1')").arg(epcCode);
+    QString cmd = QString("SELECT GI.name, EI.epc_code, EI.goods_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id WHERE EI.epc_code IN ('%1')").arg(epcCode);
     QSqlQuery query(db_cabinet);
     queryExec(&query, "checkRfid", cmd);
     return query;
