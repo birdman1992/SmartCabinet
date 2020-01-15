@@ -14,9 +14,12 @@ public:
     bool hidOpen(unsigned short vId, unsigned short pId);
     void hidClose();
     void run();
+    void restart();
 
 private:
     hid_device* handle;
+    unsigned short v;
+    unsigned short p;
 
 signals:
     void hidRead(QByteArray qba);

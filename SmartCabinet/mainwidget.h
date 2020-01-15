@@ -10,6 +10,7 @@
 #include <QSettings>
 #include "Device/controldevice.h"
 #include "Device/ledctrl.h"
+#include "Device/QDeviceWatcher/qdevicewatcher.h"
 #include "medinf.h"
 #include <QList>
 #include <QVBoxLayout>
@@ -88,6 +89,7 @@ private:
     AIOMachine* win_aio;
     ScreenPro* win_screenPro;
     RouteRepair* routeRepair;//路由修复
+    QDeviceWatcher* devWatcher;
     ControlDevice* ctrlUi;
     LedCtrl* ledCtrl;
     TempDev* tempDev;

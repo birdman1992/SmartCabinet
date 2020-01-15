@@ -7,7 +7,7 @@ QDeviceWatcher::QDeviceWatcher(QObject *parent) : QThread(parent)
 {
     memset((void*)buf, 0, sizeof(buf));
     watchDeviceList.clear();
-    this->start();
+//    this->start();
 }
 
 QDeviceWatcher::~QDeviceWatcher()
@@ -93,6 +93,7 @@ void QDeviceWatcher::netLinkInit()
 
 void QDeviceWatcher::msgFilter(QString msg)
 {
+//    qDebug()<<"msgFilter"<<msg;
     if(watchDeviceList.isEmpty())
         return;
 
@@ -106,12 +107,12 @@ void QDeviceWatcher::msgFilter(QString msg)
 
     QString devName = msg.mid(index_name, msg.indexOf("\n", index_name)-index_name);
     QString devOpt = msg.mid(index_opt, msg.indexOf("\n", index_opt)-index_opt);
-    qDebug()<<devOpt<<devName;
+    qDebug()<<"[QDeviceWatcher]"<<devOpt<<devName;
 
     if(watchDeviceList.indexOf(devName) == -1)
         return;
 
-    qDebug()<<devOpt<<devName;
+    qDebug()<<"[QDeviceWatcher2]"<<devOpt<<devName;
 
     if(devOpt == "add")
         emit deviceAdded(devName);

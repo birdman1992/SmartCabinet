@@ -55,8 +55,11 @@ void QHid::run()
             flag++;
         }
     }
+}
 
-    hidClose();
+void QHid::restart()
+{
+    hidOpen(v, p);
 }
 
 bool QHid::hidOpen(unsigned short vId, unsigned short pId)
@@ -67,12 +70,20 @@ bool QHid::hidOpen(unsigned short vId, unsigned short pId)
         qWarning("Device:v:%d p:%d open failed.",vId, pId);
         return false;
     }
+    v = vId;
+    p = pId;
     this->start();
     return true;
 }
 
 void QHid::hidClose()
 {
+    if(this->isRunning())
+    {
+        this->terminate();
+        this->wait(1000);
+    }
+
     if(handle != NULL)
     {
         hid_close(handle);

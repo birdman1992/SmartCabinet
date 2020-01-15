@@ -40,6 +40,8 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<Goods*> >("QList<GoodsInfo*>");
     qRegisterMetaType<AIOMachine::cEvent>("AIOMachine::cEvent");
 
+    devWatcher = new QDeviceWatcher(this);
+
     win_screenPro = new ScreenPro;
 
     win_aio = NULL;
