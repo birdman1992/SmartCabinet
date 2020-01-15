@@ -219,8 +219,8 @@ void FingerPrint::ledStateChanged(int state)
 
 void FingerPrint::moduleActived(int id)
 {
-    emit requireOpenLock(0, id);
-    return;
+//    emit requireOpenLock(0, id);
+//    return;
     cmdSetLed(id, 1, MODEL_ACTIVE);//指纹进入激活状态
 
     switch(curState)

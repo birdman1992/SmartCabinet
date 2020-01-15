@@ -31,7 +31,6 @@ public:
     static void newApiLog(QString url, QByteArray data, quint64 time_stamp, bool need_resend=true);
     static QByteArray apiComplete(quint64 timeStamp);
     static QByteArray apiData(quint64 timeStamp);
-//    static void listStore
     bool waitForSync();
     static void bindGoodsId(int col, int row, QString goodsId);
     static int getShowCountByCase(int col, int row);//获取柜格显示的包类型数量
