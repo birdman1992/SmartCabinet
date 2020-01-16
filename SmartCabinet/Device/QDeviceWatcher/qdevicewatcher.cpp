@@ -5,6 +5,7 @@
 
 QDeviceWatcher::QDeviceWatcher(QObject *parent) : QThread(parent)
 {
+    qDebug()<<"[QDeviceWatcher]";
     memset((void*)buf, 0, sizeof(buf));
     watchDeviceList.clear();
     this->start();
@@ -48,10 +49,13 @@ void QDeviceWatcher::run()
     int len = 0;
     int i = 0;
     loopFlag = true;
+    qDebug("run");
 
     while(loopFlag)
     {
+        qDebug("loop");
         len=recvmsg(sockfd,&msg,0);
+        qDebug("asdasdasdsad");
         if(!loopFlag)
             return;
 
@@ -93,28 +97,8 @@ void QDeviceWatcher::netLinkInit()
 
 void QDeviceWatcher::msgFilter(QString msg)
 {
-    if(watchDeviceList.isEmpty())
-        return;
+    qDebug()<<"[msgFilter]"<<msg;
+    qDebug("--------------------------------");
 
-    int index_name = msg.indexOf("DEVNAME");
-    int index_opt = msg.indexOf("ACTION");
-    if((index_name == -1) || (index_opt == -1))
-        return;
-
-    index_name += 8;//"DEVNAME=",8byte
-    index_opt += 7;//"ACTION=",7byte
-
-    QString devName = msg.mid(index_name, msg.indexOf("\n", index_name)-index_name);
-    QString devOpt = msg.mid(index_opt, msg.indexOf("\n", index_opt)-index_opt);
-    qDebug()<<devOpt<<devName;
-
-    if(watchDeviceList.indexOf(devName) == -1)
-        return;
-
-    qDebug()<<devOpt<<devName;
-
-    if(devOpt == "add")
-        emit deviceAdded(devName);
-    else if(devOpt == "remove")
-        emit deviceRemoved(devName);
+    QRegExp reg;
 }

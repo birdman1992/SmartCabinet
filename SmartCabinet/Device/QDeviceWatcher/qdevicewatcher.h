@@ -39,6 +39,7 @@ private:
 signals:
     void deviceAdded(QString deviceName);
     void deviceRemoved(QString deviceName);
+    void deviceStateChanged(quint16 pId, quint16 vId, bool action);//action: true->added  false->removed
 
 public slots:
 };
