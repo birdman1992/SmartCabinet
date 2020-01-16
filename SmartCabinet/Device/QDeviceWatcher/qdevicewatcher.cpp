@@ -8,7 +8,7 @@ QDeviceWatcher::QDeviceWatcher(QObject *parent) : QThread(parent)
     qDebug()<<"[QDeviceWatcher]";
     memset((void*)buf, 0, sizeof(buf));
     watchDeviceList.clear();
-    this->start();
+//    this->start();
 }
 
 QDeviceWatcher::~QDeviceWatcher()
@@ -53,9 +53,7 @@ void QDeviceWatcher::run()
 
     while(loopFlag)
     {
-        qDebug("loop");
-        len=recvmsg(sockfd,&msg,0);
-        qDebug("asdasdasdsad");
+        len = recv(sockfd, &buf, sizeof(buf), 0);
         if(!loopFlag)
             return;
 
@@ -63,9 +61,9 @@ void QDeviceWatcher::run()
             printf("receive error\n");
         else if((len<32)||(len>(signed)sizeof(buf)))
             printf("invalid message\n");
-        for(i=0;i<len;i++)
-            if(*(buf+i)=='\0')
-                buf[i]='\n';
+//        for(i=0;i<len;i++)
+//            if(*(buf+i)=='\0')
+//                buf[i]='\n';
 
         msgFilter(QString(buf));
     }
@@ -76,29 +74,38 @@ void QDeviceWatcher::netLinkInit()
     struct sockaddr_nl sa;
     memset(&sa,0,sizeof(sa));
     sa.nl_family=AF_NETLINK;
-    sa.nl_groups=NETLINK_KOBJECT_UEVENT;
+    sa.nl_groups=1;
     sa.nl_pid = getpid(); //both is ok
-
-    memset(&msg,0,sizeof(msg));
-
-    iov.iov_base=(void *)buf;
-    iov.iov_len=sizeof(buf);
-    msg.msg_name=(void *)&sa;
-    msg.msg_namelen=sizeof(sa);
-    msg.msg_iov=&iov;
-    msg.msg_iovlen=1;
+    int buffersize = sizeof(buf);
 
     sockfd=socket(AF_NETLINK,SOCK_RAW,NETLINK_KOBJECT_UEVENT);
     if(sockfd==-1)
         printf("socket creating failed:%s\n",strerror(errno));
+
+    setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &buffersize, sizeof(buffersize));
     if(bind(sockfd,(struct sockaddr *)&sa,sizeof(sa))==-1)
         printf("bind error:%s\n",strerror(errno));
 }
 
 void QDeviceWatcher::msgFilter(QString msg)
 {
-    qDebug()<<"[msgFilter]"<<msg;
-    qDebug("--------------------------------");
+//    qDebug()<<"[msgFilter]"<<msg;
 
     QRegExp reg;
+    reg.setPattern(QString("(.*)@.*:([0-9a-fA-F]{4}):([0-9a-fA-F]{4}).*event"));
+    int index = msg.indexOf(reg);
+//    qDebug()<<index;
+    if((index == -1) || (reg.captureCount() != 3))
+        return;
+
+//    qDebug()<<reg.captureCount();
+
+    QString actionStr = reg.cap(1);
+    quint16 vId = reg.cap(2).toUShort(0,16);
+    quint16 pId = reg.cap(3).toUShort(0,16);
+//    qDebug()<<"[action]"<<actionStr;
+//    qDebug("vid:0x%x pid:0x%x", vId, pId);
+//    qDebug("--------------------------------");
+    bool action = (actionStr==QString("add"));
+    emit deviceStateChanged(pId, vId, action);
 }

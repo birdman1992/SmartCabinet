@@ -5,6 +5,7 @@
 #include <QByteArray>
 #include <QList>
 #include <QTimer>
+#include <QMap>
 #include "Device/Hid/qhid.h"
 #include "Device/Qextserial/qextserialport.h"
 #include "Device/devicesimulate.h"
@@ -41,7 +42,10 @@ private:
     DeviceSimulate* dev_simulate;//设备仿真器
     CabinetConfig* config;//全局配置
     QList<QByteArray> lockCtrlCmd;//控制协议
-    QDeviceWatcher* devWater;
+    QList<quint32> list_card_reader_id;
+    QList<quint32> list_scan_id;
+    QMap<quint32, QHid*> map_dev;
+    QDeviceWatcher* devWatcher;
     QTimer* timer_beat;
     GoodsCar curCar;
     QTimer timer;
@@ -59,10 +63,12 @@ private:
 
     int get_dev_info(char *dev_name, USBINFO *uInfo);
     int get_path();
+    void initDeviceIdList();
     void getDevState();
     void comRfidInit(int baudRate, int dataBits, int Parity, int stopBits);
     void comCardReaderInit(int baudRate, int dataBits, int Parity, int stopBits);
     QByteArray tty2UsbData(QByteArray ttyData);
+    quint32 deviceId(quint16 vId, quint16 pId);//给hid设备生成一个设备id
 signals:
     void cardReaderTimeout();//读卡超时
     void lockCtrlData(QByteArray);//暂无
@@ -75,6 +81,7 @@ public slots:
     void openLock(int seqNum, int index);//直接锁控IO参数
     void getLockState();
     void readyForNewCar(GoodsCar car);
+    void hidStateChanged(quint16 pId, quint16 vId, bool action);
 
 private slots:
     void readLockCtrlData();

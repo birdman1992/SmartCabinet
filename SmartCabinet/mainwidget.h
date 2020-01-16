@@ -10,6 +10,7 @@
 #include <QSettings>
 #include "Device/controldevice.h"
 #include "Device/ledctrl.h"
+#include "Device/QDeviceWatcher/qdevicewatcher.h"
 #include "medinf.h"
 #include <QList>
 #include <QVBoxLayout>

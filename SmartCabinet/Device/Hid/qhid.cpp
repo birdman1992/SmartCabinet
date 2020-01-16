@@ -16,6 +16,8 @@ static unsigned char tab[] = {0, 0, 0, 0, 97, 98, 99, 100, 101, 102, 103, 104, 1
 
 QHid::QHid(QObject *parent) : QThread(parent)
 {
+    v = 0;
+    p = 0;
     handle = NULL;
     hid_init();
 }
@@ -55,8 +57,11 @@ void QHid::run()
             flag++;
         }
     }
+}
 
-    hidClose();
+bool QHid::isOpen()
+{
+    return (handle!=NULL);
 }
 
 bool QHid::hidOpen(unsigned short vId, unsigned short pId)
@@ -68,15 +73,32 @@ bool QHid::hidOpen(unsigned short vId, unsigned short pId)
         return false;
     }
     this->start();
+    v = vId;
+    p = pId;
     return true;
+}
+
+quint32 QHid::deviceId()
+{
+    return (v<<16)|p;
 }
 
 void QHid::hidClose()
 {
     if(handle != NULL)
     {
+        this->terminate();
+        this->wait(3000);
         hid_close(handle);
         hid_exit();
         handle = NULL;
+    }
+}
+
+void QHid::hidReopen()
+{
+    if(!hidOpen(v, p))
+    {
+        qWarning()<<"[hidReopen]"<<v<<p<<"failed";
     }
 }
