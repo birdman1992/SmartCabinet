@@ -93,7 +93,7 @@ void QDeviceWatcher::netLinkInit()
 
 void QDeviceWatcher::msgFilter(QString msg)
 {
-//    qDebug()<<"msgFilter"<<msg;
+    qDebug()<<"msgFilter"<<msg;
     if(watchDeviceList.isEmpty())
         return;
 
