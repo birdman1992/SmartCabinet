@@ -6,6 +6,7 @@
 #include <globalapp.h>
 #include <QDateTime>
 #include <QDebug>
+#include "Device/QDeviceWatcher/qdevicewatcher.h"
 #include "inputcontex/myinputpanelcontext.h"
 #include "beautifului.h"
 
@@ -73,7 +74,6 @@ int main(int argc, char *argv[])
 //    QFont font;
 //    font.setFamily(("msyh"));
 //    a.setFont(font);
-
     MainWidget w;
 #ifdef SIMULATE_ON
     w.show();

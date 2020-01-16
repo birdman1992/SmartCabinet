@@ -25,14 +25,16 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 {
     hid_card_reader = NULL;
     hid_code_scan = NULL;
+    initDeviceIdList();
 #ifdef SIMULATE_ON
     simulateInit();
 #else
 
 #endif
+    devWatcher = new QDeviceWatcher(this);
+    connect(devWatcher, SIGNAL(deviceStateChanged(quint16 , quint16 , bool )), this, SLOT(hidStateChanged(quint16 , quint16 , bool )));
+    devWatcher->start();
     deviceInit();
-    devWater = new QDeviceWatcher(this);
-    devWater->start();
 }
 
 ControlDevice::~ControlDevice()
@@ -65,52 +67,35 @@ void ControlDevice::deviceInit()
 //    timer.start(1000);
 //    connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
 //    qDebug()<<"[write to rfid]"<<DEV_RFID_CTRL<<ret<<QByteArray::fromHex("fe0700000005ff").toHex();
+
     //初始化读卡器
     hid_card_reader = new QHid(this);
-    if(!hid_card_reader->hidOpen(2303, 9))
+    cardReaderState = false;
+    foreach (quint32 devId, list_card_reader_id)
     {
-        if(!hid_card_reader->hidOpen(1534, 4130))
+        if(hid_card_reader->hidOpen(devId>>16, devId&0xffff))
         {
-            cardReaderState = false;
-            qDebug()<<"[CARD READER] open failed";
-        }
-        else
-        {
+            map_dev.insert(devId, hid_card_reader);
             cardReaderState =  true;
             qDebug()<<"[CARD READER] open success";
+            break;
         }
-    }
-    else
-    {
-        cardReaderState =  true;
-        qDebug()<<"[CARD READER] open success";
     }
     connect(hid_card_reader, SIGNAL(hidRead(QByteArray)), this, SLOT(readCardReaderData(QByteArray)));
 
     //初始化扫码设备
     hid_code_scan = new QHid(this);
-    if(!hid_code_scan->hidOpen(1155, 17))
+    scanState = false;
+    foreach (quint32 devId, list_scan_id)
     {
-        if(!hid_code_scan->hidOpen(8208, 30264))
+        if(hid_code_scan->hidOpen(devId>>16, devId&0xffff))
         {
-            if(!hid_code_scan->hidOpen(0x1eab, 0x8303))
-            {
-                if(!hid_code_scan->hidOpen(0x23d0, 0x0c80))
-                {
-                    if(!hid_code_scan->hidOpen(0x1eab, 0x1d03))
-                    {
-                        qDebug()<<"[CODE SCAN] open failed";
-                        scanState = false;
-                    }
-                }
-            }
+            map_dev.insert(devId, hid_code_scan);
+            scanState =  true;
+            qDebug()<<"[CARD READER] open success";
+            break;
         }
     }
-    else
-    {
-        scanState = true;
-    }
-
     connect(hid_code_scan, SIGNAL(hidRead(QByteArray)), this, SLOT(readCodeScanData(QByteArray)));
 }
 
@@ -467,6 +452,50 @@ void ControlDevice::readyForNewCar(GoodsCar car)
     rfidCtrl(car.rfid);
 }
 
+//action:true->added false->removed
+void ControlDevice::hidStateChanged(quint16 pId, quint16 vId, bool action)
+{
+    qDebug()<<"[action]"<<action;
+    qDebug("vid:0x%x pid:0x%x", vId, pId);
+    qDebug("--------------------------------");
+    if(action)//added
+    {
+        quint32 devId = deviceId(vId,pId);
+        QHid* dev = map_dev.value(devId, NULL);
+        if(dev == NULL)//设备未被成功打开过
+        {
+            if(list_scan_id.indexOf(devId)>0)//是扫码设备
+            {
+                if(hid_code_scan->hidOpen(vId, pId))
+                {
+                    map_dev.insert(devId, hid_code_scan);
+                    scanState =  true;
+                    qDebug()<<"[CODE SCAN] open success";
+                    getDevState();
+                }
+            }
+            else if(list_card_reader_id.indexOf(devId)>0)//是读卡器设备
+            {
+                if(hid_card_reader->hidOpen(vId, pId))
+                {
+                    map_dev.insert(devId, hid_card_reader);
+                    scanState =  true;
+                    qDebug()<<"[CARD READER] open success";
+                    getDevState();
+                }
+            }
+        }
+        else//设备被成功打开过，重新打开设备
+        {
+            dev->hidReopen();
+        }
+    }
+    else
+    {
+
+    }
+}
+
 void ControlDevice::readLockCtrlData()
 {
     ::usleep(20000);
@@ -521,6 +550,11 @@ void ControlDevice::setLed(int doorState)
 #ifndef SIMULATE_ON
     com_lock_ctrl->write(qba);
 #endif
+}
+
+quint32 ControlDevice::deviceId(quint16 vId, quint16 pId)
+{
+    return (vId<<16)|pId;
 }
 
 //0209019B4193A6E703->9B4193A6
@@ -652,6 +686,17 @@ int ControlDevice::get_path(void)
     closedir(pDir);
     free(usb_info);
     return event;
+}
+
+void ControlDevice::initDeviceIdList()
+{
+    list_card_reader_id<<((2303<<16)|9);
+    list_card_reader_id<<((1534<<16)|4130);
+
+    list_scan_id<<((1155<<16)|17);
+    list_scan_id<<((8208<<16)|30264);
+    list_scan_id<<((0x23d0<<16)|0x0c80);
+    list_scan_id<<((0x1eab<<16)|0x1d03);
 }
 
 void ControlDevice::getDevState()
