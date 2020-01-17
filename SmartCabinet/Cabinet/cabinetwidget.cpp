@@ -1104,6 +1104,7 @@ void CabinetWidget::msgShow(QString title, QString msg, bool setmodal)
         msgBox->setModal(false);
         msgBox->show();
     }
+    QTimer::singleShot(10000, this, SLOT(msgClear()));
 }
 /*
 |补货|退货|服务|退出|

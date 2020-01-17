@@ -233,6 +233,7 @@ void CabinetConfig::syncGoods(Goods *info, int row, int col)
 void CabinetConfig::setServerAddress(QString addr)
 {
     serverIp = addr;
+    serverAddr.clear();
 
     if(serverAddr.indexOf("http:") != 0)
         serverAddr = QString("http://") +serverIp;

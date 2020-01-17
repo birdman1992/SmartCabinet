@@ -111,6 +111,7 @@ signals:
     void stack_switch(int index);
 
 private slots:
+    void msgClear();
     void setMenuHide(bool ishide);
     void cabinetBind(Goods* goods);
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
@@ -197,7 +198,6 @@ private:
 
     void showEvent(QShowEvent*);
     void warningMsgBox(QString title, QString msg);
-    void msgClear();
     void msgShow(QString title, QString msg, bool setmodal);
     void setPowerState(int power);//设置权限状态
     void paintEvent(QPaintEvent *);
