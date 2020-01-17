@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMap>
 #include <QTime>
+#include <QTimer>
 #include <QTableWidget>
 #include <QScrollBar>
 #include <QDateTime>
@@ -60,7 +61,8 @@ public slots:
     void doorStateChanged(int id, bool isOpen);
 
 signals:
-    void updateInCount(int);
+    void updateTimer(int);
+    void updateCount(int);
     void updateEpcInfo(EpcInfo*);
     void epcStateChanged(TableMark changedTableMark);
     void epcAccess(QStringList epcs, int optType);
@@ -89,6 +91,7 @@ private:
     quint16 insideAnt;
     quint16 outsideAnt;
     QTime scanTimer;
+    QTimer upTimer;
     bool flagCorct;//数据矫正标志
     bool flagInit;//初始化标志
     bool flagScan;//扫描状态
@@ -97,12 +100,16 @@ private:
     void listShow(QStringList epcs, QTableWidget* table, TableMark mark);
     void queryShow(QSqlQuery query, QTableWidget* table);
     void recordClear();
+    void timerStart();
+    void timerStop();
+
 
 private slots:
     void initEpc();//程序启动初始化EPC标签
     void updateEpc(QString epc, int seq, int ant);
     void testUpdateEpc(QString epc, int seq, int ant);
     void clsTimeOut();
+    void timerUpdate();
 };
 
 #endif // RFIDMANAGER_H

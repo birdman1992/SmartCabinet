@@ -23,6 +23,10 @@ public:
     void setLoginState(bool login);
     ~FrmRfid();
 
+public slots:
+    void updateScanTimer(int ms);
+    void updateCount(int count );
+
 private slots:
     void testSlot();
     void updateAntInCount(int count);

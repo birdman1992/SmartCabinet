@@ -176,7 +176,8 @@ void RfidManager::epcCheck(int row, int col)
     Q_UNUSED(col);
     flagCorct = true;
     tabMark = 0;
-    scanTimer.start();
+
+    timerStart();
 
     foreach(EpcInfo* info, map_rfid)
     {
@@ -199,7 +200,6 @@ void RfidManager::epcCheck(int row, int col)
     listShow(list_new, table_in, tab_in);
 
     list_ign.clear();
-    emit updateInCount(list_ign.count());
 
     emit epcStateChanged((TableMark)tabMark);
 }
@@ -279,12 +279,25 @@ void RfidManager::queryShow(QSqlQuery query, QTableWidget *table)
 void RfidManager::recordClear()
 {
     list_ign.clear();
-    emit updateInCount(list_ign.count());
     list_con.clear();
     list_epc.clear();
     list_new.clear();
     list_out.clear();
     list_back.clear();
+    emit updateCount(list_new.count());
+}
+
+void RfidManager::timerStart()
+{
+    scanTimer.start();
+    upTimer.start(1000);
+    connect(&upTimer, SIGNAL(timeout()), this, SLOT(timerUpdate()));
+}
+
+void RfidManager::timerStop()
+{
+    upTimer.stop();
+    disconnect(&upTimer, SIGNAL(timeout()), this, SLOT(timerUpdate()));
 }
 
 void RfidManager::updateEpc(QString epc, int seq, int ant)
@@ -312,8 +325,14 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
             if(list_new.indexOf(epc) < 0)
             {
                 list_new<<epc;
+                emit updateCount(list_new.count());
                 qDebug()<<"[in count]:"<<list_new.count();
                 listShow(list_new, table_in, tab_in);
+            }
+            if(list_new.count() == map_rfid.count())
+            {
+                qDebug()<<scanTimer.elapsed()<<"ms";
+                emit updateTimer(scanTimer.elapsed());
             }
 //            emit updateEpcInfo(info);
             break;
@@ -340,8 +359,8 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
                 if(list_out.isEmpty())
                 {
                     qDebug()<<scanTimer.elapsed()<<"ms";
-
-                    emit epcStateChanged((TableMark)tabMark);
+//                    emit epcStateChanged((TableMark)tabMark);
+                    emit updateTimer(scanTimer.elapsed());
                 }
             }
             break;
@@ -355,7 +374,6 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
     {
         list_ign<<epc;
         qDebug()<<"[ign count]"<<list_ign.count();
-        emit updateInCount(list_ign.count());
         switch(info->state)
         {
         case epc_in:
@@ -401,6 +419,11 @@ void RfidManager::testUpdateEpc(QString epc, int seq, int ant)
 void RfidManager::clsTimeOut()
 {
     epcCheck(clsStamp);
+}
+
+void RfidManager::timerUpdate()
+{
+    emit updateTimer(scanTimer.elapsed());
 }
 
 EpcInfo::EpcInfo(QString id, QString _goodsCode)

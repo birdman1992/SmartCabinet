@@ -19,7 +19,8 @@ FrmRfid::FrmRfid(QWidget *parent) :
     rfManager->initTableViews(tabs[0], tabs[1], tabs[2], tabs[3], tabs[4]);
     connect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
     connect(rfManager, SIGNAL(epcStateChanged(TableMark)), this, SLOT(showTabs(TableMark)));
-    connect(rfManager, SIGNAL(updateInCount(int)), this, SLOT(updateAntInCount()));
+    connect(rfManager, SIGNAL(updateCount(int)), this, SLOT(updateCount(int)));
+    connect(rfManager, SIGNAL(updateTimer(int)), this, SLOT(updateScanTimer(int)));
 
     SignalManager* sigMan = SignalManager::manager();
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));
@@ -39,6 +40,16 @@ FrmRfid::~FrmRfid()
 {
     qDeleteAll(tabs.begin(), tabs.end());
     delete ui;
+}
+
+void FrmRfid::updateScanTimer(int ms)
+{
+    ui->scan_timer->display(ms);
+}
+
+void FrmRfid::updateCount(int count)
+{
+    ui->count->display(count);
 }
 
 void FrmRfid::testSlot()
@@ -147,6 +158,11 @@ void FrmRfid::initTabs()
     tabs<<new QTableWidget();
     list_win_name<<"存入"<<"取出"<<"还回"<<"消耗"<<"盘点";
     ui->layout_tabs->addWidget(win_tabs);
+    QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
+    qssScrollbar.open(QIODevice::ReadOnly);
+    QString style = QString(qssScrollbar.readAll());
+    win_tabs->setStyleSheet(style);
+    qssScrollbar.close();
     //    win_tabs->hide();
 }
 
