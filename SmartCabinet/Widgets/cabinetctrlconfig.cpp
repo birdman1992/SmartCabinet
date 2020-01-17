@@ -70,8 +70,8 @@ void CabinetCtrlConfig::on_ok_clicked()
     config->setLockCtrl(curSeq, curIndex, seq, index);
 //    seq = (seq>0xff)?0xff:seq;
 //    index = (index>0xff)?0xff:index;
-//    config->list_cabinet[curSeq]->list_case[curIndex]->ctrlSeq = seq;
-//    config->list_cabinet[curSeq]->list_case[curIndex]->ctrlIndex = index;
+    config->list_cabinet[curSeq]->setCtrlSeq(curIndex, seq);
+    config->list_cabinet[curSeq]->setctrlIndex(curIndex, index);
 
 //    ctrlSeq[curIndex] = seq;
 //    ctrlIndex[curIndex] = index;
