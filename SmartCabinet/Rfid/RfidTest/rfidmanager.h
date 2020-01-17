@@ -52,7 +52,7 @@ public:
     void stopScan();//结束扫描
     void epcCheck(int row=0, int col=0);//盘点标签
     void epcSync();//同步标签信息
-    void initTableViews(QTableWidget* in=NULL, QTableWidget* out=NULL, QTableWidget* back=NULL, QTableWidget* con=NULL);
+    void initTableViews(QTableWidget* in=NULL, QTableWidget* out=NULL, QTableWidget* back=NULL, QTableWidget* con=NULL, QTableWidget *check=NULL);
 
 public slots:
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);
@@ -72,6 +72,7 @@ private:
     QTableWidget* table_in;
     QTableWidget* table_back;
     QTableWidget* table_con;
+    QTableWidget* table_check;
     CabinetConfig* config;
     QMap<QString, EpcInfo*> map_rfid;
     QMap<QString, QString> map_col_name;
@@ -82,6 +83,7 @@ private:
     QStringList list_back;//还回的标签
     QStringList list_con;//登记消耗的标签
     QStringList list_ign;//忽略表
+    QStringList list_check;//盘点表
     quint64 clsStamp;
     quint32 doorState;
     quint16 insideAnt;

@@ -214,12 +214,13 @@ void RfidManager::epcSync()
     SqlManager::updateRfidsFinish();
 }
 
-void RfidManager::initTableViews(QTableWidget *in, QTableWidget *out, QTableWidget *back, QTableWidget *con)
+void RfidManager::initTableViews(QTableWidget *in, QTableWidget *out, QTableWidget *back, QTableWidget *con, QTableWidget *check)
 {
     table_in = in;
     table_out = out;
     table_back = back;
     table_con = con;
+    table_check = check;
 }
 
 void RfidManager::newRfidMark(QString epc, QString goodsCode, QString goodsId)

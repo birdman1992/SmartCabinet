@@ -16,7 +16,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     initTabs();
     isLogin = false;
     rfManager = new RfidManager();
-    rfManager->initTableViews(tabs[0], tabs[1], tabs[2], tabs[3]);
+    rfManager->initTableViews(tabs[0], tabs[1], tabs[2], tabs[3], tabs[4]);
     connect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
     connect(rfManager, SIGNAL(epcStateChanged(TableMark)), this, SLOT(showTabs(TableMark)));
     connect(rfManager, SIGNAL(updateInCount(int)), this, SLOT(updateAntInCount()));
@@ -144,7 +144,8 @@ void FrmRfid::initTabs()
     tabs<<new QTableWidget();
     tabs<<new QTableWidget();
     tabs<<new QTableWidget();
-    list_win_name<<"存入"<<"取出"<<"还回"<<"消耗";
+    tabs<<new QTableWidget();
+    list_win_name<<"存入"<<"取出"<<"还回"<<"消耗"<<"盘点";
     ui->layout_tabs->addWidget(win_tabs);
     //    win_tabs->hide();
 }
