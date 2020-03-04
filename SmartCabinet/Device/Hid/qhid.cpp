@@ -101,4 +101,8 @@ void QHid::hidReopen()
     {
         qWarning()<<"[hidReopen]"<<v<<p<<"failed";
     }
+    else
+    {
+        qDebug()<<"[hidReopen]"<<v<<p<<"success";
+    }
 }

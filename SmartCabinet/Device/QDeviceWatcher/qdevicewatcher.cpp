@@ -49,7 +49,7 @@ void QDeviceWatcher::run()
     int len = 0;
     int i = 0;
     loopFlag = true;
-    qDebug("run");
+    qDebug("[QDeviceWatcher]:start");
 
     while(loopFlag)
     {
@@ -58,9 +58,9 @@ void QDeviceWatcher::run()
             return;
 
         if(len<0)
-            printf("receive error\n");
+            qDebug("receive error\n");
         else if((len<32)||(len>(signed)sizeof(buf)))
-            printf("invalid message\n");
+            qDebug("invalid message\n");
 //        for(i=0;i<len;i++)
 //            if(*(buf+i)=='\0')
 //                buf[i]='\n';
@@ -80,11 +80,11 @@ void QDeviceWatcher::netLinkInit()
 
     sockfd=socket(AF_NETLINK,SOCK_RAW,NETLINK_KOBJECT_UEVENT);
     if(sockfd==-1)
-        printf("socket creating failed:%s\n",strerror(errno));
+        qDebug("socket creating failed:%s\n",strerror(errno));
 
     setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &buffersize, sizeof(buffersize));
     if(bind(sockfd,(struct sockaddr *)&sa,sizeof(sa))==-1)
-        printf("bind error:%s\n",strerror(errno));
+        qDebug("bind error:%s\n",strerror(errno));
 }
 
 void QDeviceWatcher::msgFilter(QString msg)
