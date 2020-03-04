@@ -188,7 +188,7 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
     QList<Goods*> ret;
     ret.clear();
     QSqlQuery query(db_cabinet);
-    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,CodeInfo.code,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2;").arg(col).arg(row);
+    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,COUNT(code) package_count,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2;").arg(col).arg(row);
     if(!queryExec(&query, cmd, "getGoodsList"))
         return ret;
 
@@ -205,7 +205,7 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
         info->pos.setX(query.value(7).toInt());
         info->pos.setY(query.value(8).toInt());
         info->singlePrice = query.value(9).toInt();
-        info->traceId = query.value(10).toString();
+        info->num = query.value(10).toInt();
         info->proName = query.value(11).toString();
         info->supName = query.value(12).toString();
         info->listCode = query.value(13).toString();
@@ -650,6 +650,6 @@ bool SqlManager::queryExec(QSqlQuery* q, QString cmd, QString msg)
         qDebug()<<"[sqlite]"<<msg<<"failed"<<q->lastError();
         return false;
     }
-//    qDebug()<<q->lastQuery();
+    qDebug()<<q->lastQuery();
     return true;
 }
