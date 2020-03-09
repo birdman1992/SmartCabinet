@@ -194,7 +194,7 @@ void CabinetSet::on_save_clicked()
 {
     config->setServerAddress(ui->serverAddr->text());
     emit updateServerAddr();
-    initStep = 1;
+    initStep |= 1;
     if(sTest != NULL)
         delete sTest;
 //    else
@@ -377,6 +377,7 @@ void CabinetSet::on_cloneStart_clicked()
 
 void CabinetSet::on_regId_clicked()
 {
+    qDebug()<<"[reg]"<<initStep;
     if(!(initStep & (1<<1)))
     {
         ui->regMsg->setText("请先配置柜格布局");
@@ -565,10 +566,10 @@ void CabinetSet::on_aio_mode_toggled(bool checked)
         item->setBackgroundColor(QColor(62, 155, 255));
         tab->setItem(screenPos.y(),0,item);
         warningSelScreen(false);
+        on_savePos_clicked();
         ui->add_right->setEnabled(false);
         ui->clear->setEnabled(false);
         ui->savePos->setEnabled(false);
-        on_savePos_clicked();
     }
     else
     {
