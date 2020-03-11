@@ -32,6 +32,7 @@ LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 
 SOURCES += main.cpp\
     Rfid/RfidTest/checkmanager.cpp \
+    Rfid/RfidTest/epcmodel.cpp \
     Rfid/RfidTest/frmrfid.cpp \
     Rfid/RfidTest/rfidmanager.cpp \
     Rfid/RfidTest/rfidpackage.cpp \
@@ -135,6 +136,7 @@ HEADERS  += mainwidget.h \
     Device/controldevice.h \
     Device/devicesimulate.h \
     Rfid/RfidTest/checkmanager.h \
+    Rfid/RfidTest/epcmodel.h \
     Rfid/RfidTest/frmrfid.h \
     Rfid/RfidTest/rfidmanager.h \
     Rfid/RfidTest/rfidpackage.h \

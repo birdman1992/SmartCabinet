@@ -42,6 +42,7 @@ public:
     static void updateRfid(QString epc, quint32 stamp, QString optId, int state, int row, int col);
     static void updateRfidsStart();
     static void updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state, int row, int col);
+    static void querySingle(QString cmd, QString msg=QString());
     static void updateRfidsFinish();
     static QSqlQuery checkRfid(quint32 cutOffStamp, int row=0, int col=0);
     static QSqlQuery checkRfid(QString epcCode);
@@ -66,6 +67,7 @@ public:
     void replaceGoodsInfo(Goods* info, QString listCode, RepState state=no_rep, RepMask stateMask=mask_no);
     static void listStoreAffirm(QString listCode, RepState state);//送货单确认存入
     static QPoint searchByPackageId(QString packageId);
+    static QSqlQuery query(QString cmd, QString msg);
 
 public slots:
 

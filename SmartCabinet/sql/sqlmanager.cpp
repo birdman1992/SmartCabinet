@@ -372,6 +372,11 @@ void SqlManager::updateRfidsSingle(QString epc, quint32 stamp, QString optId, in
     queryExec(pubQuery, "updateRfid", cmd);
 }
 
+void SqlManager::querySingle(QString cmd, QString msg)
+{
+    queryExec(pubQuery, msg, cmd);
+}
+
 void SqlManager::updateRfidsFinish()
 {
     queryNum--;
@@ -381,6 +386,13 @@ void SqlManager::updateRfidsFinish()
         delete pubQuery;
         pubQuery = NULL;
     }
+}
+
+QSqlQuery SqlManager::query(QString cmd, QString msg)
+{
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, msg, cmd);
+    return query;
 }
 
 //GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]

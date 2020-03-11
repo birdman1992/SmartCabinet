@@ -214,13 +214,31 @@ void RfidManager::epcSync()
     SqlManager::updateRfidsFinish();
 }
 
-void RfidManager::initTableViews(QTableWidget *in, QTableWidget *out, QTableWidget *back, QTableWidget *con, QTableWidget *check)
+void RfidManager::initTableViews(QTableView *in, QTableView *out, QTableView *back, QTableView *con, QTableView *check)
 {
-    table_in = in;
-    table_out = out;
-    table_back = back;
-    table_con = con;
-    table_check = check;
+//    table_in = in;
+//    table_out = out;
+//    table_back = back;
+//    table_con = con;
+//    table_check = check;
+    model_in = new QSortFilterProxyModel();
+    model_con = new QSortFilterProxyModel();
+    model_out = new QSortFilterProxyModel();
+    model_back = new QSortFilterProxyModel();
+    model_check = new QSortFilterProxyModel();
+
+    eModel = new EpcModel();
+    model_in->setSourceModel(eModel);
+    model_con->setSourceModel(eModel);
+    model_out->setSourceModel(eModel);
+    model_back->setSourceModel(eModel);
+    model_check->setSourceModel(eModel);
+
+    in->setModel(model_in);
+    out->setModel(model_out);
+    back->setModel(model_back);
+    con->setModel(model_con);
+    check->setModel(model_check);
 }
 
 void RfidManager::newRfidMark(QString epc, QString goodsCode, QString goodsId)

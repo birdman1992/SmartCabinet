@@ -151,11 +151,11 @@ void FrmRfid::updateTableRow(int rowIndex, EpcInfo *info)
 void FrmRfid::initTabs()
 {
     win_tabs = new QTabWidget(this);
-    tabs<<new QTableWidget();
-    tabs<<new QTableWidget();
-    tabs<<new QTableWidget();
-    tabs<<new QTableWidget();
-    tabs<<new QTableWidget();
+    tabs<<new QTableView();
+    tabs<<new QTableView();
+    tabs<<new QTableView();
+    tabs<<new QTableView();
+    tabs<<new QTableView();
     list_win_name<<"存入"<<"取出"<<"还回"<<"消耗"<<"盘点";
     ui->layout_tabs->addWidget(win_tabs);
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
@@ -174,7 +174,6 @@ void FrmRfid::showEvent(QShowEvent *)
 void FrmRfid::paintEvent(QPaintEvent *e)
 {
     Q_UNUSED(e);
-
     QPainter painter(this);
     painter.fillRect(rect(), QColor(50,50,50,0));
 }

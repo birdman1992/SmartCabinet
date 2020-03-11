@@ -46,7 +46,7 @@ private:
     QTabWidget* win_tabs;
     bool isLogin;
     QStringList list_win_name;
-    QList<QTableWidget*> tabs;
+    QList<QTableView*> tabs;
     void updateTableRow(int rowIndex, EpcInfo*);
     void initTabs();
     void showEvent(QShowEvent *);
