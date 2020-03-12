@@ -43,22 +43,19 @@ RfidManager::RfidManager(QObject *parent) : QObject(parent)
 
 void RfidManager::initEpc()
 {
+    eModel->syncDownload();
     //[epc_code|goods_code|time_stamp|state]
-    QSqlQuery query = SqlManager::getRfidTable();
-//    qDebug()<<query.lastQuery();
+//    QSqlQuery query = SqlManager::getRfidTable();
 
-    while(query.next())
-    {
-        EpcInfo* info = new EpcInfo(query.value(0).toString(), query.value(1).toString());
-//        qDebug()<<info->epcId;
-        info->lastStamp = query.value(2).toLongLong();
-        info->state = (EpcState)query.value(3).toInt();
-        map_rfid.insert(info->epcId, info);
-//        qDebug()<<info->state;
-//        emit updateEpcInfo(info);
-    }
-    flagInit = true;
-    qDebug()<<"flagInit";
+//    while(query.next())
+//    {
+//        EpcInfo* info = new EpcInfo(query.value(0).toString(), query.value(1).toString());
+//        info->lastStamp = query.value(2).toLongLong();
+//        info->state = (EpcState)query.value(3).toInt();
+//        map_rfid.insert(info->epcId, info);
+//    }
+//    flagInit = true;
+//    qDebug()<<"flagInit";
 }
 
 //GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]
@@ -122,7 +119,8 @@ void RfidManager::clsFinish()
         map_rfid[epc]->state = epc_in;
     }
 
-    epcSync();
+//    epcSync();
+    eModel->syncUpload();
     recordClear();
     flagCorct = false;
 
@@ -340,13 +338,14 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
 //            info->state = epc_in;
             info->colPos = ant;
             info->lastOpt = config->getOptId();
-            if(list_new.indexOf(epc) < 0)
-            {
-                list_new<<epc;
-                emit updateCount(list_new.count());
-                qDebug()<<"[in count]:"<<list_new.count();
-                listShow(list_new, table_in, tab_in);
-            }
+            eModel->setEpcMark(epc, mark_new);
+//            if(list_new.indexOf(epc) < 0)
+//            {
+//                list_new<<epc;
+//                emit updateCount(list_new.count());
+//                qDebug()<<"[in count]:"<<list_new.count();
+//                listShow(list_new, table_in, tab_in);
+//            }
             if(list_new.count() == map_rfid.count())
             {
                 qDebug()<<scanTimer.elapsed()<<"ms";
@@ -390,8 +389,9 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
     }
     else if(((1<<(ant-1)) & outsideAnt) || (seq == 0))//外部天线扫描到
     {
-        list_ign<<epc;
-        qDebug()<<"[ign count]"<<list_ign.count();
+//        list_ign<<epc;
+        eModel->lockEpcMark(epc);
+//        qDebug()<<"[ign count]"<<list_ign.count();
         switch(info->state)
         {
         case epc_in:
@@ -402,7 +402,7 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
                 info->lastOpt = config->getOptId();
                 needUpdateOutList = !(tabMark & tab_out);//原本未显示取出清单
                 listShow(list_out, table_out, tab_out);
-                qDebug()<<"remove"<<epc<<"[out count]:"<<list_out.count()<<"[ign count]:"<<list_ign.count();
+//                qDebug()<<"remove"<<epc<<"[out count]:"<<list_out.count()<<"[ign count]:"<<list_ign.count();
                 if(needUpdateOutList)//原本未显示取出清单
                     emit epcStateChanged((TableMark)tabMark);
             }
@@ -450,6 +450,8 @@ EpcInfo::EpcInfo(QString id, QString _goodsCode)
     goodsCode = _goodsCode;
     lastStamp = 0;
     state = epc_no;
+    mark = mark_no;
+    markLock = false;
     rowPos = 0;
     colPos = 0;
 }

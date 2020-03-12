@@ -82,6 +82,38 @@ EpcInfo *EpcModel::operator[](QString code)
     return map_rfid[code];
 }
 
+void EpcModel::clearEpcMark()
+{
+    foreach(EpcInfo* info, map_rfid)
+    {
+        info->mark = mark_no;
+    }
+    markCount = 0;
+}
+
+void EpcModel::setEpcMark(QString epcId, EpcMark mark)
+{
+    EpcInfo* info = map_rfid.value(epcId, NULL);
+    if(info == NULL)
+        return;
+    if(info->markLock)
+        return;
+
+    if(!info->mark)
+        markCount++;
+
+    info->mark = mark;
+}
+
+void EpcModel::lockEpcMark(QString epcId)
+{
+    if(!map_rfid.contains(epcId))
+    {
+        return;
+    }
+    map_rfid[epcId]->markLock = true;
+}
+
 void EpcModel::clear()
 {
     if(map_rfid.isEmpty())
