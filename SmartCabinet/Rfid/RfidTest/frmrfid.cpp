@@ -52,6 +52,11 @@ void FrmRfid::updateCount(int count)
     ui->count->display(count);
 }
 
+void FrmRfid::updateCurUser(QString optId)
+{
+    rfManager->setCurOptId(optId);
+}
+
 void FrmRfid::testSlot()
 {
     ui->stackedWidget->setCurrentIndex(0);

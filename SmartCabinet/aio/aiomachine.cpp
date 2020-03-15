@@ -176,6 +176,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
 
     emit updateLoginState(true);
     optUser = user;
+    win_rfid->updateCurUser(optUser->cardId);
     loginState = true;
     if(config->getDepartName().isEmpty())
     {
@@ -527,6 +528,7 @@ void AIOMachine::sysLock()
     ui->aio_hello->clear();
     loginState = false;
     optUser = NULL;
+    win_rfid->updateCurUser(QString());
     emit reqUpdateOverview();
     emit updateLoginState(false);
     emit logout();

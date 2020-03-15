@@ -4,6 +4,7 @@
 #include <QVariant>
 #include <QMap>
 #include <QStringList>
+#include <QDateTime>
 #include "sql/sqlmanager.h"
 
 enum EpcState{
@@ -20,7 +21,8 @@ enum EpcMark{
     mark_back,//还回的标签
     mark_out,//取出的标签
     mark_con,//登记消耗的标签
-    mark_check,//盘点标签
+    mark_in,//
+    mark_checked,
 };
 
 enum TableMark
@@ -64,15 +66,26 @@ public:
     void clearEpcMark();
     void setEpcMark(QString epcId, EpcMark mark);
     void lockEpcMark(QString epcId);
+    void setEpcState(QString epcId, EpcState state);
+    void updateStamp(QString epcId);
+    void checkStamp();
     void clear();
     void syncUpload();
     void syncDownload();
+    void setOptId(QString optId);
+    int getMarkCount();
+    bool markInfoCompleted();
+
+signals:
+    void scanProgress(int scanCount, int totalCount);
 
 private:
     QMap<QString, EpcInfo*> map_rfid;
     QMap<QString, QString> map_col_name;
     QStringList colsName;
-    int markCount;
+    QString curOptId;
+    int markCount;//count be marked
+    int outCount;//count for fetch out
 
     void initColName();
 };

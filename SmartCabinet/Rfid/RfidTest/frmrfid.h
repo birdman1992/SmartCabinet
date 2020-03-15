@@ -26,6 +26,7 @@ public:
 public slots:
     void updateScanTimer(int ms);
     void updateCount(int count );
+    void updateCurUser(QString optId);
 
 private slots:
     void testSlot();

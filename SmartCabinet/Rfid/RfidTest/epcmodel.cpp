@@ -3,6 +3,7 @@
 EpcModel::EpcModel(QObject *parent)
     :QAbstractTableModel(parent)
 {
+    curOptId = QString();
     colsName.clear();
     colsName<<"物品"<<"RFID"<<"条码"<<"规格"<<"生产商"<<"供应商"<<"操作人"<<"时间";
 }
@@ -79,7 +80,7 @@ void EpcModel::operator<<(EpcInfo *info)
 
 EpcInfo *EpcModel::operator[](QString code)
 {
-    return map_rfid[code];
+    return map_rfid.value(code, NULL);
 }
 
 void EpcModel::clearEpcMark()
@@ -100,9 +101,14 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
         return;
 
     if(!info->mark)
+    {
         markCount++;
+        emit scanProgress(markCount, map_rfid.count());
+    }
 
     info->mark = mark;
+    info->lastStamp = QDateTime::currentMSecsSinceEpoch();
+    info->lastOpt = curOptId;
 }
 
 void EpcModel::lockEpcMark(QString epcId)
@@ -112,6 +118,31 @@ void EpcModel::lockEpcMark(QString epcId)
         return;
     }
     map_rfid[epcId]->markLock = true;
+}
+
+void EpcModel::setEpcState(QString epcId, EpcState state)
+{
+    EpcInfo* info = map_rfid.value(epcId, NULL);
+    if(info == NULL)
+        return;
+
+    info->state = state;
+}
+
+void EpcModel::updateStamp(QString epcId)
+{
+    EpcInfo* info = map_rfid.value(epcId, NULL);
+    if(info == NULL)
+        return;
+
+    info->mark = mark;
+    info->lastStamp = QDateTime::currentMSecsSinceEpoch();
+    info->lastOpt = curOptId;
+}
+
+void EpcModel::checkStamp()
+{
+
 }
 
 void EpcModel::clear()
@@ -152,6 +183,21 @@ void EpcModel::syncDownload()
 //        qDebug()<<info->state;
 //        emit updateEpcInfo(info);
     }
+}
+
+void EpcModel::setOptId(QString optId)
+{
+    curOptId = optId;
+}
+
+int EpcModel::getMarkCount()
+{
+    return markCount;
+}
+
+bool EpcModel::markInfoCompleted()
+{
+    return (markCount+outCount >= map_rfid.count());
 }
 
 void EpcModel::initColName()

@@ -13,6 +13,7 @@ RfidManager::RfidManager(QObject *parent) : QObject(parent)
     table_out = NULL;
     table_back = NULL;
     table_con = NULL;
+    eModel = NULL;
     flagCorct = false;
     flagInit = false;
     flagScan = false;
@@ -39,6 +40,12 @@ RfidManager::RfidManager(QObject *parent) : QObject(parent)
 //    connect(testReader, SIGNAL(reportEpc(QString,int)), this, SLOT(testUpdateEpc(QString, int)));
     QTimer::singleShot(1000, this, SLOT(initEpc()));
     initColName();
+}
+
+void RfidManager::setCurOptId(QString optId)
+{
+    if(eModel)
+        eModel->setOptId(optId);
 }
 
 void RfidManager::initEpc()
@@ -82,6 +89,7 @@ void RfidManager::startScan()
         reader->scanStart(insideAnt, 1);
     }
     flagScan = true;
+
 }
 
 void RfidManager::stopScan()
@@ -99,29 +107,23 @@ void RfidManager::stopScan()
 //store:1  fetch:2 refund:3 back:16
 void RfidManager::clsFinish()
 {
-//    if(!list_new.isEmpty())
-//        emit epcAccess(list_new, 1);
-//    if(!list_out.isEmpty())
-//        emit epcAccess(list_out, 2);
-//    if(!list_back.isEmpty())
-//        emit epcAccess(list_back, 16);
 
-    foreach(QString epc, list_out)
-    {
-        map_rfid[epc]->state = epc_out;
-    }
-    foreach(QString epc, list_new)
-    {
-        map_rfid[epc]->state = epc_in;
-    }
-    foreach(QString epc, list_back)
-    {
-        map_rfid[epc]->state = epc_in;
-    }
+//    foreach(QString epc, list_out)
+//    {
+//        map_rfid[epc]->state = epc_out;
+//    }
+//    foreach(QString epc, list_new)
+//    {
+//        map_rfid[epc]->state = epc_in;
+//    }
+//    foreach(QString epc, list_back)
+//    {
+//        map_rfid[epc]->state = epc_in;
+//    }
 
 //    epcSync();
+//    recordClear();
     eModel->syncUpload();
-    recordClear();
     flagCorct = false;
 
     foreach (RfidReader* reader, list_device)
@@ -138,15 +140,21 @@ void RfidManager::doorStateChanged(int id, bool isOpen)
         return;
     if(isOpen)
     {
+        flagCorct = false;
         doorState |= (1<<id);
         if(!flagScan)
+        {
             startScan();
+        }
     }
     else
     {
         doorState &= ~(1<<id);
         if(flagScan && (!doorState))//扫描状态且柜门全关
+        {
+            flagCorct = true;
             stopScan();
+        }
     }
     qDebug()<<"close&scan"<<doorState<<flagScan;
 }
@@ -172,7 +180,7 @@ void RfidManager::epcCheck(int row, int col)
 {
     Q_UNUSED(row);
     Q_UNUSED(col);
-    flagCorct = true;
+//    flagCorct = true;
     tabMark = 0;
 
     timerStart();
@@ -319,12 +327,9 @@ void RfidManager::timerStop()
 void RfidManager::updateEpc(QString epc, int seq, int ant)
 {
     Q_UNUSED(seq);
-    EpcInfo* info = map_rfid.value(epc, NULL);
+    EpcInfo* info = eModel[epc];
 
     if(info == NULL)
-        return;
-
-    if(list_ign.indexOf(epc) >= 0)
         return;
 
     bool needUpdateOutList = false;
@@ -334,10 +339,10 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
         switch(info->state)
         {
         case epc_no://入库标签
-            info->lastStamp = QDateTime::currentMSecsSinceEpoch();
+//            info->lastStamp = QDateTime::currentMSecsSinceEpoch();
 //            info->state = epc_in;
-            info->colPos = ant;
-            info->lastOpt = config->getOptId();
+//            info->colPos = ant;
+//            info->lastOpt = config->getOptId();
             eModel->setEpcMark(epc, mark_new);
 //            if(list_new.indexOf(epc) < 0)
 //            {
@@ -346,40 +351,44 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
 //                qDebug()<<"[in count]:"<<list_new.count();
 //                listShow(list_new, table_in, tab_in);
 //            }
-            if(list_new.count() == map_rfid.count())
-            {
-                qDebug()<<scanTimer.elapsed()<<"ms";
-                emit updateTimer(scanTimer.elapsed());
-            }
-//            emit updateEpcInfo(info);
+//            if(list_new.count() == map_rfid.count())
+//            if(eModel->markInfoCompleted())
+//            {
+//                qDebug()<<scanTimer.elapsed()<<"ms";
+//                emit updateTimer(scanTimer.elapsed());
+//            }
             break;
         case epc_out://还回标签
-            if(list_back.indexOf(epc) < 0)
-            {
-                info->lastStamp = QDateTime::currentMSecsSinceEpoch();
-                info->colPos = ant;
-                info->lastOpt = config->getOptId();
-                list_back<<epc;
-                qDebug()<<"[back count]:"<<list_back.count();
-            }
-//            emit updateEpcInfo(info);
+            eModel->setEpcMark(epc, mark_back);
+//            if(list_back.indexOf(epc) < 0)
+//            {
+//                info->lastStamp = QDateTime::currentMSecsSinceEpoch();
+//                info->colPos = ant;
+//                info->lastOpt = config->getOptId();
+//                list_back<<epc;
+//                qDebug()<<"[back count]:"<<list_back.count();
+//            }
             break;
         case epc_in://刷新时间戳
-            info->lastStamp = QDateTime::currentMSecsSinceEpoch();
-            if(flagCorct && (list_out.indexOf(epc) >= 0))//校准标志下，如果标签在取出表中，应移除
+            if(flagCorct)
+                eModel->setEpcMark(epc, mark_in);
+            else
             {
-                list_out.removeOne(epc);
-//                info->state = epc_in;
-                info->lastOpt = QString();
-                listShow(list_out, table_out, tab_out);
-                qDebug()<<"remove"<<epc<<"[out count]:"<<list_out.count()<<"[ign count]:"<<list_ign.count();
-                if(list_out.isEmpty())
-                {
-                    qDebug()<<scanTimer.elapsed()<<"ms";
-//                    emit epcStateChanged((TableMark)tabMark);
-                    emit updateTimer(scanTimer.elapsed());
-                }
+                eModel->setEpcMark(epc, mark_checked);
             }
+
+//            if(flagCorct && (list_out.indexOf(epc) >= 0))//校准标志下，如果标签在取出表中，应移除
+//            {
+//                list_out.removeOne(epc);
+//                info->lastOpt = QString();
+//                listShow(list_out, table_out, tab_out);
+//                qDebug()<<"remove"<<epc<<"[out count]:"<<list_out.count()<<"[ign count]:"<<list_ign.count();
+//                if(list_out.isEmpty())
+//                {
+//                    qDebug()<<scanTimer.elapsed()<<"ms";
+//                    emit updateTimer(scanTimer.elapsed());
+//                }
+//            }
             break;
         case epc_consume://已消耗标签
             return;
@@ -387,37 +396,21 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
             break;
         }
     }
-    else if(((1<<(ant-1)) & outsideAnt) || (seq == 0))//外部天线扫描到
+    else if(((1<<(ant-1)) & outsideAnt))//外部天线扫描到
     {
-//        list_ign<<epc;
+        eModel->setEpcMark(epc, mark_out);
         eModel->lockEpcMark(epc);
+//        list_ign<<epc;
 //        qDebug()<<"[ign count]"<<list_ign.count();
         switch(info->state)
         {
         case epc_in:
-            if(list_out.indexOf(epc) < 0)
-            {
-                list_out<<epc;
-
-                info->lastOpt = config->getOptId();
-                needUpdateOutList = !(tabMark & tab_out);//原本未显示取出清单
-                listShow(list_out, table_out, tab_out);
-//                qDebug()<<"remove"<<epc<<"[out count]:"<<list_out.count()<<"[ign count]:"<<list_ign.count();
-                if(needUpdateOutList)//原本未显示取出清单
-                    emit epcStateChanged((TableMark)tabMark);
-            }
+            eModel->setEpcMark(epc, mark_out);
+            eModel->lockEpcMark(epc);
             break;
-        case epc_out://还回标签
-            if(list_back.indexOf(epc) >= 0)
-            {
-                list_back.removeOne(epc);
-                info->lastOpt = QString();
-                if(list_back.isEmpty())
-                {
-                    tabMark &= ~tab_back;
-                    emit epcStateChanged((TableMark)tabMark);
-                }
-            }
+        case epc_no:
+            eModel->setEpcMark(epc, mark_out);
+            eModel->lockEpcMark(epc);
             break;
         default:
             break;

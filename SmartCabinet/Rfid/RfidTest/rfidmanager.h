@@ -21,6 +21,7 @@ class RfidManager : public QObject
     Q_OBJECT
 public:
     explicit RfidManager(QObject *parent = 0);
+    void setCurOptId(QString optId);
     void initColName();
     void startScan();//开始扫描
     void stopScan();//结束扫描
@@ -36,7 +37,7 @@ public slots:
 signals:
     void updateTimer(int);
     void updateCount(int);
-    void updateEpcInfo(EpcInfo*);
+//    void updateEpcInfo(EpcInfo*);
     void epcStateChanged(TableMark changedTableMark);
     void epcAccess(QStringList epcs, int optType);
 
