@@ -67,6 +67,8 @@
         <file>image/aio/set.png</file>
         <file>image/sunvo.png</file>
         <file>image/rmxx.png</file>
+        <file>image/aio/arrow_up.png</file>
+        <file>image/aio/arrow_down.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

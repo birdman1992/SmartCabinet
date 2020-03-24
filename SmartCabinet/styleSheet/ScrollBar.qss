@@ -1,25 +1,45 @@
 QScrollBar:vertical
 {
     width:50px;
-    background:rgba(0,0,0,0%);
+    border:1px solid grey;
+    background:rgb(255,255,255);
+    padding-top:40px;
+    padding-bottom:40px;
     margin:0px,0px,0px,0px;
 }
 QScrollBar::handle:vertical
 {
-    width:50px;
-    background:rgba(0,0,0,25%);
-    border-radius:25px;
-    min-height:20;
+    background:#FFFFFF;
+        border:1px solid grey;
+    border-radius:5px;
+    min-height:80;
 }
 QScrollBar::handle:vertical:hover
 {
-    width:50px;
-    background:rgba(0,0,0,50%);
-    border-radius:25px;
-    min-height:20;
+    background:#D4DCDE;
+    border:1px solid grey;
+    border-radius:5px;
+    min-height:80;
 }
 QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical
 {
-    background:rgba(0,0,0,10%);
-    border-radius:4px;
+    background:none;
+}
+QScrollBar::add-line:vertical
+{
+     border: 1px solid grey;
+     background: rgb(125, 193, 222);
+     height: 40px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+     image: url(:/image/image/aio/arrow_down.png);
+}
+
+QScrollBar::sub-line:vertical
+{
+    border: 1px solid grey;
+    background: rgb(125, 193, 222);
+    height: 40px;
+    subcontrol-position: top;
+    image: url(:/image/image/aio/arrow_up.png);
 }

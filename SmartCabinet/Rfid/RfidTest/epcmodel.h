@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QStringList>
 #include <QDateTime>
+#include <QModelIndex>
 #include "sql/sqlmanager.h"
 
 enum EpcState{
@@ -63,31 +64,40 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     void operator<<(EpcInfo* info);
     EpcInfo* operator[](QString code);
+    EpcInfo* getEpcInfo(QString code);
     void clearEpcMark();
     void setEpcMark(QString epcId, EpcMark mark);
     void lockEpcMark(QString epcId);
     void setEpcState(QString epcId, EpcState state);
     void updateStamp(QString epcId);
-    void checkStamp();
+    void transEpcMark(EpcMark mark_before, EpcMark mark_after);
     void clear();
     void syncUpload();
     void syncDownload();
     void setOptId(QString optId);
     int getMarkCount();
     bool markInfoCompleted();
+    void refrushModel();
 
 signals:
     void scanProgress(int scanCount, int totalCount);
+    void updateCount(EpcMark mark, int count);
+    void updateLockCount(int count);
+    void clearCount();
 
 private:
     QMap<QString, EpcInfo*> map_rfid;
     QMap<QString, QString> map_col_name;
     QStringList colsName;
+    QStringList markNameTab;
     QString curOptId;
+    int countTab[7];
     int markCount;//count be marked
     int outCount;//count for fetch out
+    int lockCount;
 
     void initColName();
+//    void refrushCount();
 };
 
 #endif // EPCMODEL_H

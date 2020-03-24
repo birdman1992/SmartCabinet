@@ -13,14 +13,16 @@ FrmRfid::FrmRfid(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
+    btnTable<<ui->tab_filter_unknow<<ui->tab_filter_new<<ui->tab_filter_back<<ui->tab_filter_out<<ui->tab_filter_consume<<ui->tab_filter_in;
+
     initTabs();
     isLogin = false;
-    rfManager = new RfidManager();
-    rfManager->initTableViews(tabs[0], tabs[1], tabs[2], tabs[3], tabs[4]);
-    connect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
+    rfManager = new RfidManager(eModel);
+//    connect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
     connect(rfManager, SIGNAL(epcStateChanged(TableMark)), this, SLOT(showTabs(TableMark)));
-    connect(rfManager, SIGNAL(updateCount(int)), this, SLOT(updateCount(int)));
+//    connect(rfManager, SIGNAL(updateCount(int)), this, SLOT(updateCount(int)));
     connect(rfManager, SIGNAL(updateTimer(int)), this, SLOT(updateScanTimer(int)));
+    connect(rfManager, SIGNAL(optFinish()), this, SLOT(showMaximized()));
 
     SignalManager* sigMan = SignalManager::manager();
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));
@@ -38,6 +40,7 @@ void FrmRfid::setLoginState(bool login)
 
 FrmRfid::~FrmRfid()
 {
+    delete filterModel;
     qDeleteAll(tabs.begin(), tabs.end());
     delete ui;
 }
@@ -47,14 +50,32 @@ void FrmRfid::updateScanTimer(int ms)
     ui->scan_timer->display(ms);
 }
 
-void FrmRfid::updateCount(int count)
+void FrmRfid::updateCount(EpcMark mark, int count)
 {
-    ui->count->display(count);
+//    if(mark == 0)
+//        return;
+
+    if(mark < btnTable.count())
+    {
+        btnTable[mark]->setText(btnTable[mark]->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(count)));
+        btnTable[mark]->setVisible(count);
+    }
 }
 
 void FrmRfid::updateCurUser(QString optId)
 {
     rfManager->setCurOptId(optId);
+}
+
+void FrmRfid::scanProgress(int curCount, int totalCount)
+{
+    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
+    ui->count->display(curCount);
+}
+
+void FrmRfid::updateLockCount(int lockCount)
+{
+    ui->lock_count->display(lockCount);
 }
 
 void FrmRfid::testSlot()
@@ -99,7 +120,6 @@ void FrmRfid::showTabs(TableMark tabMark)
         rfManager->clsFinish();
         return;
     }
-
     this->showFullScreen();
 
     ui->stackedWidget->setCurrentWidget(ui->page_tab);
@@ -132,7 +152,7 @@ void FrmRfid::on_scan_clicked()
 
 void FrmRfid::on_stop_clicked()
 {
-    rfManager->stopScan();
+    rfManager->doorCloseScan();
 }
 
 void FrmRfid::updateTableRow(int rowIndex, EpcInfo *info)
@@ -155,20 +175,44 @@ void FrmRfid::updateTableRow(int rowIndex, EpcInfo *info)
 //};
 void FrmRfid::initTabs()
 {
-    win_tabs = new QTabWidget(this);
-    tabs<<new QTableView();
-    tabs<<new QTableView();
-    tabs<<new QTableView();
-    tabs<<new QTableView();
-    tabs<<new QTableView();
-    list_win_name<<"存入"<<"取出"<<"还回"<<"消耗"<<"盘点";
-    ui->layout_tabs->addWidget(win_tabs);
+    eModel = new EpcModel(this);
+    filterModel = new QSortFilterProxyModel;
+    filterModel->setSourceModel(eModel);
+    filterModel->setDynamicSortFilter(true);
+    connect(eModel, SIGNAL(updateCount(EpcMark,int)), this, SLOT(updateCount(EpcMark,int)));
+    connect(eModel, SIGNAL(scanProgress(int,int)), this, SLOT(scanProgress(int,int)));
+    connect(eModel, SIGNAL(updateLockCount(int)), this, SLOT(updateLockCount(int)));
+    ui->tab_view->setModel(filterModel);
+    ui->tab_view->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+    ui->tab_view->setAlternatingRowColors(true);
+    ui->tab_view->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
+                                "background:white;"
+                                "alternate-background-color:rgb(244, 244, 244);"
+                                "selection-color:white;    /*鼠标选中时前景色：文字颜色*/"
+                                "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
+
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
     QString style = QString(qssScrollbar.readAll());
-    win_tabs->setStyleSheet(style);
+    ui->tab_frame->setStyleSheet(style);
     qssScrollbar.close();
-    //    win_tabs->hide();
+
+    foreach (QToolButton* btn, btnTable)
+    {
+        btn->hide();
+    }
+    ui->tab_filter_all->show();
+}
+
+void FrmRfid::clearCountText()
+{
+    foreach (QToolButton* btn, btnTable)
+    {
+//        btn->setText(btn->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(0)));
+        btn->hide();
+        qDebug()<<"clear:"<<btn->objectName();
+    }
+    ui->tab_filter_all->show();
 }
 
 void FrmRfid::showEvent(QShowEvent *)
@@ -187,11 +231,16 @@ void FrmRfid::on_OK_clicked()
 {
     rfManager->clsFinish();
     accessSuccess("操作成功");
+    clearCountText();
+    scanProgress(0, 0);
 }
 
 void FrmRfid::on_fresh_clicked()
 {
-    rfManager->stopScan();
+    rfManager->doorCloseScan();
+    rfManager->timerClear();
+    clearCountText();
+    eModel->clearEpcMark();
 }
 
 void FrmRfid::on_pushButton_clicked()
@@ -201,4 +250,74 @@ void FrmRfid::on_pushButton_clicked()
 #else
     this->hide();
 #endif
+}
+
+void FrmRfid::on_tab_filter_all_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp(".*");
+        ui->tab_view->resizeColumnsToContents();
+    }
+}
+
+void FrmRfid::on_tab_filter_out_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp("取出");
+        ui->tab_view->resizeColumnsToContents();
+    }
+}
+
+void FrmRfid::on_tab_filter_new_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp("存入");
+        ui->tab_view->resizeColumnsToContents();
+    }
+}
+
+void FrmRfid::on_tab_filter_back_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp("还回");
+        ui->tab_view->resizeColumnsToContents();
+    }
+}
+
+void FrmRfid::on_tab_filter_consume_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp("登记");
+        ui->tab_view->resizeColumnsToContents();
+    }
+}
+
+void FrmRfid::on_tab_filter_in_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp("柜内");
+        ui->tab_view->resizeColumnsToContents();
+    }
+}
+
+void FrmRfid::on_tab_filter_unknow_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp("未知");
+        ui->tab_view->resizeColumnsToContents();
+    }
 }

@@ -17,7 +17,7 @@
 #ifdef PC
     #define SIMULATE_ON  //打开仿真
 #else
-    #define LOG_ON //打开日志
+//    #define LOG_ON //打开日志
 #endif
 //#define TCP_API  //使用新的api
 

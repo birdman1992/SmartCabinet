@@ -20,15 +20,14 @@ class RfidManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit RfidManager(QObject *parent = 0);
+    explicit RfidManager(EpcModel *model, QObject *parent = 0);
     void setCurOptId(QString optId);
     void initColName();
     void startScan();//开始扫描
-    void stopScan();//结束扫描
+    void doorCloseScan();//结束扫描
     void epcCheck(int row=0, int col=0);//盘点标签
     void epcSync();//同步标签信息
-    void initTableViews(QTableView* in=NULL, QTableView* out=NULL, QTableView* back=NULL, QTableView* con=NULL, QTableView *check=NULL);
-
+    void timerClear();
 public slots:
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);
     void clsFinish();//结束结算
@@ -36,24 +35,25 @@ public slots:
 
 signals:
     void updateTimer(int);
-    void updateCount(int);
+//    void updateCount(int);
 //    void updateEpcInfo(EpcInfo*);
     void epcStateChanged(TableMark changedTableMark);
     void epcAccess(QStringList epcs, int optType);
+    void optFinish();//用户操作全部完成：柜门全部关闭
 
 private:
     RfidReader* testReader;
     RfidReader* testReader2;
-    QTableWidget* table_out;
-    QTableWidget* table_in;
-    QTableWidget* table_back;
-    QTableWidget* table_con;
-    QTableWidget* table_check;
-    QSortFilterProxyModel* model_out;
-    QSortFilterProxyModel* model_in;
-    QSortFilterProxyModel* model_back;
-    QSortFilterProxyModel* model_con;
-    QSortFilterProxyModel* model_check;
+//    QTableView* table_out;
+//    QTableView* table_in;
+//    QTableView* table_back;
+//    QTableView* table_con;
+//    QTableView* table_check;
+//    QSortFilterProxyModel* model_out;
+//    QSortFilterProxyModel* model_in;
+//    QSortFilterProxyModel* model_back;
+//    QSortFilterProxyModel* model_con;
+//    QSortFilterProxyModel* model_check;
 
     EpcModel* eModel;
 
@@ -74,13 +74,13 @@ private:
     quint16 outsideAnt;
     QTime scanTimer;
     QTimer upTimer;
-    bool flagCorct;//数据矫正标志
+    bool accessLock;//存取锁定状态
     bool flagInit;//初始化标志
     bool flagScan;//扫描状态
     int clsTime;//结算延迟
     int tabMark;
-    void listShow(QStringList epcs, QTableWidget* table, TableMark mark);
-    void queryShow(QSqlQuery query, QTableWidget* table);
+//    void listShow(QStringList epcs, QTableWidget* table, TableMark mark);
+//    void queryShow(QSqlQuery query, QTableWidget* table);
     void recordClear();
     void timerStart();
     void timerStop();

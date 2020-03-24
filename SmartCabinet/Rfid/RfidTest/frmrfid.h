@@ -8,6 +8,11 @@
 #include <QStringList>
 #include <QTimer>
 #include <QPaintEvent>
+#include <QHeaderView>
+#include <QTableView>
+#include <QToolButton>
+#include <QSortFilterProxyModel>
+#include "Rfid/RfidTest/epcmodel.h"
 #include "rfidmanager.h"
 
 namespace Ui {
@@ -25,8 +30,10 @@ public:
 
 public slots:
     void updateScanTimer(int ms);
-    void updateCount(int count );
+    void updateCount(EpcMark mark, int count);
     void updateCurUser(QString optId);
+    void scanProgress(int curCount, int totalCount);
+    void updateLockCount(int lockCount);
 
 private slots:
     void testSlot();
@@ -35,19 +42,30 @@ private slots:
     void showTabs(TableMark tabMark);
     void accessSuccess(QString msg);
     void accessFailed(QString msg);
+    void clearCountText();
     void on_scan_clicked();
     void on_stop_clicked();
     void on_OK_clicked();
     void on_fresh_clicked();
     void on_pushButton_clicked();
+    void on_tab_filter_all_toggled(bool checked);
+    void on_tab_filter_out_toggled(bool checked);
+    void on_tab_filter_new_toggled(bool checked);
+    void on_tab_filter_back_toggled(bool checked);
+    void on_tab_filter_consume_toggled(bool checked);
+    void on_tab_filter_in_toggled(bool checked);
+    void on_tab_filter_unknow_toggled(bool checked);
 
 private:
     Ui::FrmRfid *ui;
     RfidManager* rfManager;
+    QSortFilterProxyModel* filterModel;
     QTabWidget* win_tabs;
+    EpcModel* eModel;
     bool isLogin;
     QStringList list_win_name;
     QList<QTableView*> tabs;
+    QList<QToolButton*> btnTable;
     void updateTableRow(int rowIndex, EpcInfo*);
     void initTabs();
     void showEvent(QShowEvent *);

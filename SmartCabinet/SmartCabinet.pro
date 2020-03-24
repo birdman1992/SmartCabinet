@@ -37,6 +37,7 @@ SOURCES += main.cpp\
     Rfid/RfidTest/rfidmanager.cpp \
     Rfid/RfidTest/rfidpackage.cpp \
     Rfid/RfidTest/rfidreader.cpp \
+    funcs/secwatch.cpp \
         mainwidget.cpp \
     Cabinet/cabinetpanel.cpp \
     Device/Qextserial/qextserialport.cpp \
@@ -141,6 +142,7 @@ HEADERS  += mainwidget.h \
     Rfid/RfidTest/rfidmanager.h \
     Rfid/RfidTest/rfidpackage.h \
     Rfid/RfidTest/rfidreader.h \
+    funcs/secwatch.h \
     manager/signalmanager.h \
     medinf.h \
     Widgets/standbywidget.h \
