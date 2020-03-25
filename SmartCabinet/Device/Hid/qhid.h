@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <QString>
+#include <qglobal.h>
 #include "hidapi.h"
 
 class QHid : public QThread
@@ -13,13 +14,15 @@ public:
     explicit QHid(QObject *parent = 0);
     bool hidOpen(unsigned short vId, unsigned short pId);
     void hidClose();
+    void hidReopen();
     void run();
-    void restart();
+    bool isOpen();
 
+    quint32 deviceId();
 private:
     hid_device* handle;
-    unsigned short v;
-    unsigned short p;
+    quint16 v;
+    quint16 p;
 
 signals:
     void hidRead(QByteArray qba);
