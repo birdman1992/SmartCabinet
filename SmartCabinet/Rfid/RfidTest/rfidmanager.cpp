@@ -93,7 +93,11 @@ void RfidManager::startScan()
 
 void RfidManager::doorCloseScan()
 {
-    qDebug()<<"[stopScan]";
+    qDebug()<<"[doorCloseScan]";
+    foreach (RfidReader* reader, list_device)
+    {
+        reader->scanStop();
+    }
     foreach(RfidReader* reader, list_device)
     {
         reader->scanStart(outsideAnt|insideAnt, 1);
@@ -106,6 +110,7 @@ void RfidManager::doorCloseScan()
 //store:1  fetch:2 refund:3 back:16
 void RfidManager::clsFinish()
 {
+    qDebug()<<"[stop Scan]";
     foreach (RfidReader* reader, list_device)
     {
         reader->scanStop();
