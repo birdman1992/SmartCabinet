@@ -746,6 +746,18 @@ void CabinetConfig::setApiProName(QString apiName)
     settings.sync();
 }
 
+int CabinetConfig::getFuncWord()
+{
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    return settings.value("FuncWord", funcCheck|funcFetch|funcRefun|funcStore).toInt();//盘点|取|退|存
+}
+
+void CabinetConfig::setFuncWord(int funcWord)
+{
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    settings.setValue("FuncWord", funcWord);
+}
+
 QString CabinetConfig::getCabinetLayout()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);

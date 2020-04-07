@@ -7,6 +7,7 @@
 #include "Device/controldevice.h"
 #include "funcs/systool.h"
 #include "defines.h"
+#include "iconfont/iconhelper.h"
 
 //提示信息
 
@@ -81,9 +82,11 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->search->hide();
     ui->reply->hide();
     ui->quit->hide();
+    ui->back->hide();
     ui->frame_check_history->hide();
     ui->consume_date->hide();
     ui->menuWidget->setCurrentIndex(0);
+    IconHelper::Instance()->SetIcon(ui->back, QChar(0xf18e)+QString("  还货"), 42);
 
 //#ifndef SIMULATE_ON
     ui->msk1->hide();
@@ -131,6 +134,7 @@ void CabinetWidget::cabLock()
     ui->service->hide();
     ui->cut->hide();
     ui->refund->hide();
+    ui->back->hide();
     ui->check->hide();
     ui->search->hide();
     ui->quit->hide();
@@ -155,6 +159,7 @@ void CabinetWidget::cabInit()
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->search->setChecked(false);
+    ui->back->setChecked(false);
 }
 
 void CabinetWidget::cabInfoBind(int seq, int index, QString info)
@@ -280,6 +285,7 @@ void CabinetWidget::clearMenuState()
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->service->setChecked(false);
+    ui->back->setChecked(false);
 }
 
 void CabinetWidget::volumTest()
@@ -932,6 +938,27 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
     }
 }
 
+void CabinetWidget::on_back_clicked(bool checked)
+{
+    if(checked)
+    {
+        qDebug()<<"[BACK]";
+        clickLock = false;
+        config->state = STATE_BACK;
+        config->showMsg(MSG_BACK,false);
+        clearMenuState();
+        ui->back->setChecked(true);
+        waitForCodeScan = true;
+        waitForGoodsListCode = false;
+        config->wakeUp(TIMEOUT_FETCH);
+    }
+    else
+    {
+        cabLock();
+    }
+}
+
+
 void CabinetWidget::on_store_clicked(bool checked)
 {
     if(checked)
@@ -1224,6 +1251,7 @@ void CabinetWidget::setPowerState(int power)
             break;
         }
     }
+    ui->back->setVisible(config->getFuncWord() & funcBack);
 }
 
 void CabinetWidget::recvUserInfo(QByteArray qba)

@@ -142,6 +142,8 @@ private slots:
     void on_reply_clicked();
     void on_consume_date_clicked();
 
+    void on_back_clicked(bool checked);
+
 protected:
     bool eventFilter(QObject *, QEvent *);
 

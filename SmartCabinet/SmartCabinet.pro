@@ -31,6 +31,7 @@ LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 }
 
 SOURCES += main.cpp\
+    iconfont/iconhelper.cpp \
         mainwidget.cpp \
     Cabinet/cabinetpanel.cpp \
     Device/Qextserial/qextserialport.cpp \
@@ -128,6 +129,7 @@ HEADERS  += mainwidget.h \
     Device/Hid/qhid.h \
     Device/controldevice.h \
     Device/devicesimulate.h \
+    iconfont/iconhelper.h \
     medinf.h \
     Widgets/standbywidget.h \
     Widgets/userwidget.h \

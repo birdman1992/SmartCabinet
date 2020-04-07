@@ -72,4 +72,10 @@
         <file>styleSheet/ScrollBar.qss</file>
         <file>styleSheet/SliderBar.qss</file>
     </qresource>
+    <qresource prefix="/">
+        <file>iconfont/fontawesome-webfont.ttf</file>
+        <file>iconfont/fa-solid-900.ttf</file>
+        <file>iconfont/fa-regular-400.ttf</file>
+        <file>iconfont/fa-brands-400.ttf</file>
+    </qresource>
 </RCC>

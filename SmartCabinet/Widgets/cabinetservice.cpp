@@ -142,6 +142,10 @@ void CabinetService::showEvent(QShowEvent *)
         ui->scan_list->setChecked(false);
     }
 
+    int funcWord = config->getFuncWord();
+    ui->func_back->setChecked(funcWord & funcBack);
+    ui->func_check->setChecked(funcWord & funcCheck);
+    ui->func_refun->setChecked(funcWord & funcRefun);
     qDebug()<<ui->server_addr->text();
 }
 
@@ -339,6 +343,20 @@ void CabinetService::saveInsert()
     list_preview.insert(insert_pos, nTab);
     nTab = new QTableWidget;
     ui->insert_pos->setMaximum(list_preview.count());
+}
+
+void CabinetService::setFuncWord(FuncWord word, bool isEnabled)
+{
+    int funcWord = config->getFuncWord();
+    if(isEnabled)
+    {
+        funcWord |= word;
+    }
+    else
+    {
+        funcWord &= (~word);
+    }
+    config->setFuncWord(funcWord);
 }
 
 void CabinetService::initNetwork()
@@ -832,4 +850,19 @@ void CabinetService::on_proName_activated(const QString &arg1)
 //    qDebug()<<"on_proName_activated"<<arg1;
     config->setApiProName(arg1);
     emit requireUpdateServerAddress();
+}
+
+void CabinetService::on_func_refund_clicked(bool checked)
+{
+    setFuncWord(funcRefun, checked);
+}
+
+void CabinetService::on_func_back_clicked(bool checked)
+{
+    setFuncWord(funcBack, checked);
+}
+
+void CabinetService::on_func_check_clicked(bool checked)
+{
+    setFuncWord(funcCheck, checked);
 }

@@ -210,7 +210,7 @@ font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
          <rect>
           <x>20</x>
           <y>240</y>
-          <width>161</width>
+          <width>211</width>
           <height>41</height>
          </rect>
         </property>
@@ -270,7 +270,7 @@ font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
           <rect>
            <x>40</x>
            <y>0</y>
-           <width>111</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -288,7 +288,7 @@ font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
            <rect>
             <x>0</x>
             <y>20</y>
-            <width>81</width>
+            <width>151</width>
             <height>20</height>
            </rect>
           </property>
@@ -301,7 +301,7 @@ font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>81</width>
+            <width>151</width>
             <height>20</height>
            </rect>
           </property>

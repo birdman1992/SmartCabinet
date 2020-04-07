@@ -30,6 +30,14 @@ enum CabState
     STATE_BACK = 10,//还货
 };
 
+enum FuncWord{
+    funcStore = 0,
+    funcFetch = 1,
+    funcBack = 2,
+    funcRefun = 4,
+    funcCheck = 8,
+};
+
 class CabinetConfig
 {
 public:
@@ -49,6 +57,8 @@ public:
     QString getDepartName();
     QString getApiProName();//获取接口项目名称,默认 spd-web
     void setApiProName(QString apiName);//设置接口项目名称
+    int getFuncWord();
+    void setFuncWord(int funcWord);
 
     QString getCabinetLayout();
     QString getCabinetColMap();

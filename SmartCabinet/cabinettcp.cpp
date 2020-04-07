@@ -1,6 +1,7 @@
 #include "cabinettcp.h"
 
-#define TCP_PORT 9099
+//#define TCP_PORT 9099
+#define TCP_PORT 9094
 
 CabinetTcp::CabinetTcp(QObject *parent) : QObject(parent)
 {
