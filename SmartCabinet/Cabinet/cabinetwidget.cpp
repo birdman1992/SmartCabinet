@@ -1252,6 +1252,8 @@ void CabinetWidget::setPowerState(int power)
         }
     }
     ui->back->setVisible(config->getFuncWord() & funcBack);
+    ui->refund->setVisible(config->getFuncWord() & funcRefun);
+    ui->check->setVisible(config->getFuncWord() & funcCheck);
 }
 
 void CabinetWidget::recvUserInfo(QByteArray qba)

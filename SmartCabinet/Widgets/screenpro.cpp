@@ -7,6 +7,7 @@ ScreenPro::ScreenPro(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
+    ui->label_2->hide();
 }
 
 ScreenPro::~ScreenPro()

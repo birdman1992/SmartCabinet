@@ -245,7 +245,7 @@ margin:5px;
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_overview">
       <property name="styleSheet">
@@ -1009,6 +1009,7 @@ color: rgb(255, 255, 255);</string>
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="page_temp"/>
     </widget>
    </item>
   </layout>

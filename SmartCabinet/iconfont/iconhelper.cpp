@@ -1,4 +1,5 @@
 #include "iconhelper.h"
+#include <QDebug>
 
 IconHelper* IconHelper::_instance = 0;
 IconHelper::IconHelper(QObject *) :
@@ -13,7 +14,13 @@ QFont IconHelper::loadFont(QString fontSrc)
 {
     int fontId = QFontDatabase::addApplicationFont(":/iconfont/fontawesome-webfont.ttf");
     QString fontName = QFontDatabase::applicationFontFamilies(fontId).at(0);
-    iconFont = QFont(fontName);
+    return QFont(fontName);
+}
+
+void IconHelper::initFonts()
+{
+    lstFont<<loadFont(":/iconfont/fontawesome-webfont.ttf");
+
 }
 
 void IconHelper::SetIcon(QLabel *lab, QChar c, int size)
@@ -30,9 +37,19 @@ void IconHelper::SetIcon(QPushButton *btn, QChar c, int size)
     btn->setText(c);
 }
 
-void IconHelper::SetIcon(QPushButton *btn, QString c, int size)
+QIcon IconHelper::GetIcon(int backGroundSize, QChar c, int fontSize, QString color, QString backGroundColor)
 {
-    iconFont.setPixelSize(size);
-    btn->setFont(iconFont);
-    btn->setText(c);
+    QWidget* backBoard = new QWidget;
+    QLabel* lab = new QLabel(c, backBoard);
+    QString styleStr = QString("QLabel{"
+                               "background-color:%1;"
+                               "color:%2;"
+                               "}").arg(backGroundColor).arg(color);
+    lab->setStyleSheet(styleStr);
+    lab->setAlignment(Qt::AlignCenter);
+    lab->resize(backGroundSize, backGroundSize);
+    SetIcon(lab, c, fontSize);
+    QIcon ret = QIcon(lab->grab(lab->rect()));
+    backBoard->deleteLater();
+    return ret;
 }
