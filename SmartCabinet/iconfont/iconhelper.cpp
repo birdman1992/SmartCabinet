@@ -37,7 +37,7 @@ void IconHelper::SetIcon(QPushButton *btn, QChar c, int size)
     btn->setText(c);
 }
 
-QIcon IconHelper::GetIcon(int backGroundSize, QChar c, int fontSize, QString color, QString backGroundColor)
+QIcon IconHelper::GetIcon(QSize backGroundSize, QChar c, int fontSize, QString color, QString backGroundColor)
 {
     QWidget* backBoard = new QWidget;
     QLabel* lab = new QLabel(c, backBoard);
@@ -47,9 +47,9 @@ QIcon IconHelper::GetIcon(int backGroundSize, QChar c, int fontSize, QString col
                                "}").arg(backGroundColor).arg(color);
     lab->setStyleSheet(styleStr);
     lab->setAlignment(Qt::AlignCenter);
-    lab->resize(backGroundSize, backGroundSize);
+    lab->resize(backGroundSize);
     SetIcon(lab, c, fontSize);
-    QIcon ret = QIcon(lab->grab(lab->rect()));
+    QIcon ret = QPixmap::grabWidget(lab);
     backBoard->deleteLater();
     return ret;
 }

@@ -99,6 +99,12 @@ QList<QByteArray> CabinetConfig::getFetchList()
     return ret;
 }
 
+QString CabinetConfig::getIp()
+{
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    return settings.value("ip", "172.17.17.17").toString();
+}
+
 void CabinetConfig::setCabinetId(QString id)
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);

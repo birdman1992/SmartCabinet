@@ -117,6 +117,7 @@ public:
 //    CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
     int getCaseWidth();
+    QString getIp();
     void removeConfig(CaseAddress addr);
     void setConfig(CaseAddress addr, Goods* info);
     QByteArray creatCabinetJson();
@@ -139,6 +140,7 @@ public:
     QString scanDataTrans(QString code);
     void setCabinetColMap(QString map);
     void setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlIndex);
+
 private:
     CabinetConfig();
     static CabinetConfig* c;

@@ -124,6 +124,7 @@ private:
     void initNumLabel();
     void initColMap();
     void initStateMap();
+    void initIcons();
     void updateState();
     void nextState();
     void setAioInfo(QString departName, QString departId);

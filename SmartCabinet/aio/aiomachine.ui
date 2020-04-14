@@ -209,13 +209,18 @@ padding-right:2px;</string>
               <height>40</height>
              </size>
             </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="styleSheet">
-             <string notr="true">border-image: url(:/image/image/aio/set.png);
-margin:5px;
-</string>
+             <string notr="true">border:0px solid grey;
+image: url(:/image/image/aio/set.png);</string>
             </property>
             <property name="text">
              <string/>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
             </property>
            </widget>
           </item>

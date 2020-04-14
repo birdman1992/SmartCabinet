@@ -39,7 +39,7 @@ public:
 
     void SetIcon(QLabel* lab, QChar c, int size = 10);
     void SetIcon(QPushButton* btn, QChar c, int size = 10);
-    QIcon GetIcon(int backGroundSize, QChar c, int fontSize, QString color="#ffffff", QString backGroundColor="#00000000");
+    QIcon GetIcon(QSize backGroundSize, QChar c, int fontSize, QString color="#ffffff", QString backGroundColor="#00000000");
 };
 
 #endif // ICONHELPER_H

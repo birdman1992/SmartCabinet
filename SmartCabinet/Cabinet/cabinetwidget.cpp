@@ -86,7 +86,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->frame_check_history->hide();
     ui->consume_date->hide();
     ui->menuWidget->setCurrentIndex(0);
-    IconHelper::Instance()->SetIcon(ui->back, QChar(0xf18e)+QString("  还货"), 42);
+//    IconHelper::Instance()->SetIcon(ui->back, QChar(0xf18e)+QString("  还货"), 42);
 
 //#ifndef SIMULATE_ON
     ui->msk1->hide();

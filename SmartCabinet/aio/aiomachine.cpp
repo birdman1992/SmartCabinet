@@ -2,6 +2,7 @@
 #include "ui_aiomachine.h"
 #include <QDebug>
 #include <QTimer>
+#include <iconfont/iconhelper.h>
 #include "funcs/systool.h"
 #include "defines.h"
 #define MAX_TABLE_ROW 100
@@ -13,6 +14,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->setupUi(this);
     initNumLabel();
     initColMap();
+    initIcons();
     ui->aio_check_in->hide();
     ui->setting->hide();
     winActive = true;
@@ -307,6 +309,12 @@ void AIOMachine::initStateMap()
     curStateText.insert("存", 1);
     curStateText.insert("退", 3);
     curStateText.insert("还", 10);
+}
+
+void AIOMachine::initIcons()
+{
+//    ui->setting->setIconSize(ui->setting->size());
+//    ui->setting->setIcon(IconHelper::Instance()->GetIcon(ui->setting->rect().size(),0xf013,30,"#AEB035"));
 }
 
 void AIOMachine::updateState()

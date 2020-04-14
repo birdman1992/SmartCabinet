@@ -31,6 +31,10 @@ LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 }
 
 SOURCES += main.cpp\
+    Temperature/tempcase.cpp \
+    Temperature/tempmanager.cpp \
+    Temperature/temprecorder.cpp \
+    Temperature/temptopdf.cpp \
     iconfont/iconhelper.cpp \
         mainwidget.cpp \
     Cabinet/cabinetpanel.cpp \
@@ -129,6 +133,11 @@ HEADERS  += mainwidget.h \
     Device/Hid/qhid.h \
     Device/controldevice.h \
     Device/devicesimulate.h \
+    Temperature/config.h \
+    Temperature/tempcase.h \
+    Temperature/tempmanager.h \
+    Temperature/temprecorder.h \
+    Temperature/temptopdf.h \
     iconfont/iconhelper.h \
     medinf.h \
     Widgets/standbywidget.h \
@@ -219,6 +228,7 @@ HEADERS  += mainwidget.h \
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
     Device/devicesimulate.ui \
+    Temperature/tempcase.ui \
     Widgets/standbywidget.ui \
     Widgets/userwidget.ui \
     Widgets/cabinetset.ui \
