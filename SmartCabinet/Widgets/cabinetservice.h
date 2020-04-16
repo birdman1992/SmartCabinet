@@ -91,7 +91,7 @@ private slots:
 
     void on_proName_activated(const QString &arg1);
 
-    void on_func_refund_clicked(bool checked);
+    void on_func_refun_clicked(bool checked);
 
     void on_func_back_clicked(bool checked);
 

@@ -852,7 +852,7 @@ void CabinetService::on_proName_activated(const QString &arg1)
     emit requireUpdateServerAddress();
 }
 
-void CabinetService::on_func_refund_clicked(bool checked)
+void CabinetService::on_func_refun_clicked(bool checked)
 {
     setFuncWord(funcRefun, checked);
 }

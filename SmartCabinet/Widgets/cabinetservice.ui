@@ -1668,7 +1668,7 @@ color:rgb(255,255,255);
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="func_refund">
+         <widget class="QCheckBox" name="func_refun">
           <property name="text">
            <string>退货</string>
           </property>
