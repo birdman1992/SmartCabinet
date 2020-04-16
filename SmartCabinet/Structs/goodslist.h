@@ -79,4 +79,18 @@ public:
     QList<Goods*> list_goods;
 };
 
+class StoreList
+{
+public:
+    StoreList();
+    ~StoreList();
+    QString printTime;
+    QString departName;
+    bool legalList;
+
+    QMap<QString, QString> rfidMap;//rfid:code
+    QMap<QString, QString> codeMap;//code:package_id
+    QMap<QString, Goods*> goodsMap;//package_id:goods_info
+}
+
 #endif // GOODSLIST_H

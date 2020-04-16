@@ -8,6 +8,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <QStringList>
+#include <QString>
 #include <QFile>
 
 #include "cabinetconfig.h"
@@ -61,6 +62,8 @@ private:
     QNetworkReply* reply_store_trace;
     QNetworkReply* reply_aio_overview;
     QNetworkReply* reply_aio_data;
+    QNetworkReply* reply_rfid_sync;
+    QNetworkReply* reply_rfid_access;
     AIOMachine::cEvent aio_state;
     CheckList* checkList;
     SqlManager* sqlManager;
@@ -132,6 +135,9 @@ signals:
     void aioOverview(QString, AIOOverview*);
     void aioData(QString, AIOMachine::cEvent, QList<Goods*>);
     void aioMsg(QString);
+    //rfid
+    void rfidListReq();
+    void rfidAccess();
 
 public slots:
     void cabRegister();
@@ -169,6 +175,10 @@ public slots:
     void updateStart();
     void waitForRepaitOK();
     void updateCurBarcode(QString code);
+    //rfid
+    void rfidListSync();
+    void rfidAccessOpt(QString storeListCode, QMap<QString, QStringList> storeGoods, int optType=2);
+    void rfidAccessOpt(QStringList epcs, int optType=1);
 
 private slots:
     void recvCabRegister();
@@ -198,6 +208,9 @@ private slots:
     void recvUpdatePac();
     void recvAioOverview();
     void recvAioData();
+    //RFID
+    void recvRfidListSync();
+    void recvRfidAccessRst();
     void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();
