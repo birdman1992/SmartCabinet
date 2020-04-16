@@ -85,7 +85,7 @@ private:
     CheckTable* win_check_table;//盘点表格窗口
     GoodsApply* win_goods_apply;//请货窗口
     DayReport* win_day_report;//日清单窗口
-    FingerPrint* win_fingerPrint;
+//    FingerPrint* win_fingerPrint;
     AIOMachine* win_aio;
     ScreenPro* win_screenPro;
     RouteRepair* routeRepair;//路由修复

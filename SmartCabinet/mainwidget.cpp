@@ -348,7 +348,7 @@ void MainWidget::cab_connect_mode(bool con)
 
 MainWidget::~MainWidget()
 {
-    delete win_fingerPrint;
+//    delete win_fingerPrint;
     delete ui;
     //--写入配置信息
 //    writeSettings();
