@@ -708,7 +708,9 @@ void SqlManager::createTable()
                               unit CHAR(10) DEFAULT('NULL'),\
                               cab_col INT(2) DEFAULT(-1),\
                               cab_row INT(2) DEFAULT(-1),\
-                              single_price INT(8) DEFAULT(0)\
+                              single_price INT(8) DEFAULT(0),\
+                              pro_name CHAR(50) DEFAULT(''),\
+                              sup_name CHAR(50) DEFAULT('')\
                               );");
         if(query.exec(cmd))
         {
@@ -727,7 +729,6 @@ void SqlManager::createTable()
         QString cmd = QString("create table EpcInfo(\
                               epc_code CHAR(15) PRIMARY KEY NOT NULL,\
                               goods_code CHAR(15) NOT NULL,\
-                              goods_id CHAR(15) NOT NULL,\
                               time_stamp INT(10) DEFAULT(0),\
                               opt_id CHAR(15) DEFAULT('NULL'),\
                               state INT(2) DEFAULT(0),\
