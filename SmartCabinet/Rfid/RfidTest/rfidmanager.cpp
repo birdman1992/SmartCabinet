@@ -20,9 +20,13 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
 
     config = CabinetConfig::config();
 
-    SignalManager* sigManager = SignalManager::manager();
-    connect(this, SIGNAL(epcAccess(QStringList, int)), sigManager, SIGNAL(epcAccess(QStringList, int)));
+    SignalManager* sigManager = SignalManager::manager();//单例，不必delete
+    connect(model, SIGNAL(epcAccess(QStringList,UserOpt)), sigManager, SIGNAL(epcAccess(QStringList,UserOpt)));
+    connect(model, SIGNAL(epcAccess(QStringList,QStringList)), sigManager, SIGNAL(epcAccess(QStringList,QStringList)));
     connect(sigManager, SIGNAL(doorState(int, bool)), this, SLOT(doorStateChanged(int, bool)));
+    connect(sigManager, SIGNAL(epcInfoUpdate()), model, SLOT(syncDownload()));
+    connect(sigManager, SIGNAL(epcConsumed(QStringList)), model, SLOT(epcConsume(QStringList)));
+    connect(model, SIGNAL(epcStore(QMap<QString,QVariantMap>)), sigManager, SIGNAL(epcStore(QMap<QString,QVariantMap>)));
 
     QHostAddress serverAddr = QHostAddress("192.168.0.8");
     testReader = new RfidReader(serverAddr, 8888, 0, this);
@@ -179,12 +183,12 @@ void RfidManager::epcCheck(int row, int col)
 
 void RfidManager::epcSync()
 {
-    SqlManager::updateRfidsStart();
+    SqlManager::begin();
     foreach (EpcInfo* info, map_rfid)
     {
         SqlManager::updateRfidsSingle(info->epcId, info->lastStamp, info->lastOpt, info->state, info->rowPos, info->colPos);
     }
-    SqlManager::updateRfidsFinish();
+    SqlManager::commit();
 }
 
 void RfidManager::newRfidMark(QString epc, QString goodsCode, QString goodsId)
@@ -268,12 +272,12 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
 {
     Q_UNUSED(seq);
     EpcInfo* info = eModel->getEpcInfo(epc);
+//    qDebug()<<"[updateEpc]"<<epc;
 
     if(info == NULL)
         return;
 
 //    bool needUpdateOutList = false;
-
     if((1<<(ant-1)) & insideAnt)//内部天线
     {
         switch(info->state)

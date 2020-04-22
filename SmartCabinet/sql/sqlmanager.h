@@ -2,6 +2,7 @@
 #define SQLMANAGER_H
 
 #include <QObject>
+#include <QVariantMap>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
@@ -40,10 +41,14 @@ public:
     //EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state]
     static void insertRfidMark(QString epc, QString goodsCode, QString goodsId);
     static void updateRfid(QString epc, quint32 stamp, QString optId, int state, int row, int col);
-    static void updateRfidsStart();
+    static void begin();
+    static QSqlQuery* getPubQuery();
+//    static void prepareSingle(QString prepareCmd);
     static void updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state, int row, int col);
     static void querySingle(QString cmd, QString msg=QString());
-    static void updateRfidsFinish();
+    static void replace(QString table, QList<QVariantMap> rows);
+    static void insert(QString table, QList<QVariantMap> bindings);
+    static void commit();
     static QSqlQuery checkRfid(quint32 cutOffStamp, int row=0, int col=0);
     static QSqlQuery checkRfid(QString epcCode);
     static QSqlQuery checkRfid(QStringList epcCodes);
@@ -69,6 +74,7 @@ public:
     static QPoint searchByPackageId(QString packageId);
     static QSqlQuery query(QString cmd, QString msg);
 
+
 public slots:
 
 signals:
@@ -78,6 +84,7 @@ private:
     static SqlManager* m;
     explicit SqlManager(QObject *parent = 0);
     static QSqlDatabase db_cabinet;
+    static QSqlQuery* pubQuery;
     bool needSync;
 
     void initDatabase();

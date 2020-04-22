@@ -13,6 +13,7 @@
 
 #include "rfidreader.h"
 #include "sql/sqlmanager.h"
+#include "manager/signalmanager.h"
 #include "cabinetconfig.h"
 #include "Rfid/RfidTest/epcmodel.h"
 

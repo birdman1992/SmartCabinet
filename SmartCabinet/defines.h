@@ -59,5 +59,12 @@
 #define MSG_SET_SPEC    "请选择护士长储物柜"
 #define MSG_REBIND_SELECT   "请选择物品重新绑定的柜格"
 
+//1取货2存货3退货16还货
+enum UserOpt{
+    opt_fetch = 1,
+    opt_store = 2,
+    opt_refund = 3,
+    opt_back = 16,
+};
 
 #endif // DEFINES_H

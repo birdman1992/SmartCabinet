@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QModelIndex>
 #include "sql/sqlmanager.h"
+#include "defines.h"
 
 enum EpcState{
     epc_no,//标签未被发现
@@ -72,18 +73,24 @@ public:
     void updateStamp(QString epcId);
     void transEpcMark(EpcMark mark_before, EpcMark mark_after);
     void clear();
-    void syncUpload();
-    void syncDownload();
     void setOptId(QString optId);
     int getMarkCount();
     bool markInfoCompleted();
     void refrushModel();
+
+public slots:
+    void syncUpload();
+    void syncDownload();
+    void epcConsume(QStringList epcs);
 
 signals:
     void scanProgress(int scanCount, int totalCount);
     void updateCount(EpcMark mark, int count);
     void updateLockCount(int count);
     void clearCount();
+    void epcAccess(QStringList epcs, UserOpt optType);
+    void epcAccess(QStringList fetchEpcs, QStringList backEpcs);
+    void epcStore(QMap<QString ,QVariantMap>);
 
 private:
     QMap<QString, EpcInfo*> map_rfid;
@@ -97,6 +104,7 @@ private:
     int lockCount;
 
     void initColName();
+    void storeEpcs(QStringList epcs);
 //    void refrushCount();
 };
 

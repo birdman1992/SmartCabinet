@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include "rfidpackage.h"
+#include "cabinetconfig.h"
 
 class RfidReader : public QObject
 {
@@ -28,6 +29,7 @@ private:
     bool flagConnect;
     QTcpSocket* skt;
     RfidResponse response;
+    CabinetConfig* config;
 
 private slots:
     void connectStateChanged(QAbstractSocket::SocketState state);

@@ -42,6 +42,7 @@
 #define API_DOWNLOAD_PAC "/sarkApi/cheset/download/package" //下载更新包
 #define API_VERSION_CHECK "/sarkApi/cheset/get/package"  //检查更新包
 #define API_GOODS_TRACE  "/sarkApi/Cheset/doSaveTraceId"  //物品存入跟踪
+#define API_RFID_CONSUME "/sarkApi/Cheset/rfid/consume/goods"   //登记消耗查询
 
 #define API_AIO_OVERVIEW "/sarkApi/Cheset/collect/goods"  //一体机数据总览
 #define API_AIO_EXPIRED "/sarkApi/Cheset/effective/goods" //一体机近效期物品
@@ -50,7 +51,9 @@
 #define API_AIO_TODAY_OUT   "/sarkApi/Cheset/consume/goods" //今日出库数据
 #define API_AIO_WARNING_REP     "/sarkApi/Cheset/warn/goods" //智能柜库存预警
 
-
+#define GET_JSON_QSTRING(SRC,KEY) QString::fromUtf8(cJSON_GetObjectItem(SRC, KEY)->valuestring)
+#define GET_JSON_INT(SRC,KEY) cJSON_GetObjectItem(SRC, KEY)->valueint
+#define GET_JSON_DOUBLE(SRC,KEY) cJSON_GetObjectItem(SRC, KEY)->valuedouble
 
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
@@ -84,6 +87,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_aio_data = NULL;
     reply_rfid_sync = NULL;
     reply_rfid_access = NULL;
+    reply_rfid_consume = NULL;
     versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
@@ -101,9 +105,14 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
         QTimer::singleShot(2000, this, SLOT(cabInfoSync()));
 
     SignalManager* sigMan = SignalManager::manager();
-    connect(sigMan, SIGNAL(epcAccess(QStringList, int)), this, SLOT(listAccess(QStringList, int)));
+//    connect(sigMan, SIGNAL(epcAccess(QStringList, UserOpt)), this, SLOT(listAccess(QStringList, UserOpt)));
     connect(this, SIGNAL(accessSuccess(QString)), sigMan, SIGNAL(accessSuccess(QString)));
     connect(this, SIGNAL(accessFailed(QString)), sigMan, SIGNAL(accessFailed(QString)));
+    connect(this, SIGNAL(epcInfoUpdate()), sigMan, SIGNAL(epcInfoUpdate()));
+    connect(this, SIGNAL(epcConsumed(QStringList)), sigMan, SIGNAL(epcConsumed(QStringList)));
+    connect(sigMan, SIGNAL(epcAccess(QStringList,UserOpt)), this, SLOT(rfidAccessOpt(QStringList,UserOpt)));
+    connect(sigMan, SIGNAL(epcAccess(QStringList,QStringList)), this, SLOT(rfidAccessOpt(QStringList,QStringList)));
+    connect(sigMan, SIGNAL(epcStore(QMap<QString,QVariantMap>)), this, SLOT(rfidAutoStore(QMap<QString,QVariantMap>)));
 }
 
 CabinetServer::~CabinetServer()
@@ -506,7 +515,7 @@ void CabinetServer::goodsAccess(QPoint addr, QString id, int num, int optType)
     }
 }
 
-void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 refund:3 back:16
+void CabinetServer::listAccess(QStringList list, UserOpt optType)//store:1  fetch:2 refund:3 back:16
 {
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();
@@ -941,7 +950,7 @@ void CabinetServer::rfidListSync()
     qDebug()<<"[rfidListSync]"<<nUrl<<qba;
 }
 
-void CabinetServer::rfidAccessOpt(QString storeListCode, QMap<QString, QStringList> storeGoods, int optType)
+void CabinetServer::rfidAccessOpt(QString storeListCode, QMap<QString, QStringList> storeGoods, UserOpt optType)
 {
     qint64 timeStamp = getApiMark();
     QByteArray optName = cur_user->cardId.toLocal8Bit();
@@ -991,7 +1000,7 @@ void CabinetServer::rfidAccessOpt(QString storeListCode, QMap<QString, QStringLi
     connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
 }
 
-void CabinetServer::rfidAccessOpt(QStringList epcs, int optType)
+void CabinetServer::rfidAccessOpt(QStringList epcs, UserOpt optType)
 {
     qint64 timeStamp = getApiMark();
     QByteArray optName = cur_user->cardId.toLocal8Bit();
@@ -1006,7 +1015,7 @@ void CabinetServer::rfidAccessOpt(QStringList epcs, int optType)
 
     cJSON* li = cJSON_CreateArray();
 
-    foreach (epc, epcs)
+    foreach (QString epc, epcs)
     {
         QByteArray packageBarcode = epc.toLocal8Bit();
 
@@ -1021,12 +1030,137 @@ void CabinetServer::rfidAccessOpt(QStringList epcs, int optType)
         cJSON_AddItemToArray(li, li_info);
     }
 
+    cJSON_AddItemToObject(json, "li", li);
+    cJSON_AddItemToObject(json, "timeStamp", cJSON_CreateNumber(timeStamp));
     QByteArray qba = QByteArray(cJSON_Print(json));
     cJSON_Delete(json);
 
+    qDebug()<<"[rfidAccessOpt]"<<qba;
     QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
     reply_rfid_access = post(nUrl, qba, timeStamp, false);
     connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
+}
+
+void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs)
+{
+    qint64 timeStamp = getApiMark();
+    QByteArray optName = cur_user->cardId.toLocal8Bit();
+    QByteArray departCode = config->getCabinetId().toLocal8Bit();
+    QByteArray dateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit();
+
+    if(fetchEpcs.isEmpty() && backEpcs.isEmpty())
+        return;
+
+    cJSON* json = cJSON_CreateObject();
+    cJSON_AddItemToObject(json, "optName", cJSON_CreateString(optName.data()));
+
+    cJSON* li = cJSON_CreateArray();
+
+    if(!fetchEpcs.isEmpty())
+    {
+        foreach (QString epc, fetchEpcs)
+        {
+            QByteArray packageBarcode = epc.toLocal8Bit();
+
+            cJSON* li_info = cJSON_CreateObject();
+
+            cJSON_AddItemToObject(li_info ,"chesetCode", cJSON_CreateString(departCode.data()));
+            cJSON_AddItemToObject(li_info ,"packageBarcode", cJSON_CreateString(packageBarcode.data()));
+            cJSON_AddItemToObject(li_info ,"optType", cJSON_CreateNumber(opt_fetch));
+            cJSON_AddItemToObject(li_info ,"optCount", cJSON_CreateNumber(1));
+            cJSON_AddItemToObject(li_info ,"dateTime", cJSON_CreateString(dateTime.data()));
+
+            cJSON_AddItemToArray(li, li_info);
+        }
+    }
+    if(!backEpcs.isEmpty())
+    {
+        foreach (QString epc, backEpcs)
+        {
+            QByteArray packageBarcode = epc.toLocal8Bit();
+
+            cJSON* li_info = cJSON_CreateObject();
+
+            cJSON_AddItemToObject(li_info ,"chesetCode", cJSON_CreateString(departCode.data()));
+            cJSON_AddItemToObject(li_info ,"packageBarcode", cJSON_CreateString(packageBarcode.data()));
+            cJSON_AddItemToObject(li_info ,"optType", cJSON_CreateNumber(opt_back));
+            cJSON_AddItemToObject(li_info ,"optCount", cJSON_CreateNumber(1));
+            cJSON_AddItemToObject(li_info ,"dateTime", cJSON_CreateString(dateTime.data()));
+
+            cJSON_AddItemToArray(li, li_info);
+        }
+    }
+
+    cJSON_AddItemToObject(json, "li", li);
+    cJSON_AddItemToObject(json, "timeStamp", cJSON_CreateNumber(timeStamp));
+    QByteArray qba = QByteArray(cJSON_Print(json));
+    cJSON_Delete(json);
+
+    qDebug()<<"[rfidAccessOpt]"<<qba;
+    QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
+    reply_rfid_access = post(nUrl, qba, timeStamp, false);
+    connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
+}
+
+void CabinetServer::rfidAutoStore(QMap<QString ,QVariantMap> codeMapList)
+{
+    qint64 timeStamp = getApiMark();
+    QByteArray optName = cur_user->cardId.toLocal8Bit();
+    QByteArray departCode = config->getCabinetId().toLocal8Bit();
+//    QByteArray barCode = storeListCode.toLocal8Bit();
+    QByteArray dateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit();
+
+    cJSON* json = cJSON_CreateObject();
+    cJSON_AddItemToObject(json, "optName", cJSON_CreateString(optName.data()));
+
+    cJSON* li = cJSON_CreateArray();
+    qDebug()<<codeMapList.uniqueKeys();
+
+    foreach(QString packageId, codeMapList.uniqueKeys())
+    {
+        QList<QVariantMap> codeList = codeMapList.values(packageId);
+
+        cJSON* li_info = cJSON_CreateObject();
+        QByteArray packageBarcode = packageId.toLocal8Bit();
+        QByteArray barCode = codeList.at(0).value("store_list").toByteArray();
+
+        cJSON_AddItemToObject(li_info ,"chesetCode", cJSON_CreateString(departCode.data()));
+        cJSON_AddItemToObject(li_info ,"packageBarcode", cJSON_CreateString(packageBarcode.data()));
+        cJSON_AddItemToObject(li_info ,"barcode", cJSON_CreateString(barCode.data()));
+        cJSON_AddItemToObject(li_info ,"optType", cJSON_CreateNumber(opt_store));
+        cJSON_AddItemToObject(li_info ,"optCount", cJSON_CreateNumber(codeList.count()));
+        cJSON_AddItemToObject(li_info ,"dateTime", cJSON_CreateString(dateTime.data()));
+
+        cJSON* rfidCodes = cJSON_CreateArray();
+        foreach (QVariantMap codeInfo, codeList)
+        {
+            QByteArray bCode = codeInfo["code"].toByteArray();
+            cJSON_AddItemToArray(rfidCodes, cJSON_CreateString(bCode.data()));
+        }
+        cJSON_AddItemToObject(li_info ,"rfidCodes", rfidCodes);
+
+        cJSON_AddItemToArray(li, li_info);
+    }
+    cJSON_AddItemToObject(json, "li", li);
+    cJSON_AddItemToObject(json, "timeStamp", cJSON_CreateNumber(timeStamp));
+
+    QByteArray qba = QByteArray(cJSON_Print(json));
+    cJSON_Delete(json);
+
+    qDebug()<<"[rfidAutoStore]"<<qba;
+    QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
+    reply_rfid_access = post(nUrl, qba, timeStamp, false);
+    connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
+}
+
+void CabinetServer::rfidCheckConsume(QStringList epcs)
+{
+    QByteArray departCode = config->getCabinetId().toLocal8Bit();
+    qint64 timeStamp = getApiMark();
+    QByteArray qba = QString("{\"chesetCode\":\"%1\", \"rfidCodes\":[\"%2\"],\"timeStamp\":\"%3\"}").arg(departCode.data()).arg(epcs.join("\",\"")).arg(timeStamp).toLocal8Bit();
+    QString nUrl = ApiAddress+QString(API_RFID_CONSUME);//+"?"+qba.toBase64();
+    reply_rfid_consume = post(nUrl, qba, timeStamp, false);
+    connect(reply_rfid_consume, SIGNAL(finished()), this, SLOT(recvRfidConsume()));
 }
 
 void CabinetServer::searchSpell(QString spell)
@@ -1157,6 +1291,7 @@ void CabinetServer::recvUserLogin()
         config->addUser(info);
         config->wakeUp(TIMEOUT_BASE);
         networkState = true;
+        rfidListSync();//同步入柜信息
     }
     else
     {
@@ -1769,7 +1904,7 @@ void CabinetServer::recvCabSync()
         for(i=0; i<listSize; i++)
         {
             cJSON* item = cJSON_GetArrayItem(json_data, i);
-            Goods* info = new Goods();
+            Goods* info = new Goods;
 
             int row = QString(cJSON_GetObjectItem(item, "cabinetRow")->valuestring).toInt();
             int col = QString(cJSON_GetObjectItem(item, "cabinetCol")->valuestring).toInt();
@@ -2179,17 +2314,21 @@ void CabinetServer::recvRfidListSync()
 
     if(json_rst->type == cJSON_False)//失败
     {
-
+        return;
     }
 
     cJSON* data = cJSON_GetObjectItem(json, "data");//data []
     int szData = cJSON_GetArraySize(data);
-    QList<StoreList*> listGroup;
+//    QList<StoreList*> listGroup;
+    SqlManager::begin();//开始更新数据
 
     for(int i=0; i<szData; i++)//data[i]
     {
-        StoreList* list = new StoreList;
+//        StoreList* list = new StoreList;
         cJSON* dataItem = cJSON_GetArrayItem(data, i);//data->{}
+        QMap<QString ,QVariantMap> goodsList;//物品信息
+        QMap<QString ,QVariantMap> codeList;//条码信息,insert multi
+        QList<QVariantMap> epcList;//rfid信息
 
         //读取rfid信息
         cJSON* rfidCode = cJSON_GetObjectItem(dataItem, "rfidCode");//data->{rfidCode[]}
@@ -2197,26 +2336,101 @@ void CabinetServer::recvRfidListSync()
         for(int j=0; j<arraySize; j++)//rfidCode[j]
         {
             cJSON* jRfidInfo = cJSON_GetArrayItem(rfidCode, j);//rfidCode[]->{}
-            QString rfCode = QString::fromUtf8(cJSON_GetObjectItem(jRfidInfo, "rfidCode")->valuestring);
-            QString code = QString::fromUtf8(cJSON_GetObjectItem(jRfidInfo, "traceId"));
-            list->rfidMap.insert(rfCode, code);
+            QVariantMap codeMap;//need pro_name sup_name
+            codeMap.insert("code", GET_JSON_QSTRING(jRfidInfo, "traceId"));
+            codeMap.insert("package_id", GET_JSON_QSTRING(jRfidInfo, "packageBarcode"));
+            codeMap.insert("store_list", GET_JSON_QSTRING(jRfidInfo, "barcode"));
+//            codeMap.insert("epc_code", GET_JSON_QSTRING(jRfidInfo, "rfidCode"));
+            codeMap.insert("batch_number", GET_JSON_QSTRING(jRfidInfo, "batchNumber"));
+
+            codeList.insertMulti(codeMap["package_id"].toString() , codeMap);
+
+            QVariantMap epcMap;
+            epcMap.insert("epc_code", GET_JSON_QSTRING(jRfidInfo, "rfidCode").toUpper());
+            epcMap.insert("goods_code", GET_JSON_QSTRING(jRfidInfo, "traceId"));
+
+            epcList<<epcMap;
+//            QString rfCode = QString::fromUtf8(cJSON_GetObjectItem(jRfidInfo, "rfidCode")->valuestring);
+//            QString code = GET_JSON_QSTRING(jRfidInfo, "traceId");
+//            QString packageBarcode = QString::fromUtf8(cJSON_GetObjectItem(jRfidInfo, "packageBarcode")->valuestring);
+//            list->rfidMap.insert(rfCode, code);
+//            list->codeMap.insert(code, packageBarcode);
         }
 
         //读取物品信息
         cJSON* goods = cJSON_GetObjectItem(dataItem, "goods");//data->{goods[]}
         arraySize = cJSON_GetArraySize(goods);
+
         for(int j=0; j<arraySize; j++)//goods[j]
         {
+//            SqlManager::getPubQuery()->prepare("REPLACE INTO GoodsInfo (package_id, goods_id, package_type, name, abbname, size, unit, single_price, pro_name, sup_name) "
+//                                      "VALUES(:package_id, :goods_id, :package_type, :name, :abbname, :size, :unit, :single_price, :pro_name, :sup_name)");
             cJSON* jGoodsInfo = cJSON_GetArrayItem(goods, j);//goods[]->{}
-        }
+//            Goods* goodsInfo = new Goods;
+//            goodsInfo->name = GET_JSON_QSTRING(jGoodsInfo, "name");
+//            goodsInfo->goodsId = GET_JSON_QSTRING(jGoodsInfo,"goodsId");
+//            goodsInfo->size = GET_JSON_QSTRING(jGoodsInfo, "size");
+//            goodsInfo->unit = GET_JSON_QSTRING(jGoodsInfo, "unit");
+//            goodsInfo->packageCount = GET_JSON_INT(jGoodsInfo, "packageCount");
+//            goodsInfo->price = GET_JSON_DOUBLE(jGoodsInfo, "singlePrice");
+//            goodsInfo->packageId = GET_JSON_QSTRING(jGoodsInfo, "packageBarcode");
+//            goodsInfo->packageType = GET_JSON_INT(jGoodsInfo, "packageType");
+//            goodsInfo->batch = GET_JSON_QSTRING(jGoodsInfo, "batchNUmber");
+//            goodsInfo->proName = GET_JSON_QSTRING(jGoodsInfo, "proName");
+//            goodsInfo->lifeTime = GET_JSON_QSTRING(jGoodsInfo, "lifeTime");
+//            goodsInfo->abbName = GET_JSON_QSTRING(jGoodsInfo, "abbName");
+//            goodsInfo->supName = GET_JSON_QSTRING(jGoodsInfo, "supplyName");
+//            list->goodsMap.insert(goodsInfo->packageId, goodsInfo);
+            QVariantMap goodsMap;
+            goodsMap.insert("package_id",GET_JSON_QSTRING(jGoodsInfo, "packageBarcode"));
+            goodsMap.insert("goods_id",GET_JSON_QSTRING(jGoodsInfo, "goodsId"));
+            goodsMap.insert("package_type",GET_JSON_INT(jGoodsInfo, "packageType"));
+            goodsMap.insert("name",GET_JSON_QSTRING(jGoodsInfo, "name"));
+            goodsMap.insert("abbname",GET_JSON_QSTRING(jGoodsInfo, "abbName"));
+            goodsMap.insert("size",GET_JSON_QSTRING(jGoodsInfo, "size"));
+            goodsMap.insert("unit",GET_JSON_QSTRING(jGoodsInfo, "unit"));
+            goodsMap.insert("single_price",GET_JSON_DOUBLE(jGoodsInfo, "singlePrice"));
+            goodsMap.insert("pro_name",GET_JSON_QSTRING(jGoodsInfo, "proName"));
+            goodsMap.insert("sup_name",GET_JSON_QSTRING(jGoodsInfo, "supplyName"));
+            goodsList.insert(goodsMap["package_id"].toString(), goodsMap);
 
+            //pro_name sup_name
+            QMap<QString, QVariantMap>::iterator it;
+            for(it=codeList.begin(); it!=codeList.end(); it++)
+            {
+                if(it.key() == goodsMap["package_id"].toString())
+                {
+                    QVariantMap codeInfo = it.value();
+                    codeInfo.insert("pro_name", goodsMap["pro_name"]);
+                    codeInfo.insert("sup_name", goodsMap["sup_name"]);
+                }
+            }
+
+//            codeList[goodsMap["package_id"].toString()]["pro_name"] = goodsMap["pro_name"];
+//            codeList[goodsMap["package_id"].toString()]["sup_name"] = goodsMap["sup_name"];
+        }
+        //更新物品信息
+        SqlManager::replace("GoodsInfo", goodsList.values());
+        SqlManager::insert("CodeInfo", codeList.values());
+        SqlManager::insert("EpcInfo", epcList);
+        emit epcInfoUpdate();
+
+        //自动存物品
+//        rfidAutoStore(codeList);
+#if 0
         //读取存货单信息
         cJSON* store = cJSON_GetObjectItem(dataItem, "store");//data->{store}
+        list->barCode = GET_JSON_QSTRING(store, "barcode");
+        list->departName = GET_JSON_QSTRING(store, "departCode");//柜子号
+        list->departCode = GET_JSON_QSTRING(store, "departName");//科室
+        list->hosName = GET_JSON_QSTRING(store, "hosName");//医院
 
         //打印时间
-        QString printTime = QString::fromUtf8(cJSON_GetObjectItem(dataItem, "printTime")->valuestring);
-
+        list->printTime = QString::fromUtf8(cJSON_GetObjectItem(dataItem, "printTime")->valuestring);
+        listGroup<<list;
+#endif
     }
+    SqlManager::commit();
 }
 
 void CabinetServer::recvRfidAccessRst()
@@ -2238,6 +2452,35 @@ void CabinetServer::recvRfidAccessRst()
     else
     {
 
+    }
+}
+
+void CabinetServer::recvRfidConsume()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_rfid_consume->readAll());
+    reply_rfid_consume->deleteLater();
+    reply_rfid_consume = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    QString msg = QString::fromUtf8(cJSON_GetObjectItem(json, "msg")->valuestring);
+    QStringList consumedEpcs;
+    if(json_rst->type == cJSON_True)
+    {
+        cJSON* data = cJSON_GetObjectItem(json, "data");
+        int count = cJSON_GetArraySize(data);
+        for(int i=0; i<count; i++)
+        {
+            consumedEpcs<<QString::fromUtf8(cJSON_GetArrayItem(data, i)->valuestring);
+        }
+        emit epcConsumed(consumedEpcs);
+    }
+    else
+    {
+        qWarning()<<"[recvRfidConsume]"<<msg;
+        return;
     }
 }
 

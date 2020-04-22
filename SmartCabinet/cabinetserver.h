@@ -11,6 +11,7 @@
 #include <QString>
 #include <QFile>
 
+#include "defines.h"
 #include "cabinetconfig.h"
 #include "Structs/userinfo.h"
 #include "Json/cJSON.h"
@@ -64,6 +65,7 @@ private:
     QNetworkReply* reply_aio_data;
     QNetworkReply* reply_rfid_sync;
     QNetworkReply* reply_rfid_access;
+    QNetworkReply* reply_rfid_consume;
     AIOMachine::cEvent aio_state;
     CheckList* checkList;
     SqlManager* sqlManager;
@@ -89,6 +91,7 @@ private:
     int fWatchdog;
     int checkId;//盘点返回id
     QList<QByteArray> list_access_cache;
+
 
     void checkTime();
     void checkSysTime(QDateTime _time);
@@ -138,6 +141,8 @@ signals:
     //rfid
     void rfidListReq();
     void rfidAccess();
+    void epcInfoUpdate();
+    void epcConsumed(QStringList epcs);
 
 public slots:
     void cabRegister();
@@ -151,7 +156,7 @@ public slots:
     void cabColInsert(int pos, int num);
     void cabinetBind(int, int, QString);
     void goodsAccess(QPoint, QString, int, int optType);
-    void listAccess(QStringList list, int optType);
+    void listAccess(QStringList list, UserOpt optType);
     void goodsCheckReq();
     void goodsCheckFinish();
     void goodsBack(QString);//退货
@@ -177,8 +182,11 @@ public slots:
     void updateCurBarcode(QString code);
     //rfid
     void rfidListSync();
-    void rfidAccessOpt(QString storeListCode, QMap<QString, QStringList> storeGoods, int optType=2);
-    void rfidAccessOpt(QStringList epcs, int optType=1);
+    void rfidAccessOpt(QString storeListCode, QMap<QString, QStringList> storeGoods, UserOpt optType=opt_store);//存货单号，[物品，条码],操作类型
+    void rfidAccessOpt(QStringList epcs, UserOpt optType=opt_fetch);
+    void rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs);
+    void rfidAutoStore(QMap<QString, QVariantMap> codeMapList);
+    void rfidCheckConsume(QStringList epcs);
 
 private slots:
     void recvCabRegister();
@@ -211,6 +219,7 @@ private slots:
     //RFID
     void recvRfidListSync();
     void recvRfidAccessRst();
+    void recvRfidConsume();
     void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();

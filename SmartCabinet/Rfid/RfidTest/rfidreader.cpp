@@ -5,6 +5,7 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent
 {
     flagInit = false;
     readerSeq = seq;
+    config = CabinetConfig::config();
     skt = s;
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
@@ -14,6 +15,7 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
 {
     flagInit = false;
     flagConnect = false;
+    config = CabinetConfig::config();
     readerSeq = seq;
     skt = new QTcpSocket();
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
@@ -63,6 +65,7 @@ void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
     {
     case QAbstractSocket::ConnectedState:
         flagConnect = true;
+
         scanStop();
         break;
 

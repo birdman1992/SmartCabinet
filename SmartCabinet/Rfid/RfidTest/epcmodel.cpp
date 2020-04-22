@@ -207,7 +207,11 @@ void EpcModel::clear()
 //UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, row=%4, col=%5 WHERE epc_code='%6'
 void EpcModel::syncUpload()
 {
-    SqlManager::updateRfidsStart();
+    QStringList list_fetch;
+    QStringList list_back;
+    QStringList list_store;
+//    QStringList list_consume;
+    SqlManager::begin();
     QString cmd;
     foreach (EpcInfo* info, map_rfid)
     {
@@ -223,6 +227,7 @@ void EpcModel::syncUpload()
                     .arg(info->lastOpt)
                     .arg(info->state)
                     .arg(info->epcId);
+            list_back<<info->epcId;
             break;
         case mark_checked://盘点标记
             break;
@@ -233,6 +238,8 @@ void EpcModel::syncUpload()
                     .arg(info->lastOpt)
                     .arg(info->state)
                     .arg(info->epcId);
+            map_rfid.remove(info->epcId);
+            delete info;
             break;
         case mark_in://柜内标记
             break;
@@ -243,6 +250,7 @@ void EpcModel::syncUpload()
                     .arg(info->lastOpt)
                     .arg(info->state)
                     .arg(info->epcId);
+            list_store<<info->epcId;
             break;
         case mark_out://取出标记
             info->state = epc_out;
@@ -251,6 +259,7 @@ void EpcModel::syncUpload()
                     .arg(info->lastOpt)
                     .arg(info->state)
                     .arg(info->epcId);
+            list_fetch<<info->epcId;
             break;
         default:
             break;
@@ -258,13 +267,31 @@ void EpcModel::syncUpload()
         if(!cmd.isEmpty())
             SqlManager::querySingle(cmd, "[syncUpload]");
     }
-    SqlManager::updateRfidsFinish();
+
+    //存入物品
+    if(!list_store.isEmpty())
+        storeEpcs(list_store);
+
+    emit epcAccess(list_fetch, list_back);
+
+//    //取出物品
+//    if(!list_fetch.isEmpty())
+//        emit epcAccess(list_fetch, opt_fetch);
+
+//    //还回物品
+//    if(!list_back.isEmpty())
+//        emit epcAccess(list_back, opt_back);
+
+    //删除已登记消耗物品
+    SqlManager::querySingle(QString("DELETE FROM EpcInfo WHERE state=%1").arg(epc_consume));
+    SqlManager::commit();
+//    SqlManager::query();
 }
 
 void EpcModel::syncDownload()
 {
     clear();
-    QString cmd = QString("SELECT GI.name, EI.epc_code, EI.goods_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp, EI.state FROM EpcInfo AS EI LEFT JOIN GoodsInfo AS GI ON EI.goods_id=GI.goods_id");
+    QString cmd = QString("SELECT GI.name, EI.epc_code, EI.goods_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp, EI.state FROM EpcInfo AS EI LEFT JOIN CodeInfo AS CI ON EI.goods_code=CI.code LEFT JOIN GoodsInfo AS GI ON CI.package_id=GI.package_id");
     QSqlQuery query = SqlManager::query(cmd, QString("[RFID sync download]"));
     memset(countTab, 0, sizeof(countTab));
 //    beginResetModel();
@@ -287,6 +314,14 @@ void EpcModel::syncDownload()
     refrushModel();
     countTab[0] = map_rfid.count();
     qDebug()<<"[model row]"<<map_rfid.count();
+}
+
+void EpcModel::epcConsume(QStringList epcs)
+{
+    foreach (QString epc, epcs)
+    {
+        setEpcMark(epc, mark_con);
+    }
 }
 
 void EpcModel::setOptId(QString optId)
@@ -321,4 +356,23 @@ void EpcModel::initColName()
     map_col_name.insert("time_stamp", "时间");
     map_col_name.insert("pro_name", "生产商");
     map_col_name.insert("sup_name", "供应商");
+}
+
+//packageBarcode barcode rfidCodes
+void EpcModel::storeEpcs(QStringList epcs)
+{
+    QString cmd = QString("SELECT EI.epc_code, CI.package_id, CI.store_list FROM EpcInfo AS EI LEFT JOIN CodeInfo AS CI ON EI.goods_code=CI.code WHERE epc_code IN ('%1')").arg(epcs.join("','"));
+    QSqlQuery query = SqlManager::query(cmd, "[storeEpcs]");
+    QMap<QString ,QVariantMap> codeMapList;
+
+    while(query.next())
+    {
+        QString package_id = query.value(1).toString();
+        QVariantMap epcMap;
+        epcMap.insert("code", query.value(0));
+        epcMap.insert("store_list", query.value(2));
+        codeMapList.insertMulti(package_id, epcMap);
+    }
+    qDebug()<<"store count"<<codeMapList.count();
+    emit epcStore(codeMapList);
 }

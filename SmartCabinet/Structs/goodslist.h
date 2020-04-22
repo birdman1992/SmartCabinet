@@ -85,12 +85,15 @@ public:
     StoreList();
     ~StoreList();
     QString printTime;
-    QString departName;
+    QString barCode;
+    QString departName;//科室
+    QString departCode;//柜子号
+    QString hosName;//医院
     bool legalList;
 
     QMap<QString, QString> rfidMap;//rfid:code
     QMap<QString, QString> codeMap;//code:package_id
     QMap<QString, Goods*> goodsMap;//package_id:goods_info
-}
+};
 
 #endif // GOODSLIST_H

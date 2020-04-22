@@ -6,7 +6,7 @@
 
 QSqlDatabase SqlManager::db_cabinet = QSqlDatabase();
 SqlManager* SqlManager::m = new SqlManager;
-QSqlQuery* pubQuery = NULL;
+QSqlQuery* SqlManager::pubQuery = NULL;
 int queryNum = 0;
 
 SqlManager::SqlManager(QObject *parent) : QObject(parent)
@@ -356,7 +356,7 @@ void SqlManager::updateRfid(QString epc, quint32 stamp, QString optId, int state
     queryExec(&query, "updateRfid", cmd);
 }
 
-void SqlManager::updateRfidsStart()
+void SqlManager::begin()
 {
     if(pubQuery == NULL)//
     {
@@ -365,6 +365,16 @@ void SqlManager::updateRfidsStart()
     }
     queryNum++;//同时执行的事务数
 }
+
+QSqlQuery *SqlManager::getPubQuery()
+{
+    return pubQuery;
+}
+
+//void SqlManager::prepareSingle(QString prepareCmd)
+//{
+//    pubQuery->prepare(prepareCmd);
+//}
 
 void SqlManager::updateRfidsSingle(QString epc, quint32 stamp, QString optId, int state, int row, int col)
 {
@@ -377,7 +387,44 @@ void SqlManager::querySingle(QString cmd, QString msg)
     queryExec(pubQuery, msg, cmd);
 }
 
-void SqlManager::updateRfidsFinish()
+void SqlManager::replace(QString table, QList<QVariantMap> bindings)
+{
+    foreach (QVariantMap binding, bindings)
+    {
+        pubQuery->prepare(QString("REPLACE INTO %1 (%2) VALUES(:%3)")
+                          .arg(table)
+                          .arg(QStringList(binding.keys()).join(","))
+                          .arg(QStringList(binding.keys()).join(",:")));
+
+        foreach (QString key, binding.keys())
+        {
+//            qDebug()<<key<<binding[key];
+            pubQuery->bindValue(QString(":%1").arg(key), binding[key]);
+        }
+        queryExec(pubQuery, QString("[replace] %1").arg(table));
+    }
+
+}
+
+void SqlManager::insert(QString table, QList<QVariantMap> bindings)
+{
+    foreach (QVariantMap binding, bindings)
+    {
+        pubQuery->prepare(QString("INSERT INTO %1 (%2) VALUES(:%3)")
+                          .arg(table)
+                          .arg(QStringList(binding.keys()).join(","))
+                          .arg(QStringList(binding.keys()).join(",:")));
+
+        foreach (QString key, binding.keys())
+        {
+//            qDebug()<<key<<binding[key];
+            pubQuery->bindValue(QString(":%1").arg(key), binding.value(key));
+        }
+        queryExec(pubQuery, QString("[insert] %1").arg(table));
+    }
+}
+
+void SqlManager::commit()
 {
     queryNum--;
     if(queryNum == 0)//没有别的正在执行的事务
@@ -708,7 +755,7 @@ void SqlManager::createTable()
                               unit CHAR(10) DEFAULT('NULL'),\
                               cab_col INT(2) DEFAULT(-1),\
                               cab_row INT(2) DEFAULT(-1),\
-                              single_price INT(8) DEFAULT(0),\
+                              single_price REAL(18) DEFAULT(0),\
                               pro_name CHAR(50) DEFAULT(''),\
                               sup_name CHAR(50) DEFAULT('')\
                               );");
@@ -789,6 +836,7 @@ bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)
             return false;
         }
     }
-//    qDebug()<<q->lastQuery();
+//    qDebug()<<q->boundValues();
+//    qDebug()<<msg<<q->lastQuery();
     return true;
 }

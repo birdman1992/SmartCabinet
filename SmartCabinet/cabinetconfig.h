@@ -138,6 +138,7 @@ private:
     int sleepFlag;//休眠标志
     int timeoutFlag;//超时标志
     int userNum;//用户数量
+    int rfidReaderCount;
     QPoint screenPos;
     QPoint specPos;
     int caseWidth;
