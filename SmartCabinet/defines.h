@@ -13,6 +13,9 @@
 #define MAGIC_CAL "ff00010acc"
 #define MAGIC_SHOT "ff00010add"
 
+//温度设备通信端口
+#define TEMP_SKT_PORT 8889
+
 //全屏显示  unuse
 #define SHOW_FULLSCREEN
 

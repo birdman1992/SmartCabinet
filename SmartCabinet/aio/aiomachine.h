@@ -12,7 +12,9 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QMap>
+#include <QTimerEvent>
 #include "aiobutton.h"
+#include "Temperature/tempdevhub.h"
 #include "Structs/userinfo.h"
 #include "aiooverview.h"
 #include "Widgets/cabinetaccess.h"
@@ -47,6 +49,7 @@ public slots:
     void sysLock();//系统锁定
     void recvAioOverview(QString msg, AIOOverview* overview);
     void recvAioData(QString msg,AIOMachine::cEvent e,QList<Goods*> lInfo);
+    void recvClickEvent(AIOMachine::cEvent e);
     void updateTemp(QString);
     void updateHum(QString);
     void winMsg(QString);
@@ -100,9 +103,14 @@ signals:
 private slots:
     void on_aio_quit_clicked();
 
+protected:
+    void timerEvent(QTimerEvent* event);
+
 private:
     Ui::AIOMachine *ui;
     CabinetAccess* win_access;
+    TempDevHub* tempHub;
+    TempCase* selectedDev;
     QMap<QString, colMark> mapColName;
     QList<QLabel*> l_num_label;
     QList<Goods*> cur_list;
@@ -115,6 +123,7 @@ private:
     bool loginState;
     int curPage;
     int curState;
+    int timerCheckDev;
     QStringList optList;
     QMap<QString, int> curStateText;
     QList<Goods*> showList;
@@ -125,8 +134,10 @@ private:
     void initColMap();
     void initStateMap();
     void initIcons();
+    void initAioMode();
     void updateState();
     void nextState();
+    void setState(QString stateStr);
     void setAioInfo(QString departName, QString departId);
     void setNumLabel(AIOOverview* overview);
     void showTable(QString title, QStringList colNames, QList<Goods*>);
@@ -148,6 +159,9 @@ private:
 private slots:
     void loginTimeout();
     void updateTime();
+    void updateTempDev();
+    void tempDevClicked(TempCase *dev);
+    void checkTempDev();
     void on_tab_back_clicked();
 //    void on_aio_fetch_clicked();
     void on_aio_return_clicked();
@@ -158,6 +172,10 @@ private slots:
     void on_tab_next_clicked();
     void on_setting_clicked();
     void on_cur_state_clicked();
+    void on_temp_btn_back_clicked();
+    void on_mode_view_toggled(bool checked);
+    void on_mode_temp_toggled(bool checked);
+    void on_set_dev_params_clicked();
 };
 
 #endif // AIOMACHINE_H

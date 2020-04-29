@@ -39,6 +39,7 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<QList<DayReportInfo*> >("QList<DayReportInfo*>");
     qRegisterMetaType<QList<Goods*> >("QList<GoodsInfo*>");
     qRegisterMetaType<AIOMachine::cEvent>("AIOMachine::cEvent");
+    qRegisterMetaType<TempDevHub*>("TempDevHub*");
 
     devWatcher = new QDeviceWatcher(this);
 
@@ -157,7 +158,9 @@ void MainWidget::init_huangpo()
         connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
         connect(tempDev, SIGNAL(updateHumString(QString)), win_aio, SLOT(updateHum(QString)));
         connect(tempDev, SIGNAL(updateTempString(QString)), win_aio, SLOT(updateTemp(QString)));
-    //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
+        connect(win_aio->findChild<TempDevHub *>("tempHub"), SIGNAL(tempDevReport(QByteArray)), cabServer, SLOT(tempDevReport(QByteArray)));
+//        qDebug()<<win_aio->findChild<TempDevHub *>("tempHub");
+        //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
     //    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
         ui->page_2->layout()->addWidget(win_aio);
 //        win_aio->sysLock();
