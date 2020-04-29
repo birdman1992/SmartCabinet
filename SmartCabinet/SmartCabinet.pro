@@ -32,6 +32,7 @@ LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 
 SOURCES += main.cpp\
     Temperature/tempcase.cpp \
+    Temperature/tempdevhub.cpp \
     Temperature/tempmanager.cpp \
     Temperature/temprecorder.cpp \
     Temperature/temptopdf.cpp \
@@ -135,6 +136,7 @@ HEADERS  += mainwidget.h \
     Device/devicesimulate.h \
     Temperature/config.h \
     Temperature/tempcase.h \
+    Temperature/tempdevhub.h \
     Temperature/tempmanager.h \
     Temperature/temprecorder.h \
     Temperature/temptopdf.h \

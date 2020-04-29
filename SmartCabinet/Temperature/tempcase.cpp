@@ -1,28 +1,29 @@
 #include "tempcase.h"
 #include "ui_tempcase.h"
 #include <QHostAddress>
+#include <QTextCodec>
 
 TempCase::TempCase(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TempCase)
 {
     ui->setupUi(this);
+    ui->ID->hide();
     devManager = TempManager::manager();
     recorder = NULL;
-    caseId = QString();
-    caseName = QString();
     overTime = QDateTime::currentDateTime();
     lastRecordTime = QTime::currentTime();
     dev = NULL;
-    curState = 0;
+    curState = dev_normal;
     tMax = 8;
     tMin = 2;
     tWarning = 16;
     tReport = 10;
     recordCount = 0;
     initNameMap();
-    QByteArray test = QByteArray::fromHex("7e00");
-    qDebug()<<"parTemp"<<parTemp(test);
+//    QByteArray test = QByteArray::fromHex("74302e7478743d22313233b2dcd1f4f6ce22ffffff");
+//    pacToName(test);
+//    qDebug()<<"parTemp"<<parTemp(test);
 }
 
 //TempCase::TempCase(QWidget *parent, float maxTemp, float minTemp):
@@ -71,47 +72,89 @@ void TempCase::initNameMap()
     nameMap.insert("E75", QString::fromUtf8("血库(海尔)2号"));
     nameMap.insert("C64", QString::fromUtf8("SPD仓(大)1号"));
     nameMap.insert("6B7", QString::fromUtf8("SPD仓(小)2号"));
-//    nameMap.insert("ACD", QString::fromUtf8("测试室(海尔)2号"));
+    //    nameMap.insert("ACD", QString::fromUtf8("测试室(海尔)2号"));
 }
 
-QString TempCase::getCaseName(QString id)
+//协议返回: 控制字 错误码
+void TempCase::pacBack(int8_t ctrlWd, int8_t errWd)
 {
-    qDebug()<<"getCaseName"<<id;
-//    if(!nameMap.contains(id.right(3)))
-//    {
-//        QString strName = devManager->searchNameForIp(devIp());
-//        if(strName.isEmpty())
-//        {
-//            ui->NO->hide();
-//            return id;
-//        }
-//        else
-//        {
-//            return strName;
-//        }
-//    }
-    caseName = devManager->getDevName(id);
-    if(caseName.isEmpty())
-    {
-        ui->NO->hide();
-    }
-//    devManager->setDevName(caseId, nameMap.value(id.right(3)));
+    QByteArray retPac = QByteArray::fromHex("FD0000FF");
+    retPac[1] = ctrlWd;
+    retPac[2] = errWd;
+    qDebug()<<"[pacBack]"<<retPac.toHex();
+    dev->write(retPac);
+}
 
-    return caseName;
+void TempCase::parseLogin(QByteArray qba)
+{
+    DevType dType = (DevType)qba.at(2);
+    setTempDevType(dType);
+    QByteArray pacName = qba.mid(3, qba.size() - 1);
+    QString name = pacToName(pacName);
+    setCaseName(name);
+    setCaseId(name.toLocal8Bit().toHex());
+    devManager->addTempDevice(dev->peerAddress().toString(), this);
+    qDebug()<<"[dev ip]"<<caseName()<<dev->peerAddress();
+    pacBack(qba.at(1), 0);
+//    emit caseIdUpdate(this);
+}
+
+//float temp = parTemp(qba.mid(3,2));
+//float hum = parHum(qba.mid(5,2));
+//updateTemp(temp);
+//updateHum(hum);
+
+//if(lastRecordTime.addSecs(300) <= QTime::currentTime() || (QTime::currentTime() < lastRecordTime))
+//{
+//    lastRecordTime = QTime::currentTime();
+//    recordCount = 0;
+//    if(recorder != NULL)
+//        recorder->recordTemp(temp, hum, curState);
+//}
+//        dev->write(QByteArray::fromHex("fd050201ff"));break;
+void TempCase::parseReport(QByteArray qba)
+{
+//    DevType dType = (DevType)qba.at(2);
+//    quint8 dataGroupCount = qba.at(3);//数据组数
+    QVector<float>temp(4, 0);
+    QVector<float>hum(4, 0);
+    for(int i=0; i<4 ;i++)
+    {
+        temp[i] = parTemp(qba.mid(4+i*2, 2));
+        hum[i] = parHum(qba.mid(6+2*i, 2));
+    }
+    updateTemp(temp);
+    updateHum(hum);
+    pacBack(qba.at(1), 0);
+}
+
+//t0.txt=”荣茂信息”0xFF 0xFF 0xFF
+QString TempCase::pacToName(QByteArray qba)
+{
+    QByteArray nameBytes = qba.mid(8, qba.size() - 13);//荣茂信息
+    QTextCodec* gbk = QTextCodec::codecForName("GB2312");
+    QString name = gbk->toUnicode(nameBytes);
+    qDebug()<<name;
+    return name;
+}
+
+QByteArray TempCase::nameToPac(QString name)
+{
+
 }
 
 void TempCase::setCaseName(QString name)
 {
-    caseName = name;
-    if(name.isEmpty())
+    m_caseName = name;
+    if(m_caseName.isEmpty())
     {
         ui->NO->hide();
-        ui->NO->setText(name);
+        ui->NO->setText(m_caseName);
     }
     else
     {
         ui->NO->show();
-        ui->NO->setText(name);
+        ui->NO->setText(m_caseName);
     }
 }
 
@@ -125,28 +168,31 @@ void TempCase::mouseReleaseEvent(QMouseEvent *)
     emit caseClicked(this);
 }
 
-void TempCase::updateTemp(float temp)
+void TempCase::updateTemp(QVector<float> temp)
 {
-    tCur = temp;
+    tCur = temp[0];
     if(tCur > tMax)
     {
-        setCaseState(1);
+        setCaseState(dev_temp_over);
     }
     else if(tCur < tMin)
     {
-        setCaseState(1);
+        setCaseState(dev_temp_under);
     }
     else
     {
-        setCaseState(0);
+        setCaseState(dev_normal);
     }
     ui->temp->setText(QString("%1℃").arg(tCur));
+    update();
+    qDebug()<<tCur;
 }
 
-void TempCase::updateHum(float hum)
+void TempCase::updateHum(QVector<float> hum)
 {
-    hCur = hum;
-    ui->hum->setText(QString("%1%").arg(hum));
+    hCur = hum[0];
+    ui->hum->setText(QString("%1%").arg(hCur));
+    qDebug()<<hCur;
 }
 
 float TempCase::getCurTemp()
@@ -159,19 +205,19 @@ float TempCase::getCurHum()
     return hCur;
 }
 
-int TempCase::getCurState()
+TempCase::DevState TempCase::getCurState()
 {
     return curState;
 }
 
-QString TempCase::getCurStateStr()
-{
-    if(curState>4)
-        return "UNKWON";
-    QStringList stateList;
-    stateList<<"N"<<"U"<<"UNKWON"<<"UNKWON"<<"O";
-    return stateList.at(curState);
-}
+//QString TempCase::getCurStateStr()
+//{
+//    if(curState>4)
+//        return "UNKWON";
+//    QStringList stateList;
+//    stateList<<"N"<<"U"<<"UNKWON"<<"UNKWON"<<"O";
+//    return stateList.at(curState);
+//}
 
 
 
@@ -186,32 +232,35 @@ void TempCase::setSocket(QTcpSocket *t)
     dev = t;
     connect(dev, SIGNAL(readyRead()), this, SLOT(recvDevData()));
     connect(dev, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(devStateChanged(QAbstractSocket::SocketState)));
-    caseId = devManager->searchDeviceForIp(dev->peerAddress().toString());
-    qDebug()<<"[dev ip]"<<caseId<<dev->peerAddress().toString();
+    QString name = devManager->searchDeviceForIp(dev->peerAddress().toString());
+    setCaseName(name);
+    qDebug()<<"[dev ip]"<<m_caseName<<dev->peerAddress().toString();
 
-    setCaseId(caseId);
+    setCaseId(m_caseName.toLocal8Bit().toHex());
     //    setDevParam();
 }
 
-void TempCase::setTempParams(int _max, int _min, int _warning)
+void TempCase::setTempParams(int _max, int _min, int _warningm, int _report)
 {
     tMax = _max;
     tMin = _min;
-    tWarning = _warning;
-    devManager->setDevMaxTemp(caseId, tMax);
-    devManager->setDevMinTemp(caseId, tMin);
-    devManager->setDevWarningTemp(caseId, tWarning);
+    tWarning = _warningm;
+    tReport = _report;
+    devManager->setDevMaxTemp(m_caseName, tMax);
+    devManager->setDevMinTemp(m_caseName, tMin);
+    devManager->setDevWarningTemp(m_caseName, tWarning);
+    devManager->setDevReportTime(m_caseName, tReport);
     setDevParam();
 }
 
 QString TempCase::devId()
 {
-    return caseId;
+    return m_caseName;
 }
 
 QString TempCase::devColor()
 {
-    return QString("#%1").arg(caseId.left(6));
+    return QString("#%1").arg(caseId().right(6));
 }
 
 QString TempCase::devIp()
@@ -224,7 +273,7 @@ QString TempCase::devIp()
 
 QString TempCase::devName()
 {
-    return caseName;
+    return caseName();
 }
 
 int TempCase::maxTemp()
@@ -240,6 +289,11 @@ int TempCase::minTemp()
 int TempCase::warningTemp()
 {
     return tWarning;
+}
+
+int TempCase::reportTime()
+{
+    return tReport;
 }
 
 bool TempCase::creatHistoryData(QDate startDate, int)
@@ -316,11 +370,12 @@ void TempCase::startSet()
 
 void TempCase::checkOverTime()
 {
+    qDebug()<<"checkOverTime"<<QDateTime::currentDateTime()<<overTime;
     if(QDateTime::currentDateTime() > overTime)
-        setCaseState(4);
+        setCaseState(dev_offline);
 }
 
-void TempCase::setCaseState(int state)
+void TempCase::setCaseState(DevState state)
 {
     if(state == curState)
         return;
@@ -329,11 +384,11 @@ void TempCase::setCaseState(int state)
 
     switch(state)//超温|低温|离线|超湿|低湿
     {
-        case 0://正常 N
+    case dev_normal://正常 N
         this->setStyleSheet("#TempCase{border-image: url(:/image/temp/icon_state_normal.png);}");break;
-        case 1://超温 U
+    case dev_temp_over://超温 U
         this->setStyleSheet("#TempCase{border-image: url(:/image/temp/icon_state_warning.png);}");break;
-        case 4://离线 O
+    case dev_offline://离线 O
         this->setStyleSheet("#TempCase{border-image: url(:/image/temp/icon_state_offline.png);}");break;
     }
 }
@@ -342,17 +397,17 @@ void TempCase::setCaseId(QString id)
 {
     if(!id.isEmpty())//此ip有对应的设备
     {
-        ui->ID->setText(QString("ID:%1").arg(caseId));
-        ui->NO->setText(getCaseName(QString("%1").arg(caseId)));
+//        ui->ID->setText(QString("ID:%1").arg(caseId));
+        ui->NO->setText(caseName());
 
         if(recorder != NULL)
             delete recorder;
 
         recorder = new TempRecorder(id);
-        tMax = devManager->getDevMaxTemp(caseId);
-        tMin = devManager->getDevMinTemp(caseId);
-        tReport = devManager->getDevReportTime(caseId);
-        tWarning = devManager->getDevWarningTemp(caseId);
+        tMax = devManager->getDevMaxTemp(caseName());
+        tMin = devManager->getDevMinTemp(caseName());
+        tReport = devManager->getDevReportTime(caseName());
+        tWarning = devManager->getDevWarningTemp(caseName());
         ui->w_max->setText(QString("%1").arg(tMax));
         ui->w_min->setText(QString("%1").arg(tMin));
         ui->w_time->setText(QString("%1").arg(tReport));
@@ -376,8 +431,9 @@ unsigned char TempCase::int2Byte(int val)
 
 QByteArray TempCase::getParamsBytes()
 {
-    QByteArray qba = QByteArray::fromHex("fd0a03021000460005ff");
+    QByteArray qba = QByteArray::fromHex("fd0302000000460005ff");
 
+    qba[2] = tempDevType();
     qba[3] = int2Byte(tMin);
     qba[4] = int2Byte(tWarning);
     return qba;
@@ -417,45 +473,33 @@ float TempCase::parHum(QByteArray qba)
 void TempCase::recvDevData()
 {
     QByteArray qba = dev->readAll();
-    qDebug()<<"[temp data]"<<QString("[%1]").arg(caseId)<<qba.toHex();
-    if(qba.size() != (int)qba.at(1))
-        return;
+    qDebug()<<"[temp data]"<<QString("[%1]").arg(caseName())<<qba.toHex()<<dev->peerAddress().toString();
+//    if(qba.size() != (int)qba.at(1))
+//        return;
     if(((unsigned char)qba.at(0) != 0xfe) || ((unsigned char)qba.at(qba.size()-1) != 0xff))
         return;
 
-    unsigned char tType = qba[2];
+//    return;
+    unsigned char tType = qba[1];
     updateOverTime();
 
     switch(tType)
     {
     case 0x01:
-        caseId = QString(qba.mid(4,4).toHex()).toUpper();
-        devManager->addTempDevice(dev->peerAddress().toString(), this);
-        qDebug()<<"[dev ip]"<<caseId<<dev->peerAddress();
-        dev->write(QByteArray::fromHex("fd050101ff"));
-        setCaseId(caseId);
+        parseLogin(qba);
         break;
 
     case 0x02://  |FE|08|02|温|度|湿|度|FF|
-        float temp = parTemp(qba.mid(3,2));
-        float hum = parHum(qba.mid(5,2));
-        updateTemp(temp);
-        updateHum(hum);
-
-        if(lastRecordTime.addSecs(300) <= QTime::currentTime() || (QTime::currentTime() < lastRecordTime))
-        {
-            lastRecordTime = QTime::currentTime();
-            recordCount = 0;
-            if(recorder != NULL)
-                recorder->recordTemp(temp, hum, curState);
-        }
-//        dev->write(QByteArray::fromHex("fd050201ff"));break;
+        parseReport(qba);
+        break;
+    default:
+        break;
     }
 }
 
 void TempCase::devStateChanged(QAbstractSocket::SocketState state)
 {
-    qDebug()<<"[devStateChanged]"<<caseId<<state;
+    qDebug()<<"[devStateChanged]"<<caseName()<<state;
 }
 
 void TempCase::on_save_clicked(bool checked)

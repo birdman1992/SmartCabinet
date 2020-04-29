@@ -11,7 +11,7 @@ public:
     TempRecorder(QString id);
     ~TempRecorder();
     QString caseId;
-    bool recordTemp(float wData, float sData, int state);
+    bool recordTemp(float wData, float sData, int state, int area = 0);
     QString recDir();
 
 private:

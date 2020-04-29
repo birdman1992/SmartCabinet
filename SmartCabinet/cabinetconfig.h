@@ -59,6 +59,8 @@ public:
     void setApiProName(QString apiName);//设置接口项目名称
     int getFuncWord();
     void setFuncWord(int funcWord);
+    void setAioMode(QString aioMode);
+    QString getAioMode();
 
     QString getCabinetLayout();
     QString getCabinetColMap();

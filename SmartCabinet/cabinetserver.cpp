@@ -47,6 +47,8 @@
 #define API_AIO_TODAY_OUT   "/sarkApi/Cheset/consume/goods" //今日出库数据
 #define API_AIO_WARNING_REP     "/sarkApi/Cheset/warn/goods" //智能柜库存预警
 
+#define API_AIO_TEMP_REPORT     "/sarkApi/Cheset/save/monitor/log"  //温度设备上报
+
 
 
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
@@ -78,6 +80,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_store_trace = NULL;
     reply_aio_overview = NULL;
     reply_aio_data = NULL;
+    reply_aio_temp = NULL;
     versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
@@ -903,6 +906,17 @@ void CabinetServer::waitForRepaitOK()
 void CabinetServer::updateCurBarcode(QString code)
 {
     barCode = code;
+}
+
+void CabinetServer::tempDevReport(QByteArray report)
+{
+//    qint64 timeStamp = getApiMark();
+    QByteArray qba = report;
+    QString nUrl = ApiAddress+QString(API_AIO_TEMP_REPORT);//+"?"+qba.toBase64();
+    replyCheck(reply_aio_temp);
+    reply_aio_temp = post(nUrl, qba, 0, false);
+    connect(reply_aio_temp, SIGNAL(finished()), this, SLOT(recvTempDevReport()));
+    qDebug()<<"[tempDevReport]"<<nUrl<<qba;
 }
 
 void CabinetServer::searchSpell(QString spell)
@@ -2038,6 +2052,14 @@ void CabinetServer::recvAioData()
         ret.clear();
     }
     emit aioData(msg, aio_state, ret);
+}
+
+void CabinetServer::recvTempDevReport()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_aio_temp->readAll());
+    qDebug()<<"[recvTempDevReport]"<<qba;
+    reply_aio_temp->deleteLater();
+    reply_aio_temp = NULL;
 }
 
 void CabinetServer::updatePacFinish()

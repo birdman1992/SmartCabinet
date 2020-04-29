@@ -764,6 +764,19 @@ void CabinetConfig::setFuncWord(int funcWord)
     settings.setValue("FuncWord", funcWord);
 }
 
+//temp_view|goods_view
+void CabinetConfig::setAioMode(QString aioMode)
+{
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    settings.setValue("aioMode", aioMode);
+}
+
+QString CabinetConfig::getAioMode()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    return settings.value("aioMode","goods_view").toString();
+}
+
 QString CabinetConfig::getCabinetLayout()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);

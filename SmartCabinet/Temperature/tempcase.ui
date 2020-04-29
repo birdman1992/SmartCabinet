@@ -22,6 +22,7 @@
   <property name="styleSheet">
    <string notr="true">#page{
 border-image: url(:/image/temp/icon_state_normal.png);
+
 }</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">

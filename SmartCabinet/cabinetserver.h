@@ -24,7 +24,6 @@
 #include "aio/aiooverview.h"
 #include "aio/aiomachine.h"
 
-
 class CabinetServer : public QObject
 {
     Q_OBJECT
@@ -61,6 +60,7 @@ private:
     QNetworkReply* reply_store_trace;
     QNetworkReply* reply_aio_overview;
     QNetworkReply* reply_aio_data;
+    QNetworkReply* reply_aio_temp;
     AIOMachine::cEvent aio_state;
     CheckList* checkList;
     SqlManager* sqlManager;
@@ -169,6 +169,7 @@ public slots:
     void updateStart();
     void waitForRepaitOK();
     void updateCurBarcode(QString code);
+    void tempDevReport(QByteArray report);
 
 private slots:
     void recvCabRegister();
@@ -198,6 +199,7 @@ private slots:
     void recvUpdatePac();
     void recvAioOverview();
     void recvAioData();
+    void recvTempDevReport();
     void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();

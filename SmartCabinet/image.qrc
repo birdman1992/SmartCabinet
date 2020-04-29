@@ -77,5 +77,14 @@
         <file>iconfont/fa-solid-900.ttf</file>
         <file>iconfont/fa-regular-400.ttf</file>
         <file>iconfont/fa-brands-400.ttf</file>
+        <file>image/temp/icon_success.png</file>
+        <file>image/temp/icon_state_warning.png</file>
+        <file>image/temp/icon_state_offline.png</file>
+        <file>image/temp/icon_state_normal.png</file>
+        <file>image/temp/icon_legend_warning.png</file>
+        <file>image/temp/icon_legend_offline.png</file>
+        <file>image/temp/icon_legend_normal.png</file>
+        <file>image/temp/icon_fridges.png</file>
+        <file>image/temp/bg_home.png</file>
     </qresource>
 </RCC>

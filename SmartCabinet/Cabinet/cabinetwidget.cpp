@@ -821,11 +821,11 @@ void CabinetWidget::updateCase(int col, int row)
 void CabinetWidget::updateOptStamp()
 {
     lastOptTime = QTime::currentTime();
-    if(screenProState)
-    {
-        screenProState = false;
-        emit screenPro(screenProState);
-    }
+//    if(screenProState)
+//    {
+//        screenProState = false;
+//        emit screenPro(screenProState);
+//    }
 }
 
 void CabinetWidget::switchCabinetState(CabState state)
@@ -1459,11 +1459,11 @@ void CabinetWidget::updateTime()
         qDebug("[update time]");
         emit reqCheckVersion(false);
     }
-    if((lastOptTime.secsTo(QTime::currentTime()) > 180) && (!screenProState))
-    {
-        screenProState = true;
-        emit screenPro(screenProState);
-    }
+//    if((lastOptTime.secsTo(QTime::currentTime()) > 180) && (!screenProState))
+//    {
+//        screenProState = true;
+//        emit screenPro(screenProState);
+//    }
 }
 
 void CabinetWidget::updateId()
