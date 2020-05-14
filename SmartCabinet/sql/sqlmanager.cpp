@@ -608,7 +608,9 @@ void SqlManager::createTable()
                               unit CHAR(10) DEFAULT('NULL'),\
                               cab_col INT(2) DEFAULT(-1),\
                               cab_row INT(2) DEFAULT(-1),\
-                              single_price INT(8) DEFAULT(0)\
+                              single_price REAL(18) DEFAULT(0),\
+                              pro_name CHAR(50) DEFAULT(''),\
+                              sup_name CHAR(50) DEFAULT('')\
                               );");
         if(query.exec(cmd))
         {
