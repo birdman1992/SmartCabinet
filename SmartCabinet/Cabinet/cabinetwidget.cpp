@@ -1779,3 +1779,11 @@ void CabinetWidget::on_consume_date_clicked()
     emit requireDayReportShow();
 }
 
+
+void CabinetWidget::on_check_toggled(bool checked)
+{
+    if(checked)
+        ui->check->setText("结束\n盘点");
+    else
+        ui->check->setText("盘点");
+}

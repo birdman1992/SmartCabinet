@@ -86,5 +86,14 @@
         <file>image/temp/icon_legend_normal.png</file>
         <file>image/temp/icon_fridges.png</file>
         <file>image/temp/bg_home.png</file>
+        <file>image/icon/icon_switch.png</file>
+        <file>image/icon/icon_service.png</file>
+        <file>image/icon/icon_search.png</file>
+        <file>image/icon/icon_return.png</file>
+        <file>image/icon/icon_requested.png</file>
+        <file>image/icon/icon_replenish.png</file>
+        <file>image/icon/icon_inventory.png</file>
+        <file>image/unchecked_checkbox.png</file>
+        <file>image/checked_checkbox.png</file>
     </qresource>
 </RCC>

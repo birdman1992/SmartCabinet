@@ -166,6 +166,10 @@ void TempCase::updateOverTime()
 void TempCase::mouseReleaseEvent(QMouseEvent *)
 {
     emit caseClicked(this);
+    if(curState == dev_temp_over)
+    {
+        alarmPause();
+    }
 }
 
 void TempCase::updateTemp(QVector<float> temp)
@@ -235,9 +239,7 @@ void TempCase::setSocket(QTcpSocket *t)
     QString name = devManager->searchDeviceForIp(dev->peerAddress().toString());
     setCaseName(name);
     qDebug()<<"[dev ip]"<<m_caseName<<dev->peerAddress().toString();
-
     setCaseId(m_caseName.toLocal8Bit().toHex());
-    //    setDevParam();
 }
 
 void TempCase::setTempParams(int _max, int _min, int _warningm, int _report)
@@ -246,10 +248,10 @@ void TempCase::setTempParams(int _max, int _min, int _warningm, int _report)
     tMin = _min;
     tWarning = _warningm;
     tReport = _report;
-    devManager->setDevMaxTemp(m_caseName, tMax);
-    devManager->setDevMinTemp(m_caseName, tMin);
-    devManager->setDevWarningTemp(m_caseName, tWarning);
-    devManager->setDevReportTime(m_caseName, tReport);
+    devManager->setDevMaxTemp(m_caseId, tMax);
+    devManager->setDevMinTemp(m_caseId, tMin);
+    devManager->setDevWarningTemp(m_caseId, tWarning);
+    devManager->setDevReportTime(m_caseId, tReport);
     setDevParam();
 }
 
@@ -404,10 +406,10 @@ void TempCase::setCaseId(QString id)
             delete recorder;
 
         recorder = new TempRecorder(id);
-        tMax = devManager->getDevMaxTemp(caseName());
-        tMin = devManager->getDevMinTemp(caseName());
-        tReport = devManager->getDevReportTime(caseName());
-        tWarning = devManager->getDevWarningTemp(caseName());
+        tMax = devManager->getDevMaxTemp(m_caseId);
+        tMin = devManager->getDevMinTemp(m_caseId);
+        tReport = devManager->getDevReportTime(m_caseId);
+        tWarning = devManager->getDevWarningTemp(m_caseId);
         ui->w_max->setText(QString("%1").arg(tMax));
         ui->w_min->setText(QString("%1").arg(tMin));
         ui->w_time->setText(QString("%1").arg(tReport));
@@ -443,6 +445,13 @@ void TempCase::setDevParam()
 {
     QByteArray qba = getParamsBytes();
     qDebug()<<"[setDevParam]"<<qba.toHex();
+    dev->write(qba);
+}
+
+void TempCase::alarmPause()
+{
+    QByteArray qba = QByteArray::fromHex("FD0601001DFF");
+    qDebug()<<"[alarmPause]"<<qba.toHex();
     dev->write(qba);
 }
 

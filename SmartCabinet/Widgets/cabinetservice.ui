@@ -19,6 +19,19 @@
   <property name="styleSheet">
    <string notr="true">#CabinetService{
 background-color: rgb(206, 206, 206);
+}
+QCheckBox{
+margin-left:10px;
+spacing:10px;
+font: 30px &quot;WenQuanYi Micro Hei Mono&quot;;
+}
+QCheckBox::indicator:checked{
+	width: 30px;height:30px;
+	image: url(:/image/checked_checkbox.png);
+}
+QCheckBox::indicator:!checked{
+	width: 30px;height:30px;
+	image: url(:/image/unchecked_checkbox.png);
 }</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
@@ -1582,6 +1595,9 @@ background-color: rgb(105, 157, 255);</string>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
               <widget class="QCheckBox" name="scan_list">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="text">
                 <string>只扫送货单</string>
                </property>
@@ -1595,6 +1611,9 @@ background-color: rgb(105, 157, 255);</string>
              </item>
              <item>
               <widget class="QCheckBox" name="scan_all">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="text">
                 <string>扫描所有物品</string>
                </property>
@@ -1623,13 +1642,22 @@ background-color: rgb(105, 157, 255);</string>
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">QCheckBox{
-font: 30px &quot;WenQuanYi Micro Hei Mono&quot;;
-}
-QCheckBox::indicator {width: 30px;height:30px;}
-QLabel{
+        <string notr="true">QLabel{
 background-color: rgb(85, 170, 127);
 color:rgb(255,255,255);
+}
+QCheckBox{
+margin-left:10px;
+spacing:10px;
+font: 30px &quot;WenQuanYi Micro Hei Mono&quot;;
+}
+QCheckBox::indicator:checked{
+	width: 30px;height:30px;
+	image: url(:/image/checked_checkbox.png);
+}
+QCheckBox::indicator:!checked{
+	width: 30px;height:30px;
+	image: url(:/image/unchecked_checkbox.png);
 }</string>
        </property>
        <property name="frameShape">
@@ -1669,13 +1697,22 @@ color:rgb(255,255,255);
         </item>
         <item>
          <widget class="QCheckBox" name="func_refun">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="text">
            <string>退货</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QCheckBox" name="func_back">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="text">
            <string>还货</string>
           </property>
@@ -1683,6 +1720,9 @@ color:rgb(255,255,255);
         </item>
         <item>
          <widget class="QCheckBox" name="func_check">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="text">
            <string>盘点</string>
           </property>

@@ -141,6 +141,7 @@ signals:
 
 private slots:
     void setDevParam();
+    void alarmPause();
     void recvDevData();
     void devStateChanged(QAbstractSocket::SocketState);
     void on_save_clicked(bool checked);

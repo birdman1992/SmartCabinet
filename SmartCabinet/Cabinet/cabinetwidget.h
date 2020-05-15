@@ -144,6 +144,8 @@ private slots:
 
     void on_back_clicked(bool checked);
 
+    void on_check_toggled(bool checked);
+
 protected:
     bool eventFilter(QObject *, QEvent *);
 

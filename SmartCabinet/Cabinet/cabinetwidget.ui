@@ -688,7 +688,7 @@ color: rgb(255, 255, 255);
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="340,1100">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="240,1100">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -739,6 +739,26 @@ color: rgb(255, 255, 255);
              <number>0</number>
             </property>
             <widget class="QWidget" name="button_stackedWidgetPage1">
+             <property name="styleSheet">
+              <string notr="true">QPushButton{
+	image-position:left;
+	padding-left:20px;
+	font: 75 32px &quot;WenQuanYi Micro Hei&quot;;
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0.5 rgba(25,208,137, 255), stop:0.50001 rgba(36,221,149, 255) );
+	border:0px solid grey;
+	color: rgb(255, 255, 255);
+}
+QPushButton:checked ,QPushButton:pressed{
+	image-position:left;
+	padding-left:20px;
+	font: 75 32px &quot;WenQuanYi Micro Hei&quot;;
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0.5 rgba(1,78,128,255), stop:0.50001 rgba(10,93,147, 255) );
+	border:0px solid grey;
+	color: rgb(255, 255, 255);
+}
+
+</string>
+             </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <property name="bottomMargin">
                <number>0</number>
@@ -750,6 +770,9 @@ color: rgb(255, 255, 255);
                 </property>
                 <property name="leftMargin">
                  <number>30</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="cut">
@@ -770,14 +793,12 @@ color: rgb(255, 255, 255);
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#cut{
-	border-image: url(:/image/image/btn_qh_normal.png);
+	image: url(:/image/icon/icon_switch.png);
 }
-#cut:pressed{
-	border-image: url(:/image/image/btn_qh_sel.png);
-}</string>
+</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     切换</string>
                   </property>
                  </widget>
                 </item>
@@ -800,14 +821,12 @@ color: rgb(255, 255, 255);
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#store{
-	border-image: url(:/image/image/btn_in_normal.png);
+	image: url(:/image/icon/icon_replenish.png);
 }
-#store:checked{
-	border-image: url(:/image/image/btn_in_sel.png);
-}</string>
+</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     补货</string>
                   </property>
                   <property name="checkable">
                    <bool>true</bool>
@@ -845,15 +864,11 @@ color: rgb(255, 255, 255);
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#refund{
-border-image: url(:/image/image/btn_out_normal.png);
-}
-#refund:checked{
-border-image: url(:/image/image/btn_out_sel.png);
-}
-</string>
+	image: url(:/image/icon/icon_return.png);
+}</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     退货</string>
                   </property>
                   <property name="checkable">
                    <bool>true</bool>
@@ -880,13 +895,22 @@ border-image: url(:/image/image/btn_out_sel.png);
                     <height>87</height>
                    </size>
                   </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::NoFocus</enum>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">QPushButton{
-	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0.5 rgba(25,208,137, 255), stop:0.50001 rgba(36,221,149, 255) );
-	border:0px solid grey;
-	color: rgb(255, 255, 255);
+	image: url(:/image/icon/icon_return.png);
+	image-position:left;
+	padding-left:20px;
+	font: 75 32px &quot;WenQuanYi Micro Hei&quot;;
+
 }
 QPushButton::checked{
+	image: url(:/image/icon/icon_return.png);
+	image-position:left;
+	padding-left:20px;
+	font: 75 32px &quot;WenQuanYi Micro Hei&quot;;
 	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0.5 rgba(1,78,128,255), stop:0.50001 rgba(10,93,147, 255) );
 	border:0px solid grey;
 	color: rgb(255, 255, 255);
@@ -895,7 +919,13 @@ QPushButton::checked{
 </string>
                   </property>
                   <property name="text">
-                   <string>还货</string>
+                   <string>     还货</string>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
                   </property>
                   <property name="checkable">
                    <bool>true</bool>
@@ -929,12 +959,13 @@ QPushButton::checked{
                    <enum>Qt::NoFocus</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">#reply{border-image: url(:/image/image/btn_notice_normal.png);}
-#reply:pressed{
-border-image: url(:/image/image/btn_notice_sel.png);}</string>
+                   <string notr="true">#reply{
+	image: url(:/image/icon/icon_requested.png);
+}
+</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     请货</string>
                   </property>
                  </widget>
                 </item>
@@ -956,18 +987,35 @@ border-image: url(:/image/image/btn_notice_sel.png);}</string>
                    <enum>Qt::NoFocus</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">#check:checked{
-	border-image: url(:/image/image/btn_check_over_sel.png);
+                   <string notr="true">QPushButton{
+	image: url(:/image/icon/icon_inventory.png);
+	image-position:left;
+	padding-left:20px;
+	font: 75 32px &quot;WenQuanYi Micro Hei&quot;;
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0.5 rgba(225,116,50, 255), stop:0.50001 rgba(238,128,61, 255) );
+	border:0px solid grey;
+	color: rgb(255, 255, 255);
 }
-#check{
-	border-image: url(:/image/image/btn_check_sel.png);
-}</string>
+QPushButton::checked{
+	image: url(:/image/icon/icon_inventory.png);
+	image-position:left;
+	padding-left:20px;
+	font: 75 32px &quot;WenQuanYi Micro Hei&quot;;
+	background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0, stop:0.5 rgba(1,78,128,255), stop:0.50001 rgba(10,93,147, 255) );
+	border:0px solid grey;
+	color: rgb(255, 255, 255);
+}
+
+</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     盘点</string>
                   </property>
                   <property name="checkable">
                    <bool>true</bool>
+                  </property>
+                  <property name="checked">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -996,14 +1044,12 @@ border-image: url(:/image/image/btn_notice_sel.png);}</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#service{
-	border-image: url(:/image/image/btn_service_normal.png);
+	image: url(:/image/icon/icon_service.png);
 }
-#service:checked{
-	border-image: url(:/image/image/btn_service_sel.png);
-}</string>
+</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     服务</string>
                   </property>
                   <property name="checkable">
                    <bool>true</bool>
@@ -1038,14 +1084,12 @@ border-image: url(:/image/image/btn_notice_sel.png);}</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#search{
-	border-image: url(:/image/image/btn_search_normal.png);
+	image: url(:/image/icon/icon_search.png);
 }
-#search:pressed{
-	border-image: url(:/image/image/btn_search_sel.png);
-}</string>
+</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     搜索</string>
                   </property>
                  </widget>
                 </item>
@@ -1068,14 +1112,12 @@ border-image: url(:/image/image/btn_notice_sel.png);}</string>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#quit{
-	border-image: url(:/image/image/btn_quit_normal.png);
+	image: url(:/image/icon/icon_return.png);
 }
-#quit:pressed{
-	border-image: url(:/image/image/btn_quit_sel.png);
-}</string>
+</string>
                   </property>
                   <property name="text">
-                   <string/>
+                   <string>     退出</string>
                   </property>
                  </widget>
                 </item>
@@ -1163,6 +1205,12 @@ border-image: url(:/image/image/btn_notice_sel.png);}</string>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>50</height>
+                   </size>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(255, 255, 255);
 border:1px solid grey;
@@ -1185,6 +1233,12 @@ font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>16777215</width>
+                    <height>50</height>
+                   </size>
+                  </property>
                   <property name="focusPolicy">
                    <enum>Qt::NoFocus</enum>
                   </property>
@@ -1192,7 +1246,7 @@ font: 20px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
                    <string notr="true">font: 35px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
-border-radius: 35px;
+border-radius: 8px;
 background-color: rgb(36, 221, 149);</string>
                   </property>
                   <property name="text">
@@ -1209,7 +1263,7 @@ background-color: rgb(36, 221, 149);</string>
 font: 35px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
-border-radius: 35px;
+border-radius: 30px;
 background-color:  rgba(22, 52, 73, 200);
 }
 
@@ -1217,7 +1271,7 @@ QPushButton{
 font: 35px &quot;WenQuanYi Micro Hei Mono&quot;;
 color: rgb(255, 255, 255);
 border:0px solid grey;
-border-radius: 35px;
+border-radius: 30px;
 background-color: rgb(36, 221, 149);
 }</string>
                 </property>
@@ -1244,8 +1298,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1275,8 +1329,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1306,8 +1360,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1337,8 +1391,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1368,8 +1422,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1399,8 +1453,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1430,8 +1484,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1461,8 +1515,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1492,8 +1546,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1523,8 +1577,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1554,8 +1608,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1585,8 +1639,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1616,8 +1670,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1647,8 +1701,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1678,8 +1732,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1709,8 +1763,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1740,8 +1794,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1771,8 +1825,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1802,8 +1856,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1833,8 +1887,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1858,8 +1912,8 @@ background-color: rgb(36, 221, 149);
                   <widget class="QPushButton" name="btn_25">
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1886,8 +1940,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1917,8 +1971,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1948,8 +2002,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -1979,8 +2033,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
@@ -2010,8 +2064,8 @@ background-color: rgb(36, 221, 149);
                    </property>
                    <property name="minimumSize">
                     <size>
-                     <width>70</width>
-                     <height>70</height>
+                     <width>60</width>
+                     <height>60</height>
                     </size>
                    </property>
                    <property name="focusPolicy">
