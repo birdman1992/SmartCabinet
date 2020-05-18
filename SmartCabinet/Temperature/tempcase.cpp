@@ -455,7 +455,7 @@ void TempCase::setDevParam()
 
 void TempCase::alarmPause()
 {
-    QByteArray qba = QByteArray::fromHex("FD060100000FFF");
+    QByteArray qba = QByteArray::fromHex("FD06010000000FFF");
     qDebug()<<"[alarmPause]"<<qba.toHex();
     dev->write(qba);
 }
