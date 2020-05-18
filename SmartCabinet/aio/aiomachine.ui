@@ -1209,6 +1209,19 @@ QLabel{
 }
 QPushButton{
 	color:rgb(10,193,254);
+}
+QCheckBox{
+color:rgb(10,193,254);
+margin-left:0px;
+spacing:5px;
+}
+QCheckBox::indicator:checked{
+	width: 20px;height:20px;
+	image: url(:/image/checked_checkbox.png);
+}
+QCheckBox::indicator:!checked{
+	width: 20px;height:20px;
+	image: url(:/image/unchecked_checkbox.png);
 }</string>
               </property>
               <property name="frameShape">
@@ -1217,7 +1230,7 @@ QPushButton{
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_11" stretch="1,1,1,1,2">
+              <layout class="QVBoxLayout" name="verticalLayout_11" stretch="1,1,1,1,0,2">
                <item>
                 <widget class="QLabel" name="set_dev_name">
                  <property name="text">
@@ -1338,6 +1351,13 @@ QPushButton{
                   </widget>
                  </item>
                 </layout>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="set_sound_off">
+                 <property name="text">
+                  <string>设备静音</string>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="set_dev_params">

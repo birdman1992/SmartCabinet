@@ -31,6 +31,7 @@ class TempCase : public QWidget
     Q_PROPERTY(DevType tempDevType READ tempDevType WRITE setTempDevType)
     Q_PROPERTY(QString caseName READ caseName WRITE setCaseName)
     Q_PROPERTY(QString caseId READ caseId WRITE setCaseId)
+    Q_PROPERTY(bool SoundOff READ SoundOff WRITE setSoundOff)
 
 public:
     enum DevState{
@@ -53,7 +54,7 @@ public:
     DevState getCurState();
 //    QString getCurStateStr();
     void setSocket(QTcpSocket* t);
-    void setTempParams(int _max, int _min, int _warningm, int _report);
+    void setTempParams(int _max, int _min, int _warningm, int _report, bool soundOff);
     QString devId();
     QString devColor();
     QString devIp();
@@ -86,10 +87,20 @@ public:
         return m_caseId;
     }
 
+    bool SoundOff() const
+    {
+        return m_SoundOff;
+    }
+
 public slots:
     void setTempDevType(DevType tempDevType)
     {
         m_tempDevType = tempDevType;
+    }
+
+    void setSoundOff(bool SoundOff)
+    {
+        m_SoundOff = SoundOff;
     }
 
 private:
@@ -132,12 +143,13 @@ private:
     QString m_caseName;
     QString m_caseId;
 
+    bool m_SoundOff;
+
 protected:
     void mouseReleaseEvent(QMouseEvent *);
 signals:
     void caseIdUpdate(TempCase*);
     void caseClicked(TempCase*);
-    void caseReport(QString name, float temp, float hum);
 
 private slots:
     void setDevParam();

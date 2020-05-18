@@ -78,6 +78,11 @@ void TempManager::setDevName(QString devId, QString devName)
     setConfig(QString("%1/DEV_NAME").arg(devId), devName);
 }
 
+void TempManager::setDevSoundOff(QString devId, bool soundOff)
+{
+    setConfig(QString("%1/DEV_SOUND_OFF").arg(devId), soundOff);
+}
+
 QString TempManager::getDeviceIp(QString caseId)
 {
     return getConfig(QString("%1/IP").arg(caseId), QString()).toString();
@@ -106,6 +111,11 @@ int TempManager::getDevReportTime(QString devId)
 QString TempManager::getDevName(QString devId)
 {
     return getConfig(QString("%1/DEV_NAME").arg(devId), QString()).toString();
+}
+
+bool TempManager::getDevSoundOff(QString devId)
+{
+    return getConfig(QString("%1/DEV_SOUND_OFF").arg(devId), QVariant(false)).toBool();
 }
 
 void TempManager::configInit()

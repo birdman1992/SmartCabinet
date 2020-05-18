@@ -19,6 +19,7 @@ public:
     void setDevWarningTemp(QString devId, int t);
     void setDevReportTime(QString devId, int t);
     void setDevName(QString devId, QString devName);
+    void setDevSoundOff(QString devId, bool soundOff);
 
     QString getDeviceIp(QString caseId);
     int getDevMaxTemp(QString devId);
@@ -26,6 +27,7 @@ public:
     int getDevWarningTemp(QString devId);
     int getDevReportTime(QString devId);
     QString getDevName(QString devId);
+    bool getDevSoundOff(QString devId);
     void configInit();
 
     QStringList getTempRecordList();//获取有温度记录的设备列表

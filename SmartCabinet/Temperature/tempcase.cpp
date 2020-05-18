@@ -166,7 +166,7 @@ void TempCase::updateOverTime()
 void TempCase::mouseReleaseEvent(QMouseEvent *)
 {
     emit caseClicked(this);
-    if(curState == dev_temp_over)
+//    if(curState == dev_temp_over)
     {
         alarmPause();
     }
@@ -242,16 +242,18 @@ void TempCase::setSocket(QTcpSocket *t)
     setCaseId(m_caseName.toLocal8Bit().toHex());
 }
 
-void TempCase::setTempParams(int _max, int _min, int _warningm, int _report)
+void TempCase::setTempParams(int _max, int _min, int _warningm, int _report, bool soundOff)
 {
     tMax = _max;
     tMin = _min;
     tWarning = _warningm;
     tReport = _report;
+    setSoundOff(soundOff);
     devManager->setDevMaxTemp(m_caseId, tMax);
     devManager->setDevMinTemp(m_caseId, tMin);
     devManager->setDevWarningTemp(m_caseId, tWarning);
     devManager->setDevReportTime(m_caseId, tReport);
+    devManager->setDevSoundOff(m_caseId, m_SoundOff);
     setDevParam();
 }
 
@@ -392,6 +394,8 @@ void TempCase::setCaseState(DevState state)
         this->setStyleSheet("#TempCase{border-image: url(:/image/temp/icon_state_warning.png);}");break;
     case dev_offline://离线 O
         this->setStyleSheet("#TempCase{border-image: url(:/image/temp/icon_state_offline.png);}");break;
+    default:
+        break;
     }
 }
 
@@ -410,6 +414,7 @@ void TempCase::setCaseId(QString id)
         tMin = devManager->getDevMinTemp(m_caseId);
         tReport = devManager->getDevReportTime(m_caseId);
         tWarning = devManager->getDevWarningTemp(m_caseId);
+        setSoundOff(devManager->getDevSoundOff(m_caseId));
         ui->w_max->setText(QString("%1").arg(tMax));
         ui->w_min->setText(QString("%1").arg(tMin));
         ui->w_time->setText(QString("%1").arg(tReport));
@@ -450,7 +455,7 @@ void TempCase::setDevParam()
 
 void TempCase::alarmPause()
 {
-    QByteArray qba = QByteArray::fromHex("FD0601001DFF");
+    QByteArray qba = QByteArray::fromHex("FD060100000FFF");
     qDebug()<<"[alarmPause]"<<qba.toHex();
     dev->write(qba);
 }

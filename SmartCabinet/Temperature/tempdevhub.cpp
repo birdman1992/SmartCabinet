@@ -34,7 +34,7 @@ void TempDevHub::tempReport()
         QByteArray hum = QString::number(dev->getCurHum(), 'f', 1).toLocal8Bit();
         cJSON_AddItemToObject(devData, "deviceName", cJSON_CreateString(devName.data()));
         cJSON_AddItemToObject(devData, "temperature", cJSON_CreateString(temp.data()));
-        cJSON_AddItemToObject(devData, "humidity", cJSON_CreateString(temp.data()));
+        cJSON_AddItemToObject(devData, "humidity", cJSON_CreateString(hum.data()));
 //        cJSON_AddItemToObject(devData, "timeStamp", cJSON_CreateNumber(dev->getCurTemp()));
         cJSON_AddItemToArray(reportArray, devData);
     }
@@ -61,7 +61,6 @@ void TempDevHub::newDevice()
         qDebug()<<"[TempDevHub]:new connection";
         connect(dev, SIGNAL(caseIdUpdate(TempCase*)), this, SLOT(tempDevIdUpdate(TempCase*)));
         connect(dev, SIGNAL(caseClicked(TempCase*)), this, SIGNAL(tempDevClicked(TempCase*)));
-//        connect(dev, SIGNAL(caseReport(QString,float,float)), this, SIGNAL(tempDevReport(QString,float,float)));
         dev->setSocket(skt);
     }
 }

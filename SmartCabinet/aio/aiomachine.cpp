@@ -680,6 +680,7 @@ void AIOMachine::tempDevClicked(TempCase* dev)
     ui->set_temp_max->setText(QString::number(selectedDev->maxTemp()));
     ui->set_temp_min->setText(QString::number(selectedDev->minTemp()));
     ui->set_report_time->setText(QString::number(selectedDev->reportTime()));
+    ui->set_sound_off->setChecked(selectedDev->SoundOff());
 //    ui->set_report_time->setText(selectedDev->tReport);
 }
 
@@ -795,6 +796,7 @@ void AIOMachine::on_set_dev_params_clicked()
     int max = ui->set_temp_max->text().toInt();
     int min = ui->set_temp_min->text().toInt();
     int report = ui->set_report_time->text().toInt();
-    selectedDev->setTempParams(max, min, max, report);
+    bool soundOff = ui->set_sound_off->isChecked();
+    selectedDev->setTempParams(max, min, max, report, soundOff);
     ui->frame_dev_panel->hide();
 }
