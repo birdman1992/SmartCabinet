@@ -150,6 +150,7 @@ protected:
 signals:
     void caseIdUpdate(TempCase*);
     void caseClicked(TempCase*);
+    void caseReport(QString name, float temp, float hum);
 
 private slots:
     void setDevParam();
