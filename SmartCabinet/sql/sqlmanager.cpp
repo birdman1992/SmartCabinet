@@ -236,7 +236,20 @@ QString SqlManager::getGoodsId(QString code)
 QStringList SqlManager::getCaseText(int col, int row)
 {
     QSqlQuery query(db_cabinet);
-    QString cmd = QString("select GoodsInfo.abbname,COUNT(*) package_count,GoodsInfo.cab_col,GoodsInfo.cab_row FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 AND CodeInfo.state_local=1 GROUP BY GoodsInfo.package_id;").arg(col).arg(row);
+    QString cmd = QString("SELECT "
+                          "GoodsInfo.abbname,"
+                          "GoodsInfo.cab_col,"
+                          "GoodsInfo.cab_row,"
+                          "IFNULL(CodeInfo.package_count,0) package_count "
+                      "FROM "
+                          "GoodsInfo "
+                          "LEFT JOIN(SELECT COUNT( * ) package_count, package_id FROM CodeInfo WHERE CodeInfo.state_local = 1 GROUP BY package_id) "
+                          "CodeInfo ON CodeInfo.package_id = GoodsInfo.package_id "
+                      "WHERE "
+                          "GoodsInfo.cab_col = %1 "
+                          "AND GoodsInfo.cab_row = %2")
+            .arg(col).arg(row);
+
     if(!queryExec(&query, cmd, "getCaseText"))
         return QStringList();
 
@@ -246,7 +259,7 @@ QStringList SqlManager::getCaseText(int col, int row)
     while(query.next())
     {
         QString abbName = query.value(0).toString();
-        int packageCount = query.value(1).toInt();
+        int packageCount = query.value(3).toInt();
         QString showStr = QString("%1x%2").arg(abbName).arg(packageCount);
         last_show_list<<showStr;
     }
