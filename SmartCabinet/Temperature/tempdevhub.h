@@ -22,9 +22,11 @@ private:
     TempManager* tempMan;
     QMap<QString, TempCase*> map_devs;
     int reportTimerId;
+    int checkTimerId;
 
     void tempReport();
 
+    void checkTempDev();
 protected:
     void timerEvent(QTimerEvent* event);
 

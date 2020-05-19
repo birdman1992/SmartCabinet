@@ -13,11 +13,20 @@ TempDevHub::TempDevHub(QObject *parent) : QObject(parent)
     qDebug()<<"[TempDevHub]:listening.....";
 
     reportTimerId = startTimer(60000);
+    checkTimerId = startTimer(10000);
 }
 
 QList<TempCase *> TempDevHub::devList()
 {
     return map_devs.values();
+}
+
+void TempDevHub::checkTempDev()
+{
+    foreach (TempCase* dev, map_devs.values())
+    {
+        dev->checkOverTime();
+    }
 }
 
 void TempDevHub::tempReport()
@@ -45,10 +54,14 @@ void TempDevHub::tempReport()
 
 void TempDevHub::timerEvent(QTimerEvent *event)
 {
-    qDebug()<<"event";
+//    qDebug()<<"event";
     if(reportTimerId == event->timerId())
     {
         tempReport();
+    }
+    else if(checkTimerId == event->timerId())
+    {
+        checkTempDev();
     }
 }
 
@@ -75,9 +88,9 @@ void TempDevHub::tempDevIdUpdate(TempCase *dev)
 //        {
 //            dev->deleteLater();
 //        }
-        if(map_devs[dev->devName()] != dev && map_devs[dev->devName()]->getCurState() == TempCase::dev_offline)//是不同的设备，且原来的设备离线了
+        TempCase* oldCase = map_devs[dev->devName()];
+        if((oldCase != dev) && (oldCase->getCurState() == TempCase::dev_offline))//是不同的设备，且原来的设备离线了
         {
-            TempCase* oldCase = map_devs[dev->devName()];
             map_devs.remove(dev->devName());
             oldCase->deleteLater();
             map_devs.insert(dev->devName(), dev);

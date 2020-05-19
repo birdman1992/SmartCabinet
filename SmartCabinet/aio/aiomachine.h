@@ -104,7 +104,7 @@ private slots:
     void on_aio_quit_clicked();
 
 protected:
-    void timerEvent(QTimerEvent* event);
+//    void timerEvent(QTimerEvent* event);
 
 private:
     Ui::AIOMachine *ui;

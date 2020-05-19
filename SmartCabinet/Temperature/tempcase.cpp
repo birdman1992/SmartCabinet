@@ -236,10 +236,10 @@ void TempCase::setSocket(QTcpSocket *t)
     dev = t;
     connect(dev, SIGNAL(readyRead()), this, SLOT(recvDevData()));
     connect(dev, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(devStateChanged(QAbstractSocket::SocketState)));
-    QString name = devManager->searchDeviceForIp(dev->peerAddress().toString());
-    setCaseName(name);
-    qDebug()<<"[dev ip]"<<m_caseName<<dev->peerAddress().toString();
-    setCaseId(m_caseName.toLocal8Bit().toHex());
+//    QString name = devManager->searchDeviceForIp(dev->peerAddress().toString());
+//    setCaseName(name);
+//    qDebug()<<"[dev ip]"<<m_caseName<<dev->peerAddress().toString();
+//    setCaseId(m_caseName.toLocal8Bit().toHex());
 }
 
 void TempCase::setTempParams(int _max, int _min, int _warningm, int _report, bool soundOff)
@@ -377,6 +377,10 @@ void TempCase::checkOverTime()
     qDebug()<<"checkOverTime"<<QDateTime::currentDateTime()<<overTime;
     if(QDateTime::currentDateTime() > overTime)
         setCaseState(dev_offline);
+    if(SoundOff())//静音
+    {
+        alarmPause();
+    }
 }
 
 void TempCase::setCaseState(DevState state)
@@ -455,7 +459,7 @@ void TempCase::setDevParam()
 
 void TempCase::alarmPause()
 {
-    QByteArray qba = QByteArray::fromHex("FD06010000000FFF");
+    QByteArray qba = QByteArray::fromHex("FD060100000014FF");
     qDebug()<<"[alarmPause]"<<qba.toHex();
     dev->write(qba);
 }

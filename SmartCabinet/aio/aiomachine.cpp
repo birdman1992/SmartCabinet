@@ -61,7 +61,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     sysLock();
     initAioMode();
-    timerCheckDev = startTimer(10000);
+//    timerCheckDev = startTimer(10000);
 }
 
 AIOMachine::~AIOMachine()
@@ -698,14 +698,14 @@ void AIOMachine::on_aio_quit_clicked()
     ui->aio_hello->clear();
 }
 
-void AIOMachine::timerEvent(QTimerEvent *event)
-{
-    int timerId = event->timerId();
-    if(timerId == timerCheckDev)
-    {
-        checkTempDev();
-    }
-}
+//void AIOMachine::timerEvent(QTimerEvent *event)
+//{
+//    int timerId = event->timerId();
+//    if(timerId == timerCheckDev)
+//    {
+//        checkTempDev();
+//    }
+//}
 
 void AIOMachine::on_tab_back_clicked()
 {
