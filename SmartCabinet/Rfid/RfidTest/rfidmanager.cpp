@@ -33,11 +33,10 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
     testReader2 = new RfidReader(QHostAddress("192.168.0.9"), 8888, 1, this);
     list_device<<testReader;
     list_device<<testReader2;
-//    foreach (RfidReader* reader, list_device)
-//    {
-//        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
-//    }
-//    connect(testReader, SIGNAL(reportEpc(QString,int)), this, SLOT(testUpdateEpc(QString, int)));
+    foreach (RfidReader* reader, list_device)
+    {
+        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+    }
     QTimer::singleShot(1000, this, SLOT(initEpc()));
     initColName();
 }

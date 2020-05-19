@@ -2305,7 +2305,7 @@ void CabinetServer::recvRfidListSync()
     reply_rfid_sync->deleteLater();
     reply_rfid_sync = NULL;
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<"[recvRfidAccessRst]"<<cJSON_Print(json);
+    qDebug()<<"[recvRfidListSync]"<<cJSON_Print(json);
     if(!json)
         return;
 
