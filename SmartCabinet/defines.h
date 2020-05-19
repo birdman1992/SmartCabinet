@@ -15,6 +15,8 @@
 
 //温度设备通信端口
 #define TEMP_SKT_PORT 8889
+//RFID设备通信端口
+#define RFID_SKT_PORT 8890
 
 //全屏显示  unuse
 #define SHOW_FULLSCREEN
