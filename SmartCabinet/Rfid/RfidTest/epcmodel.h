@@ -24,6 +24,7 @@ enum EpcMark{
     mark_out,//取出的标签
     mark_con,//登记消耗的标签
     mark_in,//
+    mark_wait_back,//取出未归还的标签
     mark_checked,
 };
 
@@ -91,6 +92,7 @@ signals:
     void epcAccess(QStringList epcs, UserOpt optType);
     void epcAccess(QStringList fetchEpcs, QStringList backEpcs);
     void epcStore(QMap<QString ,QVariantMap>);
+    void epcConsumeCheck(QStringList);
 
 private:
     QMap<QString, EpcInfo*> map_rfid;
@@ -98,7 +100,7 @@ private:
     QStringList colsName;
     QStringList markNameTab;
     QString curOptId;
-    int countTab[7];
+    int countTab[8];
     int markCount;//count be marked
     int outCount;//count for fetch out
     int lockCount;

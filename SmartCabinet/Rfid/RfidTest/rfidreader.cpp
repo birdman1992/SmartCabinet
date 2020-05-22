@@ -4,32 +4,69 @@
 RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent)
 {
     flagInit = false;
+    flagConnect = false;
+    flagWaitBack = false;
     readerSeq = seq;
     config = CabinetConfig::config();
     skt = s;
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
+    heartBeatTimerId = startTimer(10000);
 }
 
 RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent) : QObject(parent)
 {
     flagInit = false;
     flagConnect = false;
+    flagWaitBack = false;
     config = CabinetConfig::config();
     readerSeq = seq;
     skt = new QTcpSocket();
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
     skt->connectToHost(server, port);
+    heartBeatTimerId = startTimer(10000);
 }
 
-void RfidReader::sendCmd(QByteArray data)
+void RfidReader::sendCmd(QByteArray data, bool printFlag)
 {
+//    qDebug()<<"flagConnect"<<flagConnect;
     if(flagConnect)
     {
-        qDebug()<<"[sendCmd]"<<data.toHex();
+        if(printFlag)
+            qDebug()<<"[sendCmd]"<<data.toHex();
         skt->write(data);
     }
+    else
+    {
+        qDebug()<<"[sendCmd] send failed,dev offline:"<<data.toHex();
+        skt->write(data);
+    }
+}
+
+void RfidReader::timerEvent(QTimerEvent * e)
+{
+    if(e->timerId() == heartBeatTimerId)
+    {
+        if(flagWaitBack)//disconnected
+        {
+            qDebug()<<skt->peerAddress()<<"disconnected";
+            flagConnect = false;
+        }
+        else
+        {
+            flagConnect = true;
+//            qDebug()<<skt->peerAddress()<<"connected";
+        }
+        flagWaitBack = true;
+        heartBeat();
+    }
+}
+
+void RfidReader::heartBeat()
+{
+    RfidCmd cmd(0x12, QByteArray::fromHex("00000000"));
+    sendCmd(cmd.packData(),false);
 }
 
 void RfidReader::scanStop()
@@ -41,6 +78,11 @@ void RfidReader::scanStop()
 QString RfidReader::readerIp()
 {
     return skt->peerAddress().toString();
+}
+
+bool RfidReader::isConnected()
+{
+    return flagConnect;
 }
 
 /*
@@ -60,7 +102,7 @@ void RfidReader::scanStart(quint32 antState, quint8 scanMode)
 
 void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
 {
-    qDebug()<<"[RfidReader]"<<state;
+    qDebug()<<"[RfidReader]"<<skt->peerAddress().toString()<<state;
     switch(state)
     {
     case QAbstractSocket::ConnectedState:
@@ -81,6 +123,7 @@ void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
 void RfidReader::recvData()
 {
     QByteArray qba = skt->readAll();
+    flagWaitBack = false;
 //    qDebug()<<"[recvData]"<<qba.toHex();
     if(!response.appendData(qba))
         return;
@@ -102,6 +145,9 @@ void RfidReader::dataParse(char mid, QByteArray paramData)
         break;
     case 0x02://current ant
         parseAnt(paramData);
+        break;
+    case 0x12://heart beat pac
+        flagWaitBack = false;
         break;
     case 0xff:
         flagInit = true;

@@ -25,18 +25,23 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
     connect(model, SIGNAL(epcAccess(QStringList,QStringList)), sigManager, SIGNAL(epcAccess(QStringList,QStringList)));
     connect(sigManager, SIGNAL(doorState(int, bool)), this, SLOT(doorStateChanged(int, bool)));
     connect(sigManager, SIGNAL(epcInfoUpdate()), model, SLOT(syncDownload()));
+    connect(model, SIGNAL(epcConsumeCheck(QStringList)), sigManager, SIGNAL(epcConsumeCheck(QStringList)));
     connect(sigManager, SIGNAL(epcConsumed(QStringList)), model, SLOT(epcConsume(QStringList)));
     connect(model, SIGNAL(epcStore(QMap<QString,QVariantMap>)), sigManager, SIGNAL(epcStore(QMap<QString,QVariantMap>)));
 
-    QHostAddress serverAddr = QHostAddress("192.168.0.8");
-    testReader = new RfidReader(serverAddr, 8888, 0, this);
-    testReader2 = new RfidReader(QHostAddress("192.168.0.9"), 8888, 1, this);
-    list_device<<testReader;
-    list_device<<testReader2;
-    foreach (RfidReader* reader, list_device)
-    {
-        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
-    }
+    rfidHub = new RfidDevHub(this);
+    connect(rfidHub, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString,int,int)));
+    rfidHub->addDevice(QHostAddress("192.168.0.8"), 8888);
+    rfidHub->addDevice(QHostAddress("192.168.0.9"), 8888);
+//    QHostAddress serverAddr = QHostAddress("192.168.0.8");
+//    testReader = new RfidReader(serverAddr, 8888, 0, this);
+//    testReader2 = new RfidReader(QHostAddress("192.168.0.9"), 8888, 1, this);
+//    list_device<<testReader;
+//    list_device<<testReader2;
+//    foreach (RfidReader* reader, list_device)
+//    {
+//        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+//    }
     QTimer::singleShot(1000, this, SLOT(initEpc()));
     initColName();
 }
@@ -85,11 +90,12 @@ void RfidManager::startScan()
 //    testReader->scanStop();
     eModel->clearEpcMark();
     qDebug()<<"[startScan]";
-    foreach(RfidReader* reader, list_device)
+    foreach(RfidReader* reader, rfidHub->deviceList())
     {
-        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+//        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
         reader->scanStart(insideAnt, 1);
     }
+    connect(rfidHub, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString,int,int)));
     flagScan = true;
     timerStart();
 }
@@ -97,11 +103,11 @@ void RfidManager::startScan()
 void RfidManager::doorCloseScan()
 {
     qDebug()<<"[doorCloseScan]";
-    foreach (RfidReader* reader, list_device)
+    foreach (RfidReader* reader, rfidHub->deviceList())
     {
         reader->scanStop();
     }
-    foreach(RfidReader* reader, list_device)
+    foreach(RfidReader* reader, rfidHub->deviceList())
     {
         reader->scanStart(outsideAnt|insideAnt, 1);
     }
@@ -114,13 +120,27 @@ void RfidManager::doorCloseScan()
 void RfidManager::clsFinish()
 {
     qDebug()<<"[stop Scan]";
-    foreach (RfidReader* reader, list_device)
+    foreach (RfidReader* reader, rfidHub->deviceList())
     {
         reader->scanStop();
-        disconnect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+//        disconnect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
     }
+    disconnect(rfidHub, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString,int,int)));
     flagScan = false;
     eModel->syncUpload();
+    accessLock = false;
+}
+
+void RfidManager::clsGiveUp()
+{
+    qDebug()<<"[stop Scan]";
+    foreach (RfidReader* reader, rfidHub->deviceList())
+    {
+        reader->scanStop();
+//        disconnect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
+    }
+    disconnect(rfidHub, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString,int,int)));
+    flagScan = false;
     accessLock = false;
 }
 

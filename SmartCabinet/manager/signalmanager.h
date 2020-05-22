@@ -15,6 +15,7 @@ signals:
     void epcAccess(QStringList epcs, UserOpt optType);
     void epcAccess(QStringList fetchEpcs, QStringList backEpcs);
     void epcInfoUpdate();
+    void epcConsumeCheck(QStringList);
     void epcConsumed(QStringList epcs);
     void epcStore(QMap<QString ,QVariantMap>);
     void doorState(int id, bool isOpen);

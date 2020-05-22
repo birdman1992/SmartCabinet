@@ -455,7 +455,7 @@ border:1px solid rgb(238, 238, 236);
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,0,0">
+               <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,0,0,0">
                 <property name="spacing">
                  <number>0</number>
                 </property>
@@ -482,7 +482,7 @@ border:1px solid rgb(238, 238, 236);
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>100</height>
+                    <height>90</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -516,7 +516,7 @@ border:1px solid rgb(238, 238, 236);
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>100</height>
+                    <height>90</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -547,7 +547,7 @@ border:1px solid rgb(238, 238, 236);
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>100</height>
+                    <height>90</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -578,7 +578,7 @@ border:1px solid rgb(238, 238, 236);
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>100</height>
+                    <height>90</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -609,7 +609,7 @@ border:1px solid rgb(238, 238, 236);
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>100</height>
+                    <height>90</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -640,7 +640,7 @@ border:1px solid rgb(238, 238, 236);
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>100</height>
+                    <height>90</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -671,7 +671,7 @@ border:1px solid rgb(238, 238, 236);
                   <property name="minimumSize">
                    <size>
                     <width>0</width>
-                    <height>100</height>
+                    <height>90</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -682,6 +682,34 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="text">
                    <string>未知:0</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoExclusive">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="tab_filter_wait_back">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>90</height>
+                   </size>
+                  </property>
+                  <property name="focusPolicy">
+                   <enum>Qt::NoFocus</enum>
+                  </property>
+                  <property name="text">
+                   <string>取出未还:0</string>
                   </property>
                   <property name="checkable">
                    <bool>true</bool>

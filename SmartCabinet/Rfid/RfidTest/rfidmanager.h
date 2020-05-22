@@ -16,6 +16,7 @@
 #include "manager/signalmanager.h"
 #include "cabinetconfig.h"
 #include "Rfid/RfidTest/epcmodel.h"
+#include "rfiddevhub.h"
 
 class RfidManager : public QObject
 {
@@ -32,6 +33,7 @@ public:
 public slots:
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);
     void clsFinish();//结束结算
+    void clsGiveUp();//放弃结算
     void doorStateChanged(int id, bool isOpen);
 
 signals:
@@ -57,6 +59,7 @@ private:
 //    QSortFilterProxyModel* model_check;
 
     EpcModel* eModel;
+    RfidDevHub* rfidHub;
 
     CabinetConfig* config;
     QMap<QString, EpcInfo*> map_rfid;

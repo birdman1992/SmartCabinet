@@ -9,7 +9,7 @@ EpcModel::EpcModel(QObject *parent)
     colsName.clear();
     colsName<<"物品"<<"条码"<<"规格"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记";
     markNameTab.clear();
-    markNameTab<<"未知"<<"存入"<<"还回"<<"取出"<<"登记"<<"柜内"<<"发现";
+    markNameTab<<"未知"<<"存入"<<"还回"<<"取出"<<"登记"<<"柜内"<<"取出未还"<<"发现";
 }
 
 int EpcModel::rowCount(const QModelIndex &) const
@@ -98,15 +98,24 @@ EpcInfo *EpcModel::getEpcInfo(QString code)
 
 void EpcModel::clearEpcMark()
 {
+    QStringList consumCheckList;
     memset(countTab, 0, sizeof(countTab));
     countTab[0] = map_rfid.count();
+    QDateTime outOverTime = QDateTime::currentDateTime().addSecs(-3600);//这个时间点之前取出的都标记为取出未归还
     foreach(EpcInfo* info, map_rfid)
     {
         info->mark = mark_no;
         info->markLock = false;
+        if(info->state == epc_out)//取出
+        {
+            consumCheckList<<info->epcId;
+            if(QDateTime::fromMSecsSinceEpoch(info->lastStamp) < outOverTime)//未归还
+                setEpcMark(info->epcId, mark_wait_back);
+        }
     }
     markCount = 0;
     lockCount = 0;
+    emit epcConsumeCheck(consumCheckList);
     emit updateLockCount(lockCount);
     refrushModel();
 }
@@ -129,9 +138,9 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
 
     countTab[info->mark]--;
     countTab[mark]++;
-    emit updateCount(mark, countTab[mark]);
-    emit updateCount(info->mark, countTab[info->mark]);
-    qDebug()<<"[setEpcMark]"<<epcId<<info->mark<<"->"<<mark<<"count:"<<markCount<<"countTab:"<<countTab[mark];
+    emit updateCount(mark, countTab[mark]);//更新旧的标记数量
+    emit updateCount(info->mark, countTab[info->mark]);//更新新的标记数量
+//    qDebug()<<"[setEpcMark]"<<epcId<<info->mark<<"->"<<mark<<"count:"<<markCount<<"countTab:"<<countTab[mark];
 
     info->mark = mark;
     info->lastStamp = QDateTime::currentMSecsSinceEpoch();
@@ -253,6 +262,10 @@ void EpcModel::syncUpload()
             list_store<<info->epcId;
             break;
         case mark_out://取出标记
+            if(info->state == epc_no)
+            {
+                list_store<<info->epcId;
+            }
             info->state = epc_out;
             cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3 WHERE epc_code='%4'")
                     .arg(info->lastStamp)
@@ -267,6 +280,7 @@ void EpcModel::syncUpload()
         if(!cmd.isEmpty())
             SqlManager::querySingle(cmd, "[syncUpload]");
     }
+    qDebug()<<"存入:"<<list_store.count()<<"取出:"<<list_fetch.count()<<"还回:"<<list_back.count();
 
     //存入物品
     if(!list_store.isEmpty())
@@ -274,18 +288,9 @@ void EpcModel::syncUpload()
 
     emit epcAccess(list_fetch, list_back);
 
-//    //取出物品
-//    if(!list_fetch.isEmpty())
-//        emit epcAccess(list_fetch, opt_fetch);
-
-//    //还回物品
-//    if(!list_back.isEmpty())
-//        emit epcAccess(list_back, opt_back);
-
     //删除已登记消耗物品
     SqlManager::querySingle(QString("DELETE FROM EpcInfo WHERE state=%1").arg(epc_consume));
     SqlManager::commit();
-//    SqlManager::query();
 }
 
 void EpcModel::syncDownload()
@@ -318,6 +323,8 @@ void EpcModel::syncDownload()
 
 void EpcModel::epcConsume(QStringList epcs)
 {
+    qDebug()<<"consumed epsc"<<epcs;
+    return;
     foreach (QString epc, epcs)
     {
         setEpcMark(epc, mark_con);

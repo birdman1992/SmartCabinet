@@ -13,7 +13,13 @@ FrmRfid::FrmRfid(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
-    btnTable<<ui->tab_filter_unknow<<ui->tab_filter_new<<ui->tab_filter_back<<ui->tab_filter_out<<ui->tab_filter_consume<<ui->tab_filter_in;
+    btnTable<<ui->tab_filter_unknow
+            <<ui->tab_filter_new
+            <<ui->tab_filter_back
+            <<ui->tab_filter_out
+            <<ui->tab_filter_consume
+            <<ui->tab_filter_in
+            <<ui->tab_filter_wait_back;
 
     initTabs();
     isLogin = false;
@@ -55,6 +61,7 @@ void FrmRfid::updateCount(EpcMark mark, int count)
 //    if(mark == 0)
 //        return;
 
+    qDebug()<<mark<<count;
     if(mark < btnTable.count())
     {
         btnTable[mark]->setText(btnTable[mark]->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(count)));
@@ -249,6 +256,7 @@ void FrmRfid::on_pushButton_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 #else
     this->hide();
+    rfManager->clsGiveUp();
 #endif
 }
 
@@ -318,6 +326,16 @@ void FrmRfid::on_tab_filter_unknow_toggled(bool checked)
     {
         filterModel->setFilterKeyColumn(7);
         filterModel->setFilterRegExp("未知");
+        ui->tab_view->resizeColumnsToContents();
+    }
+}
+
+void FrmRfid::on_tab_filter_wait_back_toggled(bool checked)
+{
+    if(checked)
+    {
+        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterRegExp("取出未还");
         ui->tab_view->resizeColumnsToContents();
     }
 }

@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include "checkmanager.h"
 
+#define typeof(x) __typeof__(x)
 //把数字变量写入缓冲区
 #define MEM_ASSIGN(a,b) ({*(typeof(b)*)(a)=(b);(a)+=sizeof(b);})
 #define MEM_ASSIGN_ARRAY(a,b) ({memcpy((a), (b).data(), (b).size());(a)+=(b).size();})

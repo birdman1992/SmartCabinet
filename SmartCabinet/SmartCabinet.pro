@@ -14,6 +14,7 @@ TARGET = SmartCabinet
 TEMPLATE = app
 target.path = /home
 INSTALLS += target
+QMAKE_CXXFLAGS += -std=c++0x
 
 LIBS += -lpthread
 
@@ -34,6 +35,7 @@ SOURCES += main.cpp\
     Rfid/RfidTest/checkmanager.cpp \
     Rfid/RfidTest/epcmodel.cpp \
     Rfid/RfidTest/frmrfid.cpp \
+    Rfid/RfidTest/rfiddevhub.cpp \
     Rfid/RfidTest/rfidmanager.cpp \
     Rfid/RfidTest/rfidpackage.cpp \
     Rfid/RfidTest/rfidreader.cpp \
@@ -139,6 +141,7 @@ HEADERS  += mainwidget.h \
     Rfid/RfidTest/checkmanager.h \
     Rfid/RfidTest/epcmodel.h \
     Rfid/RfidTest/frmrfid.h \
+    Rfid/RfidTest/rfiddevhub.h \
     Rfid/RfidTest/rfidmanager.h \
     Rfid/RfidTest/rfidpackage.h \
     Rfid/RfidTest/rfidreader.h \

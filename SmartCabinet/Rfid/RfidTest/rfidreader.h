@@ -16,20 +16,28 @@ public:
     void scanStart(quint32 antState, quint8 scanMode);
     void scanStop();
     QString readerIp();
+    bool isConnected();
 
 public slots:
-    void sendCmd(QByteArray data);
+    void sendCmd(QByteArray data, bool printFlag=true);
 
 signals:
     void reportEpc(QString epc, int seq, int ant);
+protected:
+    void timerEvent(QTimerEvent*);
+
 private:
     int readerSeq;
     int curAnt;
+    int heartBeatTimerId;
     bool flagInit;
     bool flagConnect;
+    bool flagWaitBack;
     QTcpSocket* skt;
     RfidResponse response;
     CabinetConfig* config;
+
+    void heartBeat();
 
 private slots:
     void connectStateChanged(QAbstractSocket::SocketState state);

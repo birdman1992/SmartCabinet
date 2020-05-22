@@ -110,6 +110,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     connect(this, SIGNAL(accessFailed(QString)), sigMan, SIGNAL(accessFailed(QString)));
     connect(this, SIGNAL(epcInfoUpdate()), sigMan, SIGNAL(epcInfoUpdate()));
     connect(this, SIGNAL(epcConsumed(QStringList)), sigMan, SIGNAL(epcConsumed(QStringList)));
+    connect(sigMan, SIGNAL(epcConsumeCheck(QStringList)), this, SLOT(rfidCheckConsume(QStringList)));
     connect(sigMan, SIGNAL(epcAccess(QStringList,UserOpt)), this, SLOT(rfidAccessOpt(QStringList,UserOpt)));
     connect(sigMan, SIGNAL(epcAccess(QStringList,QStringList)), this, SLOT(rfidAccessOpt(QStringList,QStringList)));
     connect(sigMan, SIGNAL(epcStore(QMap<QString,QVariantMap>)), this, SLOT(rfidAutoStore(QMap<QString,QVariantMap>)));
@@ -817,7 +818,7 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
 {
     qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\"}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).arg(timeStamp).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\",\"timeStamp\":%4}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).arg(timeStamp).arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_DAY_REPORT);//+"?"+qba.toBase64();
     replyCheck(reply_day_report);
     reply_day_report = post(nUrl, qba, timeStamp, false);
@@ -828,8 +829,9 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
 
 void CabinetServer::requireAioOverview()
 {
+    qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2}").arg(cabId).arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_AIO_OVERVIEW);
     replyCheck(reply_aio_overview);
     reply_aio_overview = post(nUrl, qba);

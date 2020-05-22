@@ -56,6 +56,8 @@ private slots:
     void on_tab_filter_in_toggled(bool checked);
     void on_tab_filter_unknow_toggled(bool checked);
 
+    void on_tab_filter_wait_back_toggled(bool checked);
+
 private:
     Ui::FrmRfid *ui;
     RfidManager* rfManager;
