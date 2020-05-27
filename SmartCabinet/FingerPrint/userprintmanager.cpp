@@ -64,6 +64,50 @@ void UserPrintManager::setUserInfo(int userId, QString cardId, QString name, QBy
     f.close();
 }
 
+QByteArray UserPrintManager::getUserFingerData(int userId)
+{
+    QString fingerDir = QString(FINGER_CONFIG) + QString("/%1").arg(userId);
+    QFile f(fingerDir+"/user.fpt");
+    if(!f.open(QFile::ReadOnly))
+    {
+        qDebug()<<"[setUserInfo] open user.fpt failed";
+    }
+    QByteArray ret = f.readAll();
+    f.close();
+    return ret;
+}
+
+QMap<int, QByteArray> UserPrintManager::getAllFingerData()
+{
+    QString userConfig = QString(FINGER_CONFIG) + "/users.ini";
+//    QString fingerDir = QString(FINGER_CONFIG) + QString("/%1").arg(userId);
+    QMap<int, QByteArray> allFingerData;
+
+//    QDir dir(fingerDir);
+//    if(!dir.exists())
+//    {
+//        qDebug()<<"user fingerprint is empty.";
+//        return allFingerData;
+//    }
+
+    QSettings userSettings(userConfig, QSettings::IniFormat);
+    QStringList listUserCard = userSettings.childGroups();//cards id
+    foreach(QString cardID, listUserCard)
+    {
+        int fingerID = userSettings.value(QString("%1/fingerID").arg(cardID), 0).toInt();
+        if(!fingerID)
+           continue;
+        QString fingerDataPath = QString(FINGER_CONFIG) + QString("/%1/user.fpt").arg(fingerID);
+        QFile f(fingerDataPath);
+        if(!f.open(QFile::ReadOnly))
+            continue;
+        QByteArray fingerData = f.readAll();
+        allFingerData.insert(fingerID, fingerData);
+        f.close();
+    }
+    return allFingerData;
+}
+
 void UserPrintManager::setCtrlConfig(QByteArray confSeq, QByteArray confIndex)
 {
     qDebug()<<"[setCtrlConfig]"<<confSeq.toHex()<<confIndex.toHex();

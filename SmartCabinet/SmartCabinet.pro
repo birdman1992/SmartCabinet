@@ -32,6 +32,7 @@ LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 }
 
 SOURCES += main.cpp\
+    FingerPrint/fingerdatacache.cpp \
     Rfid/RfidTest/checkmanager.cpp \
     Rfid/RfidTest/epcmodel.cpp \
     Rfid/RfidTest/frmrfid.cpp \
@@ -138,6 +139,7 @@ HEADERS  += mainwidget.h \
     Device/Hid/qhid.h \
     Device/controldevice.h \
     Device/devicesimulate.h \
+    FingerPrint/fingerdatacache.h \
     Rfid/RfidTest/checkmanager.h \
     Rfid/RfidTest/epcmodel.h \
     Rfid/RfidTest/frmrfid.h \

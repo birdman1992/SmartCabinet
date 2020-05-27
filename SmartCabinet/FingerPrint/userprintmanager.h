@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QByteArray>
 #include <QStringList>
+#include <QMap>
 
 class UserPrintManager
 {
@@ -12,6 +13,8 @@ public:
     static UserPrintManager* manager();
     int getNewUserID(QString cardId);//获取一个新用户ID
     void setUserInfo(int userId, QString cardId, QString name, QByteArray fingerData);
+    QByteArray getUserFingerData(int userId);
+    QMap<int, QByteArray> getAllFingerData();
     void setCtrlConfig(QByteArray confSeq, QByteArray confIndex);
     int getFingerId(QString cardId);
     QByteArray getCardId(int fingerId);

@@ -23,6 +23,8 @@ public slots:
 
 signals:
     void reportEpc(QString epc, int seq, int ant);
+    void stateChanged();//连接状态变化
+
 protected:
     void timerEvent(QTimerEvent*);
 

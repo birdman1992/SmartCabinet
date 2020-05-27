@@ -841,8 +841,9 @@ void CabinetServer::requireAioOverview()
 
 void CabinetServer::requireAioData(int cevent)
 {
+    qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"departCode\":\"%1\"}").arg(cabId).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2}").arg(cabId).arg(timeStamp).toUtf8();
     qDebug()<<"requireAioData"<<cevent;
     aio_state = (AIOMachine::cEvent)cevent;
 

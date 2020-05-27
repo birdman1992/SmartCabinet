@@ -130,6 +130,8 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
     if(info->mark == mark)
         return;
 
+    //更新活跃时间戳
+    activeStamp = QDateTime::currentMSecsSinceEpoch();
     if((!info->mark) && mark)
     {
         markCount++;
@@ -350,7 +352,17 @@ void EpcModel::refrushModel()
 {
     beginResetModel();
     endResetModel();
-//    emit updateCount(this->rowCount(QModelIndex()));
+    //    emit updateCount(this->rowCount(QModelIndex()));
+}
+
+/**
+ * @brief EpcModel::epcCheckActive
+ * @param msecs 标签活跃阈值,距离上一次活跃时间戳超过此阈值就认为标签盘点稳定(非活跃)了
+ * @return  标签盘点是否活跃  true:活跃 false:非活跃
+ */
+bool EpcModel::epcCheckActive(quint64 msecs)
+{
+    return QDateTime::currentMSecsSinceEpoch() - activeStamp < msecs;
 }
 
 void EpcModel::initColName()

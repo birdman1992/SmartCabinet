@@ -16,6 +16,7 @@ FingerPrint::FingerPrint(QWidget *parent) :
     waitSelCurModule = false;
     curUserCard = QString();
     curState = STATE_CHECK;
+    fingerDataCache = NULL;
     curModule = 0;
     ledState = 3;
     curDev = -1;
@@ -61,150 +62,186 @@ void FingerPrint::addUser()
 void FingerPrint::recvFingerData(int canId, QByteArray data)
 {
     ResponsePack* rPack = new ResponsePack(data);
-    qDebug("[FingerPrint] canId:0x%x cmd:0x%x errCode:0x%x %s", canId, rPack->rcm, rPack->ret, retCodeList[rPack->ret].toUtf8().data());
+//    qDebug("[FingerPrint] canId:0x%x cmd:0x%x errCode:0x%x %s", canId, rPack->rcm, rPack->ret, retCodeList[rPack->ret].toUtf8().data());
     if(rPack->ret != 0)
     {
         qDebug("[FingerPrint] canId:0x%x cmd:0x%x errCode:0x%x %s", canId, rPack->rcm, rPack->ret, retCodeList[rPack->ret].toUtf8().data());
 
         if(rPack->rcm == 0x63)
         {
-            cmdSetLed(canId, 1, MODEL_ERROR);
-            cmdSetLed(canId, 2, MODEL_NORMAL);
+//            cmdSetLed(canId, STATE_ON, MODEL_ERROR, MODEL_ERROR);
+            cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL);
+        }
+        if(rPack->rcm == 0x44)
+        {
+            goto ignore_error;
         }
 
         delete rPack;
         return;
     }
 
-    switch(rPack->rcm)
+ignore_error:
+    if(curState == STATE_SYNC)//同步状态
     {
-    case 0x01://CMD_TEST_CONNECTION
-        if(canDevList.indexOf(canId) == -1)
+        switch(rPack->rcm)
         {
-            canDevList<<canId;
-            cmdSetLed(canId, 2, MODEL_NORMAL);
-        }
-        break;
+        case 0x43://CMD_DOWN_CHAR
+            if(rPack->prefix == 0x55aa)//指令包发送完成
+            {
+                cmdWriteTemplate(canId, temp_data, 0, true);
+            }
+            else if(rPack->prefix == 0x5aa5)//数据包发送完成
+            {
 
-    case 0x09://CMD_GET_MODULE_SN
-        if(rPack->prefix == 0x5aa5)
+            }
+            break;
+
+        case 0x44://CMD_DEL_CHAR
+            cmdWriteTemplate(canId, temp_data);
+            break;
+        }
+    }
+    else//其他状态
+    {
+        switch(rPack->rcm)
         {
+        case 0x01://CMD_TEST_CONNECTION
             if(canDevList.indexOf(canId) == -1)
             {
                 canDevList<<canId;
-                cmdSetLed(canId, 2, MODEL_NORMAL);
-                qDebug()<<"[can dev]:"<<canId<<rPack->data;
+                cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL);
+    //            cmdSetLed(canId,2, MODEL_PASS, MODEL_CONFIG);
             }
-        }
-        break;
+            break;
 
-    case 0x20://CMD_GET_IMAGE
-        cmdGenerate(canId);//生成指纹模板
-        break;
-
-    case 0x22://CMD_UP_IMAGE_CODE
-        if(rPack->prefix == 0x55aa)
-        {
-            char* pos = rPack->data.data();
-            img_w = *(quint16*)pos;
-            pos += 2;
-            img_h = *(quint16*)pos;
-            img_data.clear();
-            qDebug("get img:%dx%d", img_w, img_h);
-        }
-        else if(rPack->prefix == 0x5aa5)
-        {
-//            qDebug()<<rPack->data.toHex();
-//            img_data.append(rPack->data.right(data.length()-2));
-//            QImage img = QImage((uchar*)img_data.data(), img_w, img_h, QImage::Format_Indexed8);
-
-//            ui->img->setPixmap(QPixmap::fromImage(img));
-//            qDebug("img data:%d", img_data.length());
-        }
-        break;
-
-    case 0x40://CMD_STORE_CHAR
-        boardCastIn++;
-        if(boardCastIn == boardCastOut)
-        {
-            showMsg("指纹注册完成");
-            curState = STATE_CHECK;
-        }
-        cmdSetLed(canId, 2, MODEL_NORMAL);
-        break;
-
-    case 0x42://CMD_UP_CHAR
-        if(rPack->prefix == 0x55aa)
-        {
-            char* pos = rPack->data.data();
-            temp_size = *(quint16*)pos;
-            temp_data.clear();
-            qDebug("get template:%d", temp_size);
-        }
-        else if(rPack->prefix == 0x5aa5)
-        {
-//            qDebug()<<rPack->data.toHex();
-            temp_data = QByteArray(rPack->data);
-//            qDebug("template data:%d", temp_data.length());
-//            qDebug()<<temp_data.toHex();
-            curFingerId = manager_user->getNewUserID(curUserCard);
-            manager_user->setUserInfo(curFingerId, curUserCard, curUserName, temp_data);
-//            temp_data = dataCheckSum(temp_data);
-            templateDistr(temp_data);
-        }
-        break;
-
-    case 0x43://CMD_DOWN_CHAR
-        if(rPack->prefix == 0x55aa)
-        {
-            cmdWriteTemplate(canId, temp_data, 0, true);
-        }
-        else if(rPack->prefix == 0x5aa5)
-        {
-            cmdStoreChar(canId, curFingerId);
-        }
-        break;
-
-    case 0x45://CMD_GET_EMPTY_ID
-
-        break;
-
-    case 0x60://CMD_GENERATE
-        if(curState == STATE_REG)
-        {
-            generateStep++;
-            if(generateStep == 3)
+        case 0x09://CMD_GET_MODULE_SN
+            if(rPack->prefix == 0x5aa5)
             {
-                cmdMerge(canId);
+                if(canDevList.indexOf(canId) == -1)
+                {
+                    canDevList<<canId;
+                    cmdSetLed(canId, STATE_ON, MODEL_NORMAL, MODEL_NORMAL);
+    //                cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL);
+                    qDebug()<<"[can dev]:"<<canId<<rPack->data;
+                }
             }
-            else
+            break;
+
+        case 0x20://CMD_GET_IMAGE
+            cmdGenerate(canId);//生成指纹模板
+            break;
+
+        case 0x22://CMD_UP_IMAGE_CODE
+            if(rPack->prefix == 0x55aa)
             {
-                ui->reg_progress->setValue(generateStep);
-                cmdSetLed(canId, 1, MODEL_WAIT);
+                char* pos = rPack->data.data();
+                img_w = *(quint16*)pos;
+                pos += 2;
+                img_h = *(quint16*)pos;
+                img_data.clear();
+                qDebug("get img:%dx%d", img_w, img_h);
             }
+            else if(rPack->prefix == 0x5aa5)
+            {
+    //            qDebug()<<rPack->data.toHex();
+    //            img_data.append(rPack->data.right(data.length()-2));
+    //            QImage img = QImage((uchar*)img_data.data(), img_w, img_h, QImage::Format_Indexed8);
+
+    //            ui->img->setPixmap(QPixmap::fromImage(img));
+    //            qDebug("img data:%d", img_data.length());
+            }
+            break;
+
+        case 0x40://CMD_STORE_CHAR
+            boardCastIn++;
+            if(boardCastIn == boardCastOut)
+            {
+                showMsg("指纹注册完成");
+                curState = STATE_CHECK;
+            }
+            cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL);
+            break;
+
+        case 0x42://CMD_UP_CHAR
+            if(rPack->prefix == 0x55aa)
+            {
+                char* pos = rPack->data.data();
+                temp_size = *(quint16*)pos;
+                temp_data.clear();
+                qDebug("get template:%d", temp_size);
+            }
+            else if(rPack->prefix == 0x5aa5)
+            {
+    //            qDebug()<<rPack->data.toHex();
+                temp_data = QByteArray(rPack->data);
+    //            qDebug("template data:%d", temp_data.length());
+    //            qDebug()<<temp_data.toHex();
+                curFingerId = manager_user->getNewUserID(curUserCard);
+                manager_user->setUserInfo(curFingerId, curUserCard, curUserName, temp_data);
+    //            temp_data = dataCheckSum(temp_data);
+                templateDistr(temp_data);
+            }
+            break;
+
+        case 0x43://CMD_DOWN_CHAR
+            if(rPack->prefix == 0x55aa)
+            {
+                cmdWriteTemplate(canId, temp_data, 0, true);
+            }
+            else if(rPack->prefix == 0x5aa5)
+            {
+                cmdStoreChar(canId, curFingerId);
+            }
+            break;
+
+        case 0x44://CMD_DEL_CHAR
+
+            break;
+
+        case 0x45://CMD_GET_EMPTY_ID
+
+            break;
+
+        case 0x60://CMD_GENERATE
+            if(curState == STATE_REG)
+            {
+                generateStep++;
+                if(generateStep == 3)
+                {
+                    cmdMerge(canId);
+                }
+                else
+                {
+                    ui->reg_progress->setValue(generateStep);
+                    cmdSetLed(canId, STATE_ON, MODEL_WAIT);
+                }
+            }
+            else if(curState == STATE_CHECK)
+            {
+                cmdSearch(canId);
+            }
+    //        cmdReadImage(canId, 1);
+            break;
+
+        case 0x61://CMD_MERGE
+            ui->reg_progress->setValue(generateStep);
+            cmdReadTemplate(canId);
+            break;
+
+        case 0x63://CMD_SEARCH
+            userCheckPass(canId, *((quint16*)(rPack->data.data())));
+            break;
+
+        default:
+            break;
         }
-        else if(curState == STATE_CHECK)
-        {
-            cmdSearch(canId);
-        }
-//        cmdReadImage(canId, 1);
-        break;
-
-    case 0x61://CMD_MERGE
-        ui->reg_progress->setValue(generateStep);
-        cmdReadTemplate(canId);
-        break;
-
-    case 0x63://CMD_SEARCH
-        userCheckPass(canId, *((quint16*)(rPack->data.data())));
-        break;
-
-    default:
-        break;
+    //    qDebug()<<data.toHex();
+        delete rPack;
+        sendCmdCache();
     }
-//    qDebug()<<data.toHex();
-    delete rPack;
-    sendCmdCache();
+
+
 }
 
 void FingerPrint::recvCurCardId(QByteArray cardId)
@@ -220,9 +257,8 @@ void FingerPrint::ledStateChanged(int state)
 
 void FingerPrint::moduleActived(int id)
 {
-    emit requireOpenLock(0, id);
-    return;
-    cmdSetLed(id, 1, MODEL_ACTIVE);//指纹进入激活状态
+//    emit requireOpenLock(0, id);
+    cmdSetLed(id, STATE_ON, MODEL_ACTIVE);//指纹进入激活状态
 
     switch(curState)
     {
@@ -235,7 +271,7 @@ void FingerPrint::moduleActived(int id)
             foreach (int _id, canDevList)
             {
                 if(id != _id)
-                    cmdSetLed(_id, 2, MODEL_NORMAL);
+                    cmdSetLed(_id, STATE_BREATHE, MODEL_NORMAL);
             }
         }
         if(id != curModule)//屏蔽其它指纹模块
@@ -249,6 +285,10 @@ void FingerPrint::moduleActived(int id)
         generateStep = 0;
         cmdGetImage(id);
         break;
+
+    case STATE_SYNC:
+
+        break;
     default:
         break;
     }
@@ -257,9 +297,6 @@ void FingerPrint::moduleActived(int id)
 
 void FingerPrint::doorStateChanged(int id, bool isOpen)
 {
-    if(curState == STATE_CHECK)
-        cmdSetLed(id, 2, MODEL_NORMAL);
-
     int lastState = lockState;
 
     if(isOpen)
@@ -268,6 +305,9 @@ void FingerPrint::doorStateChanged(int id, bool isOpen)
     }
     else
     {
+        if(curState == STATE_CHECK)
+            cmdSetLed(id, STATE_BREATHE, MODEL_NORMAL);
+
         lockState &= ~(1<<id);
     }
     if(lastState != lockState)
@@ -276,18 +316,19 @@ void FingerPrint::doorStateChanged(int id, bool isOpen)
 
 void FingerPrint::userCheckPass(int canId, int fingerId)
 {
+    qDebug()<<"[userCheckPass]"<<fingerId;
     QByteArray cardId = manager_user->getCardId(fingerId);
 
     if(!cardId .isEmpty())
     {
-        cmdSetLed(canId, 1, MODEL_PASS);
+        cmdSetLed(canId, STATE_ON, MODEL_PASS);
         qDebug()<<"userCheckPass"<<canId<<fingerId<<cardId;
         emit requireOpenLock(ctrlSeq[canId], ctrlIndex[canId]);
         emit userCardActive(cardId);
     }
     else
     {
-        cmdSetLed(canId, 1, MODEL_ERROR);
+        cmdSetLed(canId, STATE_ON, MODEL_ERROR);
     }
 }
 
@@ -379,6 +420,31 @@ void FingerPrint::templateDistr(QByteArray _data)
     }
 }
 
+/**
+ * @brief FingerPrint::fingerDataClone  克隆指纹数据到指纹模块
+ * @param id    指纹模块的id
+ */
+void FingerPrint::fingerDataClone(int id)
+{
+    if(fingerDataCache)
+        delete fingerDataCache;
+    //读取所有指纹数据
+    fingerDataCache = new FingerDataCache(manager_user->getAllFingerData());
+
+    curState = STATE_SYNC;
+    setCurDev(id);
+    fingerDataClear(id);
+}
+
+/**
+ * @brief FingerPrint::fingerDataClear
+ * @param id 需要清除的指纹模块的id
+ */
+void FingerPrint::fingerDataClear(int id)
+{
+    cmdDeleteChar(id, 1,80);
+}
+
 void FingerPrint::cmdStoreChar(int id, int tempID, int bufferId)
 {
     cmdDeleteChar(id, tempID, tempID);
@@ -393,6 +459,12 @@ void FingerPrint::cmdStoreChar(int id, int tempID, int bufferId)
     socketCan->sendData(id, cmd.packData());
 }
 
+/**
+ * @brief FingerPrint::cmdDeleteChar  删除指纹数据
+ * @param id    指纹模块id
+ * @param rangeMin  模板id范围
+ * @param rangeMax  模板id范围
+ */
 void FingerPrint::cmdDeleteChar(int id, int rangeMin, int rangeMax)
 {
     QByteArray cmdData;
@@ -406,12 +478,47 @@ void FingerPrint::cmdDeleteChar(int id, int rangeMin, int rangeMax)
 }
 
 //指纹模块id，显示状态(0:灭 1:亮 2:呼吸 3:慢闪烁 4快闪烁)，
+/*!
+ * \brief FingerPrint::cmdSetLed
+ * \param id
+ * \param state
+ * \param led
+ */
 void FingerPrint::cmdSetLed(int id, char state, char led)
 {
     QByteArray cmdData;
-    cmdData.resize(2);
+//    cmdData.resize(2);
+//    cmdData[0] = state;
+//    cmdData[1] = led | 0x80;
+    cmdData.resize(4);
     cmdData[0] = state;
     cmdData[1] = led | 0x80;
+    cmdData[2] = led | 0x80;
+    cmdData[3] = 0;
+
+    CmdPack* cmd = new CmdPack(0x24, cmdData);
+    socketCan->sendData(id, cmd->packData());
+    delete cmd;
+}
+
+/*!
+ * \brief FingerPrint::cmdSetLed
+ * \param id    指纹模块id
+ * \param state 显示状态(0:灭 1:呼吸 2:快闪 3:常开 4:常闭 5:渐开 6:渐关 7:慢闪)
+ * \param sLed  开始颜色
+ * \param eLed  结束颜色
+ * \param loopCount 循环次数,0为无限循环
+ *  适用于1016F模块
+ */
+
+void FingerPrint::cmdSetLed(int id, char state, char sLed, char eLed, char loopCount)
+{
+    QByteArray cmdData;
+    cmdData.resize(4);
+    cmdData[0] = state;
+    cmdData[1] = sLed;
+    cmdData[2] = eLed;
+    cmdData[3] = loopCount;
 
     CmdPack* cmd = new CmdPack(0x24, cmdData);
     socketCan->sendData(id, cmd->packData());
@@ -454,7 +561,7 @@ void FingerPrint::cmdGetTempId(int id)
     char* pos = cmdData.data();
     *(quint16*)pos = 0;//范围起始
     pos += 2;
-    *(quint16*)pos = 2000;//范围结束
+    *(quint16*)pos = 80;//范围结束
 
     CmdPack cmd(0x45, cmdData);
     socketCan->sendData(id, cmd.packData());
@@ -465,7 +572,7 @@ void FingerPrint::on_led_r_clicked(bool checked)
     if(checked)
         cmdSetLed(0x0, ledState, LED_R);
     else
-        cmdSetLed(0x0, 0, LED_R);
+        cmdSetLed(0x0, STATE_OFF, LED_R);
 }
 
 void FingerPrint::on_led_g_clicked(bool checked)
@@ -474,7 +581,7 @@ void FingerPrint::on_led_g_clicked(bool checked)
         cmdSetLed(0x0, ledState, LED_G);
     else
     {
-        cmdSetLed(0x0, 0, LED_G);
+        cmdSetLed(0x0, STATE_OFF, LED_G);
     }
 }
 
@@ -483,12 +590,12 @@ void FingerPrint::on_led_b_clicked(bool checked)
     if(checked)
         cmdSetLed(0x0, ledState, LED_B);
     else
-        cmdSetLed(0x0, 0, LED_B);
+        cmdSetLed(0x0, STATE_OFF, LED_B);
 }
 
 void FingerPrint::on_led_off_clicked()
 {
-    cmdSetLed(0x0, 0, LED_R|LED_G|LED_B);
+    cmdSetLed(0x0, STATE_OFF, LED_R|LED_G|LED_B);
 }
 
 void FingerPrint::initRetCodeList()
@@ -516,6 +623,12 @@ void FingerPrint::initRetCodeList()
     retCodeList.insert(0x26, "Buffer ID 值不正确");
     retCodeList.insert(0x28, "采集器上没有指纹输入");
     retCodeList.insert(0x41, "指令被取消");
+}
+
+void FingerPrint::setCurDev(int id)
+{
+    ui->spin_can->setValue(id);
+    curDev = id;
 }
 
 void FingerPrint::showMsg(QString msg)
@@ -568,7 +681,7 @@ void FingerPrint::on_led_r_2_clicked(bool checked)
     if(checked)
         cmdSetLed(0x0, ledState, LED_G|LED_B);
     else
-        cmdSetLed(0x0, 0, LED_G|LED_B);
+        cmdSetLed(0x0, STATE_OFF, LED_G|LED_B);
 }
 
 void FingerPrint::on_led_g_2_clicked(bool checked)
@@ -576,7 +689,7 @@ void FingerPrint::on_led_g_2_clicked(bool checked)
     if(checked)
         cmdSetLed(0x0, ledState, LED_R|LED_B);
     else
-        cmdSetLed(0x0, 0, LED_R|LED_B);
+        cmdSetLed(0x0, STATE_OFF, LED_R|LED_B);
 }
 
 void FingerPrint::on_led_b_2_clicked(bool checked)
@@ -584,7 +697,7 @@ void FingerPrint::on_led_b_2_clicked(bool checked)
     if(checked)
         cmdSetLed(0x0, ledState, LED_G|LED_R);
     else
-        cmdSetLed(0x0, 0, LED_G|LED_R);
+        cmdSetLed(0x0, STATE_OFF, LED_G|LED_R);
 }
 
 //检查0x0到0xf的can设备
@@ -613,21 +726,21 @@ void FingerPrint::on_reg_clicked()
     waitSelCurModule = true;
     foreach (int id, canDevList)//指纹模块全部进入等待状态
     {
-        cmdSetLed(id, 1, MODEL_WAIT);
+        cmdSetLed(id, STATE_ON, MODEL_WAIT);
     }
 }
 
 void FingerPrint::on_spin_can_valueChanged(int arg1)
 {
     if((curDev != -1) && (canDevList.indexOf(curDev) != -1))
-        cmdSetLed(curDev, 2, MODEL_NORMAL);
+        cmdSetLed(curDev, STATE_BREATHE, MODEL_NORMAL);
 
     curDev = arg1;
     ui->spin_seq->setValue(ctrlSeq[curDev]);
     ui->spin_index->setValue(ctrlIndex[curDev]);
 
     if(canDevList.indexOf(curDev) != -1)
-        cmdSetLed(curDev, 1, MODEL_CONFIG);
+        cmdSetLed(curDev, STATE_ON, MODEL_CONFIG);
 }
 
 void FingerPrint::on_spin_seq_valueChanged(int arg1)
@@ -636,7 +749,7 @@ void FingerPrint::on_spin_seq_valueChanged(int arg1)
     if(curDev == -1)
     {
         curDev = ui->spin_can->value();
-        cmdSetLed(curDev, 1, MODEL_CONFIG);
+        cmdSetLed(curDev, STATE_ON, MODEL_CONFIG);
     }
 
     ctrlSeq[curDev] = arg1;
@@ -647,7 +760,7 @@ void FingerPrint::on_spin_index_valueChanged(int arg1)
     if(curDev == -1)
     {
         curDev = ui->spin_can->value();
-        cmdSetLed(curDev, 1, MODEL_CONFIG);
+        cmdSetLed(curDev, STATE_ON, MODEL_CONFIG);
     }
 
     ctrlIndex[curDev] = arg1;
@@ -655,7 +768,7 @@ void FingerPrint::on_spin_index_valueChanged(int arg1)
 
 void FingerPrint::on_save_config_clicked()
 {
-    cmdSetLed(curDev, 2, MODEL_NORMAL);
+    cmdSetLed(curDev, STATE_BREATHE, MODEL_NORMAL);
     curDev = -1;
     manager_user->setCtrlConfig(ctrlSeq, ctrlIndex);
 }

@@ -97,10 +97,9 @@ void QSocketCan::run()
                 qDebug()<<"[module active]:"<<id;
                 emit moduleActive(id);
             }
-
             if(!pac.isEmpty())
             {
-//                qDebug()<<"[canData]"<<id<<pac.length()<<":"<<pac.toHex();
+                qDebug()<<"[canData]"<<id<<pac.length()<<":"<<pac.toHex();
                 emit canData(id, pac);
                 sendNextData(id);
             }

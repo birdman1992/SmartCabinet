@@ -11,6 +11,7 @@
 #include "qsocketcan.h"
 #include "cmdpack.h"
 #include "userprintmanager.h"
+#include "FingerPrint/fingerdatacache.h"
 
 namespace Ui {
 class FingerPrint;
@@ -24,11 +25,41 @@ public:
     explicit FingerPrint(QWidget *parent = 0);
     ~FingerPrint();
     void addUser();
+
+#if 1//1016F
+//     * \param state 显示状态(0:灭 1:呼吸 2:快闪 3:常开 4:常闭 5:渐开 6:渐关 7:慢闪)
+    enum LED_STATE{
+//        STATE_OFF,
+        STATE_BREATHE=1,//呼吸
+        STATE_BLINK_FAST=2,//快闪
+        STATE_ON=3,//常开
+        STATE_OFF=4,//常闭
+        STATE_GRADIENT_ON=5,//渐开
+        STATE_GRADIENT_OFF=6,//渐关
+        STATE_BLINK_SLOW=7,//慢闪
+    };
+
+    enum LED{
+        LED_G=1,
+        LED_R=2,
+        LED_B=4
+    };
+#else//1016C
+    enum LED_STATE{
+//        STATE_OFF,
+        STATE_OFF=0,//常闭
+        STATE_ON=1,//常开
+        STATE_BREATHE=2,//呼吸
+        STATE_BLINK_SLOW=3,//慢闪
+        STATE_BLINK_FAST=4,//快闪
+    };
+
     enum LED{
         LED_B=1,
         LED_R=2,
         LED_G=4
     };
+#endif
     enum MODEL_STATE{
         MODEL_CONFIG=LED_B,
         MODEL_WAIT=LED_R|LED_G,//b
@@ -39,7 +70,8 @@ public:
     };
     enum CUR_STATE{
         STATE_REG,//注册
-        STATE_CHECK//验证
+        STATE_CHECK,//验证
+        STATE_SYNC//同步
     };
 
 public slots:
@@ -56,7 +88,7 @@ signals:
 private slots:
     void ledStateChanged(int state);
     void moduleActived(int id);
-    void doorStateChanged(int id, bool isOpen);
+    void doorStateChanged(int id, bool isOpen);//门状态变化
     void userCheckPass(int canId, int fingerId);
     void canDevScan();//扫描所有can设备
     void on_led_r_clicked(bool checked);
@@ -81,6 +113,7 @@ private:
     QByteArray ctrlSeq;
     QByteArray ctrlIndex;
     int curFingerId;
+    FingerDataCache* fingerDataCache;
     QMap<int, QString> retCodeList;
     QList<int> canDevList;//CAN设备列表
     QButtonGroup btnState;
@@ -101,6 +134,7 @@ private:
     int curDev;
 
     void initRetCodeList();
+    void setCurDev(int id);
     void showMsg(QString msg);
     void addCmdCache(int id, QByteArray* cmd);
     void sendCmdCache();
@@ -116,10 +150,13 @@ private:
     void cmdReadTemplate(int id, int bufferId=0);//读取指纹模板
     void cmdWriteTemplate(int id, QByteArray _data=QByteArray(), int bufferId=0, bool isDataPack=false);//写入到指纹模板
     void templateDistr(QByteArray _data);//指纹模板分发
+    void fingerDataClone(int id);//同步指纹模板到指纹模块
+    void fingerDataClear(int id);//清除指纹模块的指纹数据
     void cmdStoreChar(int id, int tempID, int bufferId=0);//tempID->fingerID
     void cmdDeleteChar(int id, int rangeMin, int rangeMax);
-    void cmdSetLed(int id, char state, char led);//指纹模块id，显示状态，LED1,LED2,次数
-    void cmdSearch(int id, int bufferId=0, int rangeMin=1, int rangeMax=200);
+    void cmdSetLed(int id, char state, char led);//指纹模块id，显示状态，颜色
+    void cmdSetLed(int id, char state, char sLed, char eLed, char loopCount=0);//指纹模块id，显示状态，起始颜色, 结束颜色,次数
+    void cmdSearch(int id, int bufferId=0, int rangeMin=1, int rangeMax=80);
 };
 
 #endif // FINGERPRINT_H

@@ -59,36 +59,21 @@ private slots:
     void on_check_clicked();
     void ctrl_conf(int id);
     void updateBtn();
-
     void on_rebind_clicked();
-
     void on_set_server_addr_clicked();
-
     void on_server_addr_editingFinished();
-
     void on_insert_clicked();
-
     void on_insert_pos_valueChanged(int arg1);
     void on_insert_pos_2_valueChanged(int arg1);
-
     void on_col_layout_activated(const QString &arg1);
-
     void on_undo_clicked();
-
-
     void on_insert_2_clicked();
     void updateNetInfo();
-
     void on_testServer_clicked();
-
     void on_set_spec_case_clicked();
-
     void on_scan_list_toggled(bool checked);
-
     void on_scan_all_toggled(bool checked);
-
 //    void on_proName_currentTextChanged(const QString &arg1);
-
     void on_proName_activated(const QString &arg1);
 
 public slots:

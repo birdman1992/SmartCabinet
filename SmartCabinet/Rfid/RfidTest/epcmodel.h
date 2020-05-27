@@ -78,6 +78,7 @@ public:
     int getMarkCount();
     bool markInfoCompleted();
     void refrushModel();
+    bool epcCheckActive(quint64 msecs = 10000);//标签盘点活跃
 
 public slots:
     void syncUpload();
@@ -100,6 +101,7 @@ private:
     QStringList colsName;
     QStringList markNameTab;
     QString curOptId;
+    quint64 activeStamp;//标签活跃时间戳:最后一次标签状态发生变化的时间
     int countTab[8];
     int markCount;//count be marked
     int outCount;//count for fetch out
