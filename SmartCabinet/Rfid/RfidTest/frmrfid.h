@@ -11,6 +11,7 @@
 #include <QHeaderView>
 #include <QTableView>
 #include <QToolButton>
+#include <QBitArray>
 #include <QSortFilterProxyModel>
 #include "Rfid/RfidTest/epcmodel.h"
 #include "rfidmanager.h"
@@ -65,11 +66,14 @@ private:
     QTabWidget* win_tabs;
     EpcModel* eModel;
     bool isLogin;
+    QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
     QList<QTableView*> tabs;
-    QList<QToolButton*> btnTable;
+//    QList<QToolButton*> btnTable;
+    QMap<EpcMark, QToolButton*> btnTable;
     void updateTableRow(int rowIndex, EpcInfo*);
     void initTabs();
+    void setPow(int pow);
     void showEvent(QShowEvent *);
     void paintEvent(QPaintEvent*);
 };

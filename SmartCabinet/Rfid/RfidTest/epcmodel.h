@@ -25,6 +25,7 @@ enum EpcMark{
     mark_con,//登记消耗的标签
     mark_in,//
     mark_wait_back,//取出未归还的标签
+    mark_all,//所有标签,不作为标记使用
     mark_checked,
 };
 

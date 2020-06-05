@@ -13,13 +13,14 @@ FrmRfid::FrmRfid(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
-    btnTable<<ui->tab_filter_unknow
-            <<ui->tab_filter_new
-            <<ui->tab_filter_back
-            <<ui->tab_filter_out
-            <<ui->tab_filter_consume
-            <<ui->tab_filter_in
-            <<ui->tab_filter_wait_back;
+    btnTable.insert(mark_no, ui->tab_filter_unknow);
+    btnTable.insert(mark_new, ui->tab_filter_new);
+    btnTable.insert(mark_back, ui->tab_filter_back);
+    btnTable.insert(mark_out, ui->tab_filter_out);
+    btnTable.insert(mark_con, ui->tab_filter_consume);
+    btnTable.insert(mark_in, ui->tab_filter_in);
+    btnTable.insert(mark_wait_back, ui->tab_filter_wait_back);
+    btnTable.insert(mark_all, ui->tab_filter_all);
 
     initTabs();
     isLogin = false;
@@ -209,6 +210,18 @@ void FrmRfid::initTabs()
         btn->hide();
     }
     ui->tab_filter_all->show();
+}
+
+void FrmRfid::setPow(int pow)
+{
+    switch(pow)
+    {
+    case 0:
+        visibleFlag = QBitArray(mark_checked+1, true);
+        break;
+    default:
+        break;
+    }
 }
 
 void FrmRfid::clearCountText()

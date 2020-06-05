@@ -36,35 +36,34 @@
 	background-color: rgb(14,35,75);
 }
 #page_tab,#page{
-	background-color: rgb(14,35,75);
+	background-color: rgb(255,255,255);
 }
 #frame_title{
-	border:0px,solid,grey;
+	border:0px,solid,rgb(236,236,236);
 	border-bottom-width:1px;
 	border-bottom-style:solid;
 	border-bottom-color:rgb(34,60,111);
 }
-#pushButton{
-	background-color: rgb(14,35,75);
-}
-
 QPushButton{
-	border:2px solid rgb(27,51,99);
-	background-color: rgb(14,35,75);
+	border-radius:5px;
+	border:1px solid rgb(3,110,170);
+	background-color: rgb(3,110,170);
 }
-QPushButton:pressed{
-	border:2px solid rgb(14,35,75);
-	background-color: rgb(14,35,75);
+QPushButton:pressed{	
+	margin:5px;
+	border-radius:5px;
+	border:1px solid rgb(3,110,170);
+	background-color: rgb(3,110,170);
 }
 
 QToolButton{
 	border:1px solid rgb(238, 238, 236);
-	background-color: rgb(14,35,75);
+	background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(0, 232, 255, 255), stop:1 rgba(0, 108, 231, 255));
 }
 QToolButton:checked{
 	color:rgb(52, 101, 164);
 	border:1px solid rgb(238, 238, 236);
-	background-color: rgb(238, 238, 236);
+	background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(50, 247, 175, 255), stop:1 rgba(14, 191, 139, 255));
 }
 #tab_view{
 	border:0px solid grey;
@@ -287,6 +286,10 @@ QToolButton:checked{
                  <height>0</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">color: rgb(0, 0, 0);
+border:0px solid grey;</string>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -415,8 +418,7 @@ QToolButton:checked{
                 <enum>Qt::NoFocus</enum>
                </property>
                <property name="styleSheet">
-                <string notr="true">	border:0px solid rgb(14,35,75);
-	background-color: rgb(14,35,75);</string>
+                <string notr="true"/>
                </property>
                <property name="text">
                 <string>关闭</string>
@@ -440,6 +442,9 @@ QToolButton:checked{
              </property>
              <property name="leftMargin">
               <number>10</number>
+             </property>
+             <property name="topMargin">
+              <number>20</number>
              </property>
              <property name="rightMargin">
               <number>10</number>
@@ -524,6 +529,9 @@ border:1px solid rgb(238, 238, 236);
                     <width>16777215</width>
                     <height>120</height>
                    </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
                   </property>
                   <property name="text">
                    <string>取出:0</string>
@@ -764,7 +772,7 @@ border:1px solid rgb(238, 238, 236);
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="6,1,1">
+           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="6,0,1,0">
             <property name="leftMargin">
              <number>10</number>
             </property>
@@ -779,12 +787,40 @@ border:1px solid rgb(238, 238, 236);
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="fresh">
+             <widget class="QPushButton" name="OK">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>128</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
+              <property name="text">
+               <string>手术单取用</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="fresh">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>128</width>
+                <height>0</height>
+               </size>
               </property>
               <property name="focusPolicy">
                <enum>Qt::NoFocus</enum>
@@ -795,18 +831,21 @@ border:1px solid rgb(238, 238, 236);
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="OK">
+             <widget class="QPushButton" name="pushButton_2">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
+              <property name="minimumSize">
+               <size>
+                <width>128</width>
+                <height>0</height>
+               </size>
               </property>
               <property name="text">
-               <string>确定</string>
+               <string>停止</string>
               </property>
              </widget>
             </item>
