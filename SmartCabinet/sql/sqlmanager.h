@@ -34,6 +34,7 @@ public:
     bool waitForSync();
     static void bindGoodsId(int col, int row, QString goodsId);
     static int getShowCountByCase(int col, int row);//获取柜格显示的包类型数量
+    static void sqlDelete();
 
     enum RepState{
         no_rep=0,//没有库存

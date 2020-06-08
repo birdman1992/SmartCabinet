@@ -866,3 +866,8 @@ void CabinetService::on_func_check_clicked(bool checked)
 {
     setFuncWord(funcCheck, checked);
 }
+
+void CabinetService::on_func_apply_toggled(bool checked)
+{
+    setFuncWord(funcApply, checked);
+}

@@ -1045,7 +1045,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.6.1.20200107_beta</string>
+        <string>1.6.2.20200605_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
@@ -1725,6 +1725,13 @@ QCheckBox::indicator:!checked{
           </property>
           <property name="text">
            <string>盘点</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="func_apply">
+          <property name="text">
+           <string>请货</string>
           </property>
          </widget>
         </item>

@@ -36,6 +36,7 @@ enum FuncWord{
     funcBack = 2,
     funcRefun = 4,
     funcCheck = 8,
+    funcApply = 16,
 };
 
 class CabinetConfig

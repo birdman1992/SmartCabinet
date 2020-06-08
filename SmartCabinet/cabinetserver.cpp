@@ -348,7 +348,9 @@ void CabinetServer::userLogin(QString userId)
     qDebug()<<qba;
     logId = userId;
 
-    replyCheck(reply_login);
+    if(reply_login)
+        return;
+
     reply_login = post(nUrl, qba, timeStamp, false);//登录留下记录但不重新调用
 //    reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
@@ -1310,7 +1312,14 @@ void CabinetServer::recvListAccess()
             emit goodsNumChanged(goodsId, goodsNum);
             emit accessSuccess(QString(cJSON_GetObjectItem(item,"msg")->valuestring));
             emit updateGoodsPrice(goodsPrice, goodsPrice*goodsType);
+            if(config->state = STATE_BACK)
+            {
+                QString goodsName = QString::fromUtf8(cJSON_GetObjectItem(item, "goodsName")->valuestring);
+                QString traceId = QString::fromUtf8(cJSON_GetObjectItem(item,"traceId")->valuestring);
+                config->showMsg(QString("还货成功:%1\n%2").arg(traceId).arg(goodsName), false);
+            }
         }
+
     }
     else
     {
@@ -1651,6 +1660,7 @@ void CabinetServer::recvCabSync()
         {
             needClearBeforeClone = false;
             config->clearGoodsConfig();
+            SqlManager::sqlDelete();
             emit insertRst(true);
         }
         int listSize = cJSON_GetArraySize(json_data);
@@ -1758,7 +1768,7 @@ void CabinetServer::recvCheckTables()
             if(jItem == NULL)
                 break;
 
-            CheckTableInfo* info = new CheckTableInfo();
+            CheckTableInfo* info = new CheckTableInfo;
             info->id = QString::number(cJSON_GetObjectItem(jItem, "id")->valueint);
             info->sTime = QString(cJSON_GetObjectItem(jItem, "sTime")->valuestring);
             info->eTime = QString(cJSON_GetObjectItem(jItem, "eTime")->valuestring);
@@ -2102,6 +2112,7 @@ void CabinetServer::netTimeout()
     }
     else
     {
+        replyCheck(reply_login);
         if(apiState == 1)//登录
         {
             if(config->checkManagers(logId))

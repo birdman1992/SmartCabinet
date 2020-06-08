@@ -97,6 +97,8 @@ private slots:
 
     void on_func_check_clicked(bool checked);
 
+    void on_func_apply_toggled(bool checked);
+
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);

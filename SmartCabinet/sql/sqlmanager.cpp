@@ -349,6 +349,22 @@ int SqlManager::getShowCountByCase(int col, int row)
     return ret;
 }
 
+void SqlManager::sqlDelete()
+{
+    QString cmd = QString("DELETE FROM CodeInfo");
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, cmd, "sqlDelete");
+
+    cmd = QString("DELETE FROM GoodsInfo");
+    queryExec(&query, cmd, "sqlDelete");
+//    QString cmd = QString("DELETE FROM CodeInfo").arg(col).arg(row).arg(goodsId);
+//    QSqlQuery query(db_cabinet);
+//    queryExec(&query, cmd, "sqlDelete");
+//    QString cmd = QString("DELETE FROM CodeInfo").arg(col).arg(row).arg(goodsId);
+//    QSqlQuery query(db_cabinet);
+//    queryExec(&query, cmd, "sqlDelete");
+}
+
 /*
 CodeInfo:条码信息表 [code|package_id|batch_number|pro_name|sup_name|state_local|state_remote|store_list]
 GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]

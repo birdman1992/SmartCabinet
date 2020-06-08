@@ -757,9 +757,10 @@ void CabinetWidget::cabinetInit()
 
 void CabinetWidget::updateDelay(int delay)
 {
+//    qDebug()<<"update delay"<<delay;
     updateNetState(delay);
     ui->delay->setText(QString("%1ms").arg(delay));
-    config->netState = ((delay<100) && (delay>0));
+    config->netState = ((delay<1000) && (delay>0));
     ui->delay->setChecked(config->netState);
 }
 
@@ -1144,6 +1145,7 @@ void CabinetWidget::setPowerState(int power)
     win_access->setAccessModel(false);
     waitForCodeScan = false;
 
+    ui->back->hide();
     ui->store->hide();
     ui->refund->hide();
     ui->service->hide();
@@ -1254,6 +1256,9 @@ void CabinetWidget::setPowerState(int power)
     ui->back->setVisible(config->getFuncWord() & funcBack);
     ui->refund->setVisible(config->getFuncWord() & funcRefun);
     ui->check->setVisible(config->getFuncWord() & funcCheck);
+    ui->reply->setVisible(config->getFuncWord() & funcApply);
+
+//    qDebug()<<(config->getFuncWord() & funcBack)<<(config->getFuncWord() & funcRefun)<<(config->getFuncWord() & funcCheck);
 }
 
 void CabinetWidget::recvUserInfo(QByteArray qba)
