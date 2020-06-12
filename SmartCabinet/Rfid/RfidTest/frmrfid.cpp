@@ -62,13 +62,35 @@ void FrmRfid::updateCount(EpcMark mark, int count)
 //    if(mark == 0)
 //        return;
 
-    qDebug()<<mark<<count;
+//    qDebug()<<"updateCount:"<<mark<<count;
     if(mark < btnTable.count())
     {
         btnTable[mark]->setText(btnTable[mark]->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(count)));
-        btnTable[mark]->setVisible(count);
+//        btnTable[mark]->setVisible(count && (visibleFlag[mark]));//加入屏蔽掩膜
+        btnTable[mark]->setVisible(count);//没有屏蔽掩膜
     }
+
+    setDefaultSel();//设置默认选中按钮
 }
+
+void FrmRfid::setDefaultSel()
+{
+    QMap<EpcMark, QToolButton*>::iterator itTab = btnTable.begin();
+    QToolButton* checkBtn = NULL;
+
+    for(itTab=btnTable.begin(); itTab!=btnTable.end();itTab++)
+    {
+        if(itTab.value()->isVisible())
+        {
+            checkBtn = itTab.value();
+            if(itTab.value()->isChecked())
+                return;
+        }
+    }
+    if(checkBtn)
+        checkBtn->setChecked(true);
+}
+
 
 void FrmRfid::updateCurUser(QString optId)
 {
@@ -191,25 +213,37 @@ void FrmRfid::initTabs()
     connect(eModel, SIGNAL(scanProgress(int,int)), this, SLOT(scanProgress(int,int)));
     connect(eModel, SIGNAL(updateLockCount(int)), this, SLOT(updateLockCount(int)));
     ui->tab_view->setModel(filterModel);
-    ui->tab_view->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+    ui->tab_view->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
     ui->tab_view->setAlternatingRowColors(true);
     ui->tab_view->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
                                 "background:white;"
+                                "gridline-color:rgb(161,161,161);"
                                 "alternate-background-color:rgb(244, 244, 244);"
                                 "selection-color:white;    /*鼠标选中时前景色：文字颜色*/"
                                 "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
+
+    ui->tab_view->setColumnWidth(0, 113);
+    ui->tab_view->setColumnWidth(1, 109);
+    ui->tab_view->setColumnWidth(2, 137);
+    ui->tab_view->setColumnWidth(3, 210);
+    ui->tab_view->setColumnWidth(4, 77);
+    ui->tab_view->setColumnWidth(5, 228);
+    ui->tab_view->setColumnWidth(6, 245);
+    ui->tab_view->setColumnWidth(7, 90);
+    ui->tab_view->setColumnWidth(8, 190);
+    ui->tab_view->setColumnWidth(9, 77);
+    ui->tab_view->setColumnWidth(10, 60);
+
 
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
     QString style = QString(qssScrollbar.readAll());
     ui->tab_frame->setStyleSheet(style);
     qssScrollbar.close();
-
     foreach (QToolButton* btn, btnTable)
     {
         btn->hide();
     }
-    ui->tab_filter_all->show();
 }
 
 void FrmRfid::setPow(int pow)
@@ -217,11 +251,22 @@ void FrmRfid::setPow(int pow)
     switch(pow)
     {
     case 0:
-        visibleFlag = QBitArray(mark_checked+1, true);
+//        visibleFlag = QBitArray(mark_checked+1, true);
+        visibleFlag = QBitArray(mark_checked+1, false);
+        visibleFlag[mark_in] = true;
+        visibleFlag[mark_out] = true;
+        visibleFlag[mark_back] = true;
+        visibleFlag[mark_new] = true;
+        visibleFlag[mark_wait_back] = true;
+//        visibleFlag[mark_all] = true;
+        visibleFlag[mark_checked] = true;
         break;
     default:
         break;
     }
+
+    if(visibleFlag[mark_all])
+        ui->tab_filter_all->show();
 }
 
 void FrmRfid::clearCountText()
@@ -232,7 +277,8 @@ void FrmRfid::clearCountText()
         btn->hide();
         qDebug()<<"clear:"<<btn->objectName();
     }
-    ui->tab_filter_all->show();
+    if(visibleFlag[mark_all])
+        ui->tab_filter_all->show();
 }
 
 void FrmRfid::showEvent(QShowEvent *)
@@ -245,6 +291,17 @@ void FrmRfid::paintEvent(QPaintEvent *e)
     Q_UNUSED(e);
     QPainter painter(this);
     painter.fillRect(rect(), QColor(50,50,50,0));
+//    qDebug()<<"COL SIZE"<<ui->tab_view->columnWidth(0)
+//              <<ui->tab_view->columnWidth(1)
+//                <<ui->tab_view->columnWidth(2)
+//                  <<ui->tab_view->columnWidth(3)
+//                    <<ui->tab_view->columnWidth(4)
+//                      <<ui->tab_view->columnWidth(5)
+//                        <<ui->tab_view->columnWidth(6)
+//                          <<ui->tab_view->columnWidth(7)
+//                            <<ui->tab_view->columnWidth(8)
+//                              <<ui->tab_view->columnWidth(9)
+//                                <<ui->tab_view->columnWidth(10);
 }
 
 void FrmRfid::on_OK_clicked()
@@ -277,9 +334,9 @@ void FrmRfid::on_tab_filter_all_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
+        filterModel->setFilterKeyColumn(9);
         filterModel->setFilterRegExp(".*");
-        ui->tab_view->resizeColumnsToContents();
+//        ui->tab_view->resizeColumnsToContents();
     }
 }
 
@@ -287,9 +344,9 @@ void FrmRfid::on_tab_filter_out_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
-        filterModel->setFilterRegExp("取出");
-        ui->tab_view->resizeColumnsToContents();
+        filterModel->setFilterKeyColumn(9);
+        filterModel->setFilterRegExp("取出$");
+//        ui->tab_view->resizeColumnsToContents();
     }
 }
 
@@ -297,9 +354,10 @@ void FrmRfid::on_tab_filter_new_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
-        filterModel->setFilterRegExp("存入");
-        ui->tab_view->resizeColumnsToContents();
+        filterModel->setFilterKeyColumn(9);
+//        filterModel->setFilterRegExp("存入");
+        filterModel->setFilterFixedString(eModel->markTab().at(mark_new));
+//        ui->tab_view->resizeColumnsToContents();
     }
 }
 
@@ -307,9 +365,10 @@ void FrmRfid::on_tab_filter_back_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
-        filterModel->setFilterRegExp("还回");
-        ui->tab_view->resizeColumnsToContents();
+        filterModel->setFilterKeyColumn(9);
+//        filterModel->setFilterRegExp("还回");
+        filterModel->setFilterFixedString(eModel->markTab().at(mark_back));
+//        ui->tab_view->resizeColumnsToContents();
     }
 }
 
@@ -317,9 +376,10 @@ void FrmRfid::on_tab_filter_consume_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
-        filterModel->setFilterRegExp("登记");
-        ui->tab_view->resizeColumnsToContents();
+        filterModel->setFilterKeyColumn(9);
+//        filterModel->setFilterRegExp("登记");
+        filterModel->setFilterFixedString(eModel->markTab().at(mark_con));
+//        ui->tab_view->resizeColumnsToContents();
     }
 }
 
@@ -327,9 +387,10 @@ void FrmRfid::on_tab_filter_in_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
-        filterModel->setFilterRegExp("柜内");
-        ui->tab_view->resizeColumnsToContents();
+        filterModel->setFilterKeyColumn(9);
+//        filterModel->setFilterRegExp("柜内");
+        filterModel->setFilterFixedString(eModel->markTab().at(mark_in));
+//        ui->tab_view->resizeColumnsToContents();
     }
 }
 
@@ -337,9 +398,10 @@ void FrmRfid::on_tab_filter_unknow_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
-        filterModel->setFilterRegExp("未知");
-        ui->tab_view->resizeColumnsToContents();
+        filterModel->setFilterKeyColumn(9);
+//        filterModel->setFilterRegExp("未知");
+        filterModel->setFilterFixedString(eModel->markTab().at(mark_no));
+//        ui->tab_view->resizeColumnsToContents();
     }
 }
 
@@ -347,8 +409,19 @@ void FrmRfid::on_tab_filter_wait_back_toggled(bool checked)
 {
     if(checked)
     {
-        filterModel->setFilterKeyColumn(7);
-        filterModel->setFilterRegExp("取出未还");
-        ui->tab_view->resizeColumnsToContents();
+        filterModel->setFilterKeyColumn(9);
+//        filterModel->setFilterRegExp("取出未还");
+        filterModel->setFilterFixedString(eModel->markTab().at(mark_wait_back));
+//        ui->tab_view->resizeColumnsToContents();
     }
+}
+
+void FrmRfid::on_tab_view_clicked(const QModelIndex &index)
+{
+    if(index.column() != (ui->tab_view->model()->columnCount()-1))//不是最后一列的操作,排除
+    {
+        return;
+    }
+
+    qDebug()<<ui->tab_view->model()->index(index.row(), 1).data().toString();
 }

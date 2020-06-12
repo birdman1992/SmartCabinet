@@ -7,9 +7,11 @@ EpcModel::EpcModel(QObject *parent)
     markCount = 0;
     curOptId = QString();
     colsName.clear();
-    colsName<<"物品"<<"条码"<<"规格"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记";
+//    colsName<<"物品"<<"条码"<<"规格"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";
+    colsName<<"ID"<<"HIS编码"<<"物品"<<"规格"<<"单价"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";
     markNameTab.clear();
-    markNameTab<<"未知"<<"存入"<<"还回"<<"取出"<<"登记"<<"柜内"<<"取出未还"<<"发现";
+    markNameTab<<"未发现"<<"存入"<<"还回"<<"取出"<<"登记"<<"实时库存"<<"取出未还"<<"总览"<<"发现";
+    optList    <<"--"   <<"--"  <<"--" <<"移除"<<"--" <<"--"     <<"--"    <<"--"<<"--";
 }
 
 int EpcModel::rowCount(const QModelIndex &) const
@@ -19,12 +21,12 @@ int EpcModel::rowCount(const QModelIndex &) const
 
 int EpcModel::columnCount(const QModelIndex &) const
 {
-    return 8;
+    return colsName.count();
 }
 
 #include "funcs/secwatch.h"
 //GI.name, EI.epc_code, EI.goods_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp
-//|物品|RFID|条码|规格|生产商|供应商|操作人|时间|
+//|ID|HIS编码|物品|规格|单价|生产商|供应商|操作人|时间|标记|操作
 QVariant EpcModel::data(const QModelIndex& index, int role) const
 {
 //    qDebug()<<"data>>>>>>>>>>>"<<index.row()<<index.column();
@@ -33,31 +35,39 @@ QVariant EpcModel::data(const QModelIndex& index, int role) const
         return QVariant();
     }
     EpcInfo* info = map_rfid.values().at(index.row());
+
     if(role == Qt::DisplayRole)
     {
         switch (index.column())
         {
-        case 0:return info->name;
+        case 0:return info->package_id;
             break;
-//        case 1:return info->epcId;
-//            break;
         case 1:return info->goodsCode;
             break;
-        case 2:return info->size;
+        case 2:return info->name;
             break;
-        case 3:return info->pro_name;
+        case 3:return info->size;
             break;
-        case 4:return info->sup_name;
+        case 4:return info->price;
             break;
-        case 5:return info->lastOpt;
+        case 5:return info->pro_name;
             break;
-        case 6:return (info->lastStamp)?(QDateTime::fromMSecsSinceEpoch(info->lastStamp).toString("yyyy-MM-dd hh:mm:ss")):("");
+        case 6:return info->sup_name;
             break;
-        case 7:return markNameTab[info->mark];
+        case 7:return info->lastOpt;
+            break;
+        case 8:return (info->lastStamp)?(QDateTime::fromMSecsSinceEpoch(info->lastStamp).toString("yyyy-MM-dd hh:mm:ss")):("");
+            break;
+        case 9:return markNameTab[info->mark];
+            break;
+        case 10:return optList[info->mark];
             break;
         default:return QVariant();
         }
     }
+    if(role == Qt::TextAlignmentRole)//居中
+        return Qt::AlignCenter;
+
     return QVariant();
 }
 
@@ -84,6 +94,7 @@ void EpcModel::operator<<(EpcInfo *info)
         delete oldInfo;
     }
     map_rfid.insert(info->epcId, info);
+    map_code.insert(info->goodsCode, info);
 }
 
 EpcInfo *EpcModel::operator[](QString code)
@@ -130,8 +141,6 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
     if(info->mark == mark)
         return;
 
-    //更新活跃时间戳
-    activeStamp = QDateTime::currentMSecsSinceEpoch();
     if((!info->mark) && mark)
     {
         markCount++;
@@ -145,8 +154,14 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
 //    qDebug()<<"[setEpcMark]"<<epcId<<info->mark<<"->"<<mark<<"count:"<<markCount<<"countTab:"<<countTab[mark];
 
     info->mark = mark;
-    info->lastStamp = QDateTime::currentMSecsSinceEpoch();
-    info->lastOpt = curOptId;
+    if(info->mark != mark_wait_back)
+    {
+        info->lastStamp = QDateTime::currentMSecsSinceEpoch();
+        info->lastOpt = curOptId;
+        //更新活跃时间戳
+        activeStamp = info->lastStamp;
+    }
+
     QModelIndex topLeft,bottomRight;
     topLeft = createIndex(map_rfid.keys().indexOf(epcId), 6);
     bottomRight = createIndex(map_rfid.keys().indexOf(epcId), 8);
@@ -298,7 +313,7 @@ void EpcModel::syncUpload()
 void EpcModel::syncDownload()
 {
     clear();
-    QString cmd = QString("SELECT GI.name, EI.epc_code, EI.goods_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp, EI.state FROM EpcInfo AS EI LEFT JOIN CodeInfo AS CI ON EI.goods_code=CI.code LEFT JOIN GoodsInfo AS GI ON CI.package_id=GI.package_id");
+    QString cmd = QString("SELECT GI.name, EI.epc_code, EI.goods_code, GI.size, GI.pro_name, GI.sup_name, EI.opt_id, EI.time_stamp, EI.state, GI.package_id, GI.single_price FROM EpcInfo AS EI LEFT JOIN CodeInfo AS CI ON EI.goods_code=CI.code LEFT JOIN GoodsInfo AS GI ON CI.package_id=GI.package_id");
     QSqlQuery query = SqlManager::query(cmd, QString("[RFID sync download]"));
     memset(countTab, 0, sizeof(countTab));
 //    beginResetModel();
@@ -313,7 +328,10 @@ void EpcModel::syncDownload()
         info->lastOpt = query.value(6).toString();
         info->lastStamp = query.value(7).toLongLong();
         info->state = (EpcState)query.value(8).toInt();
+        info->package_id = query.value(9).toString();
+        info->price = query.value(10).toFloat();
         map_rfid.insert(info->epcId, info);
+        map_code.insert(info->goodsCode, info);
         countTab[info->mark]++;
 //        qDebug()<<info->state;
 //        emit updateEpcInfo(info);
@@ -363,6 +381,16 @@ void EpcModel::refrushModel()
 bool EpcModel::epcCheckActive(quint64 msecs)
 {
     return QDateTime::currentMSecsSinceEpoch() - activeStamp < msecs;
+}
+
+QStringList EpcModel::markTab()
+{
+    return markNameTab;
+}
+
+void EpcModel::operation(QString goodsCode)
+{
+
 }
 
 void EpcModel::initColName()

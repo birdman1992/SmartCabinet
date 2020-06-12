@@ -46,7 +46,9 @@ public:
     QString size;
     QString pro_name;
     QString sup_name;
-    QString goodsCode;//对应物品id
+    QString goodsCode;//对应物品条码
+    QString package_id;
+    float price;
     quint64 lastStamp;//上次更新的时间戳
     EpcState state;//当前状态
     EpcMark mark;//
@@ -80,6 +82,8 @@ public:
     bool markInfoCompleted();
     void refrushModel();
     bool epcCheckActive(quint64 msecs = 10000);//标签盘点活跃
+    QStringList markTab();
+    void operation(QString goodsCode);
 
 public slots:
     void syncUpload();
@@ -98,12 +102,14 @@ signals:
 
 private:
     QMap<QString, EpcInfo*> map_rfid;
+    QMap<QString, EpcInfo*> map_code;
     QMap<QString, QString> map_col_name;
     QStringList colsName;
     QStringList markNameTab;
+    QStringList optList;
     QString curOptId;
     quint64 activeStamp;//标签活跃时间戳:最后一次标签状态发生变化的时间
-    int countTab[8];
+    int countTab[10];
     int markCount;//count be marked
     int outCount;//count for fetch out
     int lockCount;

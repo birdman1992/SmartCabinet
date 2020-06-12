@@ -27,6 +27,7 @@ class FrmRfid : public QWidget
 public:
     explicit FrmRfid(QWidget *parent = 0);
     void setLoginState(bool login);
+    void setPow(int pow);
     ~FrmRfid();
 
 public slots:
@@ -59,6 +60,8 @@ private slots:
 
     void on_tab_filter_wait_back_toggled(bool checked);
 
+    void on_tab_view_clicked(const QModelIndex &index);
+
 private:
     Ui::FrmRfid *ui;
     RfidManager* rfManager;
@@ -73,7 +76,7 @@ private:
     QMap<EpcMark, QToolButton*> btnTable;
     void updateTableRow(int rowIndex, EpcInfo*);
     void initTabs();
-    void setPow(int pow);
+    void setDefaultSel();//设置默认选项
     void showEvent(QShowEvent *);
     void paintEvent(QPaintEvent*);
 };

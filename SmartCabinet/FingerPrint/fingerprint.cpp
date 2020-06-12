@@ -745,7 +745,6 @@ void FingerPrint::on_spin_can_valueChanged(int arg1)
 
 void FingerPrint::on_spin_seq_valueChanged(int arg1)
 {
-    qDebug("231231234");
     if(curDev == -1)
     {
         curDev = ui->spin_can->value();

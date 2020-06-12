@@ -13,15 +13,21 @@
   <property name="windowTitle">
    <string>FrmRfid</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">#FrmRfid{
+	border:1px solid white;
+	border-radius:8px;
+}</string>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="leftMargin">
-    <number>100</number>
+    <number>75</number>
    </property>
    <property name="topMargin">
     <number>100</number>
    </property>
    <property name="rightMargin">
-    <number>100</number>
+    <number>75</number>
    </property>
    <property name="bottomMargin">
     <number>100</number>
@@ -32,17 +38,34 @@
       <string notr="true">QWidget{
 	color: rgb(255, 255, 255);
 }
-#frm_win{
-	background-color: rgb(14,35,75);
+#stackedWidget{
+	border:1px solid white;
+	border-radius:8px;
 }
+
+#frm_win{
+	border:1px solid white;
+	border-radius:8px;
+	background-color: white;
+}
+#frame_title{
+	border:1px solid white;
+	border-radius:8px;
+}
+
 #page_tab,#page{
+	border:1px solid white;
+	border-radius:8px;
 	background-color: rgb(255,255,255);
 }
 #frame_title{
-	border:0px,solid,rgb(236,236,236);
 	border-bottom-width:1px;
 	border-bottom-style:solid;
-	border-bottom-color:rgb(34,60,111);
+	border-bottom-color:rgb(218,218,218);
+	border-top-left-radius:8px;
+	border-top-right-radius:8px;
+	border-bottom-left-radius:0px;
+	border-bottom-right-radius:0px;
 }
 QPushButton{
 	border-radius:5px;
@@ -58,11 +81,13 @@ QPushButton:pressed{
 
 QToolButton{
 	border:1px solid rgb(238, 238, 236);
+	border-radius:5px;
 	background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(0, 232, 255, 255), stop:1 rgba(0, 108, 231, 255));
 }
 QToolButton:checked{
 	color:rgb(52, 101, 164);
 	border:1px solid rgb(238, 238, 236);
+	border-radius:5px;
 	background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(50, 247, 175, 255), stop:1 rgba(14, 191, 139, 255));
 }
 #tab_view{
@@ -232,7 +257,10 @@ QToolButton:checked{
          </layout>
         </widget>
         <widget class="QWidget" name="page_tab">
-         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,8,1">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,8,0">
           <property name="spacing">
            <number>4</number>
           </property>
@@ -250,6 +278,12 @@ QToolButton:checked{
           </property>
           <item>
            <widget class="QFrame" name="frame_title">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>70</height>
+             </size>
+            </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -414,6 +448,12 @@ border:0px solid grey;</string>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="maximumSize">
+                <size>
+                 <width>96</width>
+                 <height>43</height>
+                </size>
+               </property>
                <property name="focusPolicy">
                 <enum>Qt::NoFocus</enum>
                </property>
@@ -436,9 +476,9 @@ border:0px solid grey;</string>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
-            <layout class="QHBoxLayout" name="layout_tabs" stretch="1,10">
+            <layout class="QHBoxLayout" name="layout_tabs" stretch="1,14">
              <property name="spacing">
-              <number>0</number>
+              <number>12</number>
              </property>
              <property name="leftMargin">
               <number>10</number>
@@ -453,8 +493,8 @@ border:0px solid grey;</string>
               <widget class="QFrame" name="filter_frame">
                <property name="styleSheet">
                 <string notr="true">#filter_frame{
-background-color: rgb(14,35,75);
-border:1px solid rgb(238, 238, 236);
+background-color: rgb(255,255,255);
+border:0px solid rgb(238, 238, 236);
 }</string>
                </property>
                <property name="frameShape">
@@ -462,7 +502,7 @@ border:1px solid rgb(238, 238, 236);
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,0,0,0,0,0,0,0">
                 <property name="spacing">
-                 <number>0</number>
+                 <number>12</number>
                 </property>
                 <property name="leftMargin">
                  <number>0</number>
@@ -486,13 +526,13 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>141</width>
                     <height>120</height>
                    </size>
                   </property>
@@ -520,13 +560,13 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>141</width>
                     <height>120</height>
                    </size>
                   </property>
@@ -554,13 +594,13 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>141</width>
                     <height>120</height>
                    </size>
                   </property>
@@ -585,13 +625,13 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>141</width>
                     <height>120</height>
                    </size>
                   </property>
@@ -616,13 +656,13 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>141</width>
                     <height>120</height>
                    </size>
                   </property>
@@ -647,13 +687,13 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>141</width>
                     <height>120</height>
                    </size>
                   </property>
@@ -678,13 +718,13 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>141</width>
                     <height>120</height>
                    </size>
                   </property>
@@ -709,8 +749,14 @@ border:1px solid rgb(238, 238, 236);
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
-                    <height>90</height>
+                    <width>141</width>
+                    <height>61</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>141</width>
+                    <height>16777215</height>
                    </size>
                   </property>
                   <property name="focusPolicy">
@@ -773,11 +819,20 @@ border:1px solid rgb(238, 238, 236);
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="6,0,1,0">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetFixedSize</enum>
+            </property>
             <property name="leftMargin">
              <number>10</number>
             </property>
+            <property name="topMargin">
+             <number>23</number>
+            </property>
             <property name="rightMargin">
-             <number>20</number>
+             <number>25</number>
+            </property>
+            <property name="bottomMargin">
+             <number>23</number>
             </property>
             <item>
              <widget class="QLabel" name="msg">
@@ -797,7 +852,13 @@ border:1px solid rgb(238, 238, 236);
               <property name="minimumSize">
                <size>
                 <width>128</width>
-                <height>0</height>
+                <height>41</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>41</height>
                </size>
               </property>
               <property name="focusPolicy">
@@ -819,7 +880,13 @@ border:1px solid rgb(238, 238, 236);
               <property name="minimumSize">
                <size>
                 <width>128</width>
-                <height>0</height>
+                <height>41</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>41</height>
                </size>
               </property>
               <property name="focusPolicy">
@@ -841,7 +908,13 @@ border:1px solid rgb(238, 238, 236);
               <property name="minimumSize">
                <size>
                 <width>128</width>
-                <height>0</height>
+                <height>41</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>41</height>
                </size>
               </property>
               <property name="text">

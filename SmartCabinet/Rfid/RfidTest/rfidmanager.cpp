@@ -88,6 +88,7 @@ void RfidManager::initColName()
 void RfidManager::startScan()
 {
 //    testReader->scanStop();
+    flagScan = true;
     eModel->clearEpcMark();
     qDebug()<<"[startScan]";
     foreach(RfidReader* reader, rfidHub->deviceList())
@@ -96,7 +97,6 @@ void RfidManager::startScan()
         reader->scanStart(insideAnt, 1);
     }
     connect(rfidHub, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString,int,int)));
-    flagScan = true;
     timerStart();
 }
 
@@ -171,13 +171,13 @@ void RfidManager::doorStateChanged(int id, bool isOpen)
         doorState &= ~(1<<id);
         if(flagScan && (!doorState))//扫描状态且柜门全关
         {
-            eModel->transEpcMark(mark_checked, mark_out);
             accessLock = true;
+            eModel->transEpcMark(mark_checked, mark_out);
             emit optFinish();
             doorCloseScan();
         }
     }
-    qDebug()<<"close&scan"<<doorState<<flagScan;
+    qDebug()<<"doorState:"<<doorState<<"flagScan:"<<flagScan<<"accessLock:"<<accessLock;
 }
 
 //void RfidManager::listShow(QStringList epcs, QTableWidget *table, TableMark mark)

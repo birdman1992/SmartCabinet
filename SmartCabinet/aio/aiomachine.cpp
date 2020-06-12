@@ -177,6 +177,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     emit updateLoginState(true);
     optUser = user;
     win_rfid->updateCurUser(optUser->name);
+    win_rfid->setPow(optUser->power);
     loginState = true;
     if(config->getDepartName().isEmpty())
     {
