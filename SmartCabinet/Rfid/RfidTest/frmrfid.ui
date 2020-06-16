@@ -729,7 +729,7 @@ border:0px solid rgb(238, 238, 236);
                    </size>
                   </property>
                   <property name="text">
-                   <string>未知:0</string>
+                   <string>未发现:0</string>
                   </property>
                   <property name="checkable">
                    <bool>true</bool>

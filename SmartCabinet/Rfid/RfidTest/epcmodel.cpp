@@ -10,7 +10,7 @@ EpcModel::EpcModel(QObject *parent)
 //    colsName<<"物品"<<"条码"<<"规格"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";
     colsName<<"ID"<<"HIS编码"<<"物品"<<"规格"<<"单价"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";
     markNameTab.clear();
-    markNameTab<<"未发现"<<"存入"<<"还回"<<"取出"<<"登记"<<"实时库存"<<"取出未还"<<"总览"<<"发现";
+    markNameTab<<"未发现"<<"存入"<<"还回"<<"取出"<<"登记"<<"实时库存"<<"取出未还"<<"总览"<<"离柜"<<"发现";
     optList    <<"--"   <<"--"  <<"--" <<"移除"<<"--" <<"--"     <<"--"    <<"--"<<"--";
 }
 
@@ -122,6 +122,8 @@ void EpcModel::clearEpcMark()
             consumCheckList<<info->epcId;
             if(QDateTime::fromMSecsSinceEpoch(info->lastStamp) < outOverTime)//未归还
                 setEpcMark(info->epcId, mark_wait_back);
+            else
+                setEpcMark(info->epcId, mark_away);
         }
     }
     markCount = 0;
@@ -390,7 +392,12 @@ QStringList EpcModel::markTab()
 
 void EpcModel::operation(QString goodsCode)
 {
+    EpcInfo* info = map_code.value(goodsCode, NULL);
+    if(info == NULL)
+        return;
 
+    if(info->mark == mark_out)
+        setEpcMark(info->epcId, mark_in);
 }
 
 void EpcModel::initColName()

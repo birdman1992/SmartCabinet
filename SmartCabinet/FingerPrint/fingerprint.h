@@ -12,6 +12,7 @@
 #include "cmdpack.h"
 #include "userprintmanager.h"
 #include "FingerPrint/fingerdatacache.h"
+#include "manager/signalmanager.h"
 
 namespace Ui {
 class FingerPrint;
@@ -20,6 +21,7 @@ class FingerPrint;
 class FingerPrint : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(bool LoginState READ LoginState WRITE setLoginState)
 
 public:
     explicit FingerPrint(QWidget *parent = 0);
@@ -71,12 +73,31 @@ public:
     enum CUR_STATE{
         STATE_REG,//注册
         STATE_CHECK,//验证
-        STATE_SYNC//同步
+        STATE_SYNC,//同步
+        STATE_LOGIN,//已登录
     };
+
+    bool LoginState() const
+    {
+        return m_LoginState;
+    }
 
 public slots:
     void recvFingerData(int canId, QByteArray data);
     void recvCurCardId(QByteArray cardId);
+
+    void setLoginState(bool LoginState)
+    {
+        m_LoginState = LoginState;
+        if(LoginState && (curState != STATE_SYNC))
+        {
+            curState = STATE_LOGIN;
+        }
+        if(!LoginState)
+        {
+            curState = STATE_CHECK;
+        }
+    }
 
 signals:
     void requireOpenLock(int seq, int index);
@@ -157,6 +178,7 @@ private:
     void cmdSetLed(int id, char state, char led);//指纹模块id，显示状态，颜色
     void cmdSetLed(int id, char state, char sLed, char eLed, char loopCount=0);//指纹模块id，显示状态，起始颜色, 结束颜色,次数
     void cmdSearch(int id, int bufferId=0, int rangeMin=1, int rangeMax=80);
+    bool m_LoginState;
 };
 
 #endif // FINGERPRINT_H

@@ -43,6 +43,9 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     lastOptTime = QTime::currentTime();
     screenProState = false;
 
+    SignalManager* sigMan = SignalManager::manager();
+    connect(this, SIGNAL(loginStateChanged(bool)), sigMan, SIGNAL(updateLoginState(bool)));
+
     connect(win_check_warnning, SIGNAL(pushCheck()), this, SLOT(checkPush()));
 #ifdef TCP_API
     goodsManager = GoodsManager::manager();
@@ -119,6 +122,7 @@ void CabinetWidget::cabLock()
     storeNum = 0;
     loginState = false;
     win_store_list->setLoginState(loginState);
+    emit loginStateChanged(loginState);
     clickLock = true;
     waitForCodeScan = false;
     waitForGoodsListCode = false;
@@ -1618,6 +1622,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     setPowerState(info->power);
     loginState = true;
     win_store_list->setLoginState(loginState);
+    emit loginStateChanged(loginState);
 
     config->cabVoice.voicePlay(VOICE_WELCOME_USE);
 }

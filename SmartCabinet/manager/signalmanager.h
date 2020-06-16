@@ -21,6 +21,7 @@ signals:
     void doorState(int id, bool isOpen);
     void accessSuccess(QString msg);
     void accessFailed(QString msg);
+    void updateLoginState(bool);//CabinetWidget::loginStateChanged->
 
 
 

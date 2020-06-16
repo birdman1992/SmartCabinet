@@ -21,10 +21,14 @@ FingerPrint::FingerPrint(QWidget *parent) :
     ledState = 3;
     curDev = -1;
     lockState = 0;
+    m_LoginState = false;
 
     manager_user = UserPrintManager::manager();
     ctrlSeq = manager_user->getSeqConfig();
     ctrlIndex = manager_user->getIndexConfig();
+
+    SignalManager* sigMan = SignalManager::manager();
+    connect(sigMan, SIGNAL(updateLoginState(bool)), this, SLOT(setLoginState(bool)));
 
     socketCan = new QSocketCan(this);
     socketCan->start();
@@ -257,7 +261,6 @@ void FingerPrint::ledStateChanged(int state)
 
 void FingerPrint::moduleActived(int id)
 {
-//    emit requireOpenLock(0, id);
     cmdSetLed(id, STATE_ON, MODEL_ACTIVE);//指纹进入激活状态
 
     switch(curState)
@@ -288,6 +291,10 @@ void FingerPrint::moduleActived(int id)
 
     case STATE_SYNC:
 
+        break;
+
+    case STATE_LOGIN://
+        emit requireOpenLock(0, id);
         break;
     default:
         break;

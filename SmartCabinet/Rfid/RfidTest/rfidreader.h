@@ -38,8 +38,11 @@ private:
     QTcpSocket* skt;
     RfidResponse response;
     CabinetConfig* config;
+    QHostAddress serverAddr;
+    quint16 serverPort;
 
     void heartBeat();
+    void devReconnect();
 
 private slots:
     void connectStateChanged(QAbstractSocket::SocketState state);

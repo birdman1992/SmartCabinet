@@ -6,6 +6,8 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent
     flagInit = false;
     flagConnect = false;
     flagWaitBack = false;
+    serverAddr = QHostAddress();
+    serverPort = 0;
     readerSeq = seq;
     config = CabinetConfig::config();
     skt = s;
@@ -16,11 +18,14 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent
 
 RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent) : QObject(parent)
 {
+
     flagInit = false;
     flagConnect = false;
     flagWaitBack = false;
     config = CabinetConfig::config();
     readerSeq = seq;
+    serverAddr = server;
+    serverPort = port;
     skt = new QTcpSocket();
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
@@ -40,7 +45,7 @@ void RfidReader::sendCmd(QByteArray data, bool printFlag)
     else
     {
         qDebug()<<"[sendCmd] send failed,dev offline:"<<data.toHex();
-        skt->write(data);
+//        skt->write(data);
     }
 }
 
@@ -50,8 +55,9 @@ void RfidReader::timerEvent(QTimerEvent * e)
     {
         if(flagWaitBack)//disconnected
         {
-            qDebug()<<skt->peerAddress()<<"disconnected";
+            qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
             flagConnect = false;
+            devReconnect();
         }
         else
         {
@@ -67,6 +73,17 @@ void RfidReader::heartBeat()
 {
     RfidCmd cmd(0x12, QByteArray::fromHex("00000000"));
     sendCmd(cmd.packData(),false);
+}
+
+void RfidReader::devReconnect()
+{
+    if(serverAddr.isNull())
+        return;
+    if(serverPort == 0)
+        return;
+
+    skt->disconnectFromHost();
+    skt->connectToHost(serverAddr, serverPort);
 }
 
 void RfidReader::scanStop()
@@ -113,6 +130,7 @@ void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
 
     case QAbstractSocket::UnconnectedState:
         flagConnect = false;
+
         break;
 
     default:

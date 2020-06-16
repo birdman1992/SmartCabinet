@@ -26,6 +26,7 @@ enum EpcMark{
     mark_in,//
     mark_wait_back,//取出未归还的标签
     mark_all,//所有标签,不作为标记使用
+    mark_away,//离柜标签
     mark_checked,
 };
 
@@ -109,7 +110,7 @@ private:
     QStringList optList;
     QString curOptId;
     quint64 activeStamp;//标签活跃时间戳:最后一次标签状态发生变化的时间
-    int countTab[10];
+    int countTab[20];
     int markCount;//count be marked
     int outCount;//count for fetch out
     int lockCount;

@@ -23,6 +23,7 @@
 #include "Structs/goodslist.h"
 #include "Structs/goodscar.h"
 #include "manager/goodsmanager.h"
+#include "manager/signalmanager.h"
 #include "sql/sqlmanager.h"
 
 bool posSort(Cabinet* A, Cabinet* B);
@@ -109,6 +110,7 @@ signals:
     void reqCheckVersion(bool);
     void cpuFanOn(bool);
     void stack_switch(int index);
+    void loginStateChanged(bool);
 
 private slots:
     void setMenuHide(bool ishide);
