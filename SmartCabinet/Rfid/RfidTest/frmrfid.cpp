@@ -255,10 +255,10 @@ void FrmRfid::setPow(int pow)
         visibleFlag = QBitArray(mark_checked+1, false);
         visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
-        visibleFlag[mark_back] = true;
+//        visibleFlag[mark_back] = true;
         visibleFlag[mark_new] = true;
         visibleFlag[mark_wait_back] = true;
-//        visibleFlag[mark_all] = true;
+        visibleFlag[mark_all] = true;
         visibleFlag[mark_checked] = true;
         break;
     default:
@@ -423,5 +423,10 @@ void FrmRfid::on_tab_view_clicked(const QModelIndex &index)
         return;
     }
 
-    qDebug()<<ui->tab_view->model()->index(index.row(), 1).data().toString();
+    if(rfManager->accessIsLock())
+        eModel->operation(ui->tab_view->model()->index(index.row(), 1).data().toString(), mark_in);
+    else
+        eModel->operation(ui->tab_view->model()->index(index.row(), 1).data().toString(), mark_checked);
+
+//    qDebug()<<ui->tab_view->model()->index(index.row(), 1).data().toString();
 }

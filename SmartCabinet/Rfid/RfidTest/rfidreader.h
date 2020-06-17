@@ -32,6 +32,7 @@ private:
     int readerSeq;
     int curAnt;
     int heartBeatTimerId;
+    int speedCalTimerId;
     bool flagInit;
     bool flagConnect;
     bool flagWaitBack;
@@ -40,6 +41,8 @@ private:
     CabinetConfig* config;
     QHostAddress serverAddr;
     quint16 serverPort;
+    quint64 recvCount;
+    quint32 recvEpcCount;
 
     void heartBeat();
     void devReconnect();

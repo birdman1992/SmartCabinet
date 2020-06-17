@@ -280,6 +280,11 @@ void RfidManager::timerClear()
     scanTimer.start();
 }
 
+bool RfidManager::accessIsLock()
+{
+    return accessLock;
+}
+
 void RfidManager::timerStop()
 {
     upTimer.stop();

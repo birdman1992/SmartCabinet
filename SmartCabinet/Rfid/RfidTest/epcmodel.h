@@ -74,6 +74,7 @@ public:
     void clearEpcMark();
     void setEpcMark(QString epcId, EpcMark mark);
     void lockEpcMark(QString epcId);
+    void unLockEpcMark(QString epcId);
     void setEpcState(QString epcId, EpcState state);
     void updateStamp(QString epcId);
     void transEpcMark(EpcMark mark_before, EpcMark mark_after);
@@ -85,6 +86,7 @@ public:
     bool epcCheckActive(quint64 msecs = 10000);//标签盘点活跃
     QStringList markTab();
     void operation(QString goodsCode);
+    void operation(QString goodsCode, EpcMark mark);
 
 public slots:
     void syncUpload();

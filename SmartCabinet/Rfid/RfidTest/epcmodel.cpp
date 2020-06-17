@@ -11,7 +11,7 @@ EpcModel::EpcModel(QObject *parent)
     colsName<<"ID"<<"HIS编码"<<"物品"<<"规格"<<"单价"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";
     markNameTab.clear();
     markNameTab<<"未发现"<<"存入"<<"还回"<<"取出"<<"登记"<<"实时库存"<<"取出未还"<<"总览"<<"离柜"<<"发现";
-    optList    <<"--"   <<"--"  <<"--" <<"移除"<<"--" <<"--"     <<"--"    <<"--"<<"--";
+    optList    <<"--"   <<"--"  <<"--" <<"移除"<<"--" <<"--"     <<"--"    <<"--"  <<"--" <<"--";
 }
 
 int EpcModel::rowCount(const QModelIndex &) const
@@ -119,11 +119,15 @@ void EpcModel::clearEpcMark()
         info->markLock = false;
         if(info->state == epc_out)//取出
         {
+            qDebug()<<"[out mark]"<<info->goodsCode;
             consumCheckList<<info->epcId;
             if(QDateTime::fromMSecsSinceEpoch(info->lastStamp) < outOverTime)//未归还
                 setEpcMark(info->epcId, mark_wait_back);
             else
+            {
+                qDebug()<<"mark_away";
                 setEpcMark(info->epcId, mark_away);
+            }
         }
     }
     markCount = 0;
@@ -184,6 +188,21 @@ void EpcModel::lockEpcMark(QString epcId)
 
     map_rfid[epcId]->markLock = true;
     lockCount++;
+    emit updateLockCount(lockCount);
+    qDebug()<<"[EpcModel] lock count:"<<lockCount;
+}
+
+void EpcModel::unLockEpcMark(QString epcId)
+{
+    if(!map_rfid.contains(epcId))
+    {
+        return;
+    }
+    if(map_rfid[epcId]->markLock == false)
+        return;
+
+    map_rfid[epcId]->markLock = false;
+    lockCount--;
     emit updateLockCount(lockCount);
     qDebug()<<"[EpcModel] lock count:"<<lockCount;
 }
@@ -396,8 +415,28 @@ void EpcModel::operation(QString goodsCode)
     if(info == NULL)
         return;
 
+    qDebug()<<"[EpcModel] operation:"<<goodsCode;
+    unLockEpcMark(info->epcId);
+
     if(info->mark == mark_out)
         setEpcMark(info->epcId, mark_in);
+
+    lockEpcMark(info->epcId);
+}
+
+void EpcModel::operation(QString goodsCode, EpcMark mark)
+{
+    EpcInfo* info = map_code.value(goodsCode, NULL);
+    if(info == NULL)
+        return;
+
+    qDebug()<<"[EpcModel] operation:"<<goodsCode;
+    unLockEpcMark(info->epcId);
+
+    if(info->mark == mark_out)
+        setEpcMark(info->epcId, mark);
+
+    lockEpcMark(info->epcId);
 }
 
 void EpcModel::initColName()

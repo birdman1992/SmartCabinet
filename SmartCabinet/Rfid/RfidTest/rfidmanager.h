@@ -30,6 +30,8 @@ public:
     void epcCheck(int row=0, int col=0);//盘点标签
     void epcSync();//同步标签信息
     void timerClear();
+    bool accessIsLock();
+
 public slots:
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);
     void clsFinish();//结束结算

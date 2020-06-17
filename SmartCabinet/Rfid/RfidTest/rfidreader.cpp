@@ -31,6 +31,9 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
     skt->connectToHost(server, port);
     heartBeatTimerId = startTimer(10000);
+    speedCalTimerId = startTimer(1000);
+    recvCount = 0;
+    recvEpcCount = 0;
 }
 
 void RfidReader::sendCmd(QByteArray data, bool printFlag)
@@ -66,6 +69,12 @@ void RfidReader::timerEvent(QTimerEvent * e)
         }
         flagWaitBack = true;
         heartBeat();
+    }
+    else if(e->timerId() == speedCalTimerId)
+    {
+//        qDebug()<<"Rfid speed:"<<recvCount/1000.0<<"kb/s"<<"epc count:"<<recvEpcCount;
+        recvCount = 0;
+        recvEpcCount = 0;
     }
 }
 
@@ -142,6 +151,7 @@ void RfidReader::recvData()
 {
     QByteArray qba = skt->readAll();
     flagWaitBack = false;
+    recvCount += qba.size();
 //    qDebug()<<"[recvData]"<<qba.toHex();
     if(!response.appendData(qba))
         return;
@@ -188,6 +198,7 @@ void RfidReader::parseEpc(QByteArray epcData)
     QByteArray epc = QByteArray(pos, len);
     pos += len;
 //    qDebug()<<"[reportEpc]"<<epc.toHex()<<readerSeq<<curAnt;
+    recvEpcCount+=1;
     emit reportEpc(QString(epc.toHex().toUpper()), readerSeq, curAnt);
 }
 

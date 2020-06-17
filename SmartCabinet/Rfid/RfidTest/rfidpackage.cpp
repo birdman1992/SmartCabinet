@@ -14,7 +14,10 @@ bool RfidResponse::appendData(QByteArray _data)
     dataCache.append(_data);
 
     while(((unsigned char)dataCache[0] != 0x5a) && (dataCache.size() > 0))
+    {
+//        qDebug()<<"[loss]:1byte";
         dataCache.remove(0,1);
+    }
 
     if(dataCache.size() < 9)
         return false;
@@ -35,6 +38,7 @@ bool RfidResponse::appendData(QByteArray _data)
     cks = ntohs(cks);
     packData = dataCache.left(9 + len);
     dataCache.remove(0, 9 + len);
+//    qDebug()<<"[loss]:"<<9+len<<"byte";
 
     if(CheckManager::CRC16(packData) != cks)
     {
