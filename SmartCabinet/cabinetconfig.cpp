@@ -233,13 +233,13 @@ void CabinetConfig::syncGoods(Goods *info, int row, int col)
 void CabinetConfig::setServerAddress(QString addr)
 {
     serverIp = addr;
-
-    if(serverAddr.indexOf("http:") != 0)
-        serverAddr = QString("http://") +serverIp;
+//    if(serverAddr.indexOf("http:") != 0)
+    serverAddr = QString("http://") +serverIp;
 
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("SERVER", serverAddr);
     settings.sync();
+    qDebug()<<"setServerAddress"<<serverAddr;
     //    restart();
 }
 
