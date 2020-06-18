@@ -254,6 +254,18 @@ void FingerPrint::recvCurCardId(QByteArray cardId)
     ui->cardId->setText(curUserCard);
 }
 
+void FingerPrint::ledRecoverTimeOut()
+{
+    if(recoverList.isEmpty())
+        return;
+
+     int canId = recoverList.takeFirst();
+     if(canId < 0)
+         return;
+
+     cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL);
+}
+
 void FingerPrint::ledStateChanged(int state)
 {
     ledState = state;
@@ -295,6 +307,7 @@ void FingerPrint::moduleActived(int id)
 
     case STATE_LOGIN://
         emit requireOpenLock(0, id);
+        cmdSetLed(id, STATE_ON, MODEL_PASS);
         break;
     default:
         break;
@@ -506,6 +519,11 @@ void FingerPrint::cmdSetLed(int id, char state, char led)
     CmdPack* cmd = new CmdPack(0x24, cmdData);
     socketCan->sendData(id, cmd->packData());
     delete cmd;
+
+    if(led == MODEL_ACTIVE)
+    {
+        ledAutoRecover(id);
+    }
 }
 
 /*!
@@ -777,4 +795,10 @@ void FingerPrint::on_save_config_clicked()
     cmdSetLed(curDev, STATE_BREATHE, MODEL_NORMAL);
     curDev = -1;
     manager_user->setCtrlConfig(ctrlSeq, ctrlIndex);
+}
+
+void FingerPrint::ledAutoRecover(int canId)
+{
+    recoverList<<canId;
+    QTimer::singleShot(5000, this, SLOT(ledRecoverTimeOut()));
 }

@@ -107,6 +107,7 @@ signals:
     void userCardActive(QByteArray cardId);
 
 private slots:
+    void ledRecoverTimeOut();
     void ledStateChanged(int state);
     void moduleActived(int id);
     void doorStateChanged(int id, bool isOpen);//门状态变化
@@ -137,6 +138,7 @@ private:
     FingerDataCache* fingerDataCache;
     QMap<int, QString> retCodeList;
     QList<int> canDevList;//CAN设备列表
+    QList<int> recoverList;//复位列表
     QButtonGroup btnState;
     QMultiMap<int, QByteArray*> cmdCache;
     CUR_STATE curState;
@@ -154,6 +156,7 @@ private:
     bool waitSelCurModule;
     int curDev;
 
+    void ledAutoRecover(int canId);
     void initRetCodeList();
     void setCurDev(int id);
     void showMsg(QString msg);
