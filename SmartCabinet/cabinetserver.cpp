@@ -940,6 +940,10 @@ void CabinetServer::updateCurBarcode(QString code)
     barCode = code;
 }
 
+/**
+ * @brief CabinetServer::rfidListSync 同步rfid柜的送货单信息
+ *
+ */
 void CabinetServer::rfidListSync()
 {
     qint64 timeStamp = getApiMark();
@@ -1919,6 +1923,8 @@ void CabinetServer::recvCabSync()
             info->goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
+//            info->size = GET_JSON_QSTRING(item, "size");
+//            info->proName = GET_JSON_QSTRING(item, "proName");
             info->packageId = info->goodsId;
             info->row = row;
             info->col = col;

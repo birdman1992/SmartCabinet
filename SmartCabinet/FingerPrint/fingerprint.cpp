@@ -102,7 +102,8 @@ ignore_error:
             break;
 
         case 0x44://CMD_DEL_CHAR
-            cmdWriteTemplate(canId, temp_data);
+            qDebug()<<"[Finger] data clear,dev:"<<canId;
+//            cmdWriteTemplate(canId, temp_data);
             break;
         }
     }
@@ -125,7 +126,7 @@ ignore_error:
                 if(canDevList.indexOf(canId) == -1)
                 {
                     canDevList<<canId;
-                    cmdSetLed(canId, STATE_ON, MODEL_NORMAL, MODEL_NORMAL);
+                    cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL, MODEL_NORMAL);
     //                cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL);
                     qDebug()<<"[can dev]:"<<canId<<rPack->data;
                 }
@@ -263,7 +264,7 @@ void FingerPrint::ledRecoverTimeOut()
      if(canId < 0)
          return;
 
-     cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL);
+     cmdSetLed(canId, STATE_BREATHE, MODEL_NORMAL, MODEL_NORMAL);
 }
 
 void FingerPrint::ledStateChanged(int state)
