@@ -100,6 +100,10 @@ void RfidManager::startScan()
     timerStart();
 }
 
+/**
+ * @brief RfidManager::doorCloseScan
+ * 关门扫描,仅使用外部天线
+ */
 void RfidManager::doorCloseScan()
 {
     qDebug()<<"[doorCloseScan]";
@@ -109,7 +113,7 @@ void RfidManager::doorCloseScan()
     }
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
-        reader->scanStart(outsideAnt|insideAnt, 1);
+        reader->scanStart(outsideAnt, 1);
     }
     clsStamp = QDateTime::currentMSecsSinceEpoch();//关门时间
 //    clsTimeOut();

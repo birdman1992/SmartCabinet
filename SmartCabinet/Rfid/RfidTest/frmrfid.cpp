@@ -13,14 +13,14 @@ FrmRfid::FrmRfid(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
-    btnTable.insert(mark_no, ui->tab_filter_unknow);
-    btnTable.insert(mark_new, ui->tab_filter_new);
-    btnTable.insert(mark_back, ui->tab_filter_back);
+//    btnTable.insert(mark_no, ui->tab_filter_unknow);
+//    btnTable.insert(mark_new, ui->tab_filter_new);
+//    btnTable.insert(mark_back, ui->tab_filter_back);
     btnTable.insert(mark_out, ui->tab_filter_out);
-    btnTable.insert(mark_con, ui->tab_filter_consume);
-    btnTable.insert(mark_in, ui->tab_filter_in);
-    btnTable.insert(mark_wait_back, ui->tab_filter_wait_back);
-    btnTable.insert(mark_all, ui->tab_filter_all);
+//    btnTable.insert(mark_con, ui->tab_filter_consume);
+//    btnTable.insert(mark_in, ui->tab_filter_in);
+//    btnTable.insert(mark_wait_back, ui->tab_filter_wait_back);
+//    btnTable.insert(mark_all, ui->tab_filter_all);
 
     initTabs();
     isLogin = false;
@@ -63,11 +63,11 @@ void FrmRfid::updateCount(EpcMark mark, int count)
 //        return;
 
 //    qDebug()<<"updateCount:"<<mark<<count;
-    if(mark < btnTable.count())
+    if(btnTable.contains(mark))
     {
         btnTable[mark]->setText(btnTable[mark]->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(count)));
-//        btnTable[mark]->setVisible(count && (visibleFlag[mark]));//加入屏蔽掩膜
-        btnTable[mark]->setVisible(count);//没有屏蔽掩膜
+        btnTable[mark]->setVisible(count && (visibleFlag[mark]));//加入屏蔽掩膜
+//        btnTable[mark]->setVisible(count);//没有屏蔽掩膜
     }
 
     setDefaultSel();//设置默认选中按钮
@@ -75,20 +75,21 @@ void FrmRfid::updateCount(EpcMark mark, int count)
 
 void FrmRfid::setDefaultSel()
 {
-    QMap<EpcMark, QToolButton*>::iterator itTab = btnTable.begin();
-    QToolButton* checkBtn = NULL;
+//    QMap<EpcMark, QToolButton*>::iterator itTab = btnTable.begin();
+//    QToolButton* checkBtn = NULL;
 
-    for(itTab=btnTable.begin(); itTab!=btnTable.end();itTab++)
-    {
-        if(itTab.value()->isVisible())
-        {
-            checkBtn = itTab.value();
-            if(itTab.value()->isChecked())
-                return;
-        }
-    }
-    if(checkBtn)
-        checkBtn->setChecked(true);
+//    for(itTab=btnTable.begin(); itTab!=btnTable.end();itTab++)
+//    {
+//        if(itTab.value()->isVisible())
+//        {
+//            checkBtn = itTab.value();
+//            if(itTab.value()->isChecked())
+//                return;
+//        }
+//    }
+//    if(checkBtn)
+//        checkBtn->setChecked(true);
+    ui->tab_filter_out->setChecked(true);
 }
 
 
@@ -99,7 +100,7 @@ void FrmRfid::updateCurUser(QString optId)
 
 void FrmRfid::scanProgress(int curCount, int totalCount)
 {
-    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
+//    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
     ui->count->display(curCount);
 }
 
@@ -240,10 +241,10 @@ void FrmRfid::initTabs()
     QString style = QString(qssScrollbar.readAll());
     ui->tab_frame->setStyleSheet(style);
     qssScrollbar.close();
-    foreach (QToolButton* btn, btnTable)
-    {
-        btn->hide();
-    }
+//    foreach (QToolButton* btn, btnTable)
+//    {
+//        btn->hide();
+//    }
 }
 
 void FrmRfid::setPow(int pow)
@@ -265,8 +266,8 @@ void FrmRfid::setPow(int pow)
         break;
     }
 
-    if(visibleFlag[mark_all])
-        ui->tab_filter_all->show();
+//    if(visibleFlag[mark_all])
+//        ui->tab_filter_all->show();
 }
 
 void FrmRfid::clearCountText()
@@ -277,8 +278,8 @@ void FrmRfid::clearCountText()
         btn->hide();
         qDebug()<<"clear:"<<btn->objectName();
     }
-    if(visibleFlag[mark_all])
-        ui->tab_filter_all->show();
+//    if(visibleFlag[mark_all])
+//        ui->tab_filter_all->show();
 }
 
 void FrmRfid::showEvent(QShowEvent *)

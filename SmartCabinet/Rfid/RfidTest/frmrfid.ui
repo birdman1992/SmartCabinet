@@ -458,7 +458,10 @@ border:0px solid grey;</string>
                 <enum>Qt::NoFocus</enum>
                </property>
                <property name="styleSheet">
-                <string notr="true"/>
+                <string notr="true">border:1px solid grey;
+background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);
+border-radius:3px;</string>
                </property>
                <property name="text">
                 <string>关闭</string>
@@ -500,7 +503,7 @@ border:0px solid rgb(238, 238, 236);
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,0">
+               <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,0,0">
                 <property name="spacing">
                  <number>12</number>
                 </property>
@@ -517,348 +520,118 @@ border:0px solid rgb(238, 238, 236);
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QFrame" name="frame_4">
+                 <widget class="QStackedWidget" name="stack_menu">
                   <property name="frameShape">
                    <enum>QFrame::NoFrame</enum>
                   </property>
                   <property name="frameShadow">
                    <enum>QFrame::Raised</enum>
                   </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_9">
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_all">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>120</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>总览:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_wait_back">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="focusPolicy">
-                      <enum>Qt::NoFocus</enum>
-                     </property>
-                     <property name="text">
-                      <string>取出未还:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_new">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>120</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>存入:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_out">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>120</height>
-                      </size>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="text">
-                      <string>取出:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_back">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>120</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>还回:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_unknow">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>120</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>未发现:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_in">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>120</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>柜内:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="tab_filter_consume">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>141</width>
-                       <height>120</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>消耗:0</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>true</bool>
-                     </property>
-                     <property name="autoExclusive">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                  <widget class="QWidget" name="stackedWidget_3Page1" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout_8">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QToolButton" name="tab_filter_out">
+                      <property name="minimumSize">
+                       <size>
+                        <width>121</width>
+                        <height>51</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>实时取出:0</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="tab_check_out">
+                      <property name="minimumSize">
+                       <size>
+                        <width>121</width>
+                        <height>51</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>取出查询</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="tab_day_list">
+                      <property name="minimumSize">
+                       <size>
+                        <width>121</width>
+                        <height>51</height>
+                       </size>
+                      </property>
+                      <property name="text">
+                       <string>日清单</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </widget>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QFrame" name="frame_3">
-                  <property name="frameShape">
-                   <enum>QFrame::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_8">
-                   <property name="leftMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="rightMargin">
-                    <number>0</number>
-                   </property>
-                   <property name="bottomMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QToolButton" name="toolButton_2">
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>取出查询</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="toolButton">
-                     <property name="minimumSize">
-                      <size>
-                       <width>141</width>
-                       <height>61</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>...</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer">
+                 <spacer name="horizontalSpacer_3">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
                   </property>
                   <property name="sizeHint" stdset="0">
                    <size>
-                    <width>40</width>
+                    <width>20</width>
                     <height>20</height>
                    </size>
                   </property>
                  </spacer>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="lineEdit">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>35</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="search">
+                  <property name="minimumSize">
+                   <size>
+                    <width>121</width>
+                    <height>51</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>搜索</string>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -889,7 +662,10 @@ border:0px solid rgb(238, 238, 236);
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="6,0,1,0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="6,0,1,0,0">
+            <property name="spacing">
+             <number>25</number>
+            </property>
             <property name="sizeConstraint">
              <enum>QLayout::SetFixedSize</enum>
             </property>
@@ -900,7 +676,7 @@ border:0px solid rgb(238, 238, 236);
              <number>23</number>
             </property>
             <property name="rightMargin">
-             <number>25</number>
+             <number>10</number>
             </property>
             <property name="bottomMargin">
              <number>23</number>
@@ -964,7 +740,7 @@ border:0px solid rgb(238, 238, 236);
                <enum>Qt::NoFocus</enum>
               </property>
               <property name="text">
-               <string>刷新</string>
+               <string>重新扫描</string>
               </property>
              </widget>
             </item>
@@ -989,7 +765,26 @@ border:0px solid rgb(238, 238, 236);
                </size>
               </property>
               <property name="text">
-               <string>停止</string>
+               <string>停止扫描</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>128</width>
+                <height>41</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>确认</string>
               </property>
              </widget>
             </item>
