@@ -37,6 +37,9 @@ public slots:
     void scanProgress(int curCount, int totalCount);
     void updateLockCount(int lockCount);
 
+signals:
+    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+
 private slots:
     void testSlot();
     void updateAntInCount(int count);
@@ -51,7 +54,7 @@ private slots:
     void on_fresh_clicked();
     void on_pushButton_clicked();
     void on_tab_filter_all_toggled(bool checked);
-    void on_tab_filter_out_toggled(bool checked);
+    void on_tab_filter_out_clicked();
     void on_tab_filter_new_toggled(bool checked);
     void on_tab_filter_back_toggled(bool checked);
     void on_tab_filter_consume_toggled(bool checked);

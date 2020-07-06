@@ -1,6 +1,34 @@
 #include "epcmodel.h"
 #include <QDebug>
 
+EpcInfo::EpcInfo(QString id, QString _goodsCode)
+{
+    epcId = id;
+    goodsCode = _goodsCode;
+    lastStamp = 0;
+    state = epc_no;
+    mark = mark_no;
+    markLock = false;
+    rowPos = 0;
+    colPos = 0;
+    scanedTimes = 0;
+    signalIntensity = 0;
+}
+
+bool EpcInfo::epcScaned(qint64 scanMs)
+{
+    scanedTimes++;
+    float oldSigInts = signalIntensity;
+    if(scanMs)
+    {
+        //被扫描次数/扫描时间（s）
+        signalIntensity = qRound((float)scanedTimes*1000/scanMs*100)/100.0;
+        qDebug()<<scanedTimes<<"/"<<(scanMs)<<signalIntensity;
+    }
+    return oldSigInts == signalIntensity;
+}
+
+
 EpcModel::EpcModel(QObject *parent)
     :QAbstractTableModel(parent)
 {
@@ -60,8 +88,11 @@ QVariant EpcModel::data(const QModelIndex& index, int role) const
             break;
         case 9:return markNameTab[info->mark];
             break;
+//        case 10:return info->signalIntensity;
+//            break;
         case 10:return optList[info->mark];
             break;
+
         default:return QVariant();
         }
     }
@@ -107,6 +138,11 @@ EpcInfo *EpcModel::getEpcInfo(QString code)
     return map_rfid.value(code, NULL);
 }
 
+//void EpcModel::updateColumn(int col)
+//{
+//    emit dataChanged(createIndex(0, col), createIndex(rowCount()-1, col));
+//}
+
 void EpcModel::clearEpcMark()
 {
     QStringList consumCheckList;
@@ -117,6 +153,9 @@ void EpcModel::clearEpcMark()
     {
         info->mark = mark_no;
         info->markLock = false;
+        info->signalIntensity = 0;
+        info->scanedTimes = 0;
+
         if(info->state == epc_out)//取出
         {
             qDebug()<<"[out mark]"<<info->goodsCode;
@@ -132,6 +171,7 @@ void EpcModel::clearEpcMark()
     }
     markCount = 0;
     lockCount = 0;
+    clearStamp = QDateTime::currentMSecsSinceEpoch();
     emit epcConsumeCheck(consumCheckList);
     emit updateLockCount(lockCount);
     refrushModel();
@@ -142,17 +182,18 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
     EpcInfo* info = map_rfid.value(epcId, NULL);
     if(info == NULL)
         return;
+
     if(info->markLock)
         return;
     if(info->mark == mark)
         return;
-
     if((!info->mark) && mark)
     {
         markCount++;
         emit scanProgress(markCount, map_rfid.count());
     }
 
+    qint64 curStamp = QDateTime::currentMSecsSinceEpoch();
     countTab[info->mark]--;
     countTab[mark]++;
     emit updateCount(mark, countTab[mark]);//更新旧的标记数量
@@ -162,15 +203,15 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
     info->mark = mark;
     if(info->mark != mark_wait_back)
     {
-        info->lastStamp = QDateTime::currentMSecsSinceEpoch();
+        info->lastStamp = curStamp;
         info->lastOpt = curOptId;
         //更新活跃时间戳
         activeStamp = info->lastStamp;
     }
 
-    QModelIndex topLeft,bottomRight;
-    topLeft = createIndex(map_rfid.keys().indexOf(epcId), 6);
-    bottomRight = createIndex(map_rfid.keys().indexOf(epcId), 8);
+    QModelIndex topLeft, bottomRight;
+    topLeft = createIndex(map_rfid.keys().indexOf(epcId), colsName.indexOf("操作人"));
+    bottomRight = createIndex(map_rfid.keys().indexOf(epcId), colsName.indexOf("操作"));
 
 //    reset();
     emit dataChanged(topLeft, bottomRight);

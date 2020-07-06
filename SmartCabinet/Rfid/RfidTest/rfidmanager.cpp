@@ -372,14 +372,3 @@ void RfidManager::timerUpdate()
     emit updateTimer(scanTimer.elapsed());
 }
 
-EpcInfo::EpcInfo(QString id, QString _goodsCode)
-{
-    epcId = id;
-    goodsCode = _goodsCode;
-    lastStamp = 0;
-    state = epc_no;
-    mark = mark_no;
-    markLock = false;
-    rowPos = 0;
-    colPos = 0;
-}

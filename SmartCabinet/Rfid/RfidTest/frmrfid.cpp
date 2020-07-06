@@ -55,6 +55,13 @@ FrmRfid::~FrmRfid()
 void FrmRfid::updateScanTimer(int ms)
 {
     ui->scan_timer->display(ms);
+    //刷新信号强度
+//    int index = ui->tab_view->verticalScrollBar()->value();
+//    int countMax = ui->tab_view->verticalScrollBar()->pageStep()+1;
+//    int updateRowCount = qMin(countMax, filterModel->rowCount());
+
+//    qDebug()<<"update col"<<index<<updateRowCount;
+//    emit dataChanged(filterModel->index(index,10), filterModel->index(updateRowCount, 10));
 }
 
 void FrmRfid::updateCount(EpcMark mark, int count)
@@ -213,6 +220,7 @@ void FrmRfid::initTabs()
     connect(eModel, SIGNAL(updateCount(EpcMark,int)), this, SLOT(updateCount(EpcMark,int)));
     connect(eModel, SIGNAL(scanProgress(int,int)), this, SLOT(scanProgress(int,int)));
     connect(eModel, SIGNAL(updateLockCount(int)), this, SLOT(updateLockCount(int)));
+    connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), filterModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
     ui->tab_view->setModel(filterModel);
     ui->tab_view->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
     ui->tab_view->setAlternatingRowColors(true);
@@ -233,7 +241,8 @@ void FrmRfid::initTabs()
     ui->tab_view->setColumnWidth(7, 90);
     ui->tab_view->setColumnWidth(8, 190);
     ui->tab_view->setColumnWidth(9, 77);
-    ui->tab_view->setColumnWidth(10, 60);
+    ui->tab_view->setColumnWidth(10, 100);
+    ui->tab_view->setColumnWidth(11, 60);
 
 
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
@@ -341,14 +350,15 @@ void FrmRfid::on_tab_filter_all_toggled(bool checked)
     }
 }
 
-void FrmRfid::on_tab_filter_out_toggled(bool checked)
+void FrmRfid::on_tab_filter_out_clicked()
 {
-    if(checked)
-    {
+//    Q_UNUSED(checked);
+//    if(checked)
+//    {
         filterModel->setFilterKeyColumn(9);
         filterModel->setFilterRegExp("取出$");
 //        ui->tab_view->resizeColumnsToContents();
-    }
+//    }
 }
 
 void FrmRfid::on_tab_filter_new_toggled(bool checked)

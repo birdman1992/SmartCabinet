@@ -42,6 +42,7 @@ enum TableMark
 class EpcInfo{
 public:
     EpcInfo(QString id, QString _goodsCode=QString());
+    bool epcScaned(qint64 scanMs);//扫描持续时间:ms
     QString epcId;
     QString name;
     QString size;
@@ -50,8 +51,10 @@ public:
     QString goodsCode;//对应物品条码
     QString package_id;
     float price;
-    quint64 lastStamp;//上次更新的时间戳
+    qint64 lastStamp;//上次更新的时间戳
     EpcState state;//当前状态
+    qint32 scanedTimes;//扫描次数计数
+    float signalIntensity;//信号强度
     EpcMark mark;//
     bool markLock;//lock the mark
     QString lastOpt;//上次操作人
@@ -71,6 +74,7 @@ public:
     void operator<<(EpcInfo* info);
     EpcInfo* operator[](QString code);
     EpcInfo* getEpcInfo(QString code);
+//    void updateColumn(int col);
     void clearEpcMark();
     void setEpcMark(QString epcId, EpcMark mark);
     void lockEpcMark(QString epcId);
@@ -112,6 +116,7 @@ private:
     QStringList optList;
     QString curOptId;
     quint64 activeStamp;//标签活跃时间戳:最后一次标签状态发生变化的时间
+    quint64 clearStamp;//初始化时间戳:用于计算扫描强度
     int countTab[20];
     int markCount;//count be marked
     int outCount;//count for fetch out

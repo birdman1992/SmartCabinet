@@ -4,8 +4,34 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <QMap>
 #include "rfidpackage.h"
 #include "cabinetconfig.h"
+#include <QtDebug>
+#include <QDateTime>
+
+class SigInfo
+{
+public:
+    SigInfo()
+    {
+        clearInfo();
+    }
+    void clearInfo(){
+        scanTimes = 0;
+        signalIntensity = 0;
+        clearStamp = QDateTime::currentMSecsSinceEpoch();
+    }
+    float sigUpdate(){
+        scanTimes++;
+        signalIntensity = qRound((float)scanTimes*1000/(QDateTime::currentMSecsSinceEpoch()-clearStamp)*100)/100;
+        qDebug()<<"[sigUpdate]"<<signalIntensity;
+        return signalIntensity;
+    }
+    qint64 clearStamp;
+    quint8 scanTimes;//扫描次数
+    float signalIntensity;//扫描强度:每秒扫描次数
+};
 
 class RfidReader : public QObject
 {
@@ -43,9 +69,13 @@ private:
     quint16 serverPort;
     quint64 recvCount;
     quint32 recvEpcCount;
+    QMap<QString, SigInfo*> sigMap;
+    QByteArray confIntens;//天线置信强度
+    QByteArray antPowConfig;
 
     void heartBeat();
     void devReconnect();
+    void epcScaned(QString epc);
 
 private slots:
     void connectStateChanged(QAbstractSocket::SocketState state);

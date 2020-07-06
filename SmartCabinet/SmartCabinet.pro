@@ -48,6 +48,7 @@ SOURCES += main.cpp\
     Device/Hid/qhid.cpp \
     Device/controldevice.cpp \
     Device/devicesimulate.cpp \
+    manager/rfreaderconfig.cpp \
     manager/signalmanager.cpp \
     medinf.cpp \
     Widgets/standbywidget.cpp \
@@ -148,7 +149,9 @@ HEADERS  += mainwidget.h \
     Rfid/RfidTest/rfidpackage.h \
     Rfid/RfidTest/rfidreader.h \
     funcs/secwatch.h \
+    manager/rfreaderconfig.h \
     manager/signalmanager.h \
+    manager/singleton.h \
     medinf.h \
     Widgets/standbywidget.h \
     Widgets/userwidget.h \

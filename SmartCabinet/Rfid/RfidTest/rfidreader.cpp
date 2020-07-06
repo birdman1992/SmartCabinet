@@ -1,5 +1,6 @@
 #include "rfidreader.h"
 #include <QDebug>
+#include "manager/rfreaderconfig.h"
 
 RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent)
 {
@@ -14,6 +15,8 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
     heartBeatTimerId = startTimer(10000);
+    confIntens = RfReaderConfig::instance().getConfIntens(skt->peerAddress().toString());
+    antPowConfig = RfReaderConfig::instance().getAntPower(skt->peerAddress().toString());
 }
 
 RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent) : QObject(parent)
@@ -95,6 +98,17 @@ void RfidReader::devReconnect()
     skt->connectToHost(serverAddr, serverPort);
 }
 
+void RfidReader::epcScaned(QString epc)
+{
+    if(!sigMap.contains(epc))
+        sigMap.insert(epc, new SigInfo);
+
+    qDebug()<<"epcScaned"<<sigMap[epc]->clearStamp;
+
+    if(sigMap[epc]->sigUpdate() > (float)confIntens[curAnt])
+       emit reportEpc(epc, readerSeq, curAnt);
+}
+
 void RfidReader::scanStop()
 {
     RfidCmd cmd(0xff);
@@ -116,6 +130,9 @@ bool RfidReader::isConnected()
 */
 void RfidReader::scanStart(quint32 antState, quint8 scanMode)
 {
+    qDeleteAll(sigMap.begin(), sigMap.end());
+    sigMap.clear();
+
     QByteArray cmdParam;
     cmdParam.resize(5);
     char* pos = cmdParam.data();
@@ -133,7 +150,8 @@ void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
     {
     case QAbstractSocket::ConnectedState:
         flagConnect = true;
-
+        confIntens = RfReaderConfig::instance().getConfIntens(skt->peerAddress().toString());
+        antPowConfig = RfReaderConfig::instance().getAntPower(skt->peerAddress().toString());
         scanStop();
         break;
 
@@ -199,7 +217,7 @@ void RfidReader::parseEpc(QByteArray epcData)
     pos += len;
 //    qDebug()<<"[reportEpc]"<<epc.toHex()<<readerSeq<<curAnt;
     recvEpcCount+=1;
-    emit reportEpc(QString(epc.toHex().toUpper()), readerSeq, curAnt);
+    epcScaned(QString(epc.toHex().toUpper()));
 }
 
 void RfidReader::parseAnt(QByteArray antData)

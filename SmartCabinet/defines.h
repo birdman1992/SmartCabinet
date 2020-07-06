@@ -8,6 +8,7 @@
 #define CONF_CABINET_INFO  "/home/config/cabinfo.ini" //new_api
 #define CONF_GOODS_INFO  "/home/config/goodsinfo.ini"
 #define CONF_LOG "/home/config/log.conf"
+#define CONF_RFID_READER  "/home/config/rfid.ini"
 #define CAB_CACHE "/home/config/cache.ini"
 
 #define MAGIC_CAL "ff00010acc"
