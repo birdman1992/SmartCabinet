@@ -1181,6 +1181,7 @@ void CabinetServer::recvListCheck()
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
             info->codes.clear();
+            info->Py = config->getPyCh(info->name);
             cJSON* jCodes = cJSON_GetObjectItem(json_info, "traceIds");
             int idCount = cJSON_GetArraySize(jCodes);
             for(int j=0; j<idCount; j++)

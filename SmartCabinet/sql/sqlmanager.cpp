@@ -383,8 +383,8 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
     qDebug()<<"[CommitGoodsInfo]:begin";
 
     //添加物品信息
-    query.prepare("REPLACE INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price)\
-                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price)");
+    query.prepare("REPLACE INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price,pinyin)\
+                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price,:pinyin)");
     query.bindValue(0, QVariant(info->packageId));
     query.bindValue(1, QVariant(info->goodsId));
     query.bindValue(2, QVariant(info->packageType));
@@ -395,6 +395,7 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
     query.bindValue(7, QVariant(info->col));
     query.bindValue(8, QVariant(info->row));
     query.bindValue(9, QVariant(info->price));
+    query.bindValue(10, QVariant(info->Py));
     if(!query.exec())
     {
         qDebug()<<query.lastQuery()<<query.lastError().text();
@@ -478,8 +479,8 @@ void SqlManager::replaceGoodsInfo(Goods* info, QString listCode, RepState state,
     qDebug()<<"[CommitGoodsInfo]:begin";
 
     //添加物品信息
-    query.prepare("INSERT INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price)\
-                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price)");
+    query.prepare("INSERT INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price,pinyin)\
+                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price,:pinyin)");
     query.bindValue(0, QVariant(info->packageId));
     query.bindValue(1, QVariant(info->goodsId));
     query.bindValue(2, QVariant(info->packageType));
@@ -490,6 +491,7 @@ void SqlManager::replaceGoodsInfo(Goods* info, QString listCode, RepState state,
     query.bindValue(7, QVariant(info->pos.x()));
     query.bindValue(8, QVariant(info->pos.y()));
     query.bindValue(9, QVariant(info->singlePrice));
+    query.bindValue(10, QVariant(info->Py));
     if(!query.exec())
     {
         qDebug()<<query.lastQuery()<<query.lastError().text()<<" 已存在物品信息，不插入";
