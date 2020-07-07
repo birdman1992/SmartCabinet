@@ -1661,6 +1661,9 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     ui->userInfo->setText(QString("您好！%1").arg(optUser->name));
     setPowerState(info->power);
     loginState = true;
+
+    if(win_store_list->isVisible())
+        config->state = STATE_STORE;
     win_store_list->setLoginState(loginState);
 
     config->cabVoice.voicePlay(VOICE_WELCOME_USE);

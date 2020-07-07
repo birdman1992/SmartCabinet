@@ -1317,7 +1317,7 @@ void CabinetServer::recvListAccess()
             emit goodsNumChanged(goodsId, goodsNum);
             emit accessSuccess(QString(cJSON_GetObjectItem(item,"msg")->valuestring));
             emit updateGoodsPrice(goodsPrice, goodsPrice*goodsType);
-            if(config->state = STATE_BACK)
+            if(config->state == STATE_BACK)
             {
                 QString goodsName = QString::fromUtf8(cJSON_GetObjectItem(item, "goodsName")->valuestring);
                 QString traceId = QString::fromUtf8(cJSON_GetObjectItem(item,"traceId")->valuestring);
@@ -2117,7 +2117,7 @@ void CabinetServer::netTimeout()
     }
     else
     {
-        replyCheck(reply_login);
+//        replyCheck(reply_login);
         if(apiState == 1)//登录
         {
             if(config->checkManagers(logId))

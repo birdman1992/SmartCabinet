@@ -164,5 +164,4 @@ void CabinetStoreListItem::on_opt_clicked()
     {
         emit requireOpenCase(pos_seq, pos_index);
     }
-    updateOptState();
 }
