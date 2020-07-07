@@ -480,6 +480,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
             }
         }
 
+        bindCab = selectCab;
+        bindCase = selectCase;
         cabInfoBind(selectCab, selectCase, curGoods->packageId);
         emit requireCaseBind(selectCab, selectCase, curGoods->packageId);
         config->showMsg(MSG_EMPTY,0);
@@ -560,6 +562,9 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //        rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
 
 //        config->removeConfig(rebind_old_addr);
+        bindCab = selectCab;
+        bindCase = selectCase;
+        qDebug()<<"click bind"<<bindCab<<bindCase;
         emit requireCaseRebind(selectCab, selectCase, rebindGoods);
         cabInfoBind(selectCab, selectCase, rebindGoods);
     }
@@ -1686,7 +1691,8 @@ void CabinetWidget::pinyinSearch(int id)
 {
     QString str = ui->searchStr->text()+groupBtn.button(id)->text();
     ui->searchStr->setText(str);
-    config->searchByPinyin(str);
+//    searchByPinyin(str);
+//    config->searchByPinyin(str);
 }
 
 void CabinetWidget::on_netState_clicked()
