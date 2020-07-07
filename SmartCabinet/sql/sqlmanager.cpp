@@ -12,6 +12,7 @@ SqlManager::SqlManager(QObject *parent) : QObject(parent)
     needSync = false;
     initDatabase();
     createTable();
+    createField("GoodsInfo", "pinyin");
 }
 
 SqlManager *SqlManager::manager()
@@ -640,6 +641,7 @@ void SqlManager::createTable()
                               single_price REAL(18) DEFAULT(0),\
                               pro_name CHAR(50) DEFAULT(''),\
                               sup_name CHAR(50) DEFAULT('')\
+                              pinyin CHAR(50) DEFAULT('')\
                               );");
         if(query.exec(cmd))
         {
@@ -671,6 +673,26 @@ void SqlManager::createTable()
             qDebug()<<"[create table]"<<"ApiLog"<<"failed"<<query.lastError();
         }
     }
+}
+
+void SqlManager::createField(QString tabName ,QString fieldName)
+{
+    qDebug()<<"createField";
+    QSqlQuery query(db_cabinet);
+    QString cmd = QString("select sql from sqlite_master where type = 'table' and name = '%1'").arg(tabName);
+    if(!queryExec(&query, cmd, QString("[Check Field] %1").arg(fieldName)))
+        return;
+
+    if(query.next())
+    {
+        QString tabStr = query.value(0).toString();
+        if(tabStr.indexOf(fieldName) == -1)//不存在字段
+        {
+            cmd = QString("ALTER TABLE GoodsInfo ADD COLUMN %1 CHAR(50) DEFAULT('')").arg(fieldName);
+            queryExec(&query, cmd, QString("[Create Field] %1").arg(fieldName));
+        }
+    }
+    return;
 }
 
 bool SqlManager::queryExec(QSqlQuery* q, QString cmd, QString msg)

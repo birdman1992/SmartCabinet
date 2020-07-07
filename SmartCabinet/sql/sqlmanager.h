@@ -67,6 +67,7 @@ private:
 
     void initDatabase();
     void createTable();
+    void createField(QString tabName, QString fieldName);//创建字段
     static bool queryExec(QSqlQuery *q, QString cmd, QString msg=QString());
 };
 
