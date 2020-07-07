@@ -222,7 +222,10 @@ void CabinetServer::requireListState()
 void CabinetServer::replyCheck(QNetworkReply *reply)
 {
     if(reply != NULL)
+    {
         reply->deleteLater();
+        reply = NULL;
+    }
 }
 
 void CabinetServer::netTimeStart()
@@ -348,8 +351,9 @@ void CabinetServer::userLogin(QString userId)
     qDebug()<<qba;
     logId = userId;
 
-    if(reply_login)
-        return;
+//    if(reply_login)
+//        return;
+    replyCheck(reply_login);
 
     reply_login = post(nUrl, qba, timeStamp, false);//登录留下记录但不重新调用
 //    reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
