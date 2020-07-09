@@ -47,6 +47,7 @@ public slots:
 signals:
     void requireAccessList(QStringList list, int optType);
     void requireOpenCase(int seqNum, int index);
+    void searchGoods(QString searchStr);
 
 private:
     Ui::CabinetListView *ui;
@@ -54,6 +55,7 @@ private:
     QFrame* cabFrame;
     QButtonGroup groupSearch;
     QMap<QString, CabinetListItem*> selectMap;
+    QMap<QString, QString> goodsMap;//
     CabinetConfig* config;
     QList<Goods*> list_goods;
     QList<Goods*> list_filted;//过滤后物品列表
@@ -64,7 +66,7 @@ private:
     void showCabView();
     void clearList();
     void getCabList();
-    void updateCabList(QString filter=" ");
+    void updateCabList(QString filter=QString());
     bool packIsSelected(QString packId);
     QString scanDataTrans(QString code);
 };

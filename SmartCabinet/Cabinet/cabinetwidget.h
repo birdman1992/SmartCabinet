@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QButtonGroup>
 #include <QSlider>
+#include <QMap>
 #include "Cabinet/cabinet.h"
 #include "Widgets/cabinetaccess.h"
 #include "Widgets/cabinetlistview.h"
@@ -119,6 +120,7 @@ private slots:
     void checkPush();
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
+    void searchByPinyin(QString str);
 //    void on_fetch_toggled(bool checked);
     void on_store_clicked(bool checked);
     void pinyinSearch(int);
@@ -146,6 +148,8 @@ private slots:
 
     void on_check_toggled(bool checked);
 
+    void on_rebind_clicked(bool checked);
+
 protected:
     bool eventFilter(QObject *, QEvent *);
 
@@ -160,7 +164,9 @@ private:
     QTimer* timeUpdater;
     QTime lastOptTime;
     bool screenProState;
+    QMap<QWidget*, bool> showMap;
     QList<Cabinet *> list_cabinet;
+    QList<QPoint> list_search_case;//搜索状态的柜格
     int tsCalFlag;
 
     bool volPressed;
@@ -201,6 +207,7 @@ private:
     NetworkSet* win_net_set;//网络配置
 
     void showEvent(QShowEvent*);
+    void updateShowMap();
     void warningMsgBox(QString title, QString msg);
     void msgShow(QString title, QString msg, bool setmodal);
     void setPowerState(int power);//设置权限状态
@@ -223,6 +230,8 @@ private:
     void magicCmd(QString cmd);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
     bool isListCode(QByteArray qba);
+    void setSearchState(QList<QPoint> l);
+    void clearSearchState();
 };
 
 #endif // CABINETWIDGET_H

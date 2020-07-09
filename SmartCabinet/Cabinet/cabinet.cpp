@@ -213,6 +213,16 @@ void Cabinet::checkCase(int index)
     setCaseState(index, 2);
 }
 
+void Cabinet::searchCase(int index)
+{
+    setCaseState(index, 1);
+}
+
+void Cabinet::initCase(int index)
+{
+    setCaseState(index, 0);
+}
+
 void Cabinet::updateCase(int caseIndex)
 {
     if(isMainCabinet && (caseIndex == screenPos))

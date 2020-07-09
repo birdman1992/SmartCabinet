@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <QVariant>
+#include <QtDebug>
 
 QSqlDatabase SqlManager::db_cabinet = QSqlDatabase();
 SqlManager* SqlManager::m = new SqlManager;
@@ -189,7 +190,7 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
     QList<Goods*> ret;
     ret.clear();
     QSqlQuery query(db_cabinet);
-    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,COUNT(code) package_count,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2;").arg(col).arg(row);
+    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,COUNT(code) package_count,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 group by GoodsInfo.package_id;").arg(col).arg(row);
     if(!queryExec(&query, cmd, "getGoodsList"))
         return ret;
 
@@ -363,7 +364,37 @@ void SqlManager::sqlDelete()
 //    queryExec(&query, cmd, "sqlDelete");
 //    QString cmd = QString("DELETE FROM CodeInfo").arg(col).arg(row).arg(goodsId);
 //    QSqlQuery query(db_cabinet);
-//    queryExec(&query, cmd, "sqlDelete");
+    //    queryExec(&query, cmd, "sqlDelete");
+}
+
+QList<QPoint> SqlManager::goodsSearch(QString searchStr)
+{
+    QList<QPoint> searchRst;
+    QString cmd = QString("SELECT cab_row,cab_col FROM GoodsInfo WHERE pinyin LIKE '%%1%'").arg(searchStr);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, cmd, "goodsSearch");
+
+    while (query.next()) {
+        searchRst<<QPoint(query.value(0).toInt(),query.value(1).toInt());
+    }
+    return searchRst;
+}
+
+QSqlQuery SqlManager::goodsInfoList(QString searchStr)
+{
+    QString cmd = QString("SELECT "
+                              "GI.name || ' [' || IFNULL( GI.size, '  ' ) || '] (' || GI.package_type || ')' || '×' || COUNT( code ) AS InfoStr, "
+                              "GI.package_id "
+                          "FROM "
+                              "GoodsInfo AS GI "
+                              "LEFT JOIN CodeInfo AS CI ON CI.package_id = GI.package_id "
+                          "WHERE "
+                              "GI.pinyin LIKE '%%1%' "
+                          "GROUP BY "
+                              "GI.package_id").arg(searchStr);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, cmd, "goodsInfoList");
+    return query;
 }
 
 /*
@@ -642,7 +673,7 @@ void SqlManager::createTable()
                               cab_row INT(2) DEFAULT(-1),\
                               single_price REAL(18) DEFAULT(0),\
                               pro_name CHAR(50) DEFAULT(''),\
-                              sup_name CHAR(50) DEFAULT('')\
+                              sup_name CHAR(50) DEFAULT(''),\
                               pinyin CHAR(50) DEFAULT('')\
                               );");
         if(query.exec(cmd))

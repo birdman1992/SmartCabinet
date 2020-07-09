@@ -1197,25 +1197,25 @@ QByteArray CabinetConfig::getCabinetSize()
     return ret;
 }
 
-void CabinetConfig::searchByPinyin(QString ch)
-{
-    int i;
+//void CabinetConfig::searchByPinyin(QString ch)
+//{
+//    int i;
 
-    for(i=0; i<list_cabinet.count(); i++)
-    {
-        list_cabinet[i]->searchByPinyin(ch);
-    }
-}
+//    for(i=0; i<list_cabinet.count(); i++)
+//    {
+//        list_cabinet[i]->searchByPinyin(ch);
+//    }
+//}
 
-void CabinetConfig::clearSearch()
-{
-    int i;
+//void CabinetConfig::clearSearch()
+//{
+//    int i;
 
-    for(i=0; i<list_cabinet.count(); i++)
-    {
-        list_cabinet[i]->clearSearch();
-    }
-}
+//    for(i=0; i<list_cabinet.count(); i++)
+//    {
+//        list_cabinet[i]->clearSearch();
+//    }
+//}
 
 //添加新用户
 void CabinetConfig::addNewUser(UserInfo *info)

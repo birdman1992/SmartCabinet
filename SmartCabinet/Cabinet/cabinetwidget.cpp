@@ -60,6 +60,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 
     connect(win_cab_list_view, SIGNAL(requireAccessList(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
     connect(win_cab_list_view, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+    connect(win_cab_list_view, SIGNAL(searchGoods(QString)), this, SLOT(searchByPinyin(QString)));
 
     connect(win_check, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), this, SLOT(checkOneCase(QList<CabinetCheckItem*>,CaseAddress)));
     connect(win_check, SIGNAL(checkCase(QStringList,CaseAddress)), this, SLOT(checkOneCase(QStringList,CaseAddress)));
@@ -74,17 +75,21 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 
     connect(win_refund, SIGNAL(refundCase(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
 //    optUser = QString();
-    ui->store->hide();
-    ui->refund->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->check->hide();
-    ui->search->hide();
-    ui->reply->hide();
-    ui->quit->hide();
-    ui->back->hide();
-    ui->frame_check_history->hide();
-    ui->consume_date->hide();
+
+    showMap.insert(ui->store, false);
+    showMap.insert(ui->refund, false);
+    showMap.insert(ui->service, false);
+    showMap.insert(ui->rebind, false);
+    showMap.insert(ui->cut, false);
+    showMap.insert(ui->check, false);
+    showMap.insert(ui->search, false);
+    showMap.insert(ui->reply, false);
+    showMap.insert(ui->quit, false);
+    showMap.insert(ui->back, false);
+    showMap.insert(ui->frame_check_history, false);
+    showMap.insert(ui->consume_date, false);
+    updateShowMap();
+
     ui->menuWidget->setCurrentIndex(0);
 //    IconHelper::Instance()->SetIcon(ui->back, QChar(0xf18e)+QString("  还货"), 42);
 
@@ -130,21 +135,23 @@ void CabinetWidget::cabLock()
     msgBox = NULL;
     config->showMsg(MSG_EMPTY,false);
     config->clearOptId();
-    ui->store->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->refund->hide();
-    ui->back->hide();
-    ui->check->hide();
-    ui->search->hide();
-    ui->quit->hide();
-    ui->consume_date->hide();
-    ui->reply->hide();
-    ui->frame_check_history->hide();
+    showMap[ui->store] = false;
+    showMap[ui->service] = false;
+    showMap[ui->rebind] = false;
+    showMap[ui->cut] = false;
+    showMap[ui->refund] = false;
+    showMap[ui->back] = false;
+    showMap[ui->check] = false;
+    showMap[ui->search] = false;
+    showMap[ui->quit] = false;
+    showMap[ui->consume_date] = false;
+    showMap[ui->reply] = false;
+    showMap[ui->frame_check_history] = false;
+    updateShowMap();
     win_access->hide();
     curStoreList = NULL;
     config->state = STATE_NO;
-    config->clearSearch();
+    clearSearchState();
     config->wakeUp(0);
     emit checkLockState();
     if(config->getCabinetMode() == "aio")
@@ -155,6 +162,7 @@ void CabinetWidget::cabInit()
 {
     ui->store->setChecked(false);
     ui->service->setChecked(false);
+    ui->rebind->setChecked(false);
     ui->cut->setChecked(false);
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
@@ -285,6 +293,7 @@ void CabinetWidget::clearMenuState()
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->service->setChecked(false);
+    ui->rebind->setChecked(false);
     ui->back->setChecked(false);
 }
 
@@ -305,14 +314,18 @@ void CabinetWidget::checkStart()
     ui->check->setChecked(true);
     config->wakeUp(TIMEOUT_CHECK);
 
-    ui->store->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->refund->hide();
-//    ui->check->hide();
-    ui->search->hide();
-    ui->reply->hide();
-    ui->quit->hide();
+
+    showMap[ui->store] = false;
+    showMap[ui->service] = false;
+    showMap[ui->rebind] = false;
+    showMap[ui->cut] = false;
+    showMap[ui->refund] = false;
+//    ui->check] = false;
+    showMap[ui->search] = false;
+    showMap[ui->reply] = false;
+    showMap[ui->quit] = false;
+    updateShowMap();
+
     if(config->getCabinetMode() == "aio")
     {
         switchCabinetState(STATE_CHECK);
@@ -586,6 +599,29 @@ bool CabinetWidget::isListCode(QByteArray qba)
     return false;
 }
 
+void CabinetWidget::setSearchState(QList<QPoint> l)
+{
+    foreach (QPoint pos, list_search_case)
+    {
+        list_cabinet[pos.y()]->initCase(pos.x());
+    }
+
+    list_search_case = l;
+    foreach (QPoint pos, list_search_case)
+    {
+        list_cabinet[pos.y()]->searchCase(pos.x());
+    }
+}
+
+void CabinetWidget::clearSearchState()
+{
+    foreach (QPoint pos, list_search_case)
+    {
+        list_cabinet[pos.y()]->initCase(pos.x());
+    }
+    list_search_case.clear();
+}
+
 void CabinetWidget::recvScanData(QByteArray qba)
 {qDebug()<<"recvScanData"<<qba<<qba.toHex()<<config->state;
     magicCmd(QString(qba));
@@ -787,6 +823,15 @@ void CabinetWidget::showEvent(QShowEvent *)
     }
 }
 
+void CabinetWidget::updateShowMap()
+{
+    QMap<QWidget*, bool>::iterator it;
+    for(it=showMap.begin(); it!=showMap.end(); it++)
+    {
+        it.key()->setVisible(it.value());
+    }
+}
+
 bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
 {
     if(globalConfig == NULL)
@@ -916,6 +961,22 @@ void CabinetWidget::on_service_clicked(bool checked)
         ui->service->setChecked(true);
         config->state = STATE_FETCH;
         config->showMsg(MSG_EMPTY,false);
+        config->wakeUp(TIMEOUT_BASE);
+    }
+    else
+    {
+        cabLock();
+    }
+}
+
+void CabinetWidget::on_rebind_clicked(bool checked)
+{
+    if(checked)
+    {
+        clearMenuState();
+        ui->rebind->setChecked(true);
+        config->state = STATE_REBIND;
+        config->showMsg(MSG_REBIND_SCAN,0);
         config->wakeUp(TIMEOUT_BASE);
     }
     else
@@ -1096,7 +1157,18 @@ void CabinetWidget::saveFetch(QString name, int num)
 //    CaseAddress addr = config->checkCabinetByName(name);
 //    clickLock = false;
 //    emit requireOpenCase(addr.cabinetSeqNum, addr.caseIndex);
-//    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, 1);
+    //    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, 1);
+}
+
+void CabinetWidget::searchByPinyin(QString str)
+{
+    if(str.isEmpty())
+    {
+        clearSearchState();
+        return;
+    }
+    QList<QPoint> l_search = SqlManager::goodsSearch(str);
+    setSearchState(l_search);
 }
 
 void CabinetWidget::warningMsgBox(QString title, QString msg)
@@ -1150,76 +1222,79 @@ void CabinetWidget::setPowerState(int power)
     win_access->setAccessModel(false);
     waitForCodeScan = false;
 
-    ui->back->hide();
-    ui->store->hide();
-    ui->refund->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->check->hide();
-    ui->reply->hide();
-    ui->search->show();
-    ui->quit->hide();
-    ui->frame_check_history->show();
-    ui->consume_date->show();
+    showMap[ui->back] = false;
+    showMap[ui->store] = false;
+    showMap[ui->refund] = false;
+    showMap[ui->service] = false;
+    showMap[ui->cut] = false;
+    showMap[ui->check] = false;
+    showMap[ui->reply] = false;
+    showMap[ui->search] = true;
+    showMap[ui->rebind] = false;
+    showMap[ui->quit] = false;
+    showMap[ui->frame_check_history] = true;
+    showMap[ui->consume_date] = true;
 
     if(ui->netState->isChecked())
     {
         switch(power)
         {
         case 0://超级管理员:|补货|退货|服务|退出|
-            ui->store->show();
-            ui->refund->show();
-            ui->service->show();
-            ui->cut->show();
-            ui->check->show();
-            ui->reply->show();
+            showMap[ui->store] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->service] = true;
+            showMap[ui->rebind] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->check] = true;
+            showMap[ui->reply] = true;
             break;
 
 //        case 1://仓库员工:|补货|退货|退出|
-//            ui->store->show();
-//            ui->refund->show();
-//            ui->cut->show();
-//            ui->check->show();
-//            ui->reply->show();
+//            showMap[ui->store] = true;
+//            showMap[ui->refund] = true;
+//            showMap[ui->cut] = true;
+//            showMap[ui->check] = true;
+//            showMap[ui->reply] = true;
 //            break;
 
 //        case 2://医院管理:|补货|退货|服务|退出|
-//            ui->store->show();
-//            ui->refund->show();
-//            ui->cut->show();
-//            ui->reply->show();
-//            //        ui->service->show();
+//            showMap[ui->store] = true;
+//            showMap[ui->refund] = true;
+//            showMap[ui->cut] = true;
+//            showMap[ui->reply] = true;
+//            //        showMap[ui->service] = true;
 //            break;
 
         case 1://护士长:|退货|退出|
-            ui->reply->show();
-            ui->refund->show();
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->reply] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
 
         case 2://护士:|退出|
-            ui->reply->show();
-            ui->refund->show();
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->reply] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        ui->service] = true;
             break;
 
         case 3://管理员:|补货|退货|退出|
-            ui->store->show();
-            ui->refund->show();
-//            ui->service->show();
-            ui->cut->show();
-            ui->check->show();
-            ui->reply->show();
+            showMap[ui->store] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->rebind] = true;
+//            showMap[ui->service] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->check] = true;
+            showMap[ui->reply] = true;
             break;
 
         case 4://医院员工:|退出|
-//            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+//            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
 
         default:
@@ -1231,37 +1306,38 @@ void CabinetWidget::setPowerState(int power)
         switch(power)
         {
         case 0://超级管理员:|服务|
-            ui->service->show();
-            ui->cut->show();
+            showMap[ui->service] = true;
+            showMap[ui->cut] = true;
             break;
 
         case 1://仓库员工:
-            ui->cut->show();
+            showMap[ui->cut] = true;
             break;
 
         case 2://医院管理:
-            ui->cut->show();
-            //        ui->service->show();
+            showMap[ui->cut] = true;
+            //        showMap[ui->service] = true;
             break;
 
         case 3://医院员工:
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
         case 4://医院员工:
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
         default:
             break;
         }
     }
-    ui->back->setVisible(config->getFuncWord() & funcBack);
-    ui->refund->setVisible(config->getFuncWord() & funcRefun);
-    ui->check->setVisible(config->getFuncWord() & funcCheck);
-    ui->reply->setVisible(config->getFuncWord() & funcApply);
+    showMap[ui->back] = config->getFuncWord() & funcBack;
+    showMap[ui->refund] = config->getFuncWord() & funcRefun;
+    showMap[ui->check] = config->getFuncWord() & funcCheck;
+    showMap[ui->reply] = config->getFuncWord() & funcApply;
+    updateShowMap();
 
 //    qDebug()<<(config->getFuncWord() & funcBack)<<(config->getFuncWord() & funcRefun)<<(config->getFuncWord() & funcCheck);
 }
@@ -1558,7 +1634,7 @@ void CabinetWidget::recvCheckFinishRst(bool success, QString msg)
     {
         waitForCheckFinish = false;
         ui->check->setChecked(false);
-        config->clearSearch();//重置单元格状态
+        clearSearchState();//重置单元格状态
         cabLock();
     }
     else
@@ -1579,6 +1655,7 @@ void CabinetWidget::setMenuHide(bool ishide)
     {
         ui->store->hide();
         ui->service->hide();
+        ui->rebind->hide();
         ui->cut->hide();
         ui->refund->hide();
         ui->reply->hide();
@@ -1590,6 +1667,7 @@ void CabinetWidget::setMenuHide(bool ishide)
     {
         ui->store->show();
         ui->service->show();
+        ui->rebind->show();
         ui->cut->show();
         ui->reply->show();
         ui->refund->show();
@@ -1687,14 +1765,15 @@ void CabinetWidget::on_search_back_clicked()
 void CabinetWidget::on_searchClear_clicked()
 {
     ui->searchStr->clear();
-    config->clearSearch();
+    clearSearchState();
+//    config->clearSearch();
 }
 
 void CabinetWidget::pinyinSearch(int id)
 {
     QString str = ui->searchStr->text()+groupBtn.button(id)->text();
     ui->searchStr->setText(str);
-//    searchByPinyin(str);
+    searchByPinyin(str);
 //    config->searchByPinyin(str);
 }
 
@@ -1801,3 +1880,4 @@ void CabinetWidget::on_check_toggled(bool checked)
     else
         ui->check->setText("盘点");
 }
+

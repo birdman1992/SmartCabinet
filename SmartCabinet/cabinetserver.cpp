@@ -1599,7 +1599,7 @@ void CabinetServer::recvCabClone()
         for(i=0; i<listSize; i++)
         {
             cJSON* item = cJSON_GetArrayItem(json_data, i);
-            Goods* info = new Goods();
+            Goods* info = new Goods;
 
             int row = QString(cJSON_GetObjectItem(item, "cabinetRow")->valuestring).toInt();
             int col = QString(cJSON_GetObjectItem(item, "cabinetCol")->valuestring).toInt();
@@ -1610,6 +1610,7 @@ void CabinetServer::recvCabClone()
             info->goodsId = QString(cJSON_GetObjectItem(item, "goodsId")->valuestring);
             info->packageType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
+            info->size = QString(cJSON_GetObjectItem(item, "size")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->packageId = info->goodsId;
 
@@ -1674,7 +1675,7 @@ void CabinetServer::recvCabSync()
         for(i=0; i<listSize; i++)
         {
             cJSON* item = cJSON_GetArrayItem(json_data, i);
-            Goods* info = new Goods();
+            Goods* info = new Goods;
 
             int row = QString(cJSON_GetObjectItem(item, "cabinetRow")->valuestring).toInt();
             int col = QString(cJSON_GetObjectItem(item, "cabinetCol")->valuestring).toInt();
@@ -1685,6 +1686,7 @@ void CabinetServer::recvCabSync()
             info->goodsId = QString(cJSON_GetObjectItem(item, "goodsId")->valuestring);
             info->packageType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
+            info->size = QString(cJSON_GetObjectItem(item, "size")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->packageId = info->goodsId;
             info->row = row;

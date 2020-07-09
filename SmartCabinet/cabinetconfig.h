@@ -127,8 +127,8 @@ public:
     QByteArray getCabinetPos();
     QByteArray getCabinetSize();
 
-    void searchByPinyin(QString ch);
-    void clearSearch();
+//    void searchByPinyin(QString ch);
+//    void clearSearch();
     QChar str2py(QChar ch);
 
     QList<UserInfo*> list_user;

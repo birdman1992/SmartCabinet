@@ -1018,19 +1018,6 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
         <string>检查新版本</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="rebind">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>230</y>
-         <width>281</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>重新绑定物品柜格</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="verInfo">
        <property name="geometry">
         <rect>
@@ -1045,7 +1032,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.6.2.20200605_beta</string>
+        <string>1.6.3.20200709_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">
@@ -1413,8 +1400,8 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
       <widget class="QPushButton" name="set_spec_case">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>290</y>
+         <x>450</x>
+         <y>110</y>
          <width>281</width>
          <height>51</height>
         </rect>
