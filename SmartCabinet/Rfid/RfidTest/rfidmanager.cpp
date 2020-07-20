@@ -31,7 +31,7 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
 
     rfidHub = new RfidDevHub(this);
     connect(rfidHub, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString,int,int)));
-    rfidHub->addDevice(QHostAddress("192.168.0.8"), 8888);
+//    rfidHub->addDevice(QHostAddress("192.168.0.8"), 8888);
     rfidHub->addDevice(QHostAddress("192.168.0.9"), 8888);
 //    QHostAddress serverAddr = QHostAddress("192.168.0.8");
 //    testReader = new RfidReader(serverAddr, 8888, 0, this);
@@ -176,7 +176,7 @@ void RfidManager::doorStateChanged(int id, bool isOpen)
         if(flagScan && (!doorState))//扫描状态且柜门全关
         {
             accessLock = true;
-            eModel->transEpcMark(mark_checked, mark_out);
+            eModel->transEpcMark(mark_checked, mark_no);
             emit optFinish();
             doorCloseScan();
         }
@@ -334,21 +334,20 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
     {
         eModel->setEpcMark(epc, mark_out);
         eModel->lockEpcMark(epc);
-//        list_ign<<epc;
-//        qDebug()<<"[ign count]"<<list_ign.count();
-        switch(info->state)
-        {
-        case epc_in:
-            eModel->setEpcMark(epc, mark_out);
-            eModel->lockEpcMark(epc);
-            break;
-        case epc_no:
-            eModel->setEpcMark(epc, mark_out);
-            eModel->lockEpcMark(epc);
-            break;
-        default:
-            break;
-        }
+
+//        switch(info->state)
+//        {
+//        case epc_in:
+//            eModel->setEpcMark(epc, mark_out);
+//            eModel->lockEpcMark(epc);
+//            break;
+//        case epc_no:
+//            eModel->setEpcMark(epc, mark_out);
+//            eModel->lockEpcMark(epc);
+//            break;
+//        default:
+//            break;
+//        }
     }
 }
 

@@ -52,9 +52,8 @@ private slots:
     void on_stop_clicked();
     void on_OK_clicked();
     void on_fresh_clicked();
-    void on_pushButton_clicked();
+    void on_close_clicked();
     void on_tab_filter_all_toggled(bool checked);
-    void on_tab_filter_out_clicked();
     void on_tab_filter_new_toggled(bool checked);
     void on_tab_filter_back_toggled(bool checked);
     void on_tab_filter_consume_toggled(bool checked);
@@ -64,6 +63,10 @@ private slots:
     void on_tab_filter_wait_back_toggled(bool checked);
 
     void on_tab_view_clicked(const QModelIndex &index);
+
+    void on_tab_filter_out_toggled(bool checked);
+
+    void on_stop_scan_clicked();
 
 private:
     Ui::FrmRfid *ui;

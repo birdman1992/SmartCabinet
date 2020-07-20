@@ -561,7 +561,10 @@ void CabinetService::updateBtn()
 {
     QPushButton* btn = (QPushButton*)l_lock_conf.button(curId);
     if(btn == NULL)
+    {
+        qDebug()<<"updateBtn:no btn";
         return;
+    }
 
     int seq = curId>>8;
     int index = curId&0xff;

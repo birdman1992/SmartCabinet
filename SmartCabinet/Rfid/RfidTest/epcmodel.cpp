@@ -198,7 +198,7 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
     countTab[mark]++;
     emit updateCount(mark, countTab[mark]);//更新旧的标记数量
     emit updateCount(info->mark, countTab[info->mark]);//更新新的标记数量
-//    qDebug()<<"[setEpcMark]"<<epcId<<info->mark<<"->"<<mark<<"count:"<<markCount<<"countTab:"<<countTab[mark];
+    qDebug()<<"[setEpcMark]"<<epcId<<info->mark<<"->"<<mark<<"count:"<<markCount<<"countTab:"<<countTab[mark];
 
     info->mark = mark;
     if(info->mark != mark_wait_back)

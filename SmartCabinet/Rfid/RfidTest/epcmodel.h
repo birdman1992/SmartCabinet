@@ -19,15 +19,15 @@ enum EpcState{
 //
 enum EpcMark{
     mark_no,
-    mark_new,//新发现的标签
+    mark_new,//新发现的标签,存入标签
     mark_back,//还回的标签
     mark_out,//取出的标签
     mark_con,//登记消耗的标签
-    mark_in,//
+    mark_in,//柜内标签
     mark_wait_back,//取出未归还的标签
     mark_all,//所有标签,不作为标记使用
     mark_away,//离柜标签
-    mark_checked,
+    mark_checked,//发现标签
 };
 
 enum TableMark

@@ -4,6 +4,7 @@
 
 RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent)
 {
+    flagScan = false;
     flagInit = false;
     flagConnect = false;
     flagWaitBack = false;
@@ -21,7 +22,7 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent
 
 RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent) : QObject(parent)
 {
-
+    flagScan = false;
     flagInit = false;
     flagConnect = false;
     flagWaitBack = false;
@@ -59,6 +60,9 @@ void RfidReader::timerEvent(QTimerEvent * e)
 {
     if(e->timerId() == heartBeatTimerId)
     {
+        if(flagScan)
+            return;
+
         if(flagWaitBack)//disconnected
         {
             qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
@@ -84,7 +88,7 @@ void RfidReader::timerEvent(QTimerEvent * e)
 void RfidReader::heartBeat()
 {
     RfidCmd cmd(0x12, QByteArray::fromHex("00000000"));
-    sendCmd(cmd.packData(),false);
+    sendCmd(cmd.packData());
 }
 
 void RfidReader::devReconnect()
@@ -103,14 +107,18 @@ void RfidReader::epcScaned(QString epc)
     if(!sigMap.contains(epc))
         sigMap.insert(epc, new SigInfo);
 
-    qDebug()<<"epcScaned"<<sigMap[epc]->clearStamp;
+//    qDebug()<<"epc:"<<epc;
 
     if(sigMap[epc]->sigUpdate() > (float)confIntens[curAnt])
-       emit reportEpc(epc, readerSeq, curAnt);
+    {
+//        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity;
+        emit reportEpc(epc, readerSeq, curAnt);
+    }
 }
 
 void RfidReader::scanStop()
 {
+    flagScan = false;
     RfidCmd cmd(0xff);
     sendCmd(cmd.packData());
 }
@@ -133,6 +141,7 @@ void RfidReader::scanStart(quint32 antState, quint8 scanMode)
     qDeleteAll(sigMap.begin(), sigMap.end());
     sigMap.clear();
 
+    flagScan = true;
     QByteArray cmdParam;
     cmdParam.resize(5);
     char* pos = cmdParam.data();
@@ -174,7 +183,7 @@ void RfidReader::recvData()
     if(!response.appendData(qba))
         return;
 
-//    qDebug()<<response.mid<<response.paramData.toHex();
+//    qDebug()<<"[recv pack]"<<response.mid<<response.paramData.toHex();
     dataParse(response.mid, response.paramData);
     while(response.appendData())
     {
@@ -213,6 +222,12 @@ void RfidReader::parseEpc(QByteArray epcData)
     //读取变长EPC
     MEM_FETCH(len, pos);
     len = ntohs(len);
+    if(len != epcData.size()-7)
+    {
+        qDebug()<<"[unknow]"<<epcData.toHex()<<len<<epcData.size();
+        return;
+    }
+
     QByteArray epc = QByteArray(pos, len);
     pos += len;
 //    qDebug()<<"[reportEpc]"<<epc.toHex()<<readerSeq<<curAnt;

@@ -15,7 +15,10 @@ TEMPLATE = app
 target.path = /home
 INSTALLS += target
 QMAKE_CXXFLAGS += -std=c++0x
-
+#DEFINES:
+#运行平台:PC:x86测试|MY:明远的arm板|MC:脉冲的arm板
+#开关:SIMULATE_ON:仿真开关|LOG_ON:日志开关
+#接口选择:TCP_API:对接@胡江文 的接口
 LIBS += -lpthread
 
 if(contains(DEFINES,PC)){

@@ -114,6 +114,10 @@ void FrmRfid::scanProgress(int curCount, int totalCount)
 void FrmRfid::updateLockCount(int lockCount)
 {
     ui->lock_count->display(lockCount);
+    if(lockCount>0 && !ui->tab_filter_out->isChecked())
+    {
+        ui->tab_filter_out->setChecked(true);
+    }
 }
 
 void FrmRfid::testSlot()
@@ -222,15 +226,6 @@ void FrmRfid::initTabs()
     connect(eModel, SIGNAL(updateLockCount(int)), this, SLOT(updateLockCount(int)));
     connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), filterModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
     ui->tab_view->setModel(filterModel);
-    ui->tab_view->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
-    ui->tab_view->setAlternatingRowColors(true);
-    ui->tab_view->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
-                                "background:white;"
-                                "gridline-color:rgb(161,161,161);"
-                                "alternate-background-color:rgb(244, 244, 244);"
-                                "selection-color:white;    /*鼠标选中时前景色：文字颜色*/"
-                                "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
-
     ui->tab_view->setColumnWidth(0, 113);
     ui->tab_view->setColumnWidth(1, 109);
     ui->tab_view->setColumnWidth(2, 137);
@@ -241,10 +236,16 @@ void FrmRfid::initTabs()
     ui->tab_view->setColumnWidth(7, 90);
     ui->tab_view->setColumnWidth(8, 190);
     ui->tab_view->setColumnWidth(9, 77);
-    ui->tab_view->setColumnWidth(10, 100);
-    ui->tab_view->setColumnWidth(11, 60);
-
-
+//    ui->tab_view->setColumnWidth(10, 100);
+    ui->tab_view->setColumnWidth(10, 60);
+    ui->tab_view->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
+    ui->tab_view->setAlternatingRowColors(true);
+    ui->tab_view->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
+                                "background:white;"
+                                "gridline-color:rgb(161,161,161);"
+                                "alternate-background-color:rgb(244, 244, 244);"
+                                "selection-color:white;    /*鼠标选中时前景色：文字颜色*/"
+                                "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
     QString style = QString(qssScrollbar.readAll());
@@ -330,7 +331,7 @@ void FrmRfid::on_fresh_clicked()
     eModel->clearEpcMark();
 }
 
-void FrmRfid::on_pushButton_clicked()
+void FrmRfid::on_close_clicked()
 {
 #ifdef test_rfid
     ui->stackedWidget->setCurrentIndex(0);
@@ -350,15 +351,21 @@ void FrmRfid::on_tab_filter_all_toggled(bool checked)
     }
 }
 
-void FrmRfid::on_tab_filter_out_clicked()
+void FrmRfid::on_tab_filter_out_toggled(bool checked)
 {
 //    Q_UNUSED(checked);
-//    if(checked)
-//    {
+    if(checked)
+    {
         filterModel->setFilterKeyColumn(9);
         filterModel->setFilterRegExp("取出$");
 //        ui->tab_view->resizeColumnsToContents();
-//    }
+    }
+    else
+    {
+        filterModel->setFilterKeyColumn(9);
+        filterModel->setFilterRegExp(".*");
+//        ui->tab_view->resizeColumnsToContents();
+    }
 }
 
 void FrmRfid::on_tab_filter_new_toggled(bool checked)
@@ -440,4 +447,9 @@ void FrmRfid::on_tab_view_clicked(const QModelIndex &index)
         eModel->operation(ui->tab_view->model()->index(index.row(), 1).data().toString(), mark_checked);
 
 //    qDebug()<<ui->tab_view->model()->index(index.row(), 1).data().toString();
+}
+
+void FrmRfid::on_stop_scan_clicked()
+{
+    rfManager->clsGiveUp();
 }

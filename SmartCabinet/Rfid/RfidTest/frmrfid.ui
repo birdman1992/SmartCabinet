@@ -441,7 +441,7 @@ border:0px solid grey;</string>
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="close">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -553,6 +553,9 @@ border:0px solid rgb(238, 238, 236);
                        <string>实时取出:0</string>
                       </property>
                       <property name="checkable">
+                       <bool>true</bool>
+                      </property>
+                      <property name="checked">
                        <bool>false</bool>
                       </property>
                      </widget>
@@ -692,7 +695,7 @@ border:0px solid rgb(238, 238, 236);
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="OK">
+             <widget class="QPushButton" name="pushButton_3">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -704,15 +707,6 @@ border:0px solid rgb(238, 238, 236);
                 <width>128</width>
                 <height>41</height>
                </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>41</height>
-               </size>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
               </property>
               <property name="text">
                <string>手术单取用</string>
@@ -748,7 +742,7 @@ border:0px solid rgb(238, 238, 236);
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="stop_scan">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -773,7 +767,7 @@ border:0px solid rgb(238, 238, 236);
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_3">
+             <widget class="QPushButton" name="OK">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -785,6 +779,15 @@ border:0px solid rgb(238, 238, 236);
                 <width>128</width>
                 <height>41</height>
                </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>41</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
               </property>
               <property name="text">
                <string>确认</string>

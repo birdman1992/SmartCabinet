@@ -25,11 +25,11 @@ public:
     float sigUpdate(){
         scanTimes++;
         signalIntensity = qRound((float)scanTimes*1000/(QDateTime::currentMSecsSinceEpoch()-clearStamp)*100)/100;
-        qDebug()<<"[sigUpdate]"<<signalIntensity;
+        //qDebug()<<"[sigUpdate]"<<scanTimes<<(QDateTime::currentMSecsSinceEpoch()-clearStamp)<<signalIntensity;
         return signalIntensity;
     }
     qint64 clearStamp;
-    quint8 scanTimes;//扫描次数
+    quint32 scanTimes;//扫描次数
     float signalIntensity;//扫描强度:每秒扫描次数
 };
 
@@ -62,6 +62,7 @@ private:
     bool flagInit;
     bool flagConnect;
     bool flagWaitBack;
+    bool flagScan;
     QTcpSocket* skt;
     RfidResponse response;
     CabinetConfig* config;
