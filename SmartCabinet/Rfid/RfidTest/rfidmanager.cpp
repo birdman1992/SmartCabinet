@@ -332,22 +332,22 @@ void RfidManager::updateEpc(QString epc, int seq, int ant)
     }
     else if(((1<<(ant-1)) & outsideAnt))//外部天线扫描到
     {
-        eModel->setEpcMark(epc, mark_out);
-        eModel->lockEpcMark(epc);
+//        eModel->setEpcMark(epc, mark_out);
+//        eModel->lockEpcMark(epc);
 
-//        switch(info->state)
-//        {
-//        case epc_in:
-//            eModel->setEpcMark(epc, mark_out);
-//            eModel->lockEpcMark(epc);
-//            break;
-//        case epc_no:
-//            eModel->setEpcMark(epc, mark_out);
-//            eModel->lockEpcMark(epc);
-//            break;
-//        default:
-//            break;
-//        }
+        switch(info->state)
+        {
+        case epc_in:
+            eModel->setEpcMark(epc, mark_out);
+            eModel->lockEpcMark(epc);
+            break;
+        case epc_no:
+            eModel->setEpcMark(epc, mark_out);
+            eModel->lockEpcMark(epc);
+            break;
+        default:
+            break;
+        }
     }
 }
 

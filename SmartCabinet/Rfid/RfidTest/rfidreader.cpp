@@ -111,7 +111,7 @@ void RfidReader::epcScaned(QString epc)
 
     if(sigMap[epc]->sigUpdate() > (float)confIntens[curAnt])
     {
-//        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity;
+        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity;
         emit reportEpc(epc, readerSeq, curAnt);
     }
 }

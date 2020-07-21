@@ -561,6 +561,19 @@ border:0px solid rgb(238, 238, 236);
                      </widget>
                     </item>
                     <item>
+                     <widget class="QToolButton" name="toolButton">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>还回:0</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QToolButton" name="tab_check_out">
                       <property name="minimumSize">
                        <size>

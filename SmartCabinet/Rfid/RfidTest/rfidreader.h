@@ -24,8 +24,12 @@ public:
     }
     float sigUpdate(){
         scanTimes++;
-        signalIntensity = qRound((float)scanTimes*1000/(QDateTime::currentMSecsSinceEpoch()-clearStamp)*100)/100;
-        //qDebug()<<"[sigUpdate]"<<scanTimes<<(QDateTime::currentMSecsSinceEpoch()-clearStamp)<<signalIntensity;
+        qint64 durTime = QDateTime::currentMSecsSinceEpoch()-clearStamp;
+        if(durTime<1000)
+            return 0.0;
+
+        signalIntensity = qRound((float)scanTimes*5000/(durTime)*100)/100;//5秒钟扫描次数
+        qDebug()<<"[sigUpdate]"<<scanTimes<<(QDateTime::currentMSecsSinceEpoch()-clearStamp)<<signalIntensity;
         return signalIntensity;
     }
     qint64 clearStamp;
