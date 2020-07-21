@@ -166,7 +166,7 @@ private:
     bool screenProState;
     QMap<QWidget*, bool> showMap;
     QList<Cabinet *> list_cabinet;
-    QList<QPoint> list_search_case;//搜索状态的柜格
+    QList<QPoint> list_state_case;//搜索状态的柜格
     int tsCalFlag;
 
     bool volPressed;
@@ -230,8 +230,9 @@ private:
     void magicCmd(QString cmd);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
     bool isListCode(QByteArray qba);
+    void setCheckState(QPoint pos);
     void setSearchState(QList<QPoint> l);
-    void clearSearchState();
+    void clearCaseState();
 };
 
 #endif // CABINETWIDGET_H

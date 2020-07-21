@@ -375,7 +375,7 @@ QList<QPoint> SqlManager::goodsSearch(QString searchStr)
     queryExec(&query, cmd, "goodsSearch");
 
     while (query.next()) {
-        searchRst<<QPoint(query.value(0).toInt(),query.value(1).toInt());
+        searchRst<<QPoint(query.value(1).toInt(),query.value(0).toInt());
     }
     return searchRst;
 }
@@ -710,7 +710,6 @@ void SqlManager::createTable()
 
 void SqlManager::createField(QString tabName ,QString fieldName)
 {
-    qDebug()<<"createField";
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select sql from sqlite_master where type = 'table' and name = '%1'").arg(tabName);
     if(!queryExec(&query, cmd, QString("[Check Field] %1").arg(fieldName)))
@@ -721,6 +720,7 @@ void SqlManager::createField(QString tabName ,QString fieldName)
         QString tabStr = query.value(0).toString();
         if(tabStr.indexOf(fieldName) == -1)//不存在字段
         {
+            qDebug()<<"createField";
             cmd = QString("ALTER TABLE GoodsInfo ADD COLUMN %1 CHAR(50) DEFAULT('')").arg(fieldName);
             queryExec(&query, cmd, QString("[Create Field] %1").arg(fieldName));
         }
@@ -736,6 +736,6 @@ bool SqlManager::queryExec(QSqlQuery* q, QString cmd, QString msg)
         qDebug()<<"[sqlite]"<<msg<<"failed"<<q->lastError();
         return false;
     }
-    qDebug()<<q->lastQuery();
+    //qDebug()<<q->lastQuery();
     return true;
 }

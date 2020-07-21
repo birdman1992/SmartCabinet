@@ -151,7 +151,7 @@ void CabinetWidget::cabLock()
     win_access->hide();
     curStoreList = NULL;
     config->state = STATE_NO;
-    clearSearchState();
+    clearCaseState();
     config->wakeUp(0);
     emit checkLockState();
     if(config->getCabinetMode() == "aio")
@@ -549,6 +549,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         casePos.cabinetSeqNum = cabSeqNum;
         casePos.caseIndex = caseIndex;
         win_check->checkStart(casePos);
+        setCheckState(QPoint(cabSeqNum, caseIndex));
         config->list_cabinet[cabSeqNum]->checkCase(caseIndex);
         qDebug()<<"[check]"<<caseIndex;
         clickLock = false;
@@ -599,27 +600,33 @@ bool CabinetWidget::isListCode(QByteArray qba)
     return false;
 }
 
+void CabinetWidget::setCheckState(QPoint pos)
+{
+    list_state_case<<pos;
+    list_cabinet[pos.x()]->searchCase(pos.y());
+}
+
 void CabinetWidget::setSearchState(QList<QPoint> l)
 {
-    foreach (QPoint pos, list_search_case)
+    foreach (QPoint pos, list_state_case)
     {
-        list_cabinet[pos.y()]->initCase(pos.x());
+        list_cabinet[pos.x()]->initCase(pos.y());
     }
 
-    list_search_case = l;
-    foreach (QPoint pos, list_search_case)
+    list_state_case = l;
+    foreach (QPoint pos, list_state_case)
     {
-        list_cabinet[pos.y()]->searchCase(pos.x());
+        list_cabinet[pos.x()]->searchCase(pos.y());
     }
 }
 
-void CabinetWidget::clearSearchState()
+void CabinetWidget::clearCaseState()
 {
-    foreach (QPoint pos, list_search_case)
+    foreach (QPoint pos, list_state_case)
     {
-        list_cabinet[pos.y()]->initCase(pos.x());
+        list_cabinet[pos.x()]->initCase(pos.y());
     }
-    list_search_case.clear();
+    list_state_case.clear();
 }
 
 void CabinetWidget::recvScanData(QByteArray qba)
@@ -1164,7 +1171,7 @@ void CabinetWidget::searchByPinyin(QString str)
 {
     if(str.isEmpty())
     {
-        clearSearchState();
+        clearCaseState();
         return;
     }
     QList<QPoint> l_search = SqlManager::goodsSearch(str);
@@ -1634,8 +1641,9 @@ void CabinetWidget::recvCheckFinishRst(bool success, QString msg)
     {
         waitForCheckFinish = false;
         ui->check->setChecked(false);
-        clearSearchState();//重置单元格状态
+//        clearCaseState();//重置单元格状态
         cabLock();
+        on_netState_clicked();
     }
     else
     {
@@ -1729,6 +1737,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     waitForGoodsListCode = false;
     rebindGoods = QString();
     msgClear();
+    clearCaseState();
     emit updateLoginState(true);
     optUser = info;
     curCard = optUser->cardId;
@@ -1765,7 +1774,7 @@ void CabinetWidget::on_search_back_clicked()
 void CabinetWidget::on_searchClear_clicked()
 {
     ui->searchStr->clear();
-    clearSearchState();
+    clearCaseState();
 //    config->clearSearch();
 }
 
