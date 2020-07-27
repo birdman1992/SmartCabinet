@@ -1,6 +1,6 @@
 #include "rfidreader.h"
 #include <QDebug>
-#include "manager/rfreaderconfig.h"
+
 
 RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent)
 {
@@ -35,7 +35,7 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
     skt->connectToHost(server, port);
     heartBeatTimerId = startTimer(10000);
-    speedCalTimerId = startTimer(1000);
+    speedCalTimerId = startTimer(8000);
     recvCount = 0;
     recvEpcCount = 0;
 }
@@ -54,6 +54,11 @@ void RfidReader::sendCmd(QByteArray data, bool printFlag)
         qDebug()<<"[sendCmd] send failed,dev offline:"<<data.toHex();
 //        skt->write(data);
     }
+}
+
+bool sigIntLessThan(SigInfo* S1, SigInfo* S2)
+{
+    return S1->signalIntensity>S2->signalIntensity;
 }
 
 void RfidReader::timerEvent(QTimerEvent * e)
@@ -80,15 +85,27 @@ void RfidReader::timerEvent(QTimerEvent * e)
     else if(e->timerId() == speedCalTimerId)
     {
 //        qDebug()<<"Rfid speed:"<<recvCount/1000.0<<"kb/s"<<"epc count:"<<recvEpcCount;
-        recvCount = 0;
-        recvEpcCount = 0;
+        QList<SigInfo*> vals = sigMap.values();
+        if(vals.isEmpty())
+            return;
+
+        qSort(vals.begin(), vals.end(), sigIntLessThan);
+        qreal grandThre = (qreal)RfReaderConfig::instance().getGrandThreshold(skt->peerAddress().toString())/100;//获取梯度阈值
+        int judgeThre = vals[0]->signalIntensity * (1 - grandThre);//判断阈值
+
+        foreach (SigInfo* sig, vals)
+        {
+            qDebug()<<sig->epc<<sig->signalIntensity;
+        }
+//        recvCount = 0;
+//        recvEpcCount = 0;
     }
 }
 
 void RfidReader::heartBeat()
 {
     RfidCmd cmd(0x12, QByteArray::fromHex("00000000"));
-    sendCmd(cmd.packData());
+    sendCmd(cmd.packData(), false);
 }
 
 void RfidReader::devReconnect()
@@ -105,20 +122,22 @@ void RfidReader::devReconnect()
 void RfidReader::epcScaned(QString epc)
 {
     if(!sigMap.contains(epc))
-        sigMap.insert(epc, new SigInfo);
+        sigMap.insert(epc, new SigInfo(epc));
 
 //    qDebug()<<"epc:"<<epc;
 
-    if(sigMap[epc]->sigUpdate() > (float)confIntens[curAnt])
-    {
-        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity;
-        emit reportEpc(epc, readerSeq, curAnt);
-    }
+    sigMap[epc]->sigUpdate((float)confIntens[curAnt-1]);
+//    {
+//        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity<<(float)confIntens[curAnt-1]<<curAnt-1;
+//        emit reportEpc(epc, readerSeq, curAnt);
+//    }
 }
 
 void RfidReader::scanStop()
 {
     flagScan = false;
+    qDeleteAll(sigMap.begin(), sigMap.end());
+    sigMap.clear();
     RfidCmd cmd(0xff);
     sendCmd(cmd.packData());
 }

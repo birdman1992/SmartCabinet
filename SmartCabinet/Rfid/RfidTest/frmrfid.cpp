@@ -25,9 +25,6 @@ FrmRfid::FrmRfid(QWidget *parent) :
     initTabs();
     isLogin = false;
     rfManager = new RfidManager(eModel);
-//    connect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
-    connect(rfManager, SIGNAL(epcStateChanged(TableMark)), this, SLOT(showTabs(TableMark)));
-//    connect(rfManager, SIGNAL(updateCount(int)), this, SLOT(updateCount(int)));
     connect(rfManager, SIGNAL(updateTimer(int)), this, SLOT(updateScanTimer(int)));
     connect(rfManager, SIGNAL(optFinish()), this, SLOT(showMaximized()));
 
@@ -48,7 +45,6 @@ void FrmRfid::setLoginState(bool login)
 FrmRfid::~FrmRfid()
 {
     delete filterModel;
-    qDeleteAll(tabs.begin(), tabs.end());
     delete ui;
 }
 
@@ -150,30 +146,6 @@ void FrmRfid::updateEpcInfo(EpcInfo *info)
     ui->id_table->resizeColumnsToContents();
     ui->num->setText(QString::number(ui->id_table->rowCount()));
     //    disconnect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
-}
-
-void FrmRfid::showTabs(TableMark tabMark)
-{
-    if(tabMark == 0)
-    {
-        win_tabs->clear();
-        this->hide();
-        qDebug()<<"[showTabs]"<<"empty tabMark";
-        rfManager->clsFinish();
-        return;
-    }
-    this->showFullScreen();
-
-    ui->stackedWidget->setCurrentWidget(ui->page_tab);
-    win_tabs->clear();
-    for(int i=0; i<tabs.count(); i++)
-    {
-        if(tabMark & (1<<i))
-        {
-            win_tabs->addTab(tabs[i], list_win_name[i]);
-            tabs[i]->resizeColumnsToContents();
-        }
-    }
 }
 
 void FrmRfid::accessSuccess(QString msg)

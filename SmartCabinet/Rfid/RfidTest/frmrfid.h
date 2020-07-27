@@ -44,7 +44,6 @@ private slots:
     void testSlot();
     void updateAntInCount(int count);
     void updateEpcInfo(EpcInfo*);
-    void showTabs(TableMark tabMark);
     void accessSuccess(QString msg);
     void accessFailed(QString msg);
     void clearCountText();
@@ -77,8 +76,6 @@ private:
     bool isLogin;
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
-    QList<QTableView*> tabs;
-//    QList<QToolButton*> btnTable;
     QMap<EpcMark, QToolButton*> btnTable;
     void updateTableRow(int rowIndex, EpcInfo*);
     void initTabs();

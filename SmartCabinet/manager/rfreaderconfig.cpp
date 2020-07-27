@@ -19,6 +19,7 @@ void RfReaderConfig::createDefaultConfig(QString devName)
 
     setConfig(devName+"/"+"confIntens", QByteArray::fromHex("0x500a0a0a0a0a0a0a"));
     setConfig(devName+"/"+"antPower", QByteArray::fromHex("0x1e1e1e1e1e1e1e1e"));
+    setConfig(devName+"/"+"grandThreshold", 20);
 }
 
 QByteArray RfReaderConfig::getConfIntens(QString devName)
@@ -33,14 +34,25 @@ QByteArray RfReaderConfig::getAntPower(QString devName)
     return getConfig(devName+"/"+"antPower",QVariant()).toByteArray();
 }
 
-QByteArray RfReaderConfig::setConfIntens(QString devName, QByteArray confIntens)
+int RfReaderConfig::getGrandThreshold(QString devName)
+{
+    createDefaultConfig(devName);
+    return getConfig(devName+"/"+"grandThreshold",20).toInt();
+}
+
+void RfReaderConfig::setConfIntens(QString devName, QByteArray confIntens)
 {
     setConfig(devName+"/"+"confIntens",confIntens);
 }
 
-QByteArray RfReaderConfig::setAntPower(QString devName, QByteArray antPow)
+void RfReaderConfig::setAntPower(QString devName, QByteArray antPow)
 {
     setConfig(devName+"/"+"antPower",antPow);
+}
+
+void RfReaderConfig::setGrandThreshold(QString devName, int grandThre)
+{
+    setConfig(devName+"/"+"grandThreshold",grandThre);
 }
 
 /********base functions*******/

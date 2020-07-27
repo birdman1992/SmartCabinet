@@ -14,8 +14,11 @@ class RfReaderConfig : public QObject, public Singleton<RfReaderConfig>
 public:
     QByteArray getConfIntens(QString devName);
     QByteArray getAntPower(QString devName);
-    QByteArray setConfIntens(QString devName, QByteArray confIntens);
-    QByteArray setAntPower(QString devName, QByteArray antPow);
+    int getGrandThreshold(QString devName);//梯度阈值
+    void setConfIntens(QString devName, QByteArray confIntens);
+    void setAntPower(QString devName, QByteArray antPow);
+    void setGrandThreshold(QString devName, int grandThre);
+
 
 private:
     explicit RfReaderConfig(QObject *parent = nullptr);

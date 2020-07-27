@@ -42,7 +42,6 @@ signals:
     void updateTimer(int);
 //    void updateCount(int);
 //    void updateEpcInfo(EpcInfo*);
-    void epcStateChanged(TableMark changedTableMark);
     void epcAccess(QStringList epcs, int optType);
     void optFinish();//用户操作全部完成：柜门全部关闭
 
