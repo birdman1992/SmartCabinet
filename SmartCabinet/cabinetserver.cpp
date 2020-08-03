@@ -818,13 +818,13 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
 {
     qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\",\"timeStamp\":%4}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).arg(timeStamp).arg(timeStamp).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\",\"timeStamp\":%4}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_DAY_REPORT);//+"?"+qba.toBase64();
     replyCheck(reply_day_report);
     reply_day_report = post(nUrl, qba, timeStamp, false);
 //    reply_day_report = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_day_report, SIGNAL(finished()), this, SLOT(recvDayReportInfo()));
-    qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
+    qDebug()<<"[requireListInfo]"<<nUrl<<qba;
 }
 
 void CabinetServer::requireAioOverview()
@@ -948,7 +948,7 @@ void CabinetServer::rfidListSync()
 {
     qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"code\":\"%1\"}").arg(cabId).toLocal8Bit();
+    QByteArray qba = QString("{\"code\":\"%1\",\"timeStamp\":%2}").arg(cabId).arg(timeStamp).toLocal8Bit();
 
     QString nUrl = ApiAddress+QString(API_LIST_CHECK_RFID);//+"?"+qba.toBase64();
     replyCheck(reply_rfid_sync);

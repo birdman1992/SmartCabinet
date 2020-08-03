@@ -90,7 +90,7 @@ void DayReport::showEvent(QShowEvent *)
     ui->date_finish->setMinimumDate(QDate::currentDate());
     ui->date_finish->setMaximumDate(QDate::currentDate());
     ui->date_finish->hide();
-    emit askListInfo(ui->date_start->date(), ui->date_start->date());
+//    emit askListInfo(ui->date_start->date(), ui->date_start->date());
 }
 
 //void DayReport::setCheckTables(QStringList l)

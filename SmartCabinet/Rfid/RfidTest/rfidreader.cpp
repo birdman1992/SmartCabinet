@@ -126,11 +126,11 @@ void RfidReader::epcScaned(QString epc)
 
 //    qDebug()<<"epc:"<<epc;
 
-    sigMap[epc]->sigUpdate((float)confIntens[curAnt-1]);
-//    {
+    if(sigMap[epc]->sigUpdate((float)confIntens[curAnt-1]))
+    {
 //        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity<<(float)confIntens[curAnt-1]<<curAnt-1;
-//        emit reportEpc(epc, readerSeq, curAnt);
-//    }
+        emit reportEpc(epc, readerSeq, curAnt);
+    }
 }
 
 void RfidReader::scanStop()

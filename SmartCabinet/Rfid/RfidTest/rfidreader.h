@@ -25,7 +25,7 @@ public:
         signalIntensity = 0;
         clearStamp = QDateTime::currentMSecsSinceEpoch();
     }
-    float sigUpdate(float sigThe){
+    bool sigUpdate(float sigThe){
         scanTimes++;
         qint64 durTime = QDateTime::currentMSecsSinceEpoch()-clearStamp;
         if(durTime<1000)
@@ -34,7 +34,7 @@ public:
         signalIntensity = qRound((float)scanTimes*5000/(durTime)*100)/100;//5秒钟扫描次数
         findFlag = signalIntensity>sigThe;
         qDebug()<<"[sigUpdate]"<<scanTimes<<(QDateTime::currentMSecsSinceEpoch()-clearStamp)<<signalIntensity;
-        return signalIntensity;
+        return findFlag;
     }
     bool findFlag;
     QString epc;
