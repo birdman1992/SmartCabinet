@@ -95,7 +95,11 @@ void RfidReader::timerEvent(QTimerEvent * e)
 
         foreach (SigInfo* sig, vals)
         {
-            qDebug()<<sig->epc<<sig->signalIntensity;
+            if(sig->signalIntensity > judgeThre)//信号强度满足阈值
+            {
+                epcExist(sig);
+                qDebug()<<sig->epc<<sig->signalIntensity;
+            }
         }
 //        recvCount = 0;
 //        recvEpcCount = 0;
@@ -126,11 +130,20 @@ void RfidReader::epcScaned(QString epc)
 
 //    qDebug()<<"epc:"<<epc;
 
-    if(sigMap[epc]->sigUpdate((float)confIntens[curAnt-1]))
+    if(sigMap[epc]->sigUpdate(curAnt ,(float)confIntens[curAnt-1]))
     {
 //        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity<<(float)confIntens[curAnt-1]<<curAnt-1;
-        emit reportEpc(epc, readerSeq, curAnt);
+//        emit reportEpc(epc, readerSeq, curAnt);
     }
+}
+
+void RfidReader::epcExist(SigInfo* info)
+{
+    if(existList.contains(info->epc))
+        return;
+
+    existList.append(info->epc);
+    emit reportEpc(info->epc, readerSeq, info->findAnt);
 }
 
 void RfidReader::scanStop()

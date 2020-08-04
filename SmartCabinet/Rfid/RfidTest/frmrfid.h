@@ -36,6 +36,8 @@ public slots:
     void updateCurUser(QString optId);
     void scanProgress(int curCount, int totalCount);
     void updateLockCount(int lockCount);
+    void configDevice();
+    void showEpcInfo();
 
 signals:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
@@ -43,7 +45,7 @@ signals:
 private slots:
     void testSlot();
     void updateAntInCount(int count);
-    void updateEpcInfo(EpcInfo*);
+//    void updateEpcInfo(EpcInfo*);
     void accessSuccess(QString msg);
     void accessFailed(QString msg);
     void clearCountText();
@@ -77,7 +79,6 @@ private:
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
     QMap<EpcMark, QToolButton*> btnTable;
-    void updateTableRow(int rowIndex, EpcInfo*);
     void initTabs();
     void setDefaultSel();//设置默认选项
     void showEvent(QShowEvent *);

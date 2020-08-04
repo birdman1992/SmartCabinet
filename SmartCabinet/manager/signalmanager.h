@@ -19,10 +19,10 @@ signals:
     void epcConsumed(QStringList epcs);
     void epcStore(QMap<QString ,QVariantMap>);
     void doorState(int id, bool isOpen);
-    void accessSuccess(QString msg);
-    void accessFailed(QString msg);
+    void accessSuccess(QString msg);//存取成功信息
+    void accessFailed(QString msg);//存取失败信息
     void updateLoginState(bool);//CabinetWidget::loginStateChanged->
-
+    void configRfidDevice();//rfid设备配置请求
 
 
 

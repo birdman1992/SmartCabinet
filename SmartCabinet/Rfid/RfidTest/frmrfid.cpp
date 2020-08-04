@@ -26,7 +26,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     isLogin = false;
     rfManager = new RfidManager(eModel);
     connect(rfManager, SIGNAL(updateTimer(int)), this, SLOT(updateScanTimer(int)));
-    connect(rfManager, SIGNAL(optFinish()), this, SLOT(showMaximized()));
+    connect(rfManager, SIGNAL(optFinish()), this, SLOT(showEpcInfo()));
 
     SignalManager* sigMan = SignalManager::manager();
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));
@@ -116,6 +116,18 @@ void FrmRfid::updateLockCount(int lockCount)
     }
 }
 
+void FrmRfid::configDevice()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+    showMaximized();
+}
+
+void FrmRfid::showEpcInfo()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    showMaximized();
+}
+
 void FrmRfid::testSlot()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -125,27 +137,6 @@ void FrmRfid::testSlot()
 void FrmRfid::updateAntInCount(int count)
 {
     ui->in_count->setText(QString::number(count));
-}
-
-void FrmRfid::updateEpcInfo(EpcInfo *info)
-{
-    for(int i=0; i<ui->id_table->rowCount(); i++)
-    {
-        if(info->epcId == ui->id_table->itemAt(0, i)->text())
-        {
-            updateTableRow(i, info);
-            return;
-        }
-    }
-    int rowCount = ui->id_table->rowCount();
-    ui->id_table->setRowCount(rowCount+1);
-    ui->id_table->setItem(rowCount, 0, new QTableWidgetItem(info->epcId));
-    ui->id_table->setItem(rowCount, 1, new QTableWidgetItem(info->goodsCode));
-    ui->id_table->setItem(rowCount, 2, new QTableWidgetItem(QString::number(info->lastStamp)));
-    ui->id_table->setItem(rowCount, 3, new QTableWidgetItem(QString::number(info->state)));
-    ui->id_table->resizeColumnsToContents();
-    ui->num->setText(QString::number(ui->id_table->rowCount()));
-    //    disconnect(rfManager, SIGNAL(updateEpcInfo(EpcInfo*)), this, SLOT(updateEpcInfo(EpcInfo*)));
 }
 
 void FrmRfid::accessSuccess(QString msg)
@@ -167,15 +158,6 @@ void FrmRfid::on_scan_clicked()
 void FrmRfid::on_stop_clicked()
 {
     rfManager->doorCloseScan();
-}
-
-void FrmRfid::updateTableRow(int rowIndex, EpcInfo *info)
-{
-    ui->id_table->itemAt(0, rowIndex)->setText(info->epcId);
-    ui->id_table->itemAt(1, rowIndex)->setText(info->goodsCode);
-    ui->id_table->itemAt(2, rowIndex)->setText(QString::number(info->lastStamp));
-    ui->id_table->itemAt(3, rowIndex)->setText(QString::number(info->state));
-    ui->id_table->resizeColumnsToContents();
 }
 
 //[物品|条码|RFID|规格|操作人|时间]
