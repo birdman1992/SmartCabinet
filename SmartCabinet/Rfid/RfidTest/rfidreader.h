@@ -21,26 +21,33 @@ public:
         clearInfo();
     }
     void clearInfo(){
-        scanTimes = 0;
+        memset(scanTimes, 0, sizeof(scanTimes));
         signalIntensity = 0;
         clearStamp = QDateTime::currentMSecsSinceEpoch();
     }
-    bool sigUpdate(float sigThe){
-        scanTimes++;
+    bool sigUpdate(int curAnt ,float sigThe){
+        scanTimes[curAnt]++;
         qint64 durTime = QDateTime::currentMSecsSinceEpoch()-clearStamp;
         if(durTime<1000)
             return 0.0;
 
-        signalIntensity = qRound((float)scanTimes*5000/(durTime)*100)/100;//5秒钟扫描次数
-        findFlag = signalIntensity>sigThe;
-        qDebug()<<"[sigUpdate]"<<scanTimes<<(QDateTime::currentMSecsSinceEpoch()-clearStamp)<<signalIntensity;
+        float sigInt = qRound((float)scanTimes[curAnt]*5000/(durTime)*100)/100;//5秒钟扫描次数
+        findFlag = sigInt>sigThe;
+        if(findFlag)
+        {
+            signalIntensity = sigInt;
+            findAnt = curAnt;
+        }
+//        qDebug()<<"[sigUpdate]"<<scanTimes[curAnt]<<(QDateTime::currentMSecsSinceEpoch()-clearStamp)<<signalIntensity;
         return findFlag;
     }
     bool findFlag;
     QString epc;
+    int findAnt;
     qint64 clearStamp;
-    quint32 scanTimes;//扫描次数
+    quint32 scanTimes[8];//扫描次数
     float signalIntensity;//扫描强度:每秒扫描次数
+
 };
 
 class RfidReader : public QObject
@@ -110,7 +117,7 @@ private:
     void heartBeat();
     void devReconnect();
     void epcScaned(QString epc);
-    void epcExist(QString epc);//EPC加入盘存列表
+    void epcExist(SigInfo *info);//EPC加入盘存列表
 
     int m_gradientThreshold;//梯度阈值
 
