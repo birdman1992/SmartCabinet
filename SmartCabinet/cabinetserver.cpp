@@ -94,6 +94,8 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     watchdogStart();
 #endif
     connect(&tarProcess, SIGNAL(finished(int)), this, SLOT(tarFinished(int)));
+    connect(&tarProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStandardOutput()));
+
     if(sqlManager->waitForSync())
         QTimer::singleShot(2000, this, SLOT(cabInfoSync()));
 
@@ -800,7 +802,7 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
     reply_day_report = post(nUrl, qba, timeStamp, false);
 //    reply_day_report = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_day_report, SIGNAL(finished()), this, SLOT(recvDayReportInfo()));
-    qDebug()<<"[requireCheckTableInfo]"<<nUrl<<qba;
+    qDebug()<<"[requireListInfo]"<<nUrl<<qba;
 }
 
 void CabinetServer::requireAioOverview()
@@ -1448,6 +1450,8 @@ void CabinetServer::recvCheckFinish()
         }
         emit curCheckList(checkList);
         checkFinish(true);
+        //盘点后同步
+        cabInfoSync();
     }
     else
     {
@@ -1711,7 +1715,8 @@ void CabinetServer::recvCabSync()
             qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->goodsId<<info->packageId<<info->num<<info->unit;
 //            config->syncGoods(info, row, col);
             sqlManager->replaceGoodsInfo(info, SqlManager::all_rep, SqlManager::mask_all);//只更新远程物品状态
-            config->list_cabinet[col]->updateCase(row);
+            if(col < config->list_cabinet.count())
+                config->list_cabinet[col]->updateCase(row);
         }
     }
     else
@@ -2077,6 +2082,12 @@ void CabinetServer::recvTempDevReport()
     qDebug()<<"[recvTempDevReport]"<<qba;
     reply_aio_temp->deleteLater();
     reply_aio_temp = NULL;
+}
+
+void CabinetServer::processStandardOutput()
+{
+    QByteArray qba = tarProcess.readAllStandardOutput();
+    qDebug()<<"[update process]:"<<qba;
 }
 
 void CabinetServer::updatePacFinish()

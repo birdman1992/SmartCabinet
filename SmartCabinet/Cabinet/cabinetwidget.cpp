@@ -461,7 +461,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(config->state == STATE_STORE)//禁止绑定至护士长柜格
             return;
     }
-    config->wakeUp(TIMEOUT_BASE);
+    if(config->state != STATE_CHECK)
+        config->wakeUp(TIMEOUT_BASE);
 //    bool clickRepeat = false;
 //    if((caseIndex==selectCase) && (cabSeqNum == selectCab))
 //        clickRepeat = true;//标记为重复点击

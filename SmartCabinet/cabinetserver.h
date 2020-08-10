@@ -200,6 +200,7 @@ private slots:
     void recvAioOverview();
     void recvAioData();
     void recvTempDevReport();
+    void processStandardOutput();
     void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();
