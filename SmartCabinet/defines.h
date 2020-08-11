@@ -22,9 +22,9 @@
 #define SHOW_FULLSCREEN
 
 //超时时间配置
-#define TIMEOUT_FETCH 3
+#define TIMEOUT_FETCH 10
 #define TIMEOUT_CHECK 0
-#define TIMEOUT_BASE 3
+#define TIMEOUT_BASE 10
 
 
 /*模拟无服务器状态*/

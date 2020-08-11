@@ -583,12 +583,13 @@ void CabinetService::updateBtn()
 
     int seq = curId>>8;
     int index = curId&0xff;
-
+//    qDebug()<<"[updateBtn]"<<curId<<seq<<index;
     if(seq >= config->list_cabinet.count())
         return;
     if(index >= config->list_cabinet[seq]->rowCount())
         return;
 
+//    qDebug()<<"[updateBtn] success"<<config->list_cabinet.at(seq)->ctrlSeq(index)<<config->list_cabinet.at(seq)->ctrlIndex(index);
     btn->setText(QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(seq)->ctrlSeq(index)).arg(config->list_cabinet.at(seq)->ctrlIndex(index)));
 }
 

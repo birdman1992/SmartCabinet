@@ -254,6 +254,12 @@ void Cabinet::setCtrlWord(QByteArray seq, QByteArray index)
 {
     _ctrlSeq = seq;
     _ctrlIndex = index;
+
+    if(_ctrlSeq.size()<16)
+        _ctrlSeq.resize(16);
+
+    if(_ctrlIndex.size()<16)
+        _ctrlIndex.resize(16);
 //    for(int i=0; i<list_case.count(); i++)
 //    {
 //        setCtrlWord(i, seq, index);
@@ -262,10 +268,12 @@ void Cabinet::setCtrlWord(QByteArray seq, QByteArray index)
 
 void Cabinet::setCtrlSeq(int caseIndex, int seq)
 {
+//    qDebug()<<"setCtrlSeq"<<caseIndex<<_ctrlSeq.size()<<_ctrlSeq.toHex();
     if(caseIndex >= _ctrlSeq.size())
         return;
 
     _ctrlSeq[caseIndex] = seq;
+//    qDebug()<<_ctrlSeq[caseIndex];
 }
 
 void Cabinet::setctrlIndex(int caseIndex, int index)

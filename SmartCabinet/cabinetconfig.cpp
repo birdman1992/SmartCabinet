@@ -582,13 +582,14 @@ void CabinetConfig::readCabinetConfig()
 
         for(i=0; i<cabNum; i++)
         {
-            Cabinet* cab = new Cabinet();
+            Cabinet* cab = new Cabinet;
             cab->CabinetInit(layoutList.at(i),i, (cabNum <= 5));
             cab->setCabPos(i);
             cab->setPosType(1);
 
             QByteArray ctrlSeq = lockManager->getLockCtrlSeq(i);
             QByteArray ctrlIndex = lockManager->getLockCtrlIndex(i);
+//            qDebug()<<"setCtrlWord"<<ctrlSeq.toHex()<<ctrlIndex.toHex();
             cab->setCtrlWord(ctrlSeq, ctrlIndex);
 
             list_cabinet<<cab;
