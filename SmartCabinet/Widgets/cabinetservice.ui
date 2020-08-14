@@ -966,7 +966,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
       </widget>
      </widget>
      <widget class="QWidget" name="page_2">
-      <widget class="QPushButton" name="clear">
+      <widget class="QPushButton" name="rfid_config">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -976,7 +976,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
         </rect>
        </property>
        <property name="text">
-        <string>柜子初始化(保留柜子ID)</string>
+        <string>RFID设备配置</string>
        </property>
       </widget>
       <widget class="QPushButton" name="init">

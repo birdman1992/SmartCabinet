@@ -22,7 +22,13 @@ FrmRfid::FrmRfid(QWidget *parent) :
 //    btnTable.insert(mark_wait_back, ui->tab_filter_wait_back);
 //    btnTable.insert(mark_all, ui->tab_filter_all);
 
-    initTabs();
+    QRegExp ipRx("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
+    ui->input_addr->setValidator(new QRegExpValidator(ipRx));
+
+    QRegExp portRx("^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$");
+    ui->input_port->setValidator(new QRegExpValidator(portRx));
+
+    eModel = new EpcModel(this);
     isLogin = false;
     rfManager = new RfidManager(eModel);
     connect(rfManager, SIGNAL(updateTimer(int)), this, SLOT(updateScanTimer(int)));
@@ -31,7 +37,9 @@ FrmRfid::FrmRfid(QWidget *parent) :
     SignalManager* sigMan = SignalManager::manager();
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));
     connect(sigMan, SIGNAL(accessFailed(QString)), this, SLOT(accessFailed(QString)));
+    connect(sigMan, SIGNAL(configRfidDevice()), this, SLOT(configDevice()));
 
+    initTabs();
 #ifdef test_rfid
     QTimer::singleShot(1000, this, SLOT(testSlot()));
 #endif
@@ -118,6 +126,7 @@ void FrmRfid::updateLockCount(int lockCount)
 
 void FrmRfid::configDevice()
 {
+//    qDebug("configDevice");
     ui->stackedWidget->setCurrentIndex(0);
     showMaximized();
 }
@@ -171,7 +180,6 @@ void FrmRfid::on_stop_clicked()
 //};
 void FrmRfid::initTabs()
 {
-    eModel = new EpcModel(this);
     filterModel = new QSortFilterProxyModel;
     filterModel->setSourceModel(eModel);
     filterModel->setDynamicSortFilter(true);
@@ -205,6 +213,23 @@ void FrmRfid::initTabs()
     QString style = QString(qssScrollbar.readAll());
     ui->tab_frame->setStyleSheet(style);
     qssScrollbar.close();
+
+    //初始化rfid设备展示
+    ui->rfidDevView->setModel(rfManager->rfidReaderModel());
+    ui->rfidDevView->setColumnWidth(0, 150);
+    ui->rfidDevView->setColumnWidth(1, 80);
+    ui->rfidDevView->setColumnWidth(2, 80);
+    ui->rfidDevView->setColumnWidth(3,80);
+    ui->rfidDevView->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
+    ui->rfidDevView->setAlternatingRowColors(true);
+    ui->rfidDevView->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
+                                "background:white;"
+                                "gridline-color:rgb(161,161,161);"
+                                "alternate-background-color:rgb(244, 244, 244);"
+                                "selection-color:white;    /*鼠标选中时前景色：文字颜色*/"
+                                "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
+
+
 //    foreach (QToolButton* btn, btnTable)
 //    {
 //        btn->hide();
@@ -406,4 +431,23 @@ void FrmRfid::on_tab_view_clicked(const QModelIndex &index)
 void FrmRfid::on_stop_scan_clicked()
 {
     rfManager->clsGiveUp();
+}
+
+void FrmRfid::on_close_2_clicked()
+{
+    this->close();
+}
+
+void FrmRfid::on_add_device_clicked()
+{
+
+}
+
+void FrmRfid::on_rfidDevView_clicked(const QModelIndex &index)
+{
+    if(index.column() == 3)//删除
+    {
+        RfidDevHub* devModel = rfManager->rfidReaderModel();
+        devModel->delDevice(devModel->index(index.row(),0).data().toString());
+    }
 }

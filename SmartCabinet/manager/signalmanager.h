@@ -22,7 +22,7 @@ signals:
     void accessSuccess(QString msg);//存取成功信息
     void accessFailed(QString msg);//存取失败信息
     void updateLoginState(bool);//CabinetWidget::loginStateChanged->
-    void configRfidDevice();//rfid设备配置请求
+    void configRfidDevice();//rfid设备配置请求,CabinetService::rfidConfig()->FrmRfid::configDevice
 
 
 

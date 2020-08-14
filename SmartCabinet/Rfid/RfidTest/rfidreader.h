@@ -53,16 +53,24 @@ public:
 class RfidReader : public QObject
 {
     Q_OBJECT
+public:
+    enum DevType{
+        inside,
+        outside,
+    };
 
 public:
-    explicit RfidReader(QTcpSocket* s,int seq, QObject *parent = 0);
-    explicit RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent = 0);
+    explicit RfidReader(QTcpSocket* s,int seq, QObject *parent = 0, DevType _type=inside);
+    explicit RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent = 0, DevType _type=inside);
     void scanStart(quint32 antState, quint8 scanMode);
     void scanStop();
-    QString readerIp();
+    QString readerIp();//dev addr
+    QString readerState();//dev state
+    QString readerType();//dev type
     bool isConnected();
     int gradientThreshold();
     void setGradientThreshold();
+    void setFlagConnect(bool flag);
 
     int gradientThreshold() const
     {
@@ -87,6 +95,7 @@ public slots:
 signals:
     void reportEpc(QString epc, int seq, int ant);
     void stateChanged();//连接状态变化
+    void deviceChanged();//设备发生变化
 
 //    void gradientPercentChanged(int gradientPercent);
 
@@ -102,6 +111,7 @@ private:
     bool flagConnect;
     bool flagWaitBack;
     bool flagScan;
+    DevType devType;
     QTcpSocket* skt;
     RfidResponse response;
     CabinetConfig* config;

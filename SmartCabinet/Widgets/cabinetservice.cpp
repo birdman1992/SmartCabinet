@@ -39,6 +39,9 @@ CabinetService::CabinetService(QWidget *parent) :
     connect(win_fingerPrint, SIGNAL(userCardActive(QByteArray)), this, SIGNAL(userCardActive(QByteArray)));
     ui->frame_finger->layout()->addWidget(win_fingerPrint);
 
+    SignalManager* sigMan = SignalManager::manager();
+    connect(this, SIGNAL(rfidConfig()), sigMan, SIGNAL(configRfidDevice()));//
+
     initStack();
     initGroup();
     showVerInfo();
@@ -512,9 +515,9 @@ void CabinetService::recvInsertUndoResult(bool)
     ui->undo->setEnabled(true);
 }
 
-void CabinetService::on_clear_clicked()
+void CabinetService::on_rfid_config_clicked()
 {
-    emit requireClear();
+    emit rfidConfig();
 }
 
 void CabinetService::on_init_clicked()

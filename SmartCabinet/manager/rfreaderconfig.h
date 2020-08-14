@@ -14,11 +14,13 @@ class RfReaderConfig : public QObject, public Singleton<RfReaderConfig>
 public:
     QByteArray getConfIntens(QString devName);
     QByteArray getAntPower(QString devName);
+    QString getDeviceType(QString devName);
     int getGrandThreshold(QString devName);//梯度阈值
     void setConfIntens(QString devName, QByteArray confIntens);
     void setAntPower(QString devName, QByteArray antPow);
     void setGrandThreshold(QString devName, int grandThre);
-
+    void setDeviceType(QString devName, QString devType);
+    void createDevice(QString devName, int port, QString devType);
 
 private:
     explicit RfReaderConfig(QObject *parent = nullptr);

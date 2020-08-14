@@ -289,6 +289,11 @@ bool RfidManager::accessIsLock()
     return accessLock;
 }
 
+RfidDevHub *RfidManager::rfidReaderModel()
+{
+    return rfidHub;
+}
+
 void RfidManager::timerStop()
 {
     upTimer.stop();

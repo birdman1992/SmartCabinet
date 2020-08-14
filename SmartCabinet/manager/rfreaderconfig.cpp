@@ -34,6 +34,11 @@ QByteArray RfReaderConfig::getAntPower(QString devName)
     return getConfig(devName+"/"+"antPower",QVariant()).toByteArray();
 }
 
+QString RfReaderConfig::getDeviceType(QString devName)
+{
+    return getConfig(devName+"/"+"type", QString("inside")).toString();
+}
+
 int RfReaderConfig::getGrandThreshold(QString devName)
 {
     createDefaultConfig(devName);
@@ -53,6 +58,31 @@ void RfReaderConfig::setAntPower(QString devName, QByteArray antPow)
 void RfReaderConfig::setGrandThreshold(QString devName, int grandThre)
 {
     setConfig(devName+"/"+"grandThreshold",grandThre);
+}
+
+void RfReaderConfig::setDeviceType(QString devName, QString devType)
+{
+    setConfig(devName+"/"+"type",devType);
+}
+
+/**
+ * @brief RfReaderConfig::createDevice
+ * @param devName 设备IP
+ * @param port  设备端口
+ * @param devType   设备类型:inside/outside
+ */
+void RfReaderConfig::createDevice(QString devName, int port, QString devType)
+{
+    if(getConfigGroups().contains(devName))
+    {
+        qDebug()<<"The device configuration already exists:"<<devName<<"create failed.";
+        return;
+    }
+    setConfig(devName+"/"+"confIntens", QByteArray::fromHex("0x500a0a0a0a0a0a0a"));
+    setConfig(devName+"/"+"antPower", QByteArray::fromHex("0x1e1e1e1e1e1e1e1e"));
+    setConfig(devName+"/"+"grandThreshold", 20);
+    setConfig(devName+"/"+"port", port);
+    setConfig(devName+"/"+"type", devType);
 }
 
 /********base functions*******/

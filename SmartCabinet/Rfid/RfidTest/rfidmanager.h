@@ -31,6 +31,7 @@ public:
     void epcSync();//同步标签信息
     void timerClear();
     bool accessIsLock();
+    RfidDevHub* rfidReaderModel();
 
 public slots:
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);

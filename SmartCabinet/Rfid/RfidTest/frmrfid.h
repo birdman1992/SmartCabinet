@@ -60,14 +60,13 @@ private slots:
     void on_tab_filter_consume_toggled(bool checked);
     void on_tab_filter_in_toggled(bool checked);
     void on_tab_filter_unknow_toggled(bool checked);
-
     void on_tab_filter_wait_back_toggled(bool checked);
-
     void on_tab_view_clicked(const QModelIndex &index);
-
     void on_tab_filter_out_toggled(bool checked);
-
     void on_stop_scan_clicked();
+    void on_close_2_clicked();
+    void on_add_device_clicked();
+    void on_rfidDevView_clicked(const QModelIndex &index);
 
 private:
     Ui::FrmRfid *ui;

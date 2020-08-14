@@ -14,6 +14,7 @@
 #include "cabinetconfig.h"
 #include "Widgets/cabinetctrlconfig.h"
 #include "manager/cabinetmanager.h"
+#include "manager/signalmanager.h"
 #include "funcs/servertest.h"
 #include "FingerPrint/fingerprint.h"
 
@@ -40,6 +41,7 @@ signals:
     void requireOpenLock(int seqNum, int lockId);
     void requireClear();
     void requireUpdateServerAddress();
+    void rfidConfig();
     void checkVersion(bool needConfirm);
     void updateStart();
     void doorState(int);
@@ -54,7 +56,7 @@ private slots:
     void on_cancel_clicked();
     void ctrl_lock(int);
     void initNetwork();
-    void on_clear_clicked();
+    void on_rfid_config_clicked();
     void on_init_clicked();
     void on_check_clicked();
     void ctrl_conf(int id);

@@ -2,13 +2,14 @@
 #include <QDebug>
 
 
-RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent)
+RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent, DevType _type) : QObject(parent)
 {
     flagScan = false;
     flagInit = false;
     flagConnect = false;
     flagWaitBack = false;
-    serverAddr = QHostAddress();
+    devType = _type;
+    serverAddr = s->peerAddress().toString();
     serverPort = 0;
     readerSeq = seq;
     config = CabinetConfig::config();
@@ -20,12 +21,13 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent) : QObject(parent
     antPowConfig = RfReaderConfig::instance().getAntPower(skt->peerAddress().toString());
 }
 
-RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent) : QObject(parent)
+RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent, DevType _type) : QObject(parent)
 {
     flagScan = false;
     flagInit = false;
     flagConnect = false;
     flagWaitBack = false;
+    devType = _type;
     config = CabinetConfig::config();
     readerSeq = seq;
     serverAddr = server;
@@ -71,12 +73,14 @@ void RfidReader::timerEvent(QTimerEvent * e)
         if(flagWaitBack)//disconnected
         {
             qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
-            flagConnect = false;
+            setFlagConnect(false);
+//            flagConnect = false;
             devReconnect();
         }
         else
         {
-            flagConnect = true;
+            setFlagConnect(true);
+//            flagConnect = true;
 //            qDebug()<<skt->peerAddress()<<"connected";
         }
         flagWaitBack = true;
@@ -157,12 +161,42 @@ void RfidReader::scanStop()
 
 QString RfidReader::readerIp()
 {
-    return skt->peerAddress().toString();
+    return serverAddr.toString();
+}
+
+QString RfidReader::readerState()
+{
+    if(flagConnect)
+    {
+        return QString("在线");
+    }
+    else
+    {
+        return QString("离线");
+    }
+}
+
+QString RfidReader::readerType()
+{
+    if(devType == inside)
+    {
+        return QString("内部设备");
+    }
+    else
+    {
+        return QString("外部设备");
+    }
 }
 
 bool RfidReader::isConnected()
 {
     return flagConnect;
+}
+
+void RfidReader::setFlagConnect(bool flag)
+{
+    flagConnect = flag;
+    emit deviceChanged();
 }
 
 /*
@@ -190,14 +224,16 @@ void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
     switch(state)
     {
     case QAbstractSocket::ConnectedState:
-        flagConnect = true;
+        setFlagConnect(true);
+//        flagConnect = true;
         confIntens = RfReaderConfig::instance().getConfIntens(skt->peerAddress().toString());
         antPowConfig = RfReaderConfig::instance().getAntPower(skt->peerAddress().toString());
         scanStop();
         break;
 
     case QAbstractSocket::UnconnectedState:
-        flagConnect = false;
+        setFlagConnect(false);
+//        flagConnect = false;
 
         break;
 
