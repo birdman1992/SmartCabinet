@@ -604,20 +604,25 @@ bool CabinetWidget::isListCode(QByteArray qba)
 void CabinetWidget::setCheckState(QPoint pos)
 {
     list_state_case<<pos;
-    list_cabinet[pos.x()]->searchCase(pos.y());
+    if(pos.x()<list_cabinet.count())
+        list_cabinet[pos.x()]->searchCase(pos.y());
 }
 
 void CabinetWidget::setSearchState(QList<QPoint> l)
 {
+//    qDebug()<<list_state_case;
     foreach (QPoint pos, list_state_case)
     {
-        list_cabinet[pos.x()]->initCase(pos.y());
+        if(pos.x()<list_cabinet.count())
+            list_cabinet[pos.x()]->initCase(pos.y());
     }
 
     list_state_case = l;
+//    qDebug()<<list_state_case;
     foreach (QPoint pos, list_state_case)
     {
-        list_cabinet[pos.x()]->searchCase(pos.y());
+        if(pos.x()<list_cabinet.count())
+            list_cabinet[pos.x()]->searchCase(pos.y());
     }
 }
 
@@ -625,7 +630,8 @@ void CabinetWidget::clearCaseState()
 {
     foreach (QPoint pos, list_state_case)
     {
-        list_cabinet[pos.x()]->initCase(pos.y());
+        if(pos.x()<list_cabinet.count())
+            list_cabinet[pos.x()]->initCase(pos.y());
     }
     list_state_case.clear();
 }
@@ -671,7 +677,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
 //        newStore = true;
 //    }
     fullScanInfo = QString(qba);
-    scanInfo = SqlManager::getGoodsId(fullScanInfo);
+    scanInfo = SqlManager::getPackageId(fullScanInfo);
 
 #ifdef TCP_API
     scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);

@@ -163,6 +163,7 @@ void CabinetListView::updateCabList(QString filter)
     QSqlQuery query = SqlManager::goodsInfoList(filter);
     while(query.next())
     {
+//        qDebug()<<"goodsMap"<<query.value(0).toString()<<query.value(1).toString();
         goodsMap.insert(query.value(0).toString(), query.value(1).toString());
     }
 
@@ -178,7 +179,6 @@ void CabinetListView::updateCabList(QString filter)
         i++;
     }
     emit searchGoods(filter);
-//    config->searchByPinyin(filter);
     showCabView();
 }
 
@@ -283,9 +283,10 @@ void CabinetListView::recvScanData(QByteArray qba)
 {
     QString fullCode = QString(qba);
     QString idCode = scanDataTrans(fullCode);
+    qDebug()<<selectMap.keys()<<selectMap.contains(idCode)<<idCode;
 
-    if(qba.indexOf("-") == -1)
-        return;
+//    if(qba.indexOf("-") == -1)
+//        return;
     if(selectMap.isEmpty())
         return;
     CabinetListItem* item = selectMap.value(idCode, NULL);
@@ -307,15 +308,18 @@ void CabinetListView::recvScanData(QByteArray qba)
 
 QString CabinetListView::scanDataTrans(QString code)
 {
-    int index = code.indexOf("-");
-    if(index == -1)
-        return code;
+    QString goodsId = SqlManager::getPackageId(code);
+    return goodsId;
 
-    code = code.right(code.size()-index-1);
+//    int index = code.indexOf("-");
+//    if(index == -1)
+//        return code;
 
-    index = code.lastIndexOf("-");
-    if(index == -1)
-        return code;
+//    code = code.right(code.size()-index-1);
 
-    return code.left(index);
+//    index = code.lastIndexOf("-");
+//    if(index == -1)
+//        return code;
+
+//    return code.left(index);
 }

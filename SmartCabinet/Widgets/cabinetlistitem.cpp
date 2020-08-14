@@ -2,6 +2,7 @@
 #include "ui_cabinetlistitem.h"
 #include <qpainter.h>
 #include <QDebug>
+#include "sql/sqlmanager.h"
 
 CabinetListItem::CabinetListItem(QString goodsName, QString goodsId, QWidget *parent) :
     QWidget(parent),
@@ -31,7 +32,7 @@ void CabinetListItem::paintEvent(QPaintEvent*)
 
 bool CabinetListItem::addPackage(QString bar)
 {
-    QString subBar = scanDataTrans(bar);
+    QString subBar = SqlManager::getPackageId(bar);//获取条码对应的包ID
 
     if(code_bar.indexOf(bar) != -1)
         return false;
@@ -57,6 +58,11 @@ QString CabinetListItem::id()
     return pack_id;
 }
 
+/**
+ * @brief CabinetListItem::scanDataTrans  数据库版本,已废弃
+ * @param code
+ * @return
+ */
 QString CabinetListItem::scanDataTrans(QString code)
 {
     int index = code.indexOf("-");

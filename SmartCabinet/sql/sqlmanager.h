@@ -24,7 +24,7 @@ public:
     static Goods* searchGoodsByCode(QString code);
     static QList<Goods*> getGoodsList();
     static QList<Goods*> getGoodsList(int col, int row);
-    static QString getGoodsId(QString code);//goodsCode->goodsId
+    static QString getPackageId(QString code);//goodsCode->goodsId
     static QStringList getCaseText(int col, int row);
     static int getGoodsCount(QString packageId);
     static QPoint getGoodsPos(QString packageId);

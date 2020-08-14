@@ -216,12 +216,12 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
     return ret;
 }
 
-QString SqlManager::getGoodsId(QString code)
+QString SqlManager::getPackageId(QString code)
 {
     QString ret = QString();
     QString cmd = QString("select package_id FROM codeInfo WHERE code='%1'").arg(code);
     QSqlQuery query(db_cabinet);
-    if(!queryExec(&query, cmd, "getGoodsId"))
+    if(!queryExec(&query, cmd, "getPackageId"))
     {
         qDebug("A");
         return QString();
@@ -232,6 +232,8 @@ QString SqlManager::getGoodsId(QString code)
         ret = query.value(0).toString();
     else
         qDebug("B");
+
+//    qDebug()<<"getGoodsId"<<code<<ret;
     return ret;
 }
 

@@ -506,7 +506,7 @@ void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 
     for(i=0; i<list.count(); i++)
     {
         pack_bar = list.at(i);
-        QString pack_id = SqlManager::getGoodsId(pack_bar);
+        QString pack_id = SqlManager::getPackageId(pack_bar);
         QByteArray packageBarcode = pack_bar.toLocal8Bit();
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
         QByteArray barcode = barCode.toLocal8Bit();
