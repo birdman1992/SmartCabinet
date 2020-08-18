@@ -796,7 +796,7 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
 {
     qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
-    QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\"}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).arg(timeStamp).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\", \"sTime\":\"%2\",\"eTime\":\"%3\",\"timeStamp\":%4}").arg(cabId).arg(sDate.toString("yyyy-MM-dd")).arg(eDate.toString("yyyy-MM-dd")).arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_DAY_REPORT);//+"?"+qba.toBase64();
     replyCheck(reply_day_report);
     reply_day_report = post(nUrl, qba, timeStamp, false);
