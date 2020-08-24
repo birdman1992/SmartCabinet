@@ -190,7 +190,7 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
     QList<Goods*> ret;
     ret.clear();
     QSqlQuery query(db_cabinet);
-    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,COUNT(code) package_count,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 group by GoodsInfo.package_id;").arg(col).arg(row);
+    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,COUNT(code) package_count,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE CodeInfo.state_remote>0 AND GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 group by GoodsInfo.package_id;").arg(col).arg(row);
     if(!queryExec(&query, cmd, "getGoodsList"))
         return ret;
 
