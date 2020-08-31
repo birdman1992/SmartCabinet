@@ -20,6 +20,8 @@ void RfReaderConfig::createDefaultConfig(QString devName)
     setConfig(devName+"/"+"confIntens", QByteArray::fromHex("0x500a0a0a0a0a0a0a"));
     setConfig(devName+"/"+"antPower", QByteArray::fromHex("0x1e1e1e1e1e1e1e1e"));
     setConfig(devName+"/"+"grandThreshold", 20);
+    setConfig(devName+"/"+"port", 8888);
+    setConfig(devName+"/"+"type", "inside");
 }
 
 QByteArray RfReaderConfig::getConfIntens(QString devName)
@@ -45,6 +47,12 @@ int RfReaderConfig::getGrandThreshold(QString devName)
     return getConfig(devName+"/"+"grandThreshold",20).toInt();
 }
 
+quint16 RfReaderConfig::getDevicePort(QString devName)
+{
+    createDefaultConfig(devName);
+    return getConfig(devName+"/"+"port",8888).toInt();
+}
+
 void RfReaderConfig::setConfIntens(QString devName, QByteArray confIntens)
 {
     setConfig(devName+"/"+"confIntens",confIntens);
@@ -65,6 +73,11 @@ void RfReaderConfig::setDeviceType(QString devName, QString devType)
     setConfig(devName+"/"+"type",devType);
 }
 
+void RfReaderConfig::setDevicePort(QString devName,quint16 port)
+{
+    setConfig(devName+"/"+"port",port);
+}
+
 /**
  * @brief RfReaderConfig::createDevice
  * @param devName 设备IP
@@ -75,7 +88,7 @@ void RfReaderConfig::createDevice(QString devName, int port, QString devType)
 {
     if(getConfigGroups().contains(devName))
     {
-        qDebug()<<"The device configuration already exists:"<<devName<<"create failed.";
+//        qDebug()<<"The device configuration already exists:"<<devName<<"create failed.";
         return;
     }
     setConfig(devName+"/"+"confIntens", QByteArray::fromHex("0x500a0a0a0a0a0a0a"));
@@ -83,6 +96,12 @@ void RfReaderConfig::createDevice(QString devName, int port, QString devType)
     setConfig(devName+"/"+"grandThreshold", 20);
     setConfig(devName+"/"+"port", port);
     setConfig(devName+"/"+"type", devType);
+}
+
+void RfReaderConfig::delDevice(QString devName)
+{
+    if(getConfigGroups().contains(devName))
+        removeConfig(devName);
 }
 
 /********base functions*******/

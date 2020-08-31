@@ -440,7 +440,11 @@ void FrmRfid::on_close_2_clicked()
 
 void FrmRfid::on_add_device_clicked()
 {
-
+    RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
+    QString dev_addr = ui->input_addr->text();
+    quint16 dev_port = ui->input_port->text().toInt();
+    QString dev_type = ui->dev_outside->isChecked()?QString("outside"):QString("inside");
+    devModel->addDevice(dev_addr, dev_port, dev_type);
 }
 
 void FrmRfid::on_rfidDevView_clicked(const QModelIndex &index)

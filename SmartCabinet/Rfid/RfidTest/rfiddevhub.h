@@ -12,13 +12,14 @@
 #include <QStandardItemModel>
 
 #include "Rfid/RfidTest/rfidreader.h"
+#include "manager/rfreaderconfig.h"
 
 class RfidDevHub : public QAbstractTableModel
 {
     Q_OBJECT
 public:
     explicit RfidDevHub(QObject *parent = nullptr);
-    void addDevice(QHostAddress addr, quint16 port);
+    void addDevice(QString addr, quint16 port, QString type);
     QList<RfidReader*> deviceList();
     void delDevice(QString devIp);
 public slots:
@@ -53,6 +54,7 @@ private slots:
     void newConnection();
     void updateDevInfo();
     void devStateChanged();
+    void initDevices();
 };
 
 #endif // RFIDDEVHUB_H

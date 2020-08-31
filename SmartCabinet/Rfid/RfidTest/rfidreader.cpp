@@ -26,7 +26,7 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
     flagScan = false;
     flagInit = false;
     flagConnect = false;
-    flagWaitBack = false;
+    flagWaitBack = true;
     devType = _type;
     config = CabinetConfig::config();
     readerSeq = seq;
@@ -83,7 +83,6 @@ void RfidReader::timerEvent(QTimerEvent * e)
 //            flagConnect = true;
 //            qDebug()<<skt->peerAddress()<<"connected";
         }
-        flagWaitBack = true;
         heartBeat();
     }
     else if(e->timerId() == speedCalTimerId)
@@ -112,6 +111,7 @@ void RfidReader::timerEvent(QTimerEvent * e)
 
 void RfidReader::heartBeat()
 {
+    flagWaitBack = true;
     RfidCmd cmd(0x12, QByteArray::fromHex("00000000"));
     sendCmd(cmd.packData(), false);
 }

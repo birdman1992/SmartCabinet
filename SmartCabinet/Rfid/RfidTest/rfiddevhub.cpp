@@ -7,17 +7,27 @@ RfidDevHub::RfidDevHub(QObject *parent) : QAbstractTableModel(parent)
     sev->listen(QHostAddress::Any, RFID_SKT_PORT);
     list_device.clear();
     connect(sev, SIGNAL(newConnection()), this, SLOT(newConnection()));
-
+    initDevices();
     headerList<<"设备地址"<<"设备状态"<<"设备类型"<<"操作";
 }
 
-void RfidDevHub::addDevice(QHostAddress addr, quint16 port)
+void RfidDevHub::addDevice(QString addr, quint16 port, QString type)
 {
-    RfidReader* reader = new RfidReader(addr, port, list_device.count());
+    if(list_device.contains(addr))
+    {
+        qDebug()<<"[RfidDevHub::addDevice] device repeat.";
+        return;
+    }
+
+    qDebug()<<"[RFID] addDevice:"<<addr<<port<<type;
+    RfidReader::DevType dev_type = (type == "outside")?RfidReader::outside:RfidReader::inside;
+    RfidReader* reader = new RfidReader(QHostAddress(addr), port, list_device.count(), NULL, dev_type);
     connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SIGNAL(reportEpc(QString,int,int)));
     connect(reader, SIGNAL(deviceChanged()), this, SLOT(devStateChanged()));
+
+    RfReaderConfig::instance().createDevice(addr, port, type);
+    list_device.insert(addr ,reader);
     updateDevInfo();
-    list_device.insert(addr.toString() ,reader);
 }
 
 void RfidDevHub::delDevice(QString devIp)
@@ -26,6 +36,7 @@ void RfidDevHub::delDevice(QString devIp)
     list_device.remove(devIp);
     reader->deleteLater();
     reader = NULL;
+    RfReaderConfig::instance().delDevice(devIp);
     devStateChanged();
 }
 QList<RfidReader *> RfidDevHub::deviceList()
@@ -116,4 +127,17 @@ void RfidDevHub::devStateChanged()
 {
     beginResetModel();
     endResetModel();
+}
+
+void RfidDevHub::initDevices()
+{
+    QStringList devs = RfReaderConfig::instance().getConfigGroups();
+
+    foreach (QString devIp, devs)
+    {
+        quint16 devPort = RfReaderConfig::instance().getDevicePort(devIp);
+        QString devType = RfReaderConfig::instance().getDeviceType(devIp);
+
+        addDevice(devIp,devPort,devType);
+    }
 }

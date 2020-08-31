@@ -32,7 +32,7 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
     rfidHub = new RfidDevHub(this);
     connect(rfidHub, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString,int,int)));
 //    rfidHub->addDevice(QHostAddress("192.168.0.8"), 8888);
-    rfidHub->addDevice(QHostAddress("192.168.0.9"), 8888);
+//    rfidHub->addDevice(QHostAddress("192.168.0.9"), 8888);
 //    QHostAddress serverAddr = QHostAddress("192.168.0.8");
 //    testReader = new RfidReader(serverAddr, 8888, 0, this);
 //    testReader2 = new RfidReader(QHostAddress("192.168.0.9"), 8888, 1, this);
