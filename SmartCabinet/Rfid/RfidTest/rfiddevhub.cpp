@@ -44,6 +44,11 @@ QList<RfidReader *> RfidDevHub::deviceList()
     return list_device.values();
 }
 
+RfidReader *RfidDevHub::device(QString devIp)
+{
+    return list_device.value(devIp, NULL);
+}
+
 int RfidDevHub::rowCount(const QModelIndex&) const
 {
     return list_device.count();

@@ -39,6 +39,7 @@ SOURCES += main.cpp\
     Rfid/RfidTest/checkmanager.cpp \
     Rfid/RfidTest/epcmodel.cpp \
     Rfid/RfidTest/frmrfid.cpp \
+    Rfid/RfidTest/operation.cpp \
     Rfid/RfidTest/rfiddevhub.cpp \
     Rfid/RfidTest/rfidmanager.cpp \
     Rfid/RfidTest/rfidpackage.cpp \
@@ -147,6 +148,7 @@ HEADERS  += mainwidget.h \
     Rfid/RfidTest/checkmanager.h \
     Rfid/RfidTest/epcmodel.h \
     Rfid/RfidTest/frmrfid.h \
+    Rfid/RfidTest/operation.h \
     Rfid/RfidTest/rfiddevhub.h \
     Rfid/RfidTest/rfidmanager.h \
     Rfid/RfidTest/rfidpackage.h \
@@ -245,6 +247,7 @@ FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
     Device/devicesimulate.ui \
     Rfid/RfidTest/frmrfid.ui \
+    Rfid/RfidTest/operation.ui \
     Widgets/standbywidget.ui \
     Widgets/userwidget.ui \
     Widgets/cabinetset.ui \

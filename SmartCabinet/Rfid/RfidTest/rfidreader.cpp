@@ -17,8 +17,7 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent, DevType _type) :
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
     connect(skt, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(connectStateChanged(QAbstractSocket::SocketState)));
     heartBeatTimerId = startTimer(10000);
-    confIntens = RfReaderConfig::instance().getConfIntens(skt->peerAddress().toString());
-    antPowConfig = RfReaderConfig::instance().getAntPower(skt->peerAddress().toString());
+    initPorpertys();
 }
 
 RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent, DevType _type) : QObject(parent)
@@ -30,7 +29,7 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
     devType = _type;
     config = CabinetConfig::config();
     readerSeq = seq;
-    serverAddr = server;
+    serverAddr = server.toString();
     serverPort = port;
     skt = new QTcpSocket();
     connect(skt, SIGNAL(readyRead()), this, SLOT(recvData()));
@@ -40,6 +39,15 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
     speedCalTimerId = startTimer(8000);
     recvCount = 0;
     recvEpcCount = 0;
+}
+
+void RfidReader::initPorpertys()
+{
+    m_confIntens = RfReaderConfig::instance().getConfIntens(serverAddr);
+    m_antPowConfig = RfReaderConfig::instance().getAntPower(serverAddr);
+    m_gradientThreshold = RfReaderConfig::instance().getGrandThreshold(serverAddr);
+    m_outsideDev = RfReaderConfig::instance().getDeviceType(serverAddr) == QString("outside")?true:false;
+    qDebug()<<"initPorpertys"<<serverAddr<<m_confIntens.toHex()<<m_antPowConfig.toHex()<<m_gradientThreshold<<m_outsideDev;
 }
 
 void RfidReader::sendCmd(QByteArray data, bool printFlag)
@@ -55,6 +63,33 @@ void RfidReader::sendCmd(QByteArray data, bool printFlag)
     {
         qDebug()<<"[sendCmd] send failed,dev offline:"<<data.toHex();
 //        skt->write(data);
+    }
+}
+
+void RfidReader::setConfIntens(QByteArray confIntens)
+{
+    m_confIntens = confIntens;
+    RfReaderConfig::instance().setConfIntens(serverAddr, m_confIntens);
+}
+
+void RfidReader::setAntPowConfig(QByteArray antPowConfig)
+{
+    m_antPowConfig = antPowConfig;
+    RfReaderConfig::instance().setAntPower(serverAddr, m_antPowConfig);
+}
+
+void RfidReader::setOutsideDev(bool outsideDev)
+{
+    m_outsideDev = outsideDev;
+    if(m_outsideDev)
+    {
+        devType = outside;
+        RfReaderConfig::instance().setDeviceType(serverAddr, QString("outside"));
+    }
+    else
+    {
+        devType = inside;
+        RfReaderConfig::instance().setDeviceType(serverAddr, QString("inside"));
     }
 }
 
@@ -93,7 +128,7 @@ void RfidReader::timerEvent(QTimerEvent * e)
             return;
 
         qSort(vals.begin(), vals.end(), sigIntLessThan);
-        qreal grandThre = (qreal)RfReaderConfig::instance().getGrandThreshold(skt->peerAddress().toString())/100;//获取梯度阈值
+        qreal grandThre = (qreal)RfReaderConfig::instance().getGrandThreshold(serverAddr)/100;//获取梯度阈值
         int judgeThre = vals[0]->signalIntensity * (1 - grandThre);//判断阈值
 
         foreach (SigInfo* sig, vals)
@@ -134,7 +169,7 @@ void RfidReader::epcScaned(QString epc)
 
 //    qDebug()<<"epc:"<<epc;
 
-    if(sigMap[epc]->sigUpdate(curAnt ,(float)confIntens[curAnt-1]))
+    if(sigMap[epc]->sigUpdate(curAnt ,(float)m_confIntens[curAnt-1]))
     {
 //        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity<<(float)confIntens[curAnt-1]<<curAnt-1;
 //        emit reportEpc(epc, readerSeq, curAnt);
@@ -161,7 +196,7 @@ void RfidReader::scanStop()
 
 QString RfidReader::readerIp()
 {
-    return serverAddr.toString();
+    return serverAddr;
 }
 
 QString RfidReader::readerState()
@@ -199,6 +234,37 @@ void RfidReader::setFlagConnect(bool flag)
     emit deviceChanged();
 }
 
+int RfidReader::gradientThreshold() const
+{
+    if(!skt)
+        return 20;
+
+    return RfReaderConfig::instance().getGrandThreshold(serverAddr);
+}
+
+void RfidReader::setGradientThreshold(int gradientThreshold)
+{
+    if(!skt)
+        return;
+    m_gradientThreshold = gradientThreshold;
+    RfReaderConfig::instance().setGrandThreshold(serverAddr, gradientThreshold);
+}
+
+QByteArray RfidReader::confIntens() const
+{
+    return m_confIntens;
+}
+
+QByteArray RfidReader::antPowConfig() const
+{
+    return m_antPowConfig;
+}
+
+bool RfidReader::outsideDev() const
+{
+    return m_outsideDev;
+}
+
 /*
 开始扫描 antState:按位使能天线  scanMode:0 扫描1次 1 一直扫描
 */
@@ -220,18 +286,22 @@ void RfidReader::scanStart(quint32 antState, quint8 scanMode)
 
 void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
 {
-    qDebug()<<"[RfidReader]"<<skt->peerAddress().toString()<<state;
     switch(state)
     {
     case QAbstractSocket::ConnectedState:
+        if(flagConnect == false)
+            qDebug()<<"[RfidReader]"<<skt->peerAddress().toString()<<state;
+
         setFlagConnect(true);
 //        flagConnect = true;
-        confIntens = RfReaderConfig::instance().getConfIntens(skt->peerAddress().toString());
-        antPowConfig = RfReaderConfig::instance().getAntPower(skt->peerAddress().toString());
+        initPorpertys();
         scanStop();
         break;
 
     case QAbstractSocket::UnconnectedState:
+        if(flagConnect == true)
+            qDebug()<<"[RfidReader]"<<skt->peerAddress().toString()<<state;
+
         setFlagConnect(false);
 //        flagConnect = false;
 

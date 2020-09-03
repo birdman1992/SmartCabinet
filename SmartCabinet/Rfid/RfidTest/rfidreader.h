@@ -53,6 +53,11 @@ public:
 class RfidReader : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QByteArray confIntens READ confIntens WRITE setConfIntens)//置信强度
+    Q_PROPERTY(QByteArray antPowConfig READ antPowConfig WRITE setAntPowConfig)//天线强度
+    Q_PROPERTY(int gradientThreshold READ gradientThreshold WRITE setGradientThreshold)//梯度阈值
+    Q_PROPERTY(bool outsideDev READ outsideDev WRITE setOutsideDev)//设备类型
+
 public:
     enum DevType{
         inside,
@@ -68,29 +73,18 @@ public:
     QString readerState();//dev state
     QString readerType();//dev type
     bool isConnected();
-    int gradientThreshold();
-    void setGradientThreshold();
     void setFlagConnect(bool flag);
-
-    int gradientThreshold() const
-    {
-        if(!skt)
-            return 20;
-
-        return RfReaderConfig::instance().getGrandThreshold(skt->peerAddress().toString());
-    }
-
-    void setGradientThreshold(int gradientThreshold)
-    {
-        if(!skt)
-            return;
-        RfReaderConfig::instance().setGrandThreshold(skt->peerAddress().toString(), gradientThreshold);
-    }
+    int gradientThreshold() const;
+    void setGradientThreshold(int gradientThreshold);
+    QByteArray confIntens() const;
+    QByteArray antPowConfig() const;
+    bool outsideDev() const;
 
 public slots:
     void sendCmd(QByteArray data, bool printFlag=true);
-
-
+    void setConfIntens(QByteArray confIntens);
+    void setAntPowConfig(QByteArray antPowConfig);
+    void setOutsideDev(bool outsideDev);
 
 signals:
     void reportEpc(QString epc, int seq, int ant);
@@ -115,13 +109,13 @@ private:
     QTcpSocket* skt;
     RfidResponse response;
     CabinetConfig* config;
-    QHostAddress serverAddr;
+    QString serverAddr;
     quint16 serverPort;
     quint64 recvCount;
     quint32 recvEpcCount;
     QMap<QString, SigInfo*> sigMap;
-    QByteArray confIntens;//天线置信强度
-    QByteArray antPowConfig;
+//    QByteArray confIntens;//天线置信强度
+//    QByteArray antPowConfig;
     QStringList existList;//盘存列表
 
     void heartBeat();
@@ -130,7 +124,12 @@ private:
     void epcExist(SigInfo *info);//EPC加入盘存列表
 
     int m_gradientThreshold;//梯度阈值
+    QByteArray m_confIntens;
+    QByteArray m_antPowConfig;
 
+    bool m_outsideDev;
+
+    void initPorpertys();
 private slots:
     void connectStateChanged(QAbstractSocket::SocketState state);
     void recvData();

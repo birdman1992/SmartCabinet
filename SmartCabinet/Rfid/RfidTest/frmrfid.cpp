@@ -103,6 +103,10 @@ void FrmRfid::setDefaultSel()
     ui->tab_filter_out->setChecked(true);
 }
 
+void FrmRfid::updateSelReader(QString devIp)
+{
+
+}
 
 void FrmRfid::updateCurUser(QString optId)
 {
@@ -449,9 +453,111 @@ void FrmRfid::on_add_device_clicked()
 
 void FrmRfid::on_rfidDevView_clicked(const QModelIndex &index)
 {
+    RfidDevHub* devModel = rfManager->rfidReaderModel();
+    QString selDevIp = devModel->index(index.row(),0).data().toString();
     if(index.column() == 3)//删除
     {
-        RfidDevHub* devModel = rfManager->rfidReaderModel();
-        devModel->delDevice(devModel->index(index.row(),0).data().toString());
+        devModel->delDevice(selDevIp);
+        return;
     }
+
+    curSelRfidReader = selDevIp;
+    qDebug()<<ui->dev_name->text()<<curSelRfidReader;
+    if(ui->dev_name->text() == curSelRfidReader)
+        return;
+
+    RfidReader* dev = devModel->device(curSelRfidReader);
+    if(dev == NULL)
+        return;
+    qDebug()<<dev->property("confIntens").toByteArray().toHex();
+    qDebug()<<dev->property("antPowConfig").toByteArray().at(0);
+    qDebug()<<dev->property("gradientThreshold").toInt();
+    qDebug()<<dev->property("outsideDev").toBool();
+    ui->conf_int->setValue((int)dev->property("confIntens").toByteArray().at(0));
+    ui->ant_pow->setValue((int)dev->property("antPowConfig").toByteArray().at(0));
+    ui->grad_thre->setValue(dev->property("gradientThreshold").toInt());
+    ui->dev_type->setChecked(dev->property("outsideDev").toBool());
+    ui->dev_name->setText(curSelRfidReader);
+}
+
+void FrmRfid::on_sig_add_clicked()
+{
+    ui->ant_pow->setValue(ui->ant_pow->value()+1);
+}
+
+void FrmRfid::on_sig_minus_clicked()
+{
+    ui->ant_pow->setValue(ui->ant_pow->value()-1);
+}
+
+void FrmRfid::on_ant_pow_valueChanged(int value)
+{
+    if(ui->dev_name->text() != curSelRfidReader)
+        return;
+
+    RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
+    RfidReader* dev = devModel->device(curSelRfidReader);
+    if(dev == NULL)
+        return;
+
+    dev->setProperty("antPowConfig", QByteArray(8, (char)value));
+}
+
+void FrmRfid::on_conf_minus_clicked()
+{
+    ui->conf_int->setValue(ui->conf_int->value()-1);
+}
+
+void FrmRfid::on_conf_add_clicked()
+{
+    ui->conf_int->setValue(ui->conf_int->value()+1);
+}
+
+void FrmRfid::on_conf_int_valueChanged(int value)
+{
+    if(ui->dev_name->text() != curSelRfidReader)
+        return;
+    RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
+    RfidReader* dev = devModel->device(curSelRfidReader);
+    if(dev == NULL)
+        return;
+
+    dev->setProperty("confIntens", QByteArray(8, (char)value));
+}
+
+void FrmRfid::on_grad_minus_clicked()
+{
+    ui->grad_thre->setValue(ui->grad_thre->value()-1);
+}
+
+void FrmRfid::on_grad_add_clicked()
+{
+    ui->grad_thre->setValue(ui->grad_thre->value()+1);
+}
+
+void FrmRfid::on_grad_thre_valueChanged(int value)
+{
+    if(ui->dev_name->text() != curSelRfidReader)
+        return;
+    RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
+    RfidReader* dev = devModel->device(curSelRfidReader);
+    if(dev == NULL)
+        return;
+
+    dev->setProperty("gradientThreshold", value);
+}
+
+void FrmRfid::on_dev_type_toggled(bool checked)
+{
+    RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
+    RfidReader* dev = devModel->device(curSelRfidReader);
+    if(dev == NULL)
+        return;
+
+    dev->setProperty("outsideDev", checked);
+}
+
+void FrmRfid::on_operation_clicked()
+{
+
 }

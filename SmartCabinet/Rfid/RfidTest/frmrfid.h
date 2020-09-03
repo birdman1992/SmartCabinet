@@ -67,6 +67,25 @@ private slots:
     void on_close_2_clicked();
     void on_add_device_clicked();
     void on_rfidDevView_clicked(const QModelIndex &index);
+    void on_sig_add_clicked();
+    void on_sig_minus_clicked();
+    void on_ant_pow_valueChanged(int value);
+
+    void on_conf_minus_clicked();
+
+    void on_conf_add_clicked();
+
+    void on_conf_int_valueChanged(int value);
+
+    void on_grad_minus_clicked();
+
+    void on_grad_add_clicked();
+
+    void on_grad_thre_valueChanged(int value);
+
+    void on_dev_type_toggled(bool checked);
+
+    void on_operation_clicked();
 
 private:
     Ui::FrmRfid *ui;
@@ -77,9 +96,11 @@ private:
     bool isLogin;
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
+    QString curSelRfidReader;
     QMap<EpcMark, QToolButton*> btnTable;
     void initTabs();
     void setDefaultSel();//设置默认选项
+    void updateSelReader(QString devIp);
     void showEvent(QShowEvent *);
     void paintEvent(QPaintEvent*);
 };

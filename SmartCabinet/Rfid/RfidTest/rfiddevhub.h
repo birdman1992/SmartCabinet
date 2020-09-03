@@ -21,6 +21,7 @@ public:
     explicit RfidDevHub(QObject *parent = nullptr);
     void addDevice(QString addr, quint16 port, QString type);
     QList<RfidReader*> deviceList();
+    RfidReader* device(QString devIp);
     void delDevice(QString devIp);
 public slots:
 
