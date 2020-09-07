@@ -185,7 +185,7 @@ public slots:
     void rfidAccessOpt(QString storeListCode, QMap<QString, QStringList> storeGoods, UserOpt optType=opt_store);//存货单号，[物品，条码],操作类型
     void rfidAccessOpt(QStringList epcs, UserOpt optType=opt_fetch);
     void rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs);
-    void rfidAutoStore(QMap<QString, QVariantMap> codeMapList);
+    void rfidAutoStore(QVariantMap reportMap);
     void rfidCheckConsume(QStringList epcs);
 
 private slots:

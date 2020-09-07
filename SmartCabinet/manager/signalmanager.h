@@ -17,7 +17,7 @@ signals:
     void epcInfoUpdate();
     void epcConsumeCheck(QStringList);
     void epcConsumed(QStringList epcs);
-    void epcStore(QMap<QString ,QVariantMap>);
+    void epcStore(QVariantMap);
     void doorState(int id, bool isOpen);
     void accessSuccess(QString msg);//存取成功信息
     void accessFailed(QString msg);//存取失败信息

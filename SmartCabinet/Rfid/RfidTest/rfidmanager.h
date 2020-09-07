@@ -94,8 +94,8 @@ private:
 
 private slots:
     void initEpc();//程序启动初始化EPC标签
-    void updateEpc(QString epc, int seq, int ant);
-    void testUpdateEpc(QString epc, int seq, int ant);
+    void updateEpc(QString epc, bool isOutside);
+//    void testUpdateEpc(QString epc, int seq, int ant);
     void clsTimeOut();
     void timerUpdate();
 };

@@ -230,6 +230,7 @@ void EpcModel::lockEpcMark(QString epcId)
     map_rfid[epcId]->markLock = true;
     lockCount++;
     emit updateLockCount(lockCount);
+    qDebug()<<"locked:"<<epcId;
     qDebug()<<"[EpcModel] lock count:"<<lockCount;
 }
 
@@ -493,20 +494,36 @@ void EpcModel::initColName()
 }
 
 //packageBarcode barcode rfidCodes
+/**
+ * @brief EpcModel::storeEpcs
+ * @param epcs
+ * store_list/package_id/code
+ * store_list:packageMap[]
+ *          package_id:map
+ *                     code:string
+ */
 void EpcModel::storeEpcs(QStringList epcs)
 {
     QString cmd = QString("SELECT EI.epc_code, CI.package_id, CI.store_list FROM EpcInfo AS EI LEFT JOIN CodeInfo AS CI ON EI.goods_code=CI.code WHERE epc_code IN ('%1')").arg(epcs.join("','"));
     QSqlQuery query = SqlManager::query(cmd, "[storeEpcs]");
-    QMap<QString ,QVariantMap> codeMapList;
+//    QMap<QString ,QVariantMap> codeMapList;
+    QVariantMap reportMap;//store_list/package_id/code
 
     while(query.next())
     {
         QString package_id = query.value(1).toString();
+        QString store_list = query.value(2).toString();
+
         QVariantMap epcMap;
         epcMap.insert("code", query.value(0));
-        epcMap.insert("store_list", query.value(2));
-        codeMapList.insertMulti(package_id, epcMap);
+        QVariantMap packageMap = reportMap.value(store_list).toMap();
+        packageMap.insertMulti(package_id, epcMap);
+        reportMap.insert(store_list, packageMap);
+//        packageMap.insertMulti(package_id,epcMap);
+//        reportMap.insertMulti(store_list, packageMap);
+//        static_cast<QVariantMap>(reportMap[store_list].toMap());
     }
-    qDebug()<<"store count"<<codeMapList.count();
-    emit epcStore(codeMapList);
+    qDebug()<<"store count"<<reportMap.count();
+//    qDebug()<<reportMap;
+    emit epcStore(reportMap);
 }

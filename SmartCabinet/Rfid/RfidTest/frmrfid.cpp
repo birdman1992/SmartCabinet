@@ -39,6 +39,8 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(sigMan, SIGNAL(accessFailed(QString)), this, SLOT(accessFailed(QString)));
     connect(sigMan, SIGNAL(configRfidDevice()), this, SLOT(configDevice()));
 
+//    connect()
+
     initTabs();
 #ifdef test_rfid
     QTimer::singleShot(1000, this, SLOT(testSlot()));

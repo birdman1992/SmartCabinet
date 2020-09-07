@@ -104,7 +104,7 @@ signals:
     void clearCount();
     void epcAccess(QStringList epcs, UserOpt optType);
     void epcAccess(QStringList fetchEpcs, QStringList backEpcs);
-    void epcStore(QMap<QString ,QVariantMap>);
+    void epcStore(QVariantMap);
     void epcConsumeCheck(QStringList);
 
 private:

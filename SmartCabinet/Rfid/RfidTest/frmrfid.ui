@@ -21,13 +21,13 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="leftMargin">
-    <number>175</number>
+    <number>150</number>
    </property>
    <property name="topMargin">
     <number>150</number>
    </property>
    <property name="rightMargin">
-    <number>175</number>
+    <number>150</number>
    </property>
    <property name="bottomMargin">
     <number>150</number>
@@ -121,7 +121,7 @@ QLabel{
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1">
@@ -1459,7 +1459,7 @@ color: rgb(85, 87, 83);</string>
            <number>0</number>
           </property>
           <item>
-           <widget class="QWidget" name="frm_operation" native="true"/>
+           <widget class="Operation" name="frm_operation" native="true"/>
           </item>
          </layout>
         </widget>
@@ -1471,6 +1471,14 @@ color: rgb(85, 87, 83);</string>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Operation</class>
+   <extends>QWidget</extends>
+   <header location="global">Rfid/RfidTest/operation.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

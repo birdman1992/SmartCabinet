@@ -22,7 +22,7 @@ void RfidDevHub::addDevice(QString addr, quint16 port, QString type)
     qDebug()<<"[RFID] addDevice:"<<addr<<port<<type;
     RfidReader::DevType dev_type = (type == "outside")?RfidReader::outside:RfidReader::inside;
     RfidReader* reader = new RfidReader(QHostAddress(addr), port, list_device.count(), NULL, dev_type);
-    connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SIGNAL(reportEpc(QString,int,int)));
+    connect(reader, SIGNAL(reportEpc(QString, bool)), this, SIGNAL(reportEpc(QString, bool)));
     connect(reader, SIGNAL(deviceChanged()), this, SLOT(devStateChanged()));
 
     RfReaderConfig::instance().createDevice(addr, port, type);

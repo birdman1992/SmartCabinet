@@ -35,7 +35,7 @@ private:
     };
 
 signals:
-    void reportEpc(QString,int,int);
+    void reportEpc(QString epc, bool isOutside);
     void devInfoChanged(QList<QVariantMap>);
 
 protected:

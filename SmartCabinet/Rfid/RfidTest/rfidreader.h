@@ -60,14 +60,15 @@ class RfidReader : public QObject
 
 public:
     enum DevType{
-        inside,
-        outside,
+        inside=1,
+        outside=2,
+        all=3,
     };
 
 public:
     explicit RfidReader(QTcpSocket* s,int seq, QObject *parent = 0, DevType _type=inside);
     explicit RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent = 0, DevType _type=inside);
-    void scanStart(quint32 antState, quint8 scanMode);
+    void scanStart(DevType _type,quint8 scanMode);
     void scanStop();
     QString readerIp();//dev addr
     QString readerState();//dev state
@@ -87,7 +88,7 @@ public slots:
     void setOutsideDev(bool outsideDev);
 
 signals:
-    void reportEpc(QString epc, int seq, int ant);
+    void reportEpc(QString epc, bool isOutside);
     void stateChanged();//连接状态变化
     void deviceChanged();//设备发生变化
 

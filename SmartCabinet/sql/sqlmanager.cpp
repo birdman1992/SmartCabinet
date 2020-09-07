@@ -814,6 +814,27 @@ void SqlManager::createTable()
             qDebug()<<"[create table]"<<"ApiLog"<<"failed"<<query.lastError();
         }
     }
+
+    if(tables.indexOf("OperationInfo") == -1)
+    {
+        QSqlQuery query(db_cabinet);
+        QString cmd = QString("create table OperationInfo(\
+                              surgery_bill_no CHAR(20) PRIMARY KEY NOT NULL,\
+                              surgery_bill_name CHAR(20) NOT NULL,\
+                              apply_surgery_date CHAR(20) DEFAULT('NULL'),\
+                              surgery_order_no CHAR(20) DEFAULT('wait'),\
+                              need_resend INT(1) DEFAULT(1)\
+                              );");
+        if(query.exec(cmd))
+        {
+            qDebug()<<"[create table]"<<"ApiLog"<<"success";
+            needSync = true;
+        }
+        else
+        {
+            qDebug()<<"[create table]"<<"ApiLog"<<"failed"<<query.lastError();
+        }
+    }
 }
 
 bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)

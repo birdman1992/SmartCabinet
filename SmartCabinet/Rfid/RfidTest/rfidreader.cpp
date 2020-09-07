@@ -61,7 +61,7 @@ void RfidReader::sendCmd(QByteArray data, bool printFlag)
     }
     else
     {
-        qDebug()<<"[sendCmd] send failed,dev offline:"<<data.toHex();
+//        qDebug()<<"[sendCmd] send failed,dev offline:"<<data.toHex();
 //        skt->write(data);
     }
 }
@@ -107,7 +107,7 @@ void RfidReader::timerEvent(QTimerEvent * e)
 
         if(flagWaitBack)//disconnected
         {
-            qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
+//            qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
             setFlagConnect(false);
 //            flagConnect = false;
             devReconnect();
@@ -122,6 +122,7 @@ void RfidReader::timerEvent(QTimerEvent * e)
     }
     else if(e->timerId() == speedCalTimerId)
     {
+        return;
 //        qDebug()<<"Rfid speed:"<<recvCount/1000.0<<"kb/s"<<"epc count:"<<recvEpcCount;
         QList<SigInfo*> vals = sigMap.values();
         if(vals.isEmpty())
@@ -135,12 +136,10 @@ void RfidReader::timerEvent(QTimerEvent * e)
         {
             if(sig->signalIntensity > judgeThre)//信号强度满足阈值
             {
-                epcExist(sig);
+                epcExist(sig);//存在判断
                 qDebug()<<sig->epc<<sig->signalIntensity;
             }
         }
-//        recvCount = 0;
-//        recvEpcCount = 0;
     }
 }
 
@@ -171,8 +170,8 @@ void RfidReader::epcScaned(QString epc)
 
     if(sigMap[epc]->sigUpdate(curAnt ,(float)m_confIntens[curAnt-1]))
     {
-//        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity<<(float)confIntens[curAnt-1]<<curAnt-1;
-//        emit reportEpc(epc, readerSeq, curAnt);
+//        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity;
+        emit reportEpc(epc, (devType==outside));
     }
 }
 
@@ -182,7 +181,7 @@ void RfidReader::epcExist(SigInfo* info)
         return;
 
     existList.append(info->epc);
-    emit reportEpc(info->epc, readerSeq, info->findAnt);
+    emit reportEpc(info->epc, (devType==outside));
 }
 
 void RfidReader::scanStop()
@@ -268,10 +267,19 @@ bool RfidReader::outsideDev() const
 /*
 开始扫描 antState:按位使能天线  scanMode:0 扫描1次 1 一直扫描
 */
-void RfidReader::scanStart(quint32 antState, quint8 scanMode)
+void RfidReader::scanStart(DevType _type, quint8 scanMode)
 {
+    if(!(_type & devType))
+        return;
+
     qDeleteAll(sigMap.begin(), sigMap.end());
     sigMap.clear();
+
+    quint32 antState;
+    if(devType == outside)
+        antState = 0x0001;
+    else
+        antState = 0x00ff;
 
     flagScan = true;
     QByteArray cmdParam;
