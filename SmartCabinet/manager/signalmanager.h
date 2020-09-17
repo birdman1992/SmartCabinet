@@ -23,7 +23,9 @@ signals:
     void accessFailed(QString msg);//存取失败信息
     void updateLoginState(bool);//CabinetWidget::loginStateChanged->
     void configRfidDevice();//rfid设备配置请求,CabinetService::rfidConfig()->FrmRfid::configDevice
-
+    //手术单信息获取
+    void requireUpdateOperation();//请求更新手术单 Operation::updateSelOperation
+    void operationInfoUpdate();//手术单信息更新 CabinetServer::operationInfoUpdate
 
 
 private:

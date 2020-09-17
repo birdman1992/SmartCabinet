@@ -2,6 +2,7 @@
 #define OPERATION_H
 
 #include <QWidget>
+#include <QShowEvent>
 
 namespace Ui {
 class Operation;
@@ -30,6 +31,7 @@ private slots:
 
 private:
     Ui::Operation *ui;
+    void showEvent(QShowEvent*);
 
 };
 

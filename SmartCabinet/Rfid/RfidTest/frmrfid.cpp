@@ -37,9 +37,11 @@ FrmRfid::FrmRfid(QWidget *parent) :
     SignalManager* sigMan = SignalManager::manager();
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));
     connect(sigMan, SIGNAL(accessFailed(QString)), this, SLOT(accessFailed(QString)));
-    connect(sigMan, SIGNAL(configRfidDevice()), this, SLOT(configDevice()));
+    connect(sigMan, SIGNAL(configRfidDevice()), this, SLOT(showConfigDevice()));
 
-//    connect()
+    connect(ui->frm_operation, SIGNAL(winClose()), this, SLOT(showEpcInfo()));
+    connect(ui->frm_operation, SIGNAL(requireUpdate()), sigMan, SIGNAL(requireUpdateOperation()));
+    connect(sigMan, SIGNAL(operationInfoUpdate()), ui->frm_operation, SLOT(loadOperations()));
 
     initTabs();
 #ifdef test_rfid
@@ -110,6 +112,21 @@ void FrmRfid::updateSelReader(QString devIp)
 
 }
 
+void FrmRfid::updateOperationState()
+{
+    QString strOperation = ui->frm_operation->curOperation();
+    if(strOperation.isEmpty())
+    {
+        ui->operation->setChecked(true);
+        ui->operation->setText("请选择手术单");
+    }
+    else
+    {
+        ui->operation->setChecked(false);
+        ui->operation->setText(strOperation);
+    }
+}
+
 void FrmRfid::updateCurUser(QString optId)
 {
     rfManager->setCurOptId(optId);
@@ -130,7 +147,7 @@ void FrmRfid::updateLockCount(int lockCount)
     }
 }
 
-void FrmRfid::configDevice()
+void FrmRfid::showConfigDevice()
 {
 //    qDebug("configDevice");
     ui->stackedWidget->setCurrentIndex(0);
@@ -143,10 +160,10 @@ void FrmRfid::showEpcInfo()
     showMaximized();
 }
 
-void FrmRfid::testSlot()
+void FrmRfid::showOperation()
 {
-    ui->stackedWidget->setCurrentIndex(0);
-    this->showFullScreen();
+    ui->stackedWidget->setCurrentIndex(2);
+    showMaximized();
 }
 
 void FrmRfid::updateAntInCount(int count)
@@ -280,6 +297,7 @@ void FrmRfid::clearCountText()
 void FrmRfid::showEvent(QShowEvent *)
 {
     ui->msg->clear();
+    updateOperationState();
 }
 
 void FrmRfid::paintEvent(QPaintEvent *e)
@@ -559,7 +577,8 @@ void FrmRfid::on_dev_type_toggled(bool checked)
     dev->setProperty("outsideDev", checked);
 }
 
-void FrmRfid::on_operation_clicked()
+void FrmRfid::on_operation_clicked(bool checked)
 {
-
+    Q_UNUSED(checked);
+    showOperation();
 }

@@ -66,6 +66,7 @@ private:
     QNetworkReply* reply_rfid_sync;
     QNetworkReply* reply_rfid_access;
     QNetworkReply* reply_rfid_consume;
+    QNetworkReply* reply_operation;
     AIOMachine::cEvent aio_state;
     CheckList* checkList;
     SqlManager* sqlManager;
@@ -143,6 +144,8 @@ signals:
     void rfidAccess();
     void epcInfoUpdate();
     void epcConsumed(QStringList epcs);
+    //operation
+    void operationInfoUpdate();
 
 public slots:
     void cabRegister();
@@ -187,6 +190,8 @@ public slots:
     void rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs);
     void rfidAutoStore(QVariantMap reportMap);
     void rfidCheckConsume(QStringList epcs);
+    //operation
+    void requireOperationInfo();
 
 private slots:
     void recvCabRegister();
@@ -220,6 +225,9 @@ private slots:
     void recvRfidListSync();
     void recvRfidAccessRst();
     void recvRfidConsume();
+    //operation
+    void recvOperationInfo();
+
     void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();

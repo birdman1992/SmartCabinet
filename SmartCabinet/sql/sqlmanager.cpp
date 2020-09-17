@@ -708,7 +708,7 @@ void SqlManager::initDatabase()
 }
 
 /*
-CodeInfo:条码信息表 [code|package_id|batch_number|pro_name|sup_name|state_local|state_remote|store_list]
+CodeInfo:条码信息表 [code|package_id|batch_number|pro_name|sup_name|state_local|state_remote|store_list|surgery_bill_no]
 GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]
 EpcInfo:RFID标签表 [epc_code|goods_code|goods_id|time_stamp|opt_id|state|row|col]
 ApiLog:接口日志表 [time_stamp|url|data|need_resend]
@@ -728,6 +728,7 @@ void SqlManager::createTable()
                               state_local INT(3) DEFAULT(1),\
                               state_remote INT(3) DEFAULT(1),\
                               store_list CHAR(20) DEFAULT('NULL'),\
+                              surgery_bill_no CHAR(20) DEFAULT('NULL'),\
                               check_time_stamp INT(15) DEFAULT(0)\
                               );");
 //        qDebug()<<cmd;
@@ -815,24 +816,34 @@ void SqlManager::createTable()
         }
     }
 
+    //OperationInfo:手术单信息表 [surgery_bill_no|surgery_bill_name|apply_surgery_date|surgery_order_no|operating_table|exec_surgery_date|apply_depot_name|apply_doctor_name|exec_depot_name|exec_doctor_name|patient_name|patient_gender|patient_age|patient_no]
     if(tables.indexOf("OperationInfo") == -1)
     {
         QSqlQuery query(db_cabinet);
         QString cmd = QString("create table OperationInfo(\
                               surgery_bill_no CHAR(20) PRIMARY KEY NOT NULL,\
-                              surgery_bill_name CHAR(20) NOT NULL,\
-                              apply_surgery_date CHAR(20) DEFAULT('NULL'),\
-                              surgery_order_no CHAR(20) DEFAULT('wait'),\
-                              need_resend INT(1) DEFAULT(1)\
+                              surgery_bill_name CHAR(20) DEFAULT(''),\
+                              apply_surgery_date CHAR(12) DEFAULT(''),\
+                              surgery_order_no CHAR(20) DEFAULT(''),\
+                              operating_table CHAR(20) DEFAULT(''),\
+                              exec_surgery_date   CHAR(12) DEFAULT(''),\
+                              apply_depot_name  CHAR(20) DEFAULT(''),\
+                              apply_doctor_name  CHAR(20) DEFAULT(''),\
+                              exec_depot_name  CHAR(20) DEFAULT(''),\
+                              exec_doctor_name  CHAR(20) DEFAULT(''),\
+                              patient_name  CHAR(20) DEFAULT(''),\
+                              patient_gender   CHAR(2) DEFAULT(''),\
+                              patient_age  CHAR(3) DEFAULT(''),\
+                              patient_no  CHAR(20) DEFAULT('')\
                               );");
         if(query.exec(cmd))
         {
-            qDebug()<<"[create table]"<<"ApiLog"<<"success";
+            qDebug()<<"[create table]"<<"OperationInfo"<<"success";
             needSync = true;
         }
         else
         {
-            qDebug()<<"[create table]"<<"ApiLog"<<"failed"<<query.lastError();
+            qDebug()<<"[create table]"<<"OperationInfo"<<"failed"<<query.lastError();
         }
     }
 }

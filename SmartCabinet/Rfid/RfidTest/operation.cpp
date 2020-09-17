@@ -15,7 +15,7 @@ Operation::~Operation()
 
 QString Operation::curOperation()
 {
-
+    return QString();
 }
 
 void Operation::loadOperations()
@@ -31,4 +31,9 @@ void Operation::on_back_clicked()
 void Operation::on_update_clicked()
 {
 
+}
+
+void Operation::showEvent(QShowEvent *)
+{
+    emit requireUpdate();
 }
