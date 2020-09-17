@@ -610,7 +610,7 @@ void CabinetWidget::setCheckState(QPoint pos)
 
 void CabinetWidget::setSearchState(QList<QPoint> l)
 {
-//    qDebug()<<list_state_case;
+//    qDebug()<<"before"<<list_state_case;
     foreach (QPoint pos, list_state_case)
     {
         if(pos.x()<list_cabinet.count())
@@ -618,7 +618,7 @@ void CabinetWidget::setSearchState(QList<QPoint> l)
     }
 
     list_state_case = l;
-//    qDebug()<<list_state_case;
+//    qDebug()<<"after"<<list_state_case;
     foreach (QPoint pos, list_state_case)
     {
         if(pos.x()<list_cabinet.count())

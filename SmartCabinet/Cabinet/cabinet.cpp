@@ -498,6 +498,11 @@ void Cabinet::setCaseState(int index, int numState)
 {
     if(index >= ui->tableWidget->rowCount())
         return;
+    if(index == screenPos)
+    {
+        qDebug()<<"screen pos";
+        return;
+    }
 //    qDebug()<<"setCaseState"<<index<<numState;
     state = numState;
     checkFlag[index] = numState;
