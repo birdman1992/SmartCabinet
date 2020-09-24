@@ -524,6 +524,7 @@ QList<Goods *> AIOMachine::listPage(unsigned int pageNum)
 
 void AIOMachine::sysLock()
 {
+    win_rfid->close();
     ui->frame_aio->hide();
     ui->setting->hide();
     ui->aio_hello->clear();
@@ -533,6 +534,7 @@ void AIOMachine::sysLock()
     emit reqUpdateOverview();
     emit updateLoginState(false);
     emit logout();
+
     //    ui->frame_quit->hide();
 }
 

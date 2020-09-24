@@ -112,6 +112,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     connect(this, SIGNAL(accessFailed(QString)), sigMan, SIGNAL(accessFailed(QString)));
     connect(this, SIGNAL(epcInfoUpdate()), sigMan, SIGNAL(epcInfoUpdate()));
     connect(this, SIGNAL(epcConsumed(QStringList)), sigMan, SIGNAL(epcConsumed(QStringList)));
+    connect(this, SIGNAL(operationInfoUpdate()), sigMan, SIGNAL(operationInfoUpdate()));
     connect(sigMan, SIGNAL(epcConsumeCheck(QStringList)), this, SLOT(rfidCheckConsume(QStringList)));
     connect(sigMan, SIGNAL(epcAccess(QStringList,UserOpt)), this, SLOT(rfidAccessOpt(QStringList,UserOpt)));
     connect(sigMan, SIGNAL(epcAccess(QStringList,QStringList)), this, SLOT(rfidAccessOpt(QStringList,QStringList)));
@@ -1973,7 +1974,8 @@ void CabinetServer::recvCabSync()
             qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->goodsId<<info->packageId<<info->num<<info->unit;
 //            config->syncGoods(info, row, col);
             sqlManager->replaceGoodsInfo(info, SqlManager::all_rep, SqlManager::mask_all);//只更新远程物品状态
-            config->list_cabinet[col]->updateCase(row);
+            if(col < config->list_cabinet.count())
+                config->list_cabinet[col]->updateCase(row);
         }
     }
     else
@@ -2521,10 +2523,10 @@ void CabinetServer::recvRfidConsume()
 
 void CabinetServer::recvOperationInfo()
 {
-    QByteArray qba = reply_operation->readAll();
+    QByteArray qba = QByteArray::fromBase64(reply_operation->readAll());
     reply_operation->deleteLater();
     reply_operation = NULL;
-    qDebug()<<qba;
+//    qDebug()<<qba;
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<"[recvOperationInfo]"<<cJSON_Print(json);
     if(!json)
@@ -2548,26 +2550,27 @@ void CabinetServer::recvOperationInfo()
     {
         cJSON* dataItem = cJSON_GetArrayItem(data, i);//data[i]
         QVariantMap optInfo;
-        optInfo.insert("surgeryBillNo", GET_JSON_QSTRING(dataItem, "surgeryBillNo"));
-        optInfo.insert("surgeryBillName", GET_JSON_QSTRING(dataItem, "surgeryBillName"));
-        optInfo.insert("applySurgeryDate", GET_JSON_QSTRING(dataItem, "applySurgeryDate"));
-        optInfo.insert("surgeryOrderNo", GET_JSON_QSTRING(dataItem, "surgeryOrderNo"));
-        optInfo.insert("operatingTable", GET_JSON_QSTRING(dataItem, "operatingTable"));
-        optInfo.insert("execSurgeryDate", GET_JSON_QSTRING(dataItem, "execSurgeryDate"));
-        optInfo.insert("applyDepotName", GET_JSON_QSTRING(dataItem, "applyDepotName"));
-        optInfo.insert("applyDoctorName", GET_JSON_QSTRING(dataItem, "applyDoctorName"));
-        optInfo.insert("execDepotName", GET_JSON_QSTRING(dataItem, "execDepotName"));
-        optInfo.insert("execDoctorName", GET_JSON_QSTRING(dataItem, "execDoctorName"));
-        optInfo.insert("patientName", GET_JSON_QSTRING(dataItem, "patientName"));
-        optInfo.insert("patientGender", GET_JSON_QSTRING(dataItem, "patientGender"));
-        optInfo.insert("patientAge", GET_JSON_QSTRING(dataItem, "patientAge"));
-        optInfo.insert("patientNo", GET_JSON_QSTRING(dataItem, "patientNo"));
+        optInfo.insert("ssc_surgery_bill_id", GET_JSON_QSTRING(dataItem, "surgeryBillNo"));
+        optInfo.insert("surgery_bill_no", GET_JSON_QSTRING(dataItem, "surgeryBillNo"));
+        optInfo.insert("surgery_bill_name", GET_JSON_QSTRING(dataItem, "surgeryBillName"));
+        optInfo.insert("apply_surgery_date", GET_JSON_QSTRING(dataItem, "applySurgeryDate"));
+        optInfo.insert("surgery_order_no", GET_JSON_QSTRING(dataItem, "surgeryOrderNo"));
+        optInfo.insert("operating_table", GET_JSON_QSTRING(dataItem, "operatingTable"));
+        optInfo.insert("exec_surgery_date", GET_JSON_QSTRING(dataItem, "execSurgeryDate"));
+        optInfo.insert("apply_depot_name", GET_JSON_QSTRING(dataItem, "applyDepotName"));
+        optInfo.insert("apply_doctor_name", GET_JSON_QSTRING(dataItem, "applyDoctorName"));
+        optInfo.insert("exec_depot_name", GET_JSON_QSTRING(dataItem, "execDepotName"));
+        optInfo.insert("exec_doctor_name", GET_JSON_QSTRING(dataItem, "execDoctorName"));
+        optInfo.insert("patient_name", GET_JSON_QSTRING(dataItem, "patientName"));
+        optInfo.insert("patient_gender", GET_JSON_QSTRING(dataItem, "patientGender"));
+        optInfo.insert("patient_age", GET_JSON_QSTRING(dataItem, "patientAge"));
+        optInfo.insert("patient_no", GET_JSON_QSTRING(dataItem, "patientNo"));
         optList<<optInfo;
     }
     //更新到数据库
     SqlManager::insert("OperationInfo", optList);
     SqlManager::commit();
-//    emit operationInfoUpdate();
+    emit operationInfoUpdate();
 }
 
 void CabinetServer::updatePacFinish()

@@ -821,7 +821,8 @@ void SqlManager::createTable()
     {
         QSqlQuery query(db_cabinet);
         QString cmd = QString("create table OperationInfo(\
-                              surgery_bill_no CHAR(20) PRIMARY KEY NOT NULL,\
+                              ssc_surgery_bill_id CHAR(20) PRIMARY KEY NOT NULL,\
+                              surgery_bill_no CHAR(20) DEFAULT(''),\
                               surgery_bill_name CHAR(20) DEFAULT(''),\
                               apply_surgery_date CHAR(12) DEFAULT(''),\
                               surgery_order_no CHAR(20) DEFAULT(''),\

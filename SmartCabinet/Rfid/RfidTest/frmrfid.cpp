@@ -42,7 +42,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(ui->frm_operation, SIGNAL(winClose()), this, SLOT(showEpcInfo()));
     connect(ui->frm_operation, SIGNAL(requireUpdate()), sigMan, SIGNAL(requireUpdateOperation()));
     connect(sigMan, SIGNAL(operationInfoUpdate()), ui->frm_operation, SLOT(loadOperations()));
-
+    connect(ui->frm_operation, SIGNAL(curOperationStrChanged(QString)), this, SLOT(updateOperationStr(QString)));
     initTabs();
 #ifdef test_rfid
     QTimer::singleShot(1000, this, SLOT(testSlot()));
@@ -112,20 +112,26 @@ void FrmRfid::updateSelReader(QString devIp)
 
 }
 
-void FrmRfid::updateOperationState()
+void FrmRfid::closeEvent(QCloseEvent *e)
 {
-    QString strOperation = ui->frm_operation->curOperation();
-    if(strOperation.isEmpty())
-    {
-        ui->operation->setChecked(true);
-        ui->operation->setText("请选择手术单");
-    }
-    else
-    {
-        ui->operation->setChecked(false);
-        ui->operation->setText(strOperation);
-    }
+    qDebug("close event");
+    clearCurOperation();
 }
+
+//void FrmRfid::updateOperationState()
+//{
+//    QString strOperation = ui->frm_operation->curOperation();
+//    if(strOperation.isEmpty())
+//    {
+//        ui->operation->setChecked(true);
+//        ui->operation->setText("请选择手术单");
+//    }
+//    else
+//    {
+//        ui->operation->setChecked(false);
+//        ui->operation->setText(strOperation);
+//    }
+//}
 
 void FrmRfid::updateCurUser(QString optId)
 {
@@ -169,6 +175,20 @@ void FrmRfid::showOperation()
 void FrmRfid::updateAntInCount(int count)
 {
     ui->in_count->setText(QString::number(count));
+}
+
+void FrmRfid::updateOperationStr(QString optStr)
+{
+    if(optStr.isEmpty())
+    {
+        ui->operation->setText("请选择手术单");
+    }
+    else
+    {
+        ui->operation->setText(optStr);
+    }
+
+    ui->operation->setChecked(optStr.isEmpty());
 }
 
 void FrmRfid::accessSuccess(QString msg)
@@ -279,7 +299,14 @@ void FrmRfid::setPow(int pow)
     }
 
 //    if(visibleFlag[mark_all])
-//        ui->tab_filter_all->show();
+    //        ui->tab_filter_all->show();
+}
+
+void FrmRfid::clearCurOperation()
+{
+    qDebug("clear");
+    ui->frm_operation->setCurOperationNo(QString());
+    ui->frm_operation->setCurOperationStr(QString());
 }
 
 void FrmRfid::clearCountText()
@@ -297,7 +324,7 @@ void FrmRfid::clearCountText()
 void FrmRfid::showEvent(QShowEvent *)
 {
     ui->msg->clear();
-    updateOperationState();
+//    updateOperationState();
 }
 
 void FrmRfid::paintEvent(QPaintEvent *e)
@@ -339,7 +366,7 @@ void FrmRfid::on_close_clicked()
 #ifdef test_rfid
     ui->stackedWidget->setCurrentIndex(0);
 #else
-    this->hide();
+    this->close();
     rfManager->clsGiveUp();
 #endif
 }
@@ -459,7 +486,8 @@ void FrmRfid::on_stop_scan_clicked()
 
 void FrmRfid::on_close_2_clicked()
 {
-    this->close();
+    close();
+//    clearCurOperation();
 }
 
 void FrmRfid::on_add_device_clicked()
@@ -579,6 +607,7 @@ void FrmRfid::on_dev_type_toggled(bool checked)
 
 void FrmRfid::on_operation_clicked(bool checked)
 {
-    Q_UNUSED(checked);
+//    Q_UNUSED(checked);
+    ui->operation->setChecked(!checked);
     showOperation();
 }

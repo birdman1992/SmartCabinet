@@ -2,6 +2,7 @@
 #define FRMRFID_H
 
 #include <QWidget>
+#include <QCloseEvent>
 #include <QTableWidget>
 #include <QTabWidget>
 #include <QList>
@@ -28,6 +29,7 @@ public:
     explicit FrmRfid(QWidget *parent = 0);
     void setLoginState(bool login);
     void setPow(int pow);
+    void clearCurOperation();
     ~FrmRfid();
 
 public slots:
@@ -45,6 +47,7 @@ signals:
 private slots:
     void showOperation();
     void updateAntInCount(int count);
+    void updateOperationStr(QString optStr);
 //    void updateEpcInfo(EpcInfo*);
     void accessSuccess(QString msg);
     void accessFailed(QString msg);
@@ -94,7 +97,9 @@ private:
     void initTabs();
     void setDefaultSel();//设置默认选项
     void updateSelReader(QString devIp);
-    void updateOperationState();
+
+protected:
+    void closeEvent(QCloseEvent*);
     void showEvent(QShowEvent *);
     void paintEvent(QPaintEvent*);
 };

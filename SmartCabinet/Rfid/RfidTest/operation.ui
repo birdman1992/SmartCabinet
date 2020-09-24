@@ -97,6 +97,9 @@ QLabel{
    </property>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
@@ -184,7 +187,7 @@ QLabel{
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_13">
+            <widget class="QLabel" name="lab_curOperation">
              <property name="styleSheet">
               <string notr="true">padding:3px;</string>
              </property>
@@ -287,6 +290,9 @@ QLabel{
               <height>16777215</height>
              </size>
             </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -363,7 +369,7 @@ QLabel{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="surgeryBillNo">
+                 <widget class="QLabel" name="surgery_bill_no">
                   <property name="text">
                    <string/>
                   </property>
@@ -404,7 +410,7 @@ QLabel{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="patientName">
+                 <widget class="QLabel" name="patient_name">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -417,7 +423,7 @@ QLabel{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="patientGender">
+                 <widget class="QLabel" name="patient_gender">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -454,7 +460,7 @@ QLabel{
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QLabel" name="patientAge">
+                    <widget class="QLabel" name="patient_age">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                        <horstretch>0</horstretch>
@@ -530,7 +536,7 @@ QLabel{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="patientNo">
+                 <widget class="QLabel" name="patient_no">
                   <property name="text">
                    <string/>
                   </property>
@@ -571,7 +577,7 @@ QLabel{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="surgeryOrderNo">
+                 <widget class="QLabel" name="surgery_order_no">
                   <property name="text">
                    <string/>
                   </property>
@@ -612,7 +618,7 @@ QLabel{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="surgeryBillName">
+                 <widget class="QLabel" name="surgery_bill_name">
                   <property name="text">
                    <string/>
                   </property>
@@ -653,7 +659,7 @@ QLabel{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="operatingTable">
+                 <widget class="QLabel" name="operating_table">
                   <property name="text">
                    <string/>
                   </property>
@@ -702,7 +708,7 @@ QLabel{
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_2">
                   <item>
-                   <widget class="QLabel" name="applyDepotName">
+                   <widget class="QLabel" name="apply_depot_name">
                     <property name="text">
                      <string/>
                     </property>
@@ -714,14 +720,14 @@ QLabel{
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QLabel" name="applyDoctorName">
+                     <widget class="QLabel" name="apply_doctor_name">
                       <property name="text">
                        <string/>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="applySurgeryDate">
+                     <widget class="QLabel" name="apply_surgery_date">
                       <property name="text">
                        <string/>
                       </property>
@@ -774,7 +780,7 @@ QLabel{
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
                   <item>
-                   <widget class="QLabel" name="execDepotName">
+                   <widget class="QLabel" name="exec_depot_name">
                     <property name="text">
                      <string/>
                     </property>
@@ -786,14 +792,14 @@ QLabel{
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QLabel" name="execDoctorName">
+                     <widget class="QLabel" name="exec_doctor_name">
                       <property name="text">
                        <string/>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QLabel" name="execSurgeryDate">
+                     <widget class="QLabel" name="exec_surgery_date">
                       <property name="text">
                        <string/>
                       </property>

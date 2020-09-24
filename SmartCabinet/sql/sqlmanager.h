@@ -75,6 +75,7 @@ public:
     static QPoint searchByPackageId(QString packageId);
     static QSqlQuery query(QString cmd, QString msg);
 
+    static QSqlDatabase db_cabinet;
 
 public slots:
 
@@ -84,7 +85,6 @@ signals:
 private:
     static SqlManager* m;
     explicit SqlManager(QObject *parent = 0);
-    static QSqlDatabase db_cabinet;
     static QSqlQuery* pubQuery;
     bool needSync;
 
