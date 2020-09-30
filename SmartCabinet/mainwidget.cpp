@@ -139,7 +139,7 @@ void MainWidget::init_huangpo()
     connect(tempDev, SIGNAL(updateHum(float)), cabTcp, SLOT(updateHum(float)));
     connect(tempDev, SIGNAL(updateTemp(float)), cabTcp, SLOT(updateTemp(float)));
 
-    if(cabinetConf->getCabinetMode() == "aio")
+    if(cabinetConf->getCabinetMode() == "aio" || cabinetConf->getCabinetMode() == "rfid")
     {
         win_aio = new AIOMachine(this);
         connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
@@ -214,7 +214,7 @@ void MainWidget::init_huangpo()
         ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
         win_cabinet->panel_init(cabinetConf->list_cabinet);
         cabinetConf->cabVoice.voicePlay(VOICE_WELCOME);
-        if(cabinetConf->getCabinetMode() == "aio")
+        if(cabinetConf->getCabinetMode() == "aio" || cabinetConf->getCabinetMode() == "rfid")
             ui->stackedWidget->setCurrentIndex(INDEX_AIO);
     }
 #ifndef PC

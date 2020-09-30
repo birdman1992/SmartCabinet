@@ -107,7 +107,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 
 void CabinetService::on_back_clicked()
 {
-    if(config->getCabinetMode() == "aio")
+    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
         emit winSwitch(INDEX_AIO);
     else
         emit winSwitch(INDEX_CAB_SHOW);

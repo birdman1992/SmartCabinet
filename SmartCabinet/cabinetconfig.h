@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QList>
 #include <QTime>
+#include <QBitArray>
 #include "Structs/userinfo.h"
 #include "Structs/cabinetinfo.h"
 #include "Structs/caseaddress.h"
@@ -30,6 +31,20 @@ enum CabState
     STATE_BACK = 10,//还货
 };
 
+//|一体机|RFID|高低值|
+enum bitType{
+    BIT_LOW_HIGH,
+    BIT_RFID,
+    BIT_CAB_AIO,
+};
+//enum CabType//   |一体机|RFID|高低值|
+//{
+//    TYPE_LOW_VALUE = 0,//低值无RFID
+//    TYPE_HIGH_VALUE = 1,//高值无RFID，不存在
+//    TYPE_LOW_RFID = 2,//低值有RFID
+
+//};
+
 class CabinetConfig
 {
 public:
@@ -52,8 +67,8 @@ public:
 
     QString getCabinetLayout();
     QString getCabinetColMap();
-    void setCabinetType(int type);
-    int getCabinetType();
+    void setCabinetType(QBitArray _type);
+    QBitArray getCabinetType();
     QPoint getScreenPos();
     QString getScreenConfig();
     QList<QByteArray> getFetchList();

@@ -3,6 +3,7 @@
 #include "defines.h"
 #include <QDebug>
 #include <QHeaderView>
+#include <QBitArray>
 #include "cabinetserver.h"
 
 CabinetSet::CabinetSet(QWidget *parent) :
@@ -192,6 +193,7 @@ void CabinetSet::on_clear_clicked()
 
 void CabinetSet::on_save_clicked()
 {
+//    qDebug()<<"getApiProName1:"<<config->getApiProName();
     config->setServerAddress(ui->serverAddr->text());
     emit updateServerAddr();
     initStep = 1;
@@ -199,6 +201,7 @@ void CabinetSet::on_save_clicked()
         delete sTest;
 //    else
 //    {
+//    qDebug()<<"getApiProName:"<<config->getApiProName();
     QString testApi = "http://" + ui->serverAddr->text() + QString("/%1/sarkApi/Time/query/").arg(config->getApiProName());
     sTest = new ServerTest(testApi, QByteArray(), this, NULL);
     connect(sTest, SIGNAL(apiMsg(QString)), ui->api_msg, SLOT(setText(QString)));
@@ -223,7 +226,7 @@ void CabinetSet::on_serverAddr_editingFinished()
         ui->serverAddr->setText(str);
         dev_network->setServerAddr(str.left(index));
     }
-    config->clearCabinet();
+//    config->clearCabinet();
 }
 
 void CabinetSet::on_lock_test_clicked()
@@ -454,67 +457,6 @@ void CabinetSet::on_tabExp_clicked(const QModelIndex &index)
     screenPos.setY(index.row());
 }
 
-
-void CabinetSet::on_cabType_2_activated(int index)
-{
-    QString str = "RXS";
-    QString strId = ui->cloneId->text();
-
-    if(!strId.isEmpty())
-    {
-        QRegExp rx("[RXS]\\d*");
-        int idx = rx.indexIn(strId);
-        qDebug()<<index;
-        if(idx == -1)//开头没有RXS
-        {
-            if(index != 0)
-            {
-                strId.insert(0, str.at(index-1));
-            }
-        }
-        else
-        {
-            if(index != 0)
-            {
-                strId[0] = str.at(index-1);
-            }
-            else
-            {
-                strId.remove(0,1);
-            }
-        }
-    }
-    config->setCabinetType(ui->cabType_2->currentIndex()+1);
-}
-
-void CabinetSet::on_cloneId_textChanged(const QString &arg1)
-{
-    QString str = "RXS";
-    QString strId = arg1;
-    int index = ui->cabType_2->currentIndex();
-    QRegExp rx("[RXS][\\d*]");
-    int idx = rx.indexIn(strId);
-    qDebug()<<index;
-    if(idx == -1)//开头没有RXS
-    {
-        if(index != 0)
-        {
-            strId.insert(0, str.at(index-1));
-        }
-    }
-    else
-    {
-        if(index != 0)
-        {
-            strId[0] = str.at(index-1);
-        }
-        else
-        {
-            strId.remove(0,1);
-        }
-    }
-}
-
 void CabinetSet::resetRegState()
 {
     ui->regId->setEnabled(true);
@@ -540,13 +482,29 @@ void CabinetSet::layoutInit()
     needSelScreen = true;
 }
 
+void CabinetSet::setCabType()
+{
+    QBitArray cabType = QBitArray(3);
+    cabType[BIT_LOW_HIGH] = ui->high_val_mode->isChecked();
+    cabType[BIT_CAB_AIO] = ui->aio_mode->isChecked();
+    cabType[BIT_RFID] = ui->rfid_mode->isChecked();
+    config->setCabinetType(cabType);
+
+    QStringList list_high,list_aio,list_rfid;
+    list_high<<"低值"<<"高值";
+    list_aio<<"智能柜"<<"一体机";
+    list_rfid<<"无RFID"<<"RFID";
+    ui->regMsg->setText(QString("%1%2%3")
+                        .arg(list_high.at(cabType[BIT_LOW_HIGH]))
+                        .arg(list_rfid.at(cabType[BIT_RFID]))
+                        .arg(list_aio.at(cabType[BIT_CAB_AIO])));
+}
+
 void CabinetSet::on_aio_mode_toggled(bool checked)
 {
     if(checked)
     {
-        ui->cabType_2->hide();
-        ui->label_22->hide();
-        config->setCabinetMode("aio");
+//        config->setCabinetMode("aio");
         layoutInit();
         screenPos.setX(0);
         screenPos.setY(1);
@@ -573,15 +531,26 @@ void CabinetSet::on_aio_mode_toggled(bool checked)
     else
     {
         layoutInit();
-        ui->cabType_2->show();
-        ui->label_22->show();
-        config->setCabinetMode("cabinet");
+//        config->setCabinetMode("cabinet");
         initStep &= ~(1<<1);
     }
+    setCabType();
+}
+
+void CabinetSet::on_high_val_mode_toggled(bool checked)
+{
+    setCabType();
+}
+
+void CabinetSet::on_rfid_mode_toggled(bool checked)
+{
+    setCabType();
 }
 
 void CabinetSet::on_apiProName_activated(const QString &arg1)
 {
+    config->clearCabinet();
     config->setApiProName(arg1);
     emit updateServerAddr();
 }
+

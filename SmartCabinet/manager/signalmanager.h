@@ -13,7 +13,7 @@ public:
 
 signals:
     void epcAccess(QStringList epcs, UserOpt optType);
-    void epcAccess(QStringList fetchEpcs, QStringList backEpcs);
+    void epcAccess(QStringList fetchEpcs, QStringList backEpcs,QString optNo);
     void epcInfoUpdate();
     void epcConsumeCheck(QStringList);
     void epcConsumed(QStringList epcs);

@@ -366,7 +366,7 @@ void EpcModel::syncUpload()
     if(!list_store.isEmpty())
         storeEpcs(list_store);
 
-    emit epcAccess(list_fetch, list_back);
+    emit epcAccess(list_fetch, list_back, operationNo);
 
     //删除已登记消耗物品
     SqlManager::querySingle(QString("DELETE FROM EpcInfo WHERE state=%1").arg(epc_consume));
@@ -412,6 +412,11 @@ void EpcModel::epcConsume(QStringList epcs)
     {
         setEpcMark(epc, mark_con);
     }
+}
+
+void EpcModel::curOptNoChanged(QString optNo)
+{
+    operationNo = optNo;
 }
 
 void EpcModel::setOptId(QString optId)

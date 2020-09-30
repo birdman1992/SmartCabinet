@@ -40,6 +40,7 @@ public slots:
     void updateLockCount(int lockCount);
     void showConfigDevice();
     void showEpcInfo();
+    void rfidCheck();
 
 signals:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);

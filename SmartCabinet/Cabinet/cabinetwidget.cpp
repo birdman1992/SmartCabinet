@@ -147,7 +147,7 @@ void CabinetWidget::cabLock()
     config->clearSearch();
     config->wakeUp(0);
     emit checkLockState();
-    if(config->getCabinetMode() == "aio")
+    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
         emit stack_switch(INDEX_AIO);
 }
 
@@ -311,7 +311,7 @@ void CabinetWidget::checkStart()
     ui->search->hide();
     ui->reply->hide();
     ui->quit->hide();
-    if(config->getCabinetMode() == "aio")
+    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
     {
         switchCabinetState(STATE_CHECK);
     }
@@ -468,7 +468,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(curGoods == NULL)
             return;
 
-        if(config->getCabinetMode() != "aio")
+        if(config->getCabinetMode() == "cabinet")
         {
             if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
             {
@@ -582,7 +582,7 @@ bool CabinetWidget::isListCode(QByteArray qba)
 void CabinetWidget::recvScanData(QByteArray qba)
 {qDebug()<<"recvScanData"<<qba<<qba.toHex()<<config->state;
     magicCmd(QString(qba));
-    if(config->getCabinetMode() == "aio")//一体机模式，无需通过按钮进入存取货模式
+    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")//一体机模式，无需通过按钮进入存取货模式
     {
         if(optUser == NULL)//未登录
             return;
@@ -988,7 +988,7 @@ void CabinetWidget::on_check_clicked(bool checked)
         else
             msg = QString("柜格已全部盘点，可以提交");
 
-        if(config->getCabinetMode() != "aio")
+        if(config->getCabinetMode() == "cabinet")
             win_check_warnning->warnningMsg(msg, true);
         else
             emit goodsCheckFinish();
@@ -1230,7 +1230,7 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 {
 //    calCheck(QString(qba));
 
-    if(this->isHidden() && (config->getCabinetMode() != "aio"))
+    if(this->isHidden() && (config->getCabinetMode() == "cabinet"))
     {
         qDebug()<<"recvUserInfo"<<qba<<"ignore..";
         return;
@@ -1566,7 +1566,7 @@ void CabinetWidget::cabinetBind(Goods *goods)
     setMenuHide(true);
 
     config->showMsg(MSG_STORE_SELECT, false);
-    if(config->getCabinetMode() == "aio")
+    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
         caseClicked(0,0);
     else
         win_store_list->hide();

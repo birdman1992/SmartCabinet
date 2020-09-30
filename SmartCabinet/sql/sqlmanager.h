@@ -40,7 +40,7 @@ public:
 
     /*epcInfo*/
     //EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state]
-    static void insertRfidMark(QString epc, QString goodsCode, QString goodsId);
+    static void insertRfidMark(QString epc, QString goodsCode, QString goodsId=QString());
     static void updateRfid(QString epc, quint32 stamp, QString optId, int state, int row, int col);
     static void begin();
     static QSqlQuery* getPubQuery();

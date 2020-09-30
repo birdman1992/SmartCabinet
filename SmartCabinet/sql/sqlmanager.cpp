@@ -341,7 +341,7 @@ int SqlManager::getShowCountByCase(int col, int row)
 void SqlManager::insertRfidMark(QString epc, QString goodsCode, QString goodsId)
 {
     QSqlQuery query(db_cabinet);
-    query.prepare("INSERT INTO EpcINfo(epc_code, goods_code, goods_id) VALUES(:epc_code, :goods_code, :goods_id)");
+    query.prepare("INSERT INTO EpcInfo(epc_code, goods_code, goods_id) VALUES(:epc_code, :goods_code, :goods_id)");
     query.bindValue(0, epc);
     query.bindValue(1, goodsCode);
     query.bindValue(2, goodsId);
@@ -403,7 +403,6 @@ void SqlManager::replace(QString table, QList<QVariantMap> bindings)
         }
         queryExec(pubQuery, QString("[replace] %1").arg(table));
     }
-
 }
 
 void SqlManager::insert(QString table, QList<QVariantMap> bindings)

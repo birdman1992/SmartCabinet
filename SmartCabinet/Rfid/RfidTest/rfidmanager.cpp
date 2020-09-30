@@ -22,7 +22,7 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
 
     SignalManager* sigManager = SignalManager::manager();//单例，不必delete
     connect(model, SIGNAL(epcAccess(QStringList,UserOpt)), sigManager, SIGNAL(epcAccess(QStringList,UserOpt)));
-    connect(model, SIGNAL(epcAccess(QStringList,QStringList)), sigManager, SIGNAL(epcAccess(QStringList,QStringList)));
+    connect(model, SIGNAL(epcAccess(QStringList,QStringList,QString)), sigManager, SIGNAL(epcAccess(QStringList,QStringList,QString)));
     connect(sigManager, SIGNAL(doorState(int, bool)), this, SLOT(doorStateChanged(int, bool)));
     connect(sigManager, SIGNAL(epcInfoUpdate()), model, SLOT(syncDownload()));
     connect(model, SIGNAL(epcConsumeCheck(QStringList)), sigManager, SIGNAL(epcConsumeCheck(QStringList)));

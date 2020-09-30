@@ -58,6 +58,7 @@ signals:
     void cabinetStateChange(CabState state);
     void requireOpenLock(int seq, int index);
     void updateLoginState(bool isLogin);
+    void requireRfidCheck();
 
 private:
     enum colMark

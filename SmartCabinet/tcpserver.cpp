@@ -424,7 +424,7 @@ QByteArray tcpServer::jRegist(QString id, QString aesId)
     QString aes_device_id = aesId;
     QString layout = config->getCabinetLayout();
     QString col_map = config->getCabinetColMap();
-    int cabinetType = config->getCabinetType();
+    QBitArray cabinetType = config->getCabinetType();
     QPoint screenPos = config->getScreenPos();
 
 
@@ -442,7 +442,7 @@ QByteArray tcpServer::jRegist(QString id, QString aesId)
                     \"col\": %6\
                 }\
             }\
-        }").arg(device_id).arg(aes_device_id).arg(layout).arg(col_map).arg(screenPos.y()).arg(screenPos.x()).arg(cabinetType);
+        }").arg(device_id).arg(aes_device_id).arg(layout).arg(col_map).arg(screenPos.y()).arg(screenPos.x()).arg(cabinetType.at(BIT_RFID));
 
 //    qDebug()<<"jRegist:"<<retJ;
 return retJ.toLocal8Bit();

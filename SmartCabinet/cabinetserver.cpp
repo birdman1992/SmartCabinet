@@ -115,7 +115,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     connect(this, SIGNAL(operationInfoUpdate()), sigMan, SIGNAL(operationInfoUpdate()));
     connect(sigMan, SIGNAL(epcConsumeCheck(QStringList)), this, SLOT(rfidCheckConsume(QStringList)));
     connect(sigMan, SIGNAL(epcAccess(QStringList,UserOpt)), this, SLOT(rfidAccessOpt(QStringList,UserOpt)));
-    connect(sigMan, SIGNAL(epcAccess(QStringList,QStringList)), this, SLOT(rfidAccessOpt(QStringList,QStringList)));
+    connect(sigMan, SIGNAL(epcAccess(QStringList,QStringList, QString)), this, SLOT(rfidAccessOpt(QStringList,QStringList, QString)));
     connect(sigMan, SIGNAL(epcStore(QVariantMap)), this, SLOT(rfidAutoStore(QVariantMap)));
     connect(sigMan, SIGNAL(requireUpdateOperation()), this, SLOT(requireOperationInfo()));
 }
@@ -179,12 +179,17 @@ void CabinetServer::cabRegister()
         regId.insert(0,'0');
     }
     qint64 timeStamp = getApiMark();
-    QByteArray qba = QString("{\"code\":\"%1\",\"cabLayout\":\"%2\",\"location\":\"%3\",\"timeStamp\":%4}").arg(regId).arg(config->getCabinetLayout()).arg(config->getScreenConfig()).arg(timeStamp).toUtf8();
+    QByteArray qba = QString("{\"code\":\"%1\",\"cabLayout\":\"%2\",\"location\":\"%3\",\"isRfidCode\":%4,\"mold\":%5,\"timeStamp\":%6}")
+            .arg(regId)
+            .arg(config->getCabinetLayout())
+            .arg(config->getScreenConfig())
+            .arg(config->getCabinetType().at(BIT_RFID)+1)
+            .arg(config->getCabinetType().at(BIT_LOW_HIGH)+1)
+            .arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_REG);//+'?'+qba.toBase64();
     qDebug()<<"[cabRegister]"<<nUrl<<qba;
     replyCheck(reply_register);
     reply_register = post(nUrl, qba);//注册无离线处理
-//    reply_register = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
 }
 
@@ -323,6 +328,19 @@ QVariant CabinetServer::getCjsonItem(cJSON *json, QByteArray key, QVariant defau
         return QVariant(j->valuestring);
     }
     return defaultRet;
+}
+
+QStringList CabinetServer::autoCreateEpcInfo(QStringList codes)
+{
+    QStringList ret;
+    foreach (QString code, codes)
+    {
+        QString epcHex = code.toLocal8Bit().toHex();
+        QString epcStr = QString("%1").arg(epcHex, -24, '0');
+        ret<<epcStr;
+        qDebug()<<"[autoCreateEpcinfo]"<<code<<epcStr;
+    }
+    return ret;
 }
 
 QNetworkReply *CabinetServer::post(QString url, QByteArray postData, qint64 timeStamp, bool need_resend)
@@ -1052,7 +1070,7 @@ void CabinetServer::rfidAccessOpt(QStringList epcs, UserOpt optType)
     connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
 }
 
-void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs)
+void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, QString optNo)
 {
     qint64 timeStamp = getApiMark();
     QByteArray optName = cur_user->cardId.toLocal8Bit();
@@ -1089,7 +1107,7 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs)
         foreach (QString epc, backEpcs)
         {
             QByteArray packageBarcode = epc.toLocal8Bit();
-
+            QByteArray surgeryBillNo = optNo.toLocal8Bit();
             cJSON* li_info = cJSON_CreateObject();
 
             cJSON_AddItemToObject(li_info ,"chesetCode", cJSON_CreateString(departCode.data()));
@@ -1097,6 +1115,7 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs)
             cJSON_AddItemToObject(li_info ,"optType", cJSON_CreateNumber(opt_back));
             cJSON_AddItemToObject(li_info ,"optCount", cJSON_CreateNumber(1));
             cJSON_AddItemToObject(li_info ,"dateTime", cJSON_CreateString(dateTime.data()));
+            cJSON_AddItemToObject(li_info , "surgeryBillNo", cJSON_CreateString(surgeryBillNo.data()));
 
             cJSON_AddItemToArray(li, li_info);
         }
@@ -1887,6 +1906,7 @@ void CabinetServer::recvCabClone()
 //            qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->id<<info->packageId<<info->num<<info->unit;
 //            config->insertGoods(info, row, col);
             sqlManager->replaceGoodsInfo(info, SqlManager::all_rep, SqlManager::mask_all);//只更新远程物品状态
+//            autoCreateEpcInfo(info->codes);
             config->list_cabinet[col]->updateCase(row);
         }
     }
@@ -1974,6 +1994,9 @@ void CabinetServer::recvCabSync()
             qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->goodsId<<info->packageId<<info->num<<info->unit;
 //            config->syncGoods(info, row, col);
             sqlManager->replaceGoodsInfo(info, SqlManager::all_rep, SqlManager::mask_all);//只更新远程物品状态
+            if(config->getCabinetType().at(BIT_RFID))
+                autoCreateEpcInfo(info->codes);
+
             if(col < config->list_cabinet.count())
                 config->list_cabinet[col]->updateCase(row);
         }

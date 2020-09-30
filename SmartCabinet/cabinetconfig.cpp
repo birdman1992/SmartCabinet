@@ -109,6 +109,10 @@ void CabinetConfig::setCabinetId(QString id)
 }
 
 //CabinetMode:cabinet&aio
+/**
+ * @brief CabinetConfig::getCabinetMode
+ * @return cabinet:低值柜 aio:一体机
+ */
 QString CabinetConfig::getCabinetMode()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
@@ -743,6 +747,7 @@ void CabinetConfig::setApiProName(QString apiName)
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("ApiPro", apiName);
     settings.sync();
+//    qDebug()<<"[getApiProName]"<<getApiProName();
 }
 
 QString CabinetConfig::getCabinetLayout()
@@ -759,17 +764,20 @@ QString CabinetConfig::getCabinetColMap()
     return ColMap;
 }
 
-void CabinetConfig::setCabinetType(int type)
+void CabinetConfig::setCabinetType(QBitArray _type)
 {
+    qDebug()<<"[setCabinetType]"<<_type;
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    settings.setValue("cabType",type);
+    settings.setValue("cabType",_type);
     return;
 }
 
-int CabinetConfig::getCabinetType()
+QBitArray CabinetConfig::getCabinetType()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    int ret = settings.value("cabType",1).toInt();
+    QBitArray defaultType = QBitArray(3, true);
+    defaultType.setBit(0,false);
+    QBitArray ret = settings.value("cabType",defaultType).toBitArray();
     return ret;
 }
 

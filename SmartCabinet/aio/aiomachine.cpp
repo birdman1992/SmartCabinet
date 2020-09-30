@@ -21,6 +21,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     curState = 0;
 
     win_rfid = new FrmRfid();
+    connect(this, SIGNAL(requireRfidCheck()), win_rfid, SLOT(rfidCheck()));
 
 //    win_access = new CabinetAccess();
 //    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -46,7 +47,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     config = CabinetConfig::config();
     setAioInfo(config->getDepartName(), config->getCabinetId());
     config->msgLab = ui->msg;
-    if(config->getCabinetMode() == "aio")
+    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
     {
         sysTime = new QTimer(this);
         connect(sysTime, SIGNAL(timeout()), this, SLOT(updateTime()));
@@ -67,7 +68,7 @@ void AIOMachine::showEvent(QShowEvent *)
 {
     setAioInfo(config->getDepartName(), config->getCabinetId());
     emit reqUpdateOverview();
-    if((config->getCabinetMode() == "aio") && (sysTime == NULL))
+    if((config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid") && (sysTime == NULL))
     {
         sysTime = new QTimer(this);
         connect(sysTime, SIGNAL(timeout()), this, SLOT(updateTime()));
@@ -654,7 +655,7 @@ void AIOMachine::on_aio_day_report_clicked()
 void AIOMachine::on_aio_check_create_clicked()
 {
 //    emit aio_check(true);
-
+    emit requireRfidCheck();
 }
 
 void AIOMachine::on_tab_last_clicked()

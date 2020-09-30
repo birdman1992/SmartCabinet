@@ -106,6 +106,7 @@ private:
     QNetworkReply* post(QString url, QByteArray postData, qint64 timeStamp=0, bool need_resend=true);
     qint64 getApiMark();
     QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
+    QStringList autoCreateEpcInfo(QStringList codes);
 
 signals:
     void loginRst(UserInfo*);
@@ -187,7 +188,7 @@ public slots:
     void rfidListSync();
     void rfidAccessOpt(QString storeListCode, QMap<QString, QStringList> storeGoods, UserOpt optType=opt_store);//存货单号，[物品，条码],操作类型
     void rfidAccessOpt(QStringList epcs, UserOpt optType=opt_fetch);
-    void rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs);
+    void rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, QString optNo);
     void rfidAutoStore(QVariantMap reportMap);
     void rfidCheckConsume(QStringList epcs);
     //operation

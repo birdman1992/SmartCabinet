@@ -50,11 +50,13 @@ private slots:
     void on_finish_clicked();
     void on_cabType_currentIndexChanged(int index);
     void on_tabExp_clicked(const QModelIndex &index);
-    void on_cabType_2_activated(int index);
-    void on_cloneId_textChanged(const QString &arg1);
     void resetRegState();
     void on_aio_mode_toggled(bool checked);
     void on_apiProName_activated(const QString &arg1);
+
+    void on_high_val_mode_toggled(bool checked);
+
+    void on_rfid_mode_toggled(bool checked);
 
 signals:
     void winSwitch(int index);//窗口切换
@@ -89,6 +91,7 @@ private:
     int getBaseCount(QString scale);
     void warningSelScreen(bool waringOn);
     void layoutInit();
+    void setCabType();
 };
 
 #endif // CABINETSET_H

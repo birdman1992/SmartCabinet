@@ -43,6 +43,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(ui->frm_operation, SIGNAL(requireUpdate()), sigMan, SIGNAL(requireUpdateOperation()));
     connect(sigMan, SIGNAL(operationInfoUpdate()), ui->frm_operation, SLOT(loadOperations()));
     connect(ui->frm_operation, SIGNAL(curOperationStrChanged(QString)), this, SLOT(updateOperationStr(QString)));
+    connect(ui->frm_operation, SIGNAL(CurOperationNoChanged(QString)), eModel, SLOT(curOptNoChanged(QString)));
     initTabs();
 #ifdef test_rfid
     QTimer::singleShot(1000, this, SLOT(testSlot()));
@@ -164,6 +165,13 @@ void FrmRfid::showEpcInfo()
 {
     ui->stackedWidget->setCurrentIndex(1);
     showMaximized();
+}
+
+void FrmRfid::rfidCheck()
+{
+    showEpcInfo();
+    rfManager->startScan();
+    rfManager->doorCloseScan();
 }
 
 void FrmRfid::showOperation()
@@ -311,6 +319,7 @@ void FrmRfid::clearCurOperation()
 
 void FrmRfid::clearCountText()
 {
+    scanProgress(0, 0);
     foreach (QToolButton* btn, btnTable)
     {
 //        btn->setText(btn->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(0)));

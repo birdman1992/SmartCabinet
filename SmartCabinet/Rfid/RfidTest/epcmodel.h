@@ -96,6 +96,7 @@ public slots:
     void syncUpload();
     void syncDownload();
     void epcConsume(QStringList epcs);
+    void curOptNoChanged(QString optNo);
 
 signals:
     void scanProgress(int scanCount, int totalCount);
@@ -103,7 +104,7 @@ signals:
     void updateLockCount(int count);
     void clearCount();
     void epcAccess(QStringList epcs, UserOpt optType);
-    void epcAccess(QStringList fetchEpcs, QStringList backEpcs);
+    void epcAccess(QStringList fetchEpcs, QStringList backEpcs,QString optNo);
     void epcStore(QVariantMap);
     void epcConsumeCheck(QStringList);
 
@@ -115,6 +116,7 @@ private:
     QStringList markNameTab;
     QStringList optList;
     QString curOptId;
+    QString operationNo;
     quint64 activeStamp;//标签活跃时间戳:最后一次标签状态发生变化的时间
     quint64 clearStamp;//初始化时间戳:用于计算扫描强度
     int countTab[20];
