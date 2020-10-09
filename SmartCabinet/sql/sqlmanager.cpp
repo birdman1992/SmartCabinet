@@ -389,16 +389,22 @@ void SqlManager::querySingle(QString cmd, QString msg)
 
 void SqlManager::replace(QString table, QList<QVariantMap> bindings)
 {
+    if(bindings.isEmpty())
+        return;
+
     foreach (QVariantMap binding, bindings)
     {
-        pubQuery->prepare(QString("REPLACE INTO %1 (%2) VALUES(:%3)")
-                          .arg(table)
-                          .arg(QStringList(binding.keys()).join(","))
-                          .arg(QStringList(binding.keys()).join(",:")));
+//        qDebug()<<"prepare:"<<QStringList(binding.keys()).join(",")<<QStringList(binding.keys()).join(",:");
+        QString preStr = QString("REPLACE INTO %1 (%2) VALUES(:%3)")
+                  .arg(table)
+                  .arg(QStringList(binding.keys()).join(","))
+                  .arg(QStringList(binding.keys()).join(",:"));
+
+        pubQuery->prepare(preStr);
 
         foreach (QString key, binding.keys())
         {
-//            qDebug()<<key<<binding[key];
+            qDebug()<<key<<binding[key];
             pubQuery->bindValue(QString(":%1").arg(key), binding[key]);
         }
         queryExec(pubQuery, QString("[replace] %1").arg(table));

@@ -106,7 +106,7 @@ private:
     QNetworkReply* post(QString url, QByteArray postData, qint64 timeStamp=0, bool need_resend=true);
     qint64 getApiMark();
     QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
-    QStringList autoCreateEpcInfo(QStringList codes);
+    QString autoCreateEpcInfo(QString code);
 
 signals:
     void loginRst(UserInfo*);

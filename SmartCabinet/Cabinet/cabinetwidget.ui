@@ -50,17 +50,7 @@
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="5,0,7">
-        <item>
-         <widget class="QLabel" name="msk1">
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(70, 197, 255);</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,7">
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
@@ -2054,7 +2044,7 @@ background-color: rgb(36, 221, 149);
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,12,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,0">
       <property name="spacing">
        <number>3</number>
       </property>
@@ -2115,22 +2105,6 @@ color: rgb(238, 0, 0);
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="msk2">
-        <property name="minimumSize">
-         <size>
-          <width>600</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(70, 197, 255);</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>

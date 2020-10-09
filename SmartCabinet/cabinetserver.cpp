@@ -330,17 +330,17 @@ QVariant CabinetServer::getCjsonItem(cJSON *json, QByteArray key, QVariant defau
     return defaultRet;
 }
 
-QStringList CabinetServer::autoCreateEpcInfo(QStringList codes)
+QString CabinetServer::autoCreateEpcInfo(QString code)
 {
-    QStringList ret;
-    foreach (QString code, codes)
-    {
+//    QStringList ret;
+//    foreach (QString code, codes)
+//    {
         QString epcHex = code.toLocal8Bit().toHex();
         QString epcStr = QString("%1").arg(epcHex, -24, '0');
-        ret<<epcStr;
+//        ret<<epcStr;
         qDebug()<<"[autoCreateEpcinfo]"<<code<<epcStr;
-    }
-    return ret;
+//    }
+    return epcStr;
 }
 
 QNetworkReply *CabinetServer::post(QString url, QByteArray postData, qint64 timeStamp, bool need_resend)
@@ -1856,7 +1856,6 @@ void CabinetServer::recvCabClone()
     reply_cabinet_clone->deleteLater();
     reply_cabinet_clone = NULL;
 
-
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<"[recvCabClone]"<<cJSON_Print(json);
 //    return;
@@ -1896,6 +1895,14 @@ void CabinetServer::recvCabClone()
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->packageId = info->goodsId;
 
+            info->codes.clear();
+            cJSON* jTraceIds = cJSON_GetObjectItem(item, "traceIds");
+            int idCount = cJSON_GetArraySize(jTraceIds);
+            for(int j=0; j<idCount; j++)
+            {
+                info->codes << QString(cJSON_GetArrayItem(jTraceIds, j)->valuestring);
+            }
+
             if(info->goodsType<10)
                 info->packageId += "-0"+QString::number(info->goodsType);
             else
@@ -1906,8 +1913,26 @@ void CabinetServer::recvCabClone()
 //            qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->id<<info->packageId<<info->num<<info->unit;
 //            config->insertGoods(info, row, col);
             sqlManager->replaceGoodsInfo(info, SqlManager::all_rep, SqlManager::mask_all);//只更新远程物品状态
-//            autoCreateEpcInfo(info->codes);
-            config->list_cabinet[col]->updateCase(row);
+
+            //创建默认rfid信息
+            if(config->getCabinetType().at(BIT_RFID))
+            {
+                QList<QVariantMap> epcList;
+                SqlManager::begin();
+//                QStringList epcs = autoCreateEpcInfo(info->codes);
+                foreach (QString code, info->codes)
+                {
+                    QVariantMap epcMap;
+                    QString epc = autoCreateEpcInfo(code);
+                    epcMap.insert("epc_code", epc);
+                    epcMap.insert("goods_code", code);
+                    epcList<<epcMap;
+                }
+                SqlManager::replace("EpcInfo", epcList);
+                SqlManager::commit();
+            }
+            if(col < config->list_cabinet.count())
+                config->list_cabinet[col]->updateCase(row);
         }
     }
     else
@@ -1995,7 +2020,21 @@ void CabinetServer::recvCabSync()
 //            config->syncGoods(info, row, col);
             sqlManager->replaceGoodsInfo(info, SqlManager::all_rep, SqlManager::mask_all);//只更新远程物品状态
             if(config->getCabinetType().at(BIT_RFID))
-                autoCreateEpcInfo(info->codes);
+            {
+                QList<QVariantMap> epcList;
+                SqlManager::begin();
+//                QStringList epcs = autoCreateEpcInfo(info->codes);
+                foreach (QString code, info->codes)
+                {
+                    QVariantMap epcMap;
+                    QString epc = autoCreateEpcInfo(code);
+                    epcMap.insert("epc_code", epc);
+                    epcMap.insert("goods_code", code);
+                    epcList<<epcMap;
+                }
+                SqlManager::replace("EpcInfo", epcList);
+                SqlManager::commit();
+            }
 
             if(col < config->list_cabinet.count())
                 config->list_cabinet[col]->updateCase(row);

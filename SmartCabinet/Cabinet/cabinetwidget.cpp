@@ -89,8 +89,8 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     ui->menuWidget->setCurrentIndex(0);
 
 //#ifndef SIMULATE_ON
-    ui->msk1->hide();
-    ui->msk2->hide();
+//    ui->msk1->hide();
+//    ui->msk2->hide();
 //#endif
 }
 
