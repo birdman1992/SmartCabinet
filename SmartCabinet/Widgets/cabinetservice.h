@@ -78,6 +78,14 @@ private slots:
 //    void on_proName_currentTextChanged(const QString &arg1);
     void on_proName_activated(const QString &arg1);
 
+    void on_func_refun_clicked(bool checked);
+
+    void on_func_back_clicked(bool checked);
+
+    void on_func_check_clicked(bool checked);
+
+    void on_func_apply_toggled(bool checked);
+
 public slots:
     void ctrl_boardcast();//广播控制
     void recvInsertColResult(bool success);
@@ -117,6 +125,7 @@ private:
     bool inserCol(int pos, int num);
     bool inserCol(int pos, QString layout);
     void saveInsert();
+    void setFuncWord(FuncWord word, bool isEnabled);
 
     void showEvent(QShowEvent*);
     bool eventFilter(QObject *w, QEvent *e);

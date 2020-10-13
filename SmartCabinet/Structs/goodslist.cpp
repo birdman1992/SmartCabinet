@@ -19,7 +19,10 @@ void GoodsList::addGoods(Goods *_goods)
     int repeatIndex = 0;
     if(goodsIsRepeat(_goods, &repeatIndex))
     {
+        qDebug()<<"addGoods"<<list_goods[repeatIndex]->takeCount<<_goods->takeCount;
         list_goods[repeatIndex]->takeCount += _goods->takeCount;
+        list_goods[repeatIndex]->waitNum = list_goods[repeatIndex]->takeCount;
+        list_goods[repeatIndex]->totalNum = list_goods[repeatIndex]->takeCount;
     }
     else
     {
@@ -137,7 +140,8 @@ Goods::Goods(Goods *goods)
 
 QString Goods::nameWithType()
 {
-    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(goodsType));
+//    return QString(name + QString("[%1](%2)").arg(abbName.split('/').last()).arg(packageType));
+    return QString(name + QString("[%1](%2)").arg(abbName).arg(packageType));
 }
 
 StoreList::StoreList()

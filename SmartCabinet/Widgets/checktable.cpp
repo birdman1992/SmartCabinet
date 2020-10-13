@@ -105,7 +105,7 @@ void CheckTable::setCurCheckTable(CheckList *l)
     for(int i=0; i<l->listInfo.count(); i++)
     {
         GoodsCheckInfo* info = l->listInfo.at(i);
-        qDebug()<<info->num_in;
+//        qDebug()<<info->num_in;
         ui->list_table->setItem(i, 0, new QTableWidgetItem(info->name));
         ui->list_table->setItem(i, 1, new QTableWidgetItem(info->id));
         ui->list_table->setItem(i, 2, new QTableWidgetItem(info->goodsSize));

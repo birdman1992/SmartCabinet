@@ -38,6 +38,8 @@ public:
     int getCaseNum();
 //    void setCabType(int _type);
     void checkCase(int index);
+    void searchCase(int index);
+    void initCase(int index);
     void updateCase(int caseIndex);
     int rowCount();
     void updateCabinet();

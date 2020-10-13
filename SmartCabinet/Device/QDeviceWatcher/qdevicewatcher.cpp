@@ -5,6 +5,7 @@
 
 QDeviceWatcher::QDeviceWatcher(QObject *parent) : QThread(parent)
 {
+    qDebug()<<"[QDeviceWatcher]";
     memset((void*)buf, 0, sizeof(buf));
     watchDeviceList.clear();
 //    this->start();
@@ -48,6 +49,7 @@ void QDeviceWatcher::run()
     int len = 0;
     int i = 0;
     loopFlag = true;
+    qDebug("[QDeviceWatcher]:start");
 
     while(loopFlag)
     {
@@ -56,9 +58,9 @@ void QDeviceWatcher::run()
             return;
 
         if(len<0)
-            printf("receive error\n");
+            qDebug("receive error\n");
         else if((len<32)||(len>(signed)sizeof(buf)))
-            printf("invalid message\n");
+            qDebug("invalid message\n");
 //        for(i=0;i<len;i++)
 //            if(*(buf+i)=='\0')
 //                buf[i]='\n';
@@ -78,16 +80,30 @@ void QDeviceWatcher::netLinkInit()
 
     sockfd=socket(AF_NETLINK,SOCK_RAW,NETLINK_KOBJECT_UEVENT);
     if(sockfd==-1)
-        printf("socket creating failed:%s\n",strerror(errno));
+        qDebug("socket creating failed:%s\n",strerror(errno));
 
     setsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, &buffersize, sizeof(buffersize));
     if(bind(sockfd,(struct sockaddr *)&sa,sizeof(sa))==-1)
-        printf("bind error:%s\n",strerror(errno));
+        qDebug("bind error:%s\n",strerror(errno));
 }
 
 void QDeviceWatcher::msgFilter(QString msg)
 {
-//    qDebug()<<"[msgFilter]"<<msg;
+//    qDebug()<<"msgFilter"<<msg;
+//    if(watchDeviceList.isEmpty())
+//        return;
+
+//    int index_name = msg.indexOf("DEVNAME");
+//    int index_opt = msg.indexOf("ACTION");
+//    if((index_name == -1) || (index_opt == -1))
+//        return;
+
+//    index_name += 8;//"DEVNAME=",8byte
+//    index_opt += 7;//"ACTION=",7byte
+
+//    QString devName = msg.mid(index_name, msg.indexOf("\n", index_name)-index_name);
+//    QString devOpt = msg.mid(index_opt, msg.indexOf("\n", index_opt)-index_opt);
+//    qDebug()<<"[QDeviceWatcher]"<<devOpt<<devName;
 
     QRegExp reg;
     reg.setPattern(QString("(.*)@.*:([0-9a-fA-F]{4}):([0-9a-fA-F]{4}).*event"));
@@ -95,8 +111,6 @@ void QDeviceWatcher::msgFilter(QString msg)
 //    qDebug()<<index;
     if((index == -1) || (reg.captureCount() != 3))
         return;
-
-//    qDebug()<<reg.captureCount();
 
     QString actionStr = reg.cap(1);
     quint16 vId = reg.cap(2).toUShort(0,16);

@@ -2,6 +2,7 @@
 #include "ui_aiomachine.h"
 #include <QDebug>
 #include <QTimer>
+#include <iconfont/iconhelper.h>
 #include "funcs/systool.h"
 #include "defines.h"
 #define MAX_TABLE_ROW 100
@@ -13,12 +14,17 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->setupUi(this);
     initNumLabel();
     initColMap();
+    initIcons();
     ui->aio_check_in->hide();
     ui->setting->hide();
     winActive = true;
     QWidget::installEventFilter(this);
     initStateMap();
     curState = 0;
+    tempHub = new TempDevHub(this);
+    tempHub->setObjectName("tempHub");
+    connect(tempHub, SIGNAL(deviceListUpdate()), this, SLOT(updateTempDev()));
+    connect(tempHub, SIGNAL(tempDevClicked(TempCase*)), this, SLOT(tempDevClicked(TempCase*)));
 
     win_rfid = new FrmRfid();
     connect(this, SIGNAL(requireRfidCheck()), win_rfid, SLOT(rfidCheck()));
@@ -28,17 +34,24 @@ AIOMachine::AIOMachine(QWidget *parent) :
 //    connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
 //    connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
 
+    win_access = new CabinetAccess;
+    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
+    connect(win_access, SIGNAL(saveFetch(QString,int)), this, SLOT(saveFetch(QString,int)));
+    connect(this, SIGNAL(goodsNumChanged(int)), win_access, SLOT(recvOptGoodsNum(int)));
+
 //    win_fingerPrint = new FingerPrint(this);
 //    connect(win_fingerPrint, SIGNAL(requireOpenLock(int,int)), this, SIGNAL(requireOpenLock(int,int)));
 
-    ui->page_overview->setWindowOpacity(1);
+//    ui->page_overview->setWindowOpacity(1);
     ui->page_overview->setAttribute(Qt::WA_TranslucentBackground);
-    ui->page_table->setWindowOpacity(1);
+//    ui->page_table->setWindowOpacity(1);
     ui->page_table->setAttribute(Qt::WA_TranslucentBackground);
+    ui->page_temp->setAttribute(Qt::WA_TranslucentBackground);
 
     ui->aio_return->hide();
     ui->aio_check_create->hide();
-    ui->aio_check->hide();
+//    ui->aio_check->hide();
+    ui->frame_dev_panel->hide();
 //    ui->info_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
     loginState = false;
@@ -47,7 +60,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     config = CabinetConfig::config();
     setAioInfo(config->getDepartName(), config->getCabinetId());
     config->msgLab = ui->msg;
-    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
+    if(config->getCabinetType().at(BIT_CAB_AIO))
     {
         sysTime = new QTimer(this);
         connect(sysTime, SIGNAL(timeout()), this, SLOT(updateTime()));
@@ -55,6 +68,8 @@ AIOMachine::AIOMachine(QWidget *parent) :
     }
     ui->stackedWidget->setCurrentIndex(0);
     sysLock();
+    initAioMode();
+//    timerCheckDev = startTimer(10000);
 }
 
 AIOMachine::~AIOMachine()
@@ -68,7 +83,7 @@ void AIOMachine::showEvent(QShowEvent *)
 {
     setAioInfo(config->getDepartName(), config->getCabinetId());
     emit reqUpdateOverview();
-    if((config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid") && (sysTime == NULL))
+    if((config->getCabinetType().at(BIT_CAB_AIO)) && (sysTime == NULL))
     {
         sysTime = new QTimer(this);
         connect(sysTime, SIGNAL(timeout()), this, SLOT(updateTime()));
@@ -132,7 +147,7 @@ void AIOMachine::setPowState(int power)
 //        ui->aio_check->show();
 //        ui->aio_return->show();
         ui->aio_check_create->show();
-        optList<<"存"<<"取"<<"还";
+        optList<<"取"<<"存"<<"还";
         break;
 
     case 1://护士长:|退货|退出|
@@ -154,7 +169,7 @@ void AIOMachine::setPowState(int power)
 //        ui->aio_check->show();
 //        ui->aio_return->show();
 //        ui->aio_check_create->show();
-        optList<<"存"<<"取"<<"还";
+        optList<<"取"<<"存"<<"还";
         break;
 
     case 4://医院员工:|退出|
@@ -228,9 +243,9 @@ bool AIOMachine::eventFilter(QObject *obj, QEvent *e)
             {
                 emit aio_check(false);
             }
-            if(!winActive)//窗口被激活，排除初始显示被激活的情况
+            if((!winActive) && (loginState))//窗口被激活，排除初始显示被激活的情况,排除未登录情况
             {
-                config->state = STATE_FETCH;
+                updateState();
             }
             winActive = true;
         }
@@ -246,6 +261,7 @@ bool AIOMachine::eventFilter(QObject *obj, QEvent *e)
         {
             qDebug()<<"[click event]"<<eventNum;
             emit click_event(eventNum);
+            recvClickEvent(eventNum);
         }
     }
     return QWidget::eventFilter(obj, e);
@@ -317,6 +333,21 @@ void AIOMachine::initStateMap()
     curStateText.insert("还", 10);
 }
 
+void AIOMachine::initIcons()
+{
+//    ui->setting->setIconSize(ui->setting->size());
+    //    ui->setting->setIcon(IconHelper::Instance()->GetIcon(ui->setting->rect().size(),0xf013,30,"#AEB035"));
+}
+
+void AIOMachine::initAioMode()
+{
+    QString mode = config->getAioMode();
+    if(mode == "temp_view")
+    {
+        ui->mode_temp->setChecked(true);
+    }
+}
+
 void AIOMachine::updateState()
 {
     QString stateStr = optList.at(curState);
@@ -334,6 +365,13 @@ void AIOMachine::nextState()
         curState++;
     qDebug()<<"cur state2"<<curState;
     updateState();
+}
+
+void AIOMachine::setState(QString stateStr)
+{
+    ui->cur_state->setText(stateStr);
+    config->state = (CabState)curStateText.value(stateStr,1);
+    qDebug()<<"[updateState]"<<stateStr<<config->state;
 }
 
 void AIOMachine::setAioInfo(QString departName, QString departId)
@@ -487,7 +525,7 @@ QString AIOMachine::getGoodsInfoText(Goods *info, QString key)
     {
     case goodsId:return info->goodsId;//物品编码
     case goodsName:return info->name;//物品名称
-    case packageType:return QString("%1").arg(info->goodsType);//包类型
+    case packageType:return QString("%1").arg(info->packageType);//包类型
     case proName:return info->proName;//生产商
     case supplyName:return info->supName;//供应商
     case goodsSize:return info->size;//规格
@@ -577,6 +615,22 @@ void AIOMachine::recvAioData(QString msg, AIOMachine::cEvent e, QList<Goods *> l
     }
 }
 
+//
+void AIOMachine::recvClickEvent(AIOMachine::cEvent e)
+{
+    if(!loginState)
+        return;
+
+    switch(e)
+    {
+    case AIOMachine::click_lab_temp:
+        ui->stackedWidget->setCurrentIndex(2);
+        break;
+    default:
+        break;
+    }
+}
+
 void AIOMachine::updateTemp(QString temp)
 {
     ui->lab_temp->setText(QString("%1\n当前温度").arg(temp));
@@ -618,11 +672,57 @@ void AIOMachine::updateTime()
     }
 }
 
+void AIOMachine::updateTempDev()
+{
+    QList<TempCase*> devs = tempHub->devList();
+    //移除原来的控件
+    foreach (TempCase* c, ui->layout_temp->findChildren<TempCase*>())
+    {
+        ui->layout_temp->removeWidget(c);
+    }
+
+    int i=0;
+    foreach (TempCase* dev, devs)
+    {
+        ui->layout_temp->addWidget(dev, i/8, i%8, 1,1);
+        i++;
+    }
+}
+
+void AIOMachine::tempDevClicked(TempCase* dev)
+{
+    selectedDev = dev;
+    ui->frame_dev_panel->show();
+    ui->set_dev_name->setText(selectedDev->devName());
+    ui->set_temp_max->setText(QString::number(selectedDev->maxTemp()));
+    ui->set_temp_min->setText(QString::number(selectedDev->minTemp()));
+    ui->set_report_time->setText(QString::number(selectedDev->reportTime()));
+    ui->set_sound_off->setChecked(selectedDev->SoundOff());
+//    ui->set_report_time->setText(selectedDev->tReport);
+}
+
+void AIOMachine::checkTempDev()
+{
+    foreach (TempCase* dev, tempHub->devList())
+    {
+        dev->checkOverTime();
+    }
+}
+
 void AIOMachine::on_aio_quit_clicked()
 {
     sysLock();
     ui->aio_hello->clear();
 }
+
+//void AIOMachine::timerEvent(QTimerEvent *event)
+//{
+//    int timerId = event->timerId();
+//    if(timerId == timerCheckDev)
+//    {
+//        checkTempDev();
+//    }
+//}
 
 void AIOMachine::on_tab_back_clicked()
 {
@@ -676,4 +776,45 @@ void AIOMachine::on_setting_clicked()
 void AIOMachine::on_cur_state_clicked()
 {
     nextState();
+}
+
+void AIOMachine::on_temp_btn_back_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void AIOMachine::on_mode_view_toggled(bool checked)
+{
+    if(checked)
+    {
+        config->setAioMode("goods_view");
+        ui->stackedWidget->setCurrentIndex(0);
+    }
+    else
+    {
+        ui->mode_temp->setChecked(true);
+    }
+}
+
+void AIOMachine::on_mode_temp_toggled(bool checked)
+{
+    if(checked)
+    {
+        config->setAioMode("temp_view");
+        ui->stackedWidget->setCurrentIndex(2);
+    }
+    else
+    {
+        ui->mode_view->setChecked(true);
+    }
+}
+
+void AIOMachine::on_set_dev_params_clicked()
+{
+    int max = ui->set_temp_max->text().toInt();
+    int min = ui->set_temp_min->text().toInt();
+    int report = ui->set_report_time->text().toInt();
+    bool soundOff = ui->set_sound_off->isChecked();
+    selectedDev->setTempParams(max, min, max, report, soundOff);
+    ui->frame_dev_panel->hide();
 }

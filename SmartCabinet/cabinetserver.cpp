@@ -56,6 +56,9 @@
 #define GET_JSON_INT(SRC,KEY) cJSON_GetObjectItem(SRC, KEY)->valueint
 #define GET_JSON_DOUBLE(SRC,KEY) cJSON_GetObjectItem(SRC, KEY)->valuedouble
 
+#define API_AIO_TEMP_REPORT     "/sarkApi/Cheset/save/monitor/log"  //温度设备上报
+
+
 CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
@@ -90,6 +93,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_rfid_access = NULL;
     reply_rfid_consume = NULL;
     reply_operation = NULL;
+    reply_aio_temp = NULL;
     versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
@@ -103,6 +107,8 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 //    watchdogStart();
 #endif
     connect(&tarProcess, SIGNAL(finished(int)), this, SLOT(tarFinished(int)));
+    connect(&tarProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStandardOutput()));
+
     if(sqlManager->waitForSync())
         QTimer::singleShot(2000, this, SLOT(cabInfoSync()));
 
@@ -248,7 +254,10 @@ void CabinetServer::requireListState()
 void CabinetServer::replyCheck(QNetworkReply *reply)
 {
     if(reply != NULL)
+    {
         reply->deleteLater();
+        reply = NULL;
+    }
 }
 
 void CabinetServer::netTimeStart()
@@ -387,7 +396,10 @@ void CabinetServer::userLogin(QString userId)
     qDebug()<<qba;
     logId = userId;
 
+//    if(reply_login)
+//        return;
     replyCheck(reply_login);
+
     reply_login = post(nUrl, qba, timeStamp, false);//登录留下记录但不重新调用
 //    reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
@@ -550,7 +562,7 @@ void CabinetServer::listAccess(QStringList list, UserOpt optType)//store:1  fetc
     for(i=0; i<list.count(); i++)
     {
         pack_bar = list.at(i);
-        QString pack_id = SqlManager::getGoodsId(pack_bar);
+        QString pack_id = SqlManager::getPackageId(pack_bar);
         QByteArray packageBarcode = pack_bar.toLocal8Bit();
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
         QByteArray barcode = barCode.toLocal8Bit();
@@ -610,7 +622,7 @@ void CabinetServer::goodsCheckReq()
     qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
     QString optId = config->getOptId();
-    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2,\"optName\":%3}").arg(cabId).arg(timeStamp).arg(optId).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2,\"optName\":\"%3\"}").arg(cabId).arg(timeStamp).arg(optId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CHECK_CREAT);//+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
     reply_goods_check = post(nUrl, qba, timeStamp);
@@ -626,7 +638,7 @@ void CabinetServer::goodsCheckFinish()
     qint64 timeStamp = getApiMark();
     QString cabId = config->getCabinetId();
     QString optId = config->getOptId();
-    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2,\"optName\":%3}").arg(cabId).arg(timeStamp).arg(optId).toUtf8();
+    QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":%2,\"optName\":\"%3\"}").arg(cabId).arg(timeStamp).arg(optId).toUtf8();
     QString nUrl = ApiAddress+QString(API_CHECK_END);//+"?"+qba.toBase64();
     replyCheck(reply_goods_check);
     reply_goods_check = post(nUrl, qba, timeStamp);
@@ -1215,6 +1227,17 @@ void CabinetServer::requireOperationInfo()
     qDebug()<<"[requireOperationInfo]"<<qba;
 }
 
+void CabinetServer::tempDevReport(QByteArray report)
+{
+//    qint64 timeStamp = getApiMark();
+    QByteArray qba = report;
+    QString nUrl = ApiAddress+QString(API_AIO_TEMP_REPORT);//+"?"+qba.toBase64();
+    replyCheck(reply_aio_temp);
+    reply_aio_temp = post(nUrl, qba, 0, false);
+    connect(reply_aio_temp, SIGNAL(finished()), this, SLOT(recvTempDevReport()));
+    qDebug()<<"[tempDevReport]"<<nUrl<<qba;
+}
+
 void CabinetServer::searchSpell(QString spell)
 {
     qint64 timeStamp = getApiMark();
@@ -1472,6 +1495,7 @@ void CabinetServer::recvListCheck()
             info->totalNum = info->takeCount;
             info->unit = QString::fromUtf8(cJSON_GetObjectItem(json_info,"unit")->valuestring);
             info->codes.clear();
+            info->Py = config->getPyCh(info->name);
             cJSON* jCodes = cJSON_GetObjectItem(json_info, "traceIds");
             int idCount = cJSON_GetArraySize(jCodes);
             for(int j=0; j<idCount; j++)
@@ -1607,7 +1631,14 @@ void CabinetServer::recvListAccess()
             emit goodsNumChanged(goodsId, goodsNum);
             emit accessSuccess(QString(cJSON_GetObjectItem(item,"msg")->valuestring));
             emit updateGoodsPrice(goodsPrice, goodsPrice*goodsType);
+            if(config->state == STATE_BACK)
+            {
+                QString goodsName = QString::fromUtf8(cJSON_GetObjectItem(item, "goodsName")->valuestring);
+                QString traceId = QString::fromUtf8(cJSON_GetObjectItem(item,"traceId")->valuestring);
+                config->showMsg(QString("还货成功:%1\n%2").arg(traceId).arg(goodsName), false);
+            }
         }
+
     }
     else
     {
@@ -1731,6 +1762,8 @@ void CabinetServer::recvCheckFinish()
         }
         emit curCheckList(checkList);
         checkFinish(true);
+        //盘点后同步
+        cabInfoSync();
     }
     else
     {
@@ -1881,7 +1914,7 @@ void CabinetServer::recvCabClone()
         for(i=0; i<listSize; i++)
         {
             cJSON* item = cJSON_GetArrayItem(json_data, i);
-            Goods* info = new Goods();
+            Goods* info = new Goods;
 
             int row = QString(cJSON_GetObjectItem(item, "cabinetRow")->valuestring).toInt();
             int col = QString(cJSON_GetObjectItem(item, "cabinetCol")->valuestring).toInt();
@@ -1890,11 +1923,13 @@ void CabinetServer::recvCabClone()
             info->num = cJSON_GetObjectItem(item,"packageCount")->valueint;
             info->outNum = 0;
             info->goodsId = QString(cJSON_GetObjectItem(item, "goodsId")->valuestring);
-            info->goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
+            info->packageType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
+            info->size = QString(cJSON_GetObjectItem(item, "size")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->packageId = info->goodsId;
 
+            //codes
             info->codes.clear();
             cJSON* jTraceIds = cJSON_GetObjectItem(item, "traceIds");
             int idCount = cJSON_GetArraySize(jTraceIds);
@@ -1903,10 +1938,10 @@ void CabinetServer::recvCabClone()
                 info->codes << QString(cJSON_GetArrayItem(jTraceIds, j)->valuestring);
             }
 
-            if(info->goodsType<10)
-                info->packageId += "-0"+QString::number(info->goodsType);
+            if(info->packageType<10)
+                info->packageId += "-0"+QString::number(info->packageType);
             else
-                info->packageId += "-"+QString::number(info->goodsType);
+                info->packageId += "-"+QString::number(info->packageType);
 
             if(info->abbName.isEmpty())
                 info->abbName = getAbbName(info->name);
@@ -1974,6 +2009,7 @@ void CabinetServer::recvCabSync()
         {
             needClearBeforeClone = false;
             config->clearGoodsConfig();
+            SqlManager::sqlDelete();
             emit insertRst(true);
         }
         int listSize = cJSON_GetArraySize(json_data);
@@ -1991,8 +2027,9 @@ void CabinetServer::recvCabSync()
             info->num = cJSON_GetObjectItem(item,"packageCount")->valueint;
             info->outNum = 0;
             info->goodsId = QString(cJSON_GetObjectItem(item, "goodsId")->valuestring);
-            info->goodsType = cJSON_GetObjectItem(item, "goodsType")->valueint;
+            info->packageType = cJSON_GetObjectItem(item, "goodsType")->valueint;
             info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
+            info->size = QString(cJSON_GetObjectItem(item, "size")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
 //            info->size = GET_JSON_QSTRING(item, "size");
 //            info->proName = GET_JSON_QSTRING(item, "proName");
@@ -2008,10 +2045,10 @@ void CabinetServer::recvCabSync()
                 info->codes << QString(cJSON_GetArrayItem(jTraceIds, j)->valuestring);
             }
 
-            if(info->goodsType<10)
-                info->packageId += "-0"+QString::number(info->goodsType);
+            if(info->packageType<10)
+                info->packageId += "-0"+QString::number(info->packageType);
             else
-                info->packageId += "-"+QString::number(info->goodsType);
+                info->packageId += "-"+QString::number(info->packageType);
 
             if(info->abbName.isEmpty())
                 info->abbName = getAbbName(info->name);
@@ -2019,6 +2056,8 @@ void CabinetServer::recvCabSync()
             qDebug()<<"[newGoods]"<<row<<col<<info->name<<info->abbName<<info->goodsId<<info->packageId<<info->num<<info->unit;
 //            config->syncGoods(info, row, col);
             sqlManager->replaceGoodsInfo(info, SqlManager::all_rep, SqlManager::mask_all);//只更新远程物品状态
+
+            //添加默认RFID
             if(config->getCabinetType().at(BIT_RFID))
             {
                 QList<QVariantMap> epcList;
@@ -2101,7 +2140,7 @@ void CabinetServer::recvCheckTables()
             if(jItem == NULL)
                 break;
 
-            CheckTableInfo* info = new CheckTableInfo();
+            CheckTableInfo* info = new CheckTableInfo;
             info->id = QString::number(cJSON_GetObjectItem(jItem, "id")->valueint);
             info->sTime = QString(cJSON_GetObjectItem(jItem, "sTime")->valuestring);
             info->eTime = QString(cJSON_GetObjectItem(jItem, "eTime")->valuestring);
@@ -2373,7 +2412,7 @@ void CabinetServer::recvAioData()
             info->unit = getCjsonItem(jGoods, "unit", QString()).toString();
             info->aioInNum = getCjsonItem(jGoods, "inCount", QString()).toString();
             info->aioOutNum = getCjsonItem(jGoods, "goodsCount", QString()).toString();
-            info->goodsType = getCjsonItem(jGoods, "packageType", 1).toInt();
+            info->packageType = getCjsonItem(jGoods, "packageType", 1).toInt();
             info->threshold = getCjsonItem(jGoods, "threshold", 0).toInt();
             info->maxThreshold = getCjsonItem(jGoods, "maxThreshold", 0).toInt();
             info->batch = getCjsonItem(jGoods, "batchNumber", QString()).toString();
@@ -2635,6 +2674,20 @@ void CabinetServer::recvOperationInfo()
     emit operationInfoUpdate();
 }
 
+void CabinetServer::recvTempDevReport()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_aio_temp->readAll());
+    qDebug()<<"[recvTempDevReport]"<<qba;
+    reply_aio_temp->deleteLater();
+    reply_aio_temp = NULL;
+}
+
+void CabinetServer::processStandardOutput()
+{
+    QByteArray qba = tarProcess.readAllStandardOutput();
+    qDebug()<<"[update process]:"<<qba;
+}
+
 void CabinetServer::updatePacFinish()
 {
     qDebug()<<"[updatePacFinish]"<<versionInfo->pacFile;
@@ -2675,6 +2728,7 @@ void CabinetServer::netTimeout()
     }
     else
     {
+//        replyCheck(reply_login);
         if(apiState == 1)//登录
         {
             if(config->checkManagers(logId))

@@ -26,7 +26,6 @@
 #include "aio/aiooverview.h"
 #include "aio/aiomachine.h"
 
-
 class CabinetServer : public QObject
 {
     Q_OBJECT
@@ -67,6 +66,7 @@ private:
     QNetworkReply* reply_rfid_access;
     QNetworkReply* reply_rfid_consume;
     QNetworkReply* reply_operation;
+    QNetworkReply* reply_aio_temp;
     AIOMachine::cEvent aio_state;
     CheckList* checkList;
     SqlManager* sqlManager;
@@ -193,6 +193,7 @@ public slots:
     void rfidCheckConsume(QStringList epcs);
     //operation
     void requireOperationInfo();
+    void tempDevReport(QByteArray report);
 
 private slots:
     void recvCabRegister();
@@ -229,6 +230,8 @@ private slots:
     //operation
     void recvOperationInfo();
 
+    void recvTempDevReport();
+    void processStandardOutput();
     void updatePacFinish();
     void netTimeout();
     int watchdogTimeout();

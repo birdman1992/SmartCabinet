@@ -63,6 +63,7 @@ void ServerTest::apiTest()
     QString nUrl = pAddress;
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setUrl(nUrl);
+    qDebug()<<"[POST]"<<pAddress;
     reply = manager->post(request, pData.toBase64());
     apiTime.start();
 

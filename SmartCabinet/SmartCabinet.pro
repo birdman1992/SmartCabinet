@@ -45,7 +45,13 @@ SOURCES += main.cpp\
     Rfid/RfidTest/rfidpackage.cpp \
     Rfid/RfidTest/rfidreader.cpp \
     funcs/secwatch.cpp \
-        mainwidget.cpp \
+    Temperature/tempcase.cpp \
+    Temperature/tempdevhub.cpp \
+    Temperature/tempmanager.cpp \
+    Temperature/temprecorder.cpp \
+    Temperature/temptopdf.cpp \
+    iconfont/iconhelper.cpp \
+    mainwidget.cpp \
     Cabinet/cabinetpanel.cpp \
     Device/Qextserial/qextserialport.cpp \
     Device/Qextserial/qextserialport_unix.cpp \
@@ -157,6 +163,13 @@ HEADERS  += mainwidget.h \
     manager/rfreaderconfig.h \
     manager/signalmanager.h \
     manager/singleton.h \
+    Temperature/config.h \
+    Temperature/tempcase.h \
+    Temperature/tempdevhub.h \
+    Temperature/tempmanager.h \
+    Temperature/temprecorder.h \
+    Temperature/temptopdf.h \
+    iconfont/iconhelper.h \
     medinf.h \
     Widgets/standbywidget.h \
     Widgets/userwidget.h \
@@ -248,6 +261,7 @@ FORMS    += mainwidget.ui \
     Device/devicesimulate.ui \
     Rfid/RfidTest/frmrfid.ui \
     Rfid/RfidTest/operation.ui \
+    Temperature/tempcase.ui \
     Widgets/standbywidget.ui \
     Widgets/userwidget.ui \
     Widgets/cabinetset.ui \

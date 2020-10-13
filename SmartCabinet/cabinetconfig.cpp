@@ -99,6 +99,12 @@ QList<QByteArray> CabinetConfig::getFetchList()
     return ret;
 }
 
+QString CabinetConfig::getIp()
+{
+    QSettings settings("/home/config/network.ini", QSettings::IniFormat);
+    return settings.value("ip", "172.17.17.17").toString();
+}
+
 void CabinetConfig::setCabinetId(QString id)
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
@@ -237,8 +243,10 @@ void CabinetConfig::syncGoods(Goods *info, int row, int col)
 void CabinetConfig::setServerAddress(QString addr)
 {
     serverIp = addr;
-//    if(serverAddr.indexOf("http:") != 0)
-    serverAddr = QString("http://") +serverIp;
+    serverAddr.clear();
+
+    if(serverAddr.indexOf("http:") != 0)
+        serverAddr = QString("http://") +serverIp;
 
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
     settings.setValue("SERVER", serverAddr);
@@ -579,13 +587,14 @@ void CabinetConfig::readCabinetConfig()
 
         for(i=0; i<cabNum; i++)
         {
-            Cabinet* cab = new Cabinet();
+            Cabinet* cab = new Cabinet;
             cab->CabinetInit(layoutList.at(i),i, (cabNum <= 5));
             cab->setCabPos(i);
             cab->setPosType(1);
 
             QByteArray ctrlSeq = lockManager->getLockCtrlSeq(i);
             QByteArray ctrlIndex = lockManager->getLockCtrlIndex(i);
+//            qDebug()<<"setCtrlWord"<<ctrlSeq.toHex()<<ctrlIndex.toHex();
             cab->setCtrlWord(ctrlSeq, ctrlIndex);
 
             list_cabinet<<cab;
@@ -748,6 +757,32 @@ void CabinetConfig::setApiProName(QString apiName)
     settings.setValue("ApiPro", apiName);
     settings.sync();
 //    qDebug()<<"[getApiProName]"<<getApiProName();
+}
+
+int CabinetConfig::getFuncWord()
+{
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    return settings.value("FuncWord", funcBack|funcFetch|funcStore).toInt();//盘点|取|退|存
+//    return settings.value("FuncWord", funcCheck|funcFetch|funcRefun|funcStore).toInt();//盘点|取|退|存
+}
+
+void CabinetConfig::setFuncWord(int funcWord)
+{
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    settings.setValue("FuncWord", funcWord);
+}
+
+//temp_view|goods_view
+void CabinetConfig::setAioMode(QString aioMode)
+{
+    QSettings settings(CONF_CABINET, QSettings::IniFormat);
+    settings.setValue("aioMode", aioMode);
+}
+
+QString CabinetConfig::getAioMode()
+{
+    QSettings settings(CONF_CABINET,QSettings::IniFormat);
+    return settings.value("aioMode","goods_view").toString();
 }
 
 QString CabinetConfig::getCabinetLayout()
@@ -1172,25 +1207,25 @@ QByteArray CabinetConfig::getCabinetSize()
     return ret;
 }
 
-void CabinetConfig::searchByPinyin(QString ch)
-{
-    int i;
+//void CabinetConfig::searchByPinyin(QString ch)
+//{
+//    int i;
 
-    for(i=0; i<list_cabinet.count(); i++)
-    {
-        list_cabinet[i]->searchByPinyin(ch);
-    }
-}
+//    for(i=0; i<list_cabinet.count(); i++)
+//    {
+//        list_cabinet[i]->searchByPinyin(ch);
+//    }
+//}
 
-void CabinetConfig::clearSearch()
-{
-    int i;
+//void CabinetConfig::clearSearch()
+//{
+//    int i;
 
-    for(i=0; i<list_cabinet.count(); i++)
-    {
-        list_cabinet[i]->clearSearch();
-    }
-}
+//    for(i=0; i<list_cabinet.count(); i++)
+//    {
+//        list_cabinet[i]->clearSearch();
+//    }
+//}
 
 //添加新用户
 void CabinetConfig::addNewUser(UserInfo *info)

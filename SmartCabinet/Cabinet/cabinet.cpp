@@ -213,6 +213,16 @@ void Cabinet::checkCase(int index)
     setCaseState(index, 2);
 }
 
+void Cabinet::searchCase(int index)
+{
+    setCaseState(index, 1);
+}
+
+void Cabinet::initCase(int index)
+{
+    setCaseState(index, 0);
+}
+
 void Cabinet::updateCase(int caseIndex)
 {
     if(isMainCabinet && (caseIndex == screenPos))
@@ -244,6 +254,12 @@ void Cabinet::setCtrlWord(QByteArray seq, QByteArray index)
 {
     _ctrlSeq = seq;
     _ctrlIndex = index;
+
+    if(_ctrlSeq.size()<16)
+        _ctrlSeq.resize(16);
+
+    if(_ctrlIndex.size()<16)
+        _ctrlIndex.resize(16);
 //    for(int i=0; i<list_case.count(); i++)
 //    {
 //        setCtrlWord(i, seq, index);
@@ -252,10 +268,12 @@ void Cabinet::setCtrlWord(QByteArray seq, QByteArray index)
 
 void Cabinet::setCtrlSeq(int caseIndex, int seq)
 {
+//    qDebug()<<"setCtrlSeq"<<caseIndex<<_ctrlSeq.size()<<_ctrlSeq.toHex();
     if(caseIndex >= _ctrlSeq.size())
         return;
 
     _ctrlSeq[caseIndex] = seq;
+//    qDebug()<<_ctrlSeq[caseIndex];
 }
 
 void Cabinet::setctrlIndex(int caseIndex, int index)
@@ -480,6 +498,11 @@ void Cabinet::setCaseState(int index, int numState)
 {
     if(index >= ui->tableWidget->rowCount())
         return;
+    if(index == screenPos)
+    {
+        qDebug()<<"screen pos";
+        return;
+    }
 //    qDebug()<<"setCaseState"<<index<<numState;
     state = numState;
     checkFlag[index] = numState;

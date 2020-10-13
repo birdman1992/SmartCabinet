@@ -44,6 +44,14 @@ enum bitType{
 //    TYPE_LOW_RFID = 2,//低值有RFID
 
 //};
+enum FuncWord{
+    funcStore = 0,
+    funcFetch = 1,
+    funcBack = 2,
+    funcRefun = 4,
+    funcCheck = 8,
+    funcApply = 16,
+};
 
 class CabinetConfig
 {
@@ -64,6 +72,10 @@ public:
     QString getDepartName();
     QString getApiProName();//获取接口项目名称,默认 spd-web
     void setApiProName(QString apiName);//设置接口项目名称
+    int getFuncWord();
+    void setFuncWord(int funcWord);
+    void setAioMode(QString aioMode);
+    QString getAioMode();
 
     QString getCabinetLayout();
     QString getCabinetColMap();
@@ -122,14 +134,15 @@ public:
 //    CaseAddress checkCabinetByGoodsId(QString id);//根据物品条码搜索物品位置,如未搜索到，返回坐标为-1
     int getLockId(int seq, int index);
     int getCaseWidth();
+    QString getIp();
     void removeConfig(CaseAddress addr);
     void setConfig(CaseAddress addr, Goods* info);
     QByteArray creatCabinetJson();
     QByteArray getCabinetPos();
     QByteArray getCabinetSize();
 
-    void searchByPinyin(QString ch);
-    void clearSearch();
+//    void searchByPinyin(QString ch);
+//    void clearSearch();
     QChar str2py(QChar ch);
 
     QList<UserInfo*> list_user;
@@ -144,6 +157,7 @@ public:
     QString scanDataTrans(QString code);
     void setCabinetColMap(QString map);
     void setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlIndex);
+
 private:
     CabinetConfig();
     static CabinetConfig* c;

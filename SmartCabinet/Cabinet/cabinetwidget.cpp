@@ -7,6 +7,7 @@
 #include "Device/controldevice.h"
 #include "funcs/systool.h"
 #include "defines.h"
+#include "iconfont/iconhelper.h"
 
 //提示信息
 
@@ -62,6 +63,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 
     connect(win_cab_list_view, SIGNAL(requireAccessList(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
     connect(win_cab_list_view, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
+    connect(win_cab_list_view, SIGNAL(searchGoods(QString)), this, SLOT(searchByPinyin(QString)));
 
     connect(win_check, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), this, SLOT(checkOneCase(QList<CabinetCheckItem*>,CaseAddress)));
     connect(win_check, SIGNAL(checkCase(QStringList,CaseAddress)), this, SLOT(checkOneCase(QStringList,CaseAddress)));
@@ -76,17 +78,23 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
 
     connect(win_refund, SIGNAL(refundCase(QStringList,int)), this, SIGNAL(requireAccessList(QStringList,int)));
 //    optUser = QString();
-    ui->store->hide();
-    ui->refund->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->check->hide();
-    ui->search->hide();
-    ui->reply->hide();
-    ui->quit->hide();
-    ui->frame_check_history->hide();
-    ui->consume_date->hide();
+
+    showMap.insert(ui->store, false);
+    showMap.insert(ui->refund, false);
+    showMap.insert(ui->service, false);
+    showMap.insert(ui->rebind, false);
+    showMap.insert(ui->cut, false);
+    showMap.insert(ui->check, false);
+    showMap.insert(ui->search, false);
+    showMap.insert(ui->reply, false);
+    showMap.insert(ui->quit, false);
+    showMap.insert(ui->back, false);
+    showMap.insert(ui->frame_check_history, false);
+    showMap.insert(ui->consume_date, false);
+    updateShowMap();
+
     ui->menuWidget->setCurrentIndex(0);
+//    IconHelper::Instance()->SetIcon(ui->back, QChar(0xf18e)+QString("  还货"), 42);
 
 //#ifndef SIMULATE_ON
 //    ui->msk1->hide();
@@ -115,7 +123,7 @@ void CabinetWidget::paintEvent(QPaintEvent*)
 
 void CabinetWidget::cabLock()
 {
-    emit updateLoginState(0xff, false);
+    emit updateLoginState(false);
     tsCalFlag = 0;
     optUser = NULL;
     ui->userInfo->setText("请刷卡使用");
@@ -131,23 +139,26 @@ void CabinetWidget::cabLock()
     msgBox = NULL;
     config->showMsg(MSG_EMPTY,false);
     config->clearOptId();
-    ui->store->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->refund->hide();
-    ui->check->hide();
-    ui->search->hide();
-    ui->quit->hide();
-    ui->consume_date->hide();
-    ui->reply->hide();
-    ui->frame_check_history->hide();
+    showMap[ui->store] = false;
+    showMap[ui->service] = false;
+    showMap[ui->rebind] = false;
+    showMap[ui->cut] = false;
+    showMap[ui->refund] = false;
+    showMap[ui->back] = false;
+    showMap[ui->check] = false;
+    showMap[ui->search] = false;
+    showMap[ui->quit] = false;
+    showMap[ui->consume_date] = false;
+    showMap[ui->reply] = false;
+    showMap[ui->frame_check_history] = false;
+    updateShowMap();
     win_access->hide();
     curStoreList = NULL;
     config->state = STATE_NO;
-    config->clearSearch();
+    clearCaseState();
     config->wakeUp(0);
     emit checkLockState();
-    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
+    if(config->getCabinetType().at(BIT_CAB_AIO))
         emit stack_switch(INDEX_AIO);
 }
 
@@ -155,10 +166,12 @@ void CabinetWidget::cabInit()
 {
     ui->store->setChecked(false);
     ui->service->setChecked(false);
+    ui->rebind->setChecked(false);
     ui->cut->setChecked(false);
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->search->setChecked(false);
+    ui->back->setChecked(false);
 }
 
 void CabinetWidget::cabInfoBind(int seq, int index, QString info)
@@ -284,6 +297,8 @@ void CabinetWidget::clearMenuState()
     ui->refund->setChecked(false);
     ui->check->setChecked(false);
     ui->service->setChecked(false);
+    ui->rebind->setChecked(false);
+    ui->back->setChecked(false);
 }
 
 void CabinetWidget::volumTest()
@@ -303,15 +318,18 @@ void CabinetWidget::checkStart()
     ui->check->setChecked(true);
     config->wakeUp(TIMEOUT_CHECK);
 
-    ui->store->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->refund->hide();
-//    ui->check->hide();
-    ui->search->hide();
-    ui->reply->hide();
-    ui->quit->hide();
-    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
+    showMap[ui->store] = false;
+    showMap[ui->service] = false;
+    showMap[ui->rebind] = false;
+    showMap[ui->cut] = false;
+    showMap[ui->refund] = false;
+//    ui->check] = false;
+    showMap[ui->search] = false;
+    showMap[ui->reply] = false;
+    showMap[ui->quit] = false;
+    updateShowMap();
+
+    if(config->getCabinetType().at(BIT_CAB_AIO))
     {
         switchCabinetState(STATE_CHECK);
     }
@@ -446,7 +464,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(config->state == STATE_STORE)//禁止绑定至护士长柜格
             return;
     }
-    config->wakeUp(TIMEOUT_BASE);
+    if(config->state != STATE_CHECK)
+        config->wakeUp(TIMEOUT_BASE);
 //    bool clickRepeat = false;
 //    if((caseIndex==selectCase) && (cabSeqNum == selectCab))
 //        clickRepeat = true;//标记为重复点击
@@ -468,7 +487,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         if(curGoods == NULL)
             return;
 
-        if(config->getCabinetMode() == "cabinet")
+        if(!config->getCabinetType().at(BIT_CAB_AIO))//非一体机模式
         {
             if(!(config->list_cabinet[cabSeqNum]->haveEmptyPos(caseIndex)))
             {
@@ -478,6 +497,8 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
             }
         }
 
+        bindCab = selectCab;
+        bindCase = selectCase;
         cabInfoBind(selectCab, selectCase, curGoods->packageId);
         emit requireCaseBind(selectCab, selectCase, curGoods->packageId);
         config->showMsg(MSG_EMPTY,0);
@@ -532,6 +553,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
         casePos.cabinetSeqNum = cabSeqNum;
         casePos.caseIndex = caseIndex;
         win_check->checkStart(casePos);
+        setCheckState(QPoint(cabSeqNum, caseIndex));
         config->list_cabinet[cabSeqNum]->checkCase(caseIndex);
         qDebug()<<"[check]"<<caseIndex;
         clickLock = false;
@@ -558,6 +580,9 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
 //        rebind_new_addr.goodsIndex = config->list_cabinet[selectCab]->list_case[selectCase]->list_goods.count();
 
 //        config->removeConfig(rebind_old_addr);
+        bindCab = selectCab;
+        bindCase = selectCase;
+        qDebug()<<"click bind"<<bindCab<<bindCase;
         emit requireCaseRebind(selectCab, selectCase, rebindGoods);
         cabInfoBind(selectCab, selectCase, rebindGoods);
     }
@@ -579,10 +604,45 @@ bool CabinetWidget::isListCode(QByteArray qba)
     return false;
 }
 
+void CabinetWidget::setCheckState(QPoint pos)
+{
+    list_state_case<<pos;
+    if(pos.x()<list_cabinet.count())
+        list_cabinet[pos.x()]->searchCase(pos.y());
+}
+
+void CabinetWidget::setSearchState(QList<QPoint> l)
+{
+//    qDebug()<<"before"<<list_state_case;
+    foreach (QPoint pos, list_state_case)
+    {
+        if(pos.x()<list_cabinet.count())
+            list_cabinet[pos.x()]->initCase(pos.y());
+    }
+
+    list_state_case = l;
+//    qDebug()<<"after"<<list_state_case;
+    foreach (QPoint pos, list_state_case)
+    {
+        if(pos.x()<list_cabinet.count())
+            list_cabinet[pos.x()]->searchCase(pos.y());
+    }
+}
+
+void CabinetWidget::clearCaseState()
+{
+    foreach (QPoint pos, list_state_case)
+    {
+        if(pos.x()<list_cabinet.count())
+            list_cabinet[pos.x()]->initCase(pos.y());
+    }
+    list_state_case.clear();
+}
+
 void CabinetWidget::recvScanData(QByteArray qba)
 {qDebug()<<"recvScanData"<<qba<<qba.toHex()<<config->state;
     magicCmd(QString(qba));
-    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")//一体机模式，无需通过按钮进入存取货模式
+    if(config->getCabinetType().at(BIT_CAB_AIO))//一体机模式，无需通过按钮进入存取货模式
     {
         if(optUser == NULL)//未登录
             return;
@@ -620,7 +680,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
 //        newStore = true;
 //    }
     fullScanInfo = QString(qba);
-    scanInfo = SqlManager::getGoodsId(fullScanInfo);
+    scanInfo = SqlManager::getPackageId(fullScanInfo);
 
 #ifdef TCP_API
     scanGoodsId = goodsManager->getGoodsByCode(fullScanInfo);
@@ -649,15 +709,18 @@ void CabinetWidget::recvScanData(QByteArray qba)
             win_access->showTips(MSG_GOODS_NOT_FIND, 1);
             return;
         }
-        SqlManager::scanFetch(fullScanInfo, SqlManager::no_rep, SqlManager::mask_all);
-        list_cabinet[addr.x()]->updateCase(addr.y());
+
         if(SqlManager::getGoodsCount(info->packageId)>0)//物品未取完
         {
+            SqlManager::scanFetch(fullScanInfo, SqlManager::no_rep, SqlManager::mask_all);
+            list_cabinet[addr.x()]->updateCase(addr.y());
             win_access->scanOpen(scanGoodsId, fullScanInfo);
             emit goodsAccess(addr,fullScanInfo, 1, 1);
         }
         else
         {
+            SqlManager::scanFetch(fullScanInfo, SqlManager::no_rep, SqlManager::mask_all);
+            list_cabinet[addr.x()]->updateCase(addr.y());
             win_access->scanOpen(scanGoodsId, fullScanInfo);
             config->showMsg(MSG_GOODS_USE_UP, 1);
             win_access->showTips(MSG_GOODS_USE_UP, 1);
@@ -752,9 +815,10 @@ void CabinetWidget::cabinetInit()
 
 void CabinetWidget::updateDelay(int delay)
 {
+//    qDebug()<<"update delay"<<delay;
     updateNetState(delay);
     ui->delay->setText(QString("%1ms").arg(delay));
-    config->netState = ((delay<100) && (delay>0));
+    config->netState = ((delay<1000) && (delay>0));
     ui->delay->setChecked(config->netState);
 }
 
@@ -773,6 +837,15 @@ void CabinetWidget::showEvent(QShowEvent *)
         selectCab = -1;
         selectCase = -1;
         config->showMsg(MSG_FETCH, false);
+    }
+}
+
+void CabinetWidget::updateShowMap()
+{
+    QMap<QWidget*, bool>::iterator it;
+    for(it=showMap.begin(); it!=showMap.end(); it++)
+    {
+        it.key()->setVisible(it.value());
     }
 }
 
@@ -816,11 +889,11 @@ void CabinetWidget::updateCase(int col, int row)
 void CabinetWidget::updateOptStamp()
 {
     lastOptTime = QTime::currentTime();
-    if(screenProState)
-    {
-        screenProState = false;
-        emit screenPro(screenProState);
-    }
+//    if(screenProState)
+//    {
+//        screenProState = false;
+//        emit screenPro(screenProState);
+//    }
 }
 
 void CabinetWidget::switchCabinetState(CabState state)
@@ -913,6 +986,22 @@ void CabinetWidget::on_service_clicked(bool checked)
     }
 }
 
+void CabinetWidget::on_rebind_clicked(bool checked)
+{
+    if(checked)
+    {
+        clearMenuState();
+        ui->rebind->setChecked(true);
+        config->state = STATE_REBIND;
+        config->showMsg(MSG_REBIND_SCAN,0);
+        config->wakeUp(TIMEOUT_BASE);
+    }
+    else
+    {
+        cabLock();
+    }
+}
+
 void CabinetWidget::on_refund_clicked(bool checked)//退货模式
 {
     if(checked)
@@ -932,6 +1021,27 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
         cabLock();
     }
 }
+
+void CabinetWidget::on_back_clicked(bool checked)
+{
+    if(checked)
+    {
+        qDebug()<<"[BACK]";
+        clickLock = false;
+        config->state = STATE_BACK;
+        config->showMsg(MSG_BACK,false);
+        clearMenuState();
+        ui->back->setChecked(true);
+        waitForCodeScan = true;
+        waitForGoodsListCode = false;
+        config->wakeUp(TIMEOUT_FETCH);
+    }
+    else
+    {
+        cabLock();
+    }
+}
+
 
 void CabinetWidget::on_store_clicked(bool checked)
 {
@@ -988,7 +1098,7 @@ void CabinetWidget::on_check_clicked(bool checked)
         else
             msg = QString("柜格已全部盘点，可以提交");
 
-        if(config->getCabinetMode() == "cabinet")
+        if(!config->getCabinetType().at(BIT_CAB_AIO))
             win_check_warnning->warnningMsg(msg, true);
         else
             emit goodsCheckFinish();
@@ -1064,7 +1174,18 @@ void CabinetWidget::saveFetch(QString name, int num)
 //    CaseAddress addr = config->checkCabinetByName(name);
 //    clickLock = false;
 //    emit requireOpenCase(addr.cabinetSeqNum, addr.caseIndex);
-//    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, 1);
+    //    emit goodsAccess(addr, config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods.at(addr.goodsIndex)->id, num, 1);
+}
+
+void CabinetWidget::searchByPinyin(QString str)
+{
+    if(str.isEmpty())
+    {
+        clearCaseState();
+        return;
+    }
+    QList<QPoint> l_search = SqlManager::goodsSearch(str);
+    setSearchState(l_search);
 }
 
 void CabinetWidget::warningMsgBox(QString title, QString msg)
@@ -1105,6 +1226,7 @@ void CabinetWidget::msgShow(QString title, QString msg, bool setmodal)
         msgBox->setModal(false);
         msgBox->show();
     }
+    QTimer::singleShot(10000, this, SLOT(msgClear()));
 }
 /*
 |补货|退货|服务|退出|
@@ -1117,75 +1239,79 @@ void CabinetWidget::setPowerState(int power)
     win_access->setAccessModel(false);
     waitForCodeScan = false;
 
-    ui->store->hide();
-    ui->refund->hide();
-    ui->service->hide();
-    ui->cut->hide();
-    ui->check->hide();
-    ui->reply->hide();
-    ui->search->show();
-    ui->quit->hide();
-    ui->frame_check_history->show();
-    ui->consume_date->show();
+    showMap[ui->back] = false;
+    showMap[ui->store] = false;
+    showMap[ui->refund] = false;
+    showMap[ui->service] = false;
+    showMap[ui->cut] = false;
+    showMap[ui->check] = false;
+    showMap[ui->reply] = false;
+    showMap[ui->search] = true;
+    showMap[ui->rebind] = false;
+    showMap[ui->quit] = false;
+    showMap[ui->frame_check_history] = true;
+    showMap[ui->consume_date] = true;
 
     if(ui->netState->isChecked())
     {
         switch(power)
         {
         case 0://超级管理员:|补货|退货|服务|退出|
-            ui->store->show();
-            ui->refund->show();
-            ui->service->show();
-            ui->cut->show();
-            ui->check->show();
-            ui->reply->show();
+            showMap[ui->store] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->service] = true;
+            showMap[ui->rebind] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->check] = true;
+            showMap[ui->reply] = true;
             break;
 
 //        case 1://仓库员工:|补货|退货|退出|
-//            ui->store->show();
-//            ui->refund->show();
-//            ui->cut->show();
-//            ui->check->show();
-//            ui->reply->show();
+//            showMap[ui->store] = true;
+//            showMap[ui->refund] = true;
+//            showMap[ui->cut] = true;
+//            showMap[ui->check] = true;
+//            showMap[ui->reply] = true;
 //            break;
 
 //        case 2://医院管理:|补货|退货|服务|退出|
-//            ui->store->show();
-//            ui->refund->show();
-//            ui->cut->show();
-//            ui->reply->show();
-//            //        ui->service->show();
+//            showMap[ui->store] = true;
+//            showMap[ui->refund] = true;
+//            showMap[ui->cut] = true;
+//            showMap[ui->reply] = true;
+//            //        showMap[ui->service] = true;
 //            break;
 
         case 1://护士长:|退货|退出|
-            ui->reply->show();
-            ui->refund->show();
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->reply] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
 
         case 2://护士:|退出|
-            ui->reply->show();
-            ui->refund->show();
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->reply] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        ui->service] = true;
             break;
 
         case 3://管理员:|补货|退货|退出|
-            ui->store->show();
-            ui->refund->show();
-//            ui->service->show();
-            ui->cut->show();
-            ui->check->show();
-            ui->reply->show();
+            showMap[ui->store] = true;
+            showMap[ui->refund] = true;
+            showMap[ui->rebind] = true;
+//            showMap[ui->service] = true;
+            showMap[ui->cut] = true;
+            showMap[ui->check] = true;
+            showMap[ui->reply] = true;
             break;
 
         case 4://医院员工:|退出|
-//            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+//            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
 
         default:
@@ -1197,40 +1323,47 @@ void CabinetWidget::setPowerState(int power)
         switch(power)
         {
         case 0://超级管理员:|服务|
-            ui->service->show();
-            ui->cut->show();
+            showMap[ui->service] = true;
+            showMap[ui->cut] = true;
             break;
 
         case 1://仓库员工:
-            ui->cut->show();
+            showMap[ui->cut] = true;
             break;
 
         case 2://医院管理:
-            ui->cut->show();
-            //        ui->service->show();
+            showMap[ui->cut] = true;
+            //        showMap[ui->service] = true;
             break;
 
         case 3://医院员工:
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
         case 4://医院员工:
-            ui->cut->show();
-            ui->quit->show();
-            //        ui->service->show();
+            showMap[ui->cut] = true;
+            showMap[ui->quit] = true;
+            //        showMap[ui->service] = true;
             break;
         default:
             break;
         }
     }
+    showMap[ui->back] = config->getFuncWord() & funcBack;
+    showMap[ui->refund] = config->getFuncWord() & funcRefun;
+    showMap[ui->check] = config->getFuncWord() & funcCheck;
+    showMap[ui->reply] = config->getFuncWord() & funcApply;
+    updateShowMap();
+
+//    qDebug()<<(config->getFuncWord() & funcBack)<<(config->getFuncWord() & funcRefun)<<(config->getFuncWord() & funcCheck);
 }
 
 void CabinetWidget::recvUserInfo(QByteArray qba)
 {
 //    calCheck(QString(qba));
 
-    if(this->isHidden() && (config->getCabinetMode() == "cabinet"))
+    if(this->isHidden() && (!config->getCabinetType().at(BIT_CAB_AIO)))
     {
         qDebug()<<"recvUserInfo"<<qba<<"ignore..";
         return;
@@ -1429,11 +1562,11 @@ void CabinetWidget::updateTime()
         qDebug("[update time]");
         emit reqCheckVersion(false);
     }
-    if((lastOptTime.secsTo(QTime::currentTime()) > 180) && (!screenProState))
-    {
-        screenProState = true;
-        emit screenPro(screenProState);
-    }
+//    if((lastOptTime.secsTo(QTime::currentTime()) > 180) && (!screenProState))
+//    {
+//        screenProState = true;
+//        emit screenPro(screenProState);
+//    }
 }
 
 void CabinetWidget::updateId()
@@ -1518,8 +1651,9 @@ void CabinetWidget::recvCheckFinishRst(bool success, QString msg)
     {
         waitForCheckFinish = false;
         ui->check->setChecked(false);
-        config->clearSearch();//重置单元格状态
+//        clearCaseState();//重置单元格状态
         cabLock();
+        on_netState_clicked();
     }
     else
     {
@@ -1539,6 +1673,7 @@ void CabinetWidget::setMenuHide(bool ishide)
     {
         ui->store->hide();
         ui->service->hide();
+        ui->rebind->hide();
         ui->cut->hide();
         ui->refund->hide();
         ui->reply->hide();
@@ -1550,6 +1685,7 @@ void CabinetWidget::setMenuHide(bool ishide)
     {
         ui->store->show();
         ui->service->show();
+        ui->rebind->show();
         ui->cut->show();
         ui->reply->show();
         ui->refund->show();
@@ -1566,7 +1702,7 @@ void CabinetWidget::cabinetBind(Goods *goods)
     setMenuHide(true);
 
     config->showMsg(MSG_STORE_SELECT, false);
-    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
+    if(config->getCabinetType().at(BIT_CAB_AIO))
         caseClicked(0,0);
     else
         win_store_list->hide();
@@ -1611,7 +1747,9 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     waitForGoodsListCode = false;
     rebindGoods = QString();
     msgClear();
-    emit updateLoginState(0xff, true);
+//    emit updateLoginState(0xff, true);
+    clearCaseState();
+    emit updateLoginState(true);
     optUser = info;
     curCard = optUser->cardId;
 //    tsCalFlag = 0;
@@ -1621,6 +1759,9 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     ui->userInfo->setText(QString("您好！%1").arg(optUser->name));
     setPowerState(info->power);
     loginState = true;
+
+    if(win_store_list->isVisible())
+        config->state = STATE_STORE;
     win_store_list->setLoginState(loginState);
     emit loginStateChanged(loginState);
 
@@ -1645,14 +1786,16 @@ void CabinetWidget::on_search_back_clicked()
 void CabinetWidget::on_searchClear_clicked()
 {
     ui->searchStr->clear();
-    config->clearSearch();
+    clearCaseState();
+//    config->clearSearch();
 }
 
 void CabinetWidget::pinyinSearch(int id)
 {
     QString str = ui->searchStr->text()+groupBtn.button(id)->text();
     ui->searchStr->setText(str);
-    config->searchByPinyin(str);
+    searchByPinyin(str);
+//    config->searchByPinyin(str);
 }
 
 void CabinetWidget::on_netState_clicked()
@@ -1748,5 +1891,14 @@ void CabinetWidget::on_reply_clicked()
 void CabinetWidget::on_consume_date_clicked()
 {
     emit requireDayReportShow();
+}
+
+
+void CabinetWidget::on_check_toggled(bool checked)
+{
+    if(checked)
+        ui->check->setText("结束\n盘点");
+    else
+        ui->check->setText("盘点");
 }
 

@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <QTimer>
 #include <QVariant>
+#include <QtDebug>
 
 QSqlDatabase SqlManager::db_cabinet = QSqlDatabase();
 SqlManager* SqlManager::m = new SqlManager;
@@ -14,6 +15,7 @@ SqlManager::SqlManager(QObject *parent) : QObject(parent)
     needSync = false;
     initDatabase();
     createTable();
+    createField("GoodsInfo", "pinyin");
 }
 
 SqlManager *SqlManager::manager()
@@ -190,7 +192,7 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
     QList<Goods*> ret;
     ret.clear();
     QSqlQuery query(db_cabinet);
-    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,CodeInfo.code,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2;").arg(col).arg(row);
+    QString cmd = QString("select GoodsInfo.package_id,GoodsInfo.goods_id,GoodsInfo.package_type,GoodsInfo.name,GoodsInfo.abbname,GoodsInfo.size,GoodsInfo.unit,GoodsInfo.cab_col,GoodsInfo.cab_row,GoodsInfo.single_price,COUNT(code) package_count,CodeInfo.pro_name,CodeInfo.sup_name,CodeInfo.store_list FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE CodeInfo.state_remote>0 AND GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 group by GoodsInfo.package_id;").arg(col).arg(row);
     if(!queryExec(&query, "getGoodsList", cmd))
         return ret;
 
@@ -207,7 +209,7 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
         info->pos.setX(query.value(7).toInt());
         info->pos.setY(query.value(8).toInt());
         info->singlePrice = query.value(9).toInt();
-        info->traceId = query.value(10).toString();
+        info->num = query.value(10).toInt();
         info->proName = query.value(11).toString();
         info->supName = query.value(12).toString();
         info->listCode = query.value(13).toString();
@@ -216,12 +218,12 @@ QList<Goods *> SqlManager::getGoodsList(int col, int row)
     return ret;
 }
 
-QString SqlManager::getGoodsId(QString code)
+QString SqlManager::getPackageId(QString code)
 {
     QString ret = QString();
     QString cmd = QString("select package_id FROM codeInfo WHERE code='%1'").arg(code);
     QSqlQuery query(db_cabinet);
-    if(!queryExec(&query, "getGoodsId", cmd))
+    if(!queryExec(&query, "getPackageId", cmd))
     {
         return QString();
     }
@@ -229,15 +231,29 @@ QString SqlManager::getGoodsId(QString code)
 
     if(query.next())
         ret = query.value(0).toString();
-//    else
-//        qDebug("B");
+    else
+        qDebug("getPackageId failed");
+
     return ret;
 }
 
 QStringList SqlManager::getCaseText(int col, int row)
 {
     QSqlQuery query(db_cabinet);
-    QString cmd = QString("select GoodsInfo.abbname,COUNT(*) package_count,GoodsInfo.cab_col,GoodsInfo.cab_row FROM GoodsInfo LEFT JOIN CodeInfo ON CodeInfo.package_id=GoodsInfo.package_id WHERE GoodsInfo.cab_col=%1 AND GoodsInfo.cab_row=%2 GROUP BY GoodsInfo.package_id;").arg(col).arg(row);
+    QString cmd = QString("SELECT "
+                          "GoodsInfo.abbname,"
+                          "GoodsInfo.cab_col,"
+                          "GoodsInfo.cab_row,"
+                          "IFNULL(CodeInfo.package_count,0) package_count "
+                      "FROM "
+                          "GoodsInfo "
+                          "LEFT JOIN(SELECT COUNT( * ) package_count, package_id FROM CodeInfo WHERE CodeInfo.state_local = 1 GROUP BY package_id) "
+                          "CodeInfo ON CodeInfo.package_id = GoodsInfo.package_id "
+                      "WHERE "
+                          "GoodsInfo.cab_col = %1 "
+                          "AND GoodsInfo.cab_row = %2")
+            .arg(col).arg(row);
+
     if(!queryExec(&query, "getCaseText", cmd))
         return QStringList();
 
@@ -247,7 +263,7 @@ QStringList SqlManager::getCaseText(int col, int row)
     while(query.next())
     {
         QString abbName = query.value(0).toString();
-        int packageCount = query.value(1).toInt();
+        int packageCount = query.value(3).toInt();
         QString showStr = QString("%1x%2").arg(abbName).arg(packageCount);
         last_show_list<<showStr;
     }
@@ -487,6 +503,52 @@ QSqlQuery SqlManager::getRfidTable()
     return query;
 }
 
+void SqlManager::sqlDelete()
+{
+    QString cmd = QString("DELETE FROM CodeInfo");
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "sqlDelete", cmd);
+
+    cmd = QString("DELETE FROM GoodsInfo");
+    queryExec(&query, "sqlDelete", cmd);
+//    QString cmd = QString("DELETE FROM CodeInfo").arg(col).arg(row).arg(goodsId);
+//    QSqlQuery query(db_cabinet);
+//    queryExec(&query, cmd, "sqlDelete");
+//    QString cmd = QString("DELETE FROM CodeInfo").arg(col).arg(row).arg(goodsId);
+//    QSqlQuery query(db_cabinet);
+    //    queryExec(&query, cmd, "sqlDelete");
+}
+
+QList<QPoint> SqlManager::goodsSearch(QString searchStr)
+{
+    QList<QPoint> searchRst;
+    QString cmd = QString("SELECT cab_row,cab_col FROM GoodsInfo WHERE pinyin LIKE '%%1%'").arg(searchStr);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "goodsSearch", cmd);
+
+    while (query.next()) {
+        searchRst<<QPoint(query.value(1).toInt(),query.value(0).toInt());
+    }
+    return searchRst;
+}
+
+QSqlQuery SqlManager::goodsInfoList(QString searchStr)
+{
+    QString cmd = QString("SELECT "
+                              "GI.name || ' [' || IFNULL( GI.size, '  ' ) || '] (' || GI.package_type || ')' || '×' || COUNT( code ) AS InfoStr, "
+                              "GI.package_id "
+                          "FROM "
+                              "GoodsInfo AS GI "
+                              "LEFT JOIN CodeInfo AS CI ON CI.package_id = GI.package_id "
+                          "WHERE "
+                              "GI.pinyin LIKE '%%1%' "
+                          "GROUP BY "
+                              "GI.package_id").arg(searchStr);
+    QSqlQuery query(db_cabinet);
+    queryExec(&query, "goodsInfoList", cmd);
+    return query;
+}
+
 /*
 CodeInfo:条码信息表 [code|package_id|batch_number|pro_name|sup_name|state_local|state_remote|store_list]
 GoodsInfo:物品信息表 [package_id|goods_id|package_type|name|abbname|size|unit|cab_col|cab_row|single_price]
@@ -504,11 +566,11 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
     qDebug()<<"[CommitGoodsInfo]:begin";
 
     //添加物品信息
-    query.prepare("REPLACE INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price)\
-                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price)");
+    query.prepare("REPLACE INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price,pinyin)\
+                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price,:pinyin)");
     query.bindValue(0, QVariant(info->packageId));
     query.bindValue(1, QVariant(info->goodsId));
-    query.bindValue(2, QVariant(info->goodsType));
+    query.bindValue(2, QVariant(info->packageType));
     query.bindValue(3, QVariant(info->name));
     query.bindValue(4, QVariant(info->abbName));
     query.bindValue(5, QVariant(info->size));
@@ -516,6 +578,7 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
     query.bindValue(7, QVariant(info->col));
     query.bindValue(8, QVariant(info->row));
     query.bindValue(9, QVariant(info->price));
+    query.bindValue(10, QVariant(info->Py));
     if(!query.exec())
     {
         qDebug()<<query.lastQuery()<<query.lastError().text();
@@ -599,8 +662,8 @@ void SqlManager::replaceGoodsInfo(Goods* info, QString listCode, RepState state,
     qDebug()<<"[CommitGoodsInfo]:begin";
 
     //添加物品信息
-    query.prepare("INSERT INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price)\
-                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price)");
+    query.prepare("INSERT INTO GoodsInfo(package_id,goods_id,package_type,name,abbname,size,unit,cab_col,cab_row,single_price,pinyin)\
+                    VALUES(:package_id,:goods_id,:package_type,:name,:abbname,:size,:unit,:cab_col,:cab_row,:single_price,:pinyin)");
     query.bindValue(0, QVariant(info->packageId));
     query.bindValue(1, QVariant(info->goodsId));
     query.bindValue(2, QVariant(info->packageType));
@@ -611,6 +674,7 @@ void SqlManager::replaceGoodsInfo(Goods* info, QString listCode, RepState state,
     query.bindValue(7, QVariant(info->pos.x()));
     query.bindValue(8, QVariant(info->pos.y()));
     query.bindValue(9, QVariant(info->singlePrice));
+    query.bindValue(10, QVariant(info->Py));
     if(!query.exec())
     {
         qDebug()<<query.lastQuery()<<query.lastError().text()<<" 已存在物品信息，不插入";
@@ -763,7 +827,8 @@ void SqlManager::createTable()
                               cab_row INT(2) DEFAULT(-1),\
                               single_price REAL(18) DEFAULT(0),\
                               pro_name CHAR(50) DEFAULT(''),\
-                              sup_name CHAR(50) DEFAULT('')\
+                              sup_name CHAR(50) DEFAULT(''),\
+                              pinyin CHAR(50) DEFAULT('')\
                               );");
         if(query.exec(cmd))
         {
@@ -854,6 +919,26 @@ void SqlManager::createTable()
     }
 }
 
+void SqlManager::createField(QString tabName ,QString fieldName)
+{
+    QSqlQuery query(db_cabinet);
+    QString cmd = QString("select sql from sqlite_master where type = 'table' and name = '%1'").arg(tabName);
+    if(!queryExec(&query, QString("[Check Field] %1").arg(fieldName), cmd))
+        return;
+
+    if(query.next())
+    {
+        QString tabStr = query.value(0).toString();
+        if(tabStr.indexOf(fieldName) == -1)//不存在字段
+        {
+            qDebug()<<"createField";
+            cmd = QString("ALTER TABLE GoodsInfo ADD COLUMN %1 CHAR(50) DEFAULT('')").arg(fieldName);
+            queryExec(&query, QString("[Create Field] %1").arg(fieldName), cmd);
+        }
+    }
+    return;
+}
+
 bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)
 {
     if(cmd.isEmpty())
@@ -874,7 +959,6 @@ bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)
             return false;
         }
     }
-//    qDebug()<<q->boundValues();
-//    qDebug()<<msg<<q->lastQuery();
+    //qDebug()<<q->lastQuery();
     return true;
 }

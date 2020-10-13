@@ -31,7 +31,7 @@ public:
     QString lifeTime;//有效期至
     int threshold;//预警数据(包)
     int maxThreshold;//最大数量(包)
-    int goodsType;//打包规格
+    int packageType;//打包规格
     int packageCount;//包数
     int goodsCount;//拆散数量
     int num;//耗材数量
@@ -46,7 +46,6 @@ public:
     QString listCode;
     QString Py;
     QPoint pos;
-    int packageType;
     int batchNumber;
     int takeCount;
     int singlePrice;

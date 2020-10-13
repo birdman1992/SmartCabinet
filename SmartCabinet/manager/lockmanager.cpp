@@ -22,6 +22,7 @@ void LockManager::setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlInd
     ctrlIndex = (ctrlIndex>0xff)?0xff:ctrlIndex;
     wSeq[cabIndex] = ctrlSeq;
     wIndex[cabIndex] = ctrlIndex;
+//    qDebug()<<"setLockCtrl"<<cabSeq<<cabIndex<<ctrlSeq<<ctrlIndex;
     settings_new.setValue(key_seq, wSeq);
     settings_new.setValue(key_index, wIndex);
     settings_new.sync();
@@ -51,13 +52,13 @@ LockManager::LockManager()
     QSettings settings_new(CONF_LOCK, QSettings::IniFormat);
     QStringList cabs = settings_old.childGroups();
     cabs.removeOne("Users");
-    qDebug()<<cabs;
+//    qDebug()<<cabs;
     foreach(QString cab, cabs)
     {
         QString key_seq = QString("%1/%2").arg(cab).arg("ctrlSeq");
         QString key_index = QString("%1/%2").arg(cab).arg("ctrlIndex");
-        settings_new.setValue(key_seq, settings_old.value(key_seq).toByteArray());
-        settings_new.setValue(key_index, settings_old.value(key_index).toByteArray());
+        settings_new.setValue(key_seq, settings_old.value(key_seq, QByteArray::fromHex("00000000000000000000000000000000")).toByteArray());
+        settings_new.setValue(key_index, settings_old.value(key_index, QByteArray::fromHex("00000000000000000000000000000000")).toByteArray());
     }
     settings_new.sync();
 }

@@ -207,39 +207,65 @@ void CabinetAccess::scanOpen(QString goodsId, QString goodsCode)
             delete curGoods;
 
         curGoods = SqlManager::searchGoodsByCode(goodsCode);
-        curGoods->codes<<goodsCode;
-//        addr = config->checkCabinetByBarCode(goodsId);
-//        qDebug()<<"fetch1"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
-//        config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
-//        qDebug()<<"fetch outnum"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
-        ui->name->setText(curGoods->name);
-        ui->info->setText(goodsCode);
-        qDebug()<<"goodsCOde"<<goodsCode;
-        //        ui->tip->setText("正在取出");
-        if(networkState)
+        if(curGoods)
         {
-            showTips("正在取出", false);
+            curGoods->codes<<goodsCode;
+    //        addr = config->checkCabinetByBarCode(goodsId);
+    //        qDebug()<<"fetch1"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+    //        config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum++;
+    //        qDebug()<<"fetch outnum"<<config->list_cabinet[addr.cabinetSeqNum]->list_case[addr.caseIndex]->list_goods[addr.goodsIndex]->outNum;
+            ui->name->setText(curGoods->name);
+            ui->info->setText(goodsCode);
+            //        ui->tip->setText("正在取出");
+            if(networkState)
+            {
+                showTips("正在取出", false);
+            }
+            else
+            {
+                showTips(QString("%1\n取出成功,离线取货请检查物品有效期").arg(goodsCode) ,false);
+            }
         }
         else
         {
-            showTips(QString("%1\n取出成功,离线取货请检查物品有效期").arg(goodsCode) ,false);
+            showTips("不识别的条码", false);
         }
+
     }
     else if(config->state == STATE_REFUN)
     {
-        Goods* goods = SqlManager::searchGoodsByCode(goodsCode);
-        ui->name->setText(goods->name);
-//        ui->tip->setText("正在退货");
-        showTips("正在退货", false);
-        delete goods;
+        if(curGoods)
+            delete curGoods;
+
+        curGoods = SqlManager::searchGoodsByCode(goodsCode);
+        curGoods->codes<<goodsCode;
+        if(curGoods)
+        {
+            ui->name->setText(curGoods->name);
+            //        ui->tip->setText("正在退货");
+            showTips("正在退货", false);
+        }
+        else
+        {
+            showTips("不识别的条码", false);
+        }
     }
     else if(config->state == STATE_BACK)
     {
-        Goods* goods = SqlManager::searchGoodsByCode(goodsCode);
-        ui->name->setText(goods->name);
-//        ui->tip->setText("正在退货");
+//        if(curGoods)
+//            delete curGoods;
+
+//        curGoods = SqlManager::searchGoodsByCode(goodsCode);
+//        if(curGoods)
+//        {
+//            curGoods->codes<<goodsCode;
+//            ui->name->setText(curGoods->name);
         showTips("正在还货", false);
-        delete goods;
+//        }
+//        else
+//        {
+//            showTips("无效条码", false);
+//        }
     }
 }
 
@@ -394,8 +420,7 @@ void CabinetAccess::recvOptGoodsNum(int num)
     }
     else if(config->state == STATE_FETCH)
     {
-        return;
-        ui->info->setText(QString("已取出，剩余%1×(%2)%3").arg(SqlManager::getGoodsCount(curGoods->packageId)).arg(curGoods->goodsType).arg(curGoods->unit));
+        ui->info->setText(QString("已取出，剩余%1×(%2)%3").arg(SqlManager::getGoodsCount(curGoods->packageId)).arg(curGoods->packageType).arg(curGoods->unit));
         showTips("取出成功", false);
     }
     else if(config->state == STATE_REFUN)

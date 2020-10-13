@@ -72,6 +72,8 @@ bool QHid::hidOpen(unsigned short vId, unsigned short pId)
         qWarning("Device:v:%d p:%d open failed.",vId, pId);
         return false;
     }
+    v = vId;
+    p = pId;
     this->start();
     v = vId;
     p = pId;
@@ -85,6 +87,12 @@ quint32 QHid::deviceId()
 
 void QHid::hidClose()
 {
+    if(this->isRunning())
+    {
+        this->terminate();
+        this->wait(1000);
+    }
+
     if(handle != NULL)
     {
         this->terminate();
@@ -100,5 +108,9 @@ void QHid::hidReopen()
     if(!hidOpen(v, p))
     {
         qWarning()<<"[hidReopen]"<<v<<p<<"failed";
+    }
+    else
+    {
+        qDebug()<<"[hidReopen]"<<v<<p<<"success";
     }
 }

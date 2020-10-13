@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QButtonGroup>
 #include <QSlider>
+#include <QMap>
 #include "Cabinet/cabinet.h"
 #include "Widgets/cabinetaccess.h"
 #include "Widgets/cabinetlistview.h"
@@ -78,7 +79,8 @@ public slots:
     void on_check_clicked(bool checked);
 
 signals:
-    void updateLoginState(int id, bool isLogin);//登录状态更新,登入亮灯，登出灭灯
+//    void updateLoginState(int id, bool isLogin);//登录状态更新,登入亮灯，登出灭灯
+    void updateLoginState(bool isLogin);
     void winSwitch(int);
     void screenPro(bool);//屏保状态
     void goodsAccess(QPoint, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)
@@ -113,6 +115,7 @@ signals:
     void loginStateChanged(bool);
 
 private slots:
+    void msgClear();
     void setMenuHide(bool ishide);
     void cabinetBind(Goods* goods);
     void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
@@ -120,6 +123,7 @@ private slots:
     void checkPush();
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
+    void searchByPinyin(QString str);
 //    void on_fetch_toggled(bool checked);
     void on_store_clicked(bool checked);
     void pinyinSearch(int);
@@ -143,6 +147,12 @@ private slots:
     void on_reply_clicked();
     void on_consume_date_clicked();
 
+    void on_back_clicked(bool checked);
+
+    void on_check_toggled(bool checked);
+
+    void on_rebind_clicked(bool checked);
+
 protected:
     bool eventFilter(QObject *, QEvent *);
 
@@ -157,7 +167,9 @@ private:
     QTimer* timeUpdater;
     QTime lastOptTime;
     bool screenProState;
+    QMap<QWidget*, bool> showMap;
     QList<Cabinet *> list_cabinet;
+    QList<QPoint> list_state_case;//搜索状态的柜格
     int tsCalFlag;
 
     bool volPressed;
@@ -198,8 +210,8 @@ private:
     NetworkSet* win_net_set;//网络配置
 
     void showEvent(QShowEvent*);
+    void updateShowMap();
     void warningMsgBox(QString title, QString msg);
-    void msgClear();
     void msgShow(QString title, QString msg, bool setmodal);
     void setPowerState(int power);//设置权限状态
     void paintEvent(QPaintEvent *);
@@ -221,6 +233,9 @@ private:
     void magicCmd(QString cmd);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
     bool isListCode(QByteArray qba);
+    void setCheckState(QPoint pos);
+    void setSearchState(QList<QPoint> l);
+    void clearCaseState();
 };
 
 #endif // CABINETWIDGET_H

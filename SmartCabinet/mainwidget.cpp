@@ -41,6 +41,9 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<AIOMachine::cEvent>("AIOMachine::cEvent");
     qRegisterMetaType<EpcInfo*>("EpcInfo*");
     qRegisterMetaType<TableMark>("TableMark");
+    qRegisterMetaType<TempDevHub*>("TempDevHub*");
+
+    devWatcher = new QDeviceWatcher(this);
 
 //    win_screenPro = new ScreenPro;
 
@@ -139,7 +142,7 @@ void MainWidget::init_huangpo()
     connect(tempDev, SIGNAL(updateHum(float)), cabTcp, SLOT(updateHum(float)));
     connect(tempDev, SIGNAL(updateTemp(float)), cabTcp, SLOT(updateTemp(float)));
 
-    if(cabinetConf->getCabinetMode() == "aio" || cabinetConf->getCabinetMode() == "rfid")
+    if(cabinetConf->getCabinetType().at(BIT_CAB_AIO))
     {
         win_aio = new AIOMachine(this);
         connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
@@ -158,7 +161,9 @@ void MainWidget::init_huangpo()
         connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
         connect(tempDev, SIGNAL(updateHumString(QString)), win_aio, SLOT(updateHum(QString)));
         connect(tempDev, SIGNAL(updateTempString(QString)), win_aio, SLOT(updateTemp(QString)));
-    //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
+        connect(win_aio->findChild<TempDevHub *>("tempHub"), SIGNAL(tempDevReport(QByteArray)), cabServer, SLOT(tempDevReport(QByteArray)));
+//        qDebug()<<win_aio->findChild<TempDevHub *>("tempHub");
+        //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
     //    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
         ui->page_2->layout()->addWidget(win_aio);
 //        win_aio->sysLock();
@@ -214,7 +219,7 @@ void MainWidget::init_huangpo()
         ui->stackedWidget->setCurrentIndex(INDEX_CAB_SHOW);
         win_cabinet->panel_init(cabinetConf->list_cabinet);
         cabinetConf->cabVoice.voicePlay(VOICE_WELCOME);
-        if(cabinetConf->getCabinetMode() == "aio" || cabinetConf->getCabinetMode() == "rfid")
+        if(cabinetConf->getCabinetType().at(BIT_CAB_AIO))
             ui->stackedWidget->setCurrentIndex(INDEX_AIO);
     }
 #ifndef PC

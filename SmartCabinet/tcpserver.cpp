@@ -200,15 +200,15 @@ void tcpServer::parGoodsInfo(cJSON *json)
         info->num = cJSON_GetObjectItem(item,"store_num")->valueint;
         info->outNum = 0;
         info->goodsId = QString(cJSON_GetObjectItem(item, "goods_id")->valuestring);
-        info->goodsType = cJSON_GetObjectItem(item, "package_type")->valueint;
+        info->packageType = cJSON_GetObjectItem(item, "package_type")->valueint;
         info->unit = QString(cJSON_GetObjectItem(item, "unit")->valuestring);
         info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
         info->packageId = info->goodsId;
 
-        if(info->goodsType<10)
-            info->packageId += "-0"+QString::number(info->goodsType);
+        if(info->packageType<10)
+            info->packageId += "-0"+QString::number(info->packageType);
         else
-            info->packageId += "-"+QString::number(info->goodsType);
+            info->packageId += "-"+QString::number(info->packageType);
 
         if(info->abbName.isEmpty())
 //            info->abbName = getAbbName(info->name);

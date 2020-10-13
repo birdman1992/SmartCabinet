@@ -35,6 +35,7 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
     connect(devWatcher, SIGNAL(deviceStateChanged(quint16 , quint16 , bool )), this, SLOT(hidStateChanged(quint16 , quint16 , bool )));
     devWatcher->start();
     deviceInit();
+
 }
 
 ControlDevice::~ControlDevice()
@@ -92,7 +93,7 @@ void ControlDevice::deviceInit()
         {
             map_dev.insert(devId, hid_code_scan);
             scanState =  true;
-            qDebug()<<"[CARD READER] open success";
+            qDebug()<<"[CODE SCANER] open success";
             break;
         }
     }

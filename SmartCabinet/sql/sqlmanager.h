@@ -27,7 +27,7 @@ public:
     static Goods* searchGoodsByCode(QString code);
     static QList<Goods*> getGoodsList();
     static QList<Goods*> getGoodsList(int col, int row);
-    static QString getGoodsId(QString code);//goodsCode->goodsId
+    static QString getPackageId(QString code);//goodsCode->goodsId
     static QStringList getCaseText(int col, int row);
     static int getGoodsCount(QString packageId);
     static QPoint getGoodsPos(QString packageId);
@@ -37,6 +37,9 @@ public:
     bool waitForSync();
     static void bindGoodsId(int col, int row, QString goodsId);
     static int getShowCountByCase(int col, int row);//获取柜格显示的包类型数量
+    static void sqlDelete();
+    static QList<QPoint> goodsSearch(QString searchStr);
+    static QSqlQuery goodsInfoList(QString searchStr);
 
     /*epcInfo*/
     //EpcInfo:RFID标签表 [epc_code|goods_code|time_stamp|opt_id|state]
@@ -90,6 +93,7 @@ private:
 
     void initDatabase();
     void createTable();
+    void createField(QString tabName, QString fieldName);//创建字段
     static bool queryExec(QSqlQuery *q, QString msg=QString(), QString cmd=QString());
 };
 

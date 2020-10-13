@@ -53,6 +53,7 @@ CabinetStoreListItem::~CabinetStoreListItem()
 
 void CabinetStoreListItem::bindRst(CaseAddress addr)
 {
+    qDebug()<<"bindRst"<<addr.cabinetSeqNum<<addr.caseIndex;
     pos_seq = addr.cabinetSeqNum;
     pos_index = addr.caseIndex;
     cabGoods->pos = QPoint(addr.cabinetSeqNum, addr.caseIndex);

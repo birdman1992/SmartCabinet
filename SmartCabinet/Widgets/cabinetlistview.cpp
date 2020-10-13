@@ -158,35 +158,27 @@ void CabinetListView::getCabList()
 void CabinetListView::updateCabList(QString filter)
 {
     list_filted.clear();
+    goodsMap.clear();
 
-    if(!filter.at(0).isUpper())
+    QSqlQuery query = SqlManager::goodsInfoList(filter);
+    while(query.next())
     {
-        int i = 0;
-        for(i=0; i<list_goods.count(); i++)
-        {
-            list_filted<<list_goods[i];
-        }
-    }
-    else
-    {
-        int i = 0;
-        for(i=0; i<list_goods.count(); i++)
-        {
-//            qDebug()<<filter<<list_goods[i]->Py;
-            if(list_goods[i]->Py.indexOf(filter) != -1)
-                list_filted<<list_goods[i];
-        }
+//        qDebug()<<"goodsMap"<<query.value(0).toString()<<query.value(1).toString();
+        goodsMap.insert(query.value(0).toString(), query.value(1).toString());
     }
 
-    ui->list_goods->setRowCount(list_filted.count());
+    ui->list_goods->setRowCount(goodsMap.count());
     ui->list_goods->setColumnCount(1);
 
-    int i;
-    for(i=0; i<list_filted.count(); i++)
+    int i=0;
+    QMap<QString, QString>::Iterator it = goodsMap.begin();
+    for(; it!=goodsMap.end(); it++)
     {
-        ui->list_goods->setItem(i, 0, new QTableWidgetItem(QIcon(":/image/image/icon_ar_left.png"), list_filted[i]->nameWithType()));
+        qDebug()<<it.key();
+        ui->list_goods->setItem(i, 0, new QTableWidgetItem(QIcon(":/image/image/icon_ar_left.png"), it.key()));
+        i++;
     }
-    config->searchByPinyin(filter);
+    emit searchGoods(filter);
     showCabView();
 }
 
@@ -206,21 +198,26 @@ bool CabinetListView::packIsSelected(QString packId)
 void CabinetListView::on_back_clicked()
 {
     config->state = STATE_FETCH;
+    emit searchGoods(QString());
     this->close();
 }
 
 void CabinetListView::on_list_goods_clicked(const QModelIndex &index)
 {
-    Goods* info = list_filted[index.row()];
+//    Goods* info = list_filted[index.row()];
+//    if(packIsSelected(info->packageId))
+//        return;
 
-    if(packIsSelected(info->packageId))
+    QString goodsStr = ui->list_goods->item(index.row(), index.column())->text();
+    QString packageId = goodsMap[goodsStr];
+    if(selectMap.contains(packageId))
         return;
 
     ui->msg->setText("");
-    CabinetListItem* item = new CabinetListItem(info->nameWithType(), info->packageId);
-    QPoint addr = SqlManager::searchByPackageId(info->packageId);
+    CabinetListItem* item = new CabinetListItem(goodsStr, packageId);
+    QPoint addr = SqlManager::searchByPackageId(packageId);
     emit requireOpenCase(addr.x(), addr.y());
-    selectMap.insert(info->packageId, item);
+    selectMap.insert(packageId, item);
 
     int listSize = ui->list_select->rowCount();
     listSize++;
@@ -269,14 +266,16 @@ void CabinetListView::search(int id)
 //        if(i != id)
 //            groupSearch.button(i)->setChecked(false);
 //    }
-    config->searchByPinyin(ch);
+    emit searchGoods(ch);
+//    config->searchByPinyin(ch);
     updateCabList(ch);
 }
 
 void CabinetListView::on_searchClear_clicked()
 {
     ui->searchStr->clear();
-    config->clearSearch();
+    emit searchGoods(QString());
+//    config->clearSearch();
     updateCabList();
 }
 
@@ -284,9 +283,10 @@ void CabinetListView::recvScanData(QByteArray qba)
 {
     QString fullCode = QString(qba);
     QString idCode = scanDataTrans(fullCode);
+    qDebug()<<selectMap.keys()<<selectMap.contains(idCode)<<idCode;
 
-    if(qba.indexOf("-") == -1)
-        return;
+//    if(qba.indexOf("-") == -1)
+//        return;
     if(selectMap.isEmpty())
         return;
     CabinetListItem* item = selectMap.value(idCode, NULL);
@@ -308,15 +308,18 @@ void CabinetListView::recvScanData(QByteArray qba)
 
 QString CabinetListView::scanDataTrans(QString code)
 {
-    int index = code.indexOf("-");
-    if(index == -1)
-        return code;
+    QString goodsId = SqlManager::getPackageId(code);
+    return goodsId;
 
-    code = code.right(code.size()-index-1);
+//    int index = code.indexOf("-");
+//    if(index == -1)
+//        return code;
 
-    index = code.lastIndexOf("-");
-    if(index == -1)
-        return code;
+//    code = code.right(code.size()-index-1);
 
-    return code.left(index);
+//    index = code.lastIndexOf("-");
+//    if(index == -1)
+//        return code;
+
+//    return code.left(index);
 }

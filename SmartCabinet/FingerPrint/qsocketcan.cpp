@@ -189,7 +189,9 @@ void QSocketCan::sendData(int canId, QByteArray canData)
         return;
     }
 
+#ifndef PC
     sendCanData(canId, canData);
+#endif
 }
 
 void QSocketCan::canLock(int canId)

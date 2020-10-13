@@ -107,7 +107,7 @@ bool CabinetService::installGlobalConfig(CabinetConfig *globalConfig)
 
 void CabinetService::on_back_clicked()
 {
-    if(config->getCabinetMode() == "aio" || config->getCabinetMode() == "rfid")
+    if(config->getCabinetType().at(BIT_CAB_AIO))
         emit winSwitch(INDEX_AIO);
     else
         emit winSwitch(INDEX_CAB_SHOW);
@@ -145,6 +145,10 @@ void CabinetService::showEvent(QShowEvent *)
         ui->scan_list->setChecked(false);
     }
 
+    int funcWord = config->getFuncWord();
+    ui->func_back->setChecked(funcWord & funcBack);
+    ui->func_check->setChecked(funcWord & funcCheck);
+    ui->func_refun->setChecked(funcWord & funcRefun);
     qDebug()<<ui->server_addr->text();
 }
 
@@ -342,6 +346,20 @@ void CabinetService::saveInsert()
     list_preview.insert(insert_pos, nTab);
     nTab = new QTableWidget;
     ui->insert_pos->setMaximum(list_preview.count());
+}
+
+void CabinetService::setFuncWord(FuncWord word, bool isEnabled)
+{
+    int funcWord = config->getFuncWord();
+    if(isEnabled)
+    {
+        funcWord |= word;
+    }
+    else
+    {
+        funcWord &= (~word);
+    }
+    config->setFuncWord(funcWord);
 }
 
 void CabinetService::initNetwork()
@@ -571,12 +589,13 @@ void CabinetService::updateBtn()
 
     int seq = curId>>8;
     int index = curId&0xff;
-
+//    qDebug()<<"[updateBtn]"<<curId<<seq<<index;
     if(seq >= config->list_cabinet.count())
         return;
     if(index >= config->list_cabinet[seq]->rowCount())
         return;
 
+//    qDebug()<<"[updateBtn] success"<<config->list_cabinet.at(seq)->ctrlSeq(index)<<config->list_cabinet.at(seq)->ctrlIndex(index);
     btn->setText(QString("序号：%1\nIO号：%2").arg(config->list_cabinet.at(seq)->ctrlSeq(index)).arg(config->list_cabinet.at(seq)->ctrlIndex(index)));
 }
 
@@ -838,4 +857,24 @@ void CabinetService::on_proName_activated(const QString &arg1)
 //    qDebug()<<"on_proName_activated"<<arg1;
     config->setApiProName(arg1);
     emit requireUpdateServerAddress();
+}
+
+void CabinetService::on_func_refun_clicked(bool checked)
+{
+    setFuncWord(funcRefun, checked);
+}
+
+void CabinetService::on_func_back_clicked(bool checked)
+{
+    setFuncWord(funcBack, checked);
+}
+
+void CabinetService::on_func_check_clicked(bool checked)
+{
+    setFuncWord(funcCheck, checked);
+}
+
+void CabinetService::on_func_apply_toggled(bool checked)
+{
+    setFuncWord(funcApply, checked);
 }
