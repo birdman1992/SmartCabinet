@@ -195,6 +195,7 @@ public slots:
     void requireOperationInfo();
     void tempDevReport(QByteArray report);
 
+    void updateLayout();
 private slots:
     void recvCabRegister();
     void recvUserLogin();

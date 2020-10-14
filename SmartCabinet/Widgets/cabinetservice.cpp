@@ -327,7 +327,7 @@ void CabinetService::showVerInfo()
 
 bool CabinetService::inserCol(int pos, int num)
 {
-    if(!(pos+num))
+    if(!(num))
         return false;
     else
         emit requireInsertCol(pos, num);

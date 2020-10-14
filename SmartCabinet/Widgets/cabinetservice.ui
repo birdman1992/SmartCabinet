@@ -1323,6 +1323,9 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimum">
+                <number>-99</number>
+               </property>
               </widget>
              </item>
             </layout>
@@ -1355,6 +1358,9 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="minimum">
+                <number>-99</number>
                </property>
               </widget>
              </item>

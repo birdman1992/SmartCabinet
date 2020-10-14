@@ -810,8 +810,8 @@ void CabinetConfig::setCabinetType(QBitArray _type)
 QBitArray CabinetConfig::getCabinetType()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);
-    QBitArray defaultType = QBitArray(3, true);
-    defaultType.setBit(0,false);
+    QBitArray defaultType = QBitArray(3, false);
+//    defaultType.setBit(0,false);
     QBitArray ret = settings.value("cabType",defaultType).toBitArray();
     return ret;
 }

@@ -220,7 +220,10 @@ void MainWidget::init_huangpo()
         win_cabinet->panel_init(cabinetConf->list_cabinet);
         cabinetConf->cabVoice.voicePlay(VOICE_WELCOME);
         if(cabinetConf->getCabinetType().at(BIT_CAB_AIO))
+        {
+            qDebug()<<"AIO"<<cabinetConf->getCabinetType();
             ui->stackedWidget->setCurrentIndex(INDEX_AIO);
+        }
     }
 #ifndef PC
     AuthorManager *m = new AuthorManager();

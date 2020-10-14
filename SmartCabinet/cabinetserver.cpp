@@ -199,6 +199,29 @@ void CabinetServer::cabRegister()
     connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
 }
 
+/**
+ * @brief CabinetServer::updateLayout
+ * 以下情况更新柜子布局到后台:
+ * 插入列
+ * 柜子克隆
+ */
+void CabinetServer::updateLayout()
+{
+    qint64 timeStamp = getApiMark();
+    QByteArray qba = QString("{\"code\":\"%1\",\"cabLayout\":\"%2\",\"location\":\"%3\",\"isRfidCode\":%4,\"mold\":%5,\"timeStamp\":%6}")
+            .arg(config->getCabinetId())
+            .arg(config->getCabinetLayout())
+            .arg(config->getScreenConfig())
+            .arg(config->getCabinetType().at(BIT_RFID)+1)
+            .arg(config->getCabinetType().at(BIT_LOW_HIGH)+1)
+            .arg(timeStamp).toUtf8();
+    QString nUrl = ApiAddress+QString(API_REG);//+'?'+qba.toBase64();
+    qDebug()<<"[cabRegister]"<<nUrl<<qba;
+    replyCheck(reply_register);
+    reply_register = post(nUrl, qba,timeStamp, true);//注册无离线处理
+    connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
+}
+
 void CabinetServer::checkTime()
 {
     timeIsChecked = false;
@@ -1366,7 +1389,8 @@ void CabinetServer::recvUserLogin()
         config->addUser(info);
         config->wakeUp(TIMEOUT_BASE);
         networkState = true;
-        rfidListSync();//同步入柜信息
+        if(config->getCabinetType().at(BIT_RFID))
+            rfidListSync();//同步入柜信息
     }
     else
     {
@@ -1966,7 +1990,7 @@ void CabinetServer::recvCabClone()
                 SqlManager::replace("EpcInfo", epcList);
                 SqlManager::commit();
             }
-            if(col < config->list_cabinet.count())
+            if(col < config->list_cabinet.count() && col >= 0)
                 config->list_cabinet[col]->updateCase(row);
         }
     }
@@ -1977,6 +2001,7 @@ void CabinetServer::recvCabClone()
     }
     emit cloneResult(true,"智能柜数据克隆成功");
     cJSON_Delete(json);
+    updateLayout();//更新柜子布局到后台
 }
 
 void CabinetServer::recvCabSync()
@@ -2008,8 +2033,8 @@ void CabinetServer::recvCabSync()
         if(needClearBeforeClone)
         {
             needClearBeforeClone = false;
-            config->clearGoodsConfig();
             SqlManager::sqlDelete();
+            config->clearGoodsConfig();
             emit insertRst(true);
         }
         int listSize = cJSON_GetArraySize(json_data);
@@ -2075,7 +2100,7 @@ void CabinetServer::recvCabSync()
                 SqlManager::commit();
             }
 
-            if(col < config->list_cabinet.count())
+            if(col < config->list_cabinet.count() && col >= 0)
                 config->list_cabinet[col]->updateCase(row);
         }
     }

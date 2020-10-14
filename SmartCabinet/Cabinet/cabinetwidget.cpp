@@ -1264,6 +1264,10 @@ void CabinetWidget::setPowerState(int power)
             showMap[ui->cut] = true;
             showMap[ui->check] = true;
             showMap[ui->reply] = true;
+            showMap[ui->back] = config->getFuncWord() & funcBack;
+            showMap[ui->refund] = config->getFuncWord() & funcRefun;
+            showMap[ui->check] = config->getFuncWord() & funcCheck;
+            showMap[ui->reply] = config->getFuncWord() & funcApply;
             break;
 
 //        case 1://仓库员工:|补货|退货|退出|
@@ -1284,33 +1288,43 @@ void CabinetWidget::setPowerState(int power)
 
         case 1://护士长:|退货|退出|
             showMap[ui->reply] = true;
-            showMap[ui->refund] = true;
+//            showMap[ui->refund] = true;
             showMap[ui->cut] = true;
             showMap[ui->quit] = true;
+            showMap[ui->back] = config->getFuncWord() & funcBack;
+            showMap[ui->refund] = config->getFuncWord() & funcRefun;
+//            showMap[ui->check] = config->getFuncWord() & funcCheck;
+            showMap[ui->reply] = config->getFuncWord() & funcApply;
             //        showMap[ui->service] = true;
             break;
 
         case 2://护士:|退出|
             showMap[ui->reply] = true;
-            showMap[ui->refund] = true;
             showMap[ui->cut] = true;
             showMap[ui->quit] = true;
+            showMap[ui->back] = config->getFuncWord() & funcBack;
+            showMap[ui->reply] = config->getFuncWord() & funcApply;
             //        ui->service] = true;
             break;
 
         case 3://管理员:|补货|退货|退出|
             showMap[ui->store] = true;
-            showMap[ui->refund] = true;
             showMap[ui->rebind] = true;
 //            showMap[ui->service] = true;
             showMap[ui->cut] = true;
             showMap[ui->check] = true;
             showMap[ui->reply] = true;
+            showMap[ui->back] = config->getFuncWord() & funcBack;
+            showMap[ui->refund] = config->getFuncWord() & funcRefun;
+            showMap[ui->check] = config->getFuncWord() & funcCheck;
+            showMap[ui->reply] = config->getFuncWord() & funcApply;
             break;
 
         case 4://医院员工:|退出|
 //            showMap[ui->cut] = true;
             showMap[ui->quit] = true;
+            showMap[ui->back] = config->getFuncWord() & funcBack;
+            showMap[ui->reply] = config->getFuncWord() & funcApply;
             //        showMap[ui->service] = true;
             break;
 
@@ -1350,10 +1364,10 @@ void CabinetWidget::setPowerState(int power)
             break;
         }
     }
-    showMap[ui->back] = config->getFuncWord() & funcBack;
-    showMap[ui->refund] = config->getFuncWord() & funcRefun;
-    showMap[ui->check] = config->getFuncWord() & funcCheck;
-    showMap[ui->reply] = config->getFuncWord() & funcApply;
+//    showMap[ui->back] = config->getFuncWord() & funcBack;
+//    showMap[ui->refund] = config->getFuncWord() & funcRefun;
+//    showMap[ui->check] = config->getFuncWord() & funcCheck;
+//    showMap[ui->reply] = config->getFuncWord() & funcApply;
     updateShowMap();
 
 //    qDebug()<<(config->getFuncWord() & funcBack)<<(config->getFuncWord() & funcRefun)<<(config->getFuncWord() & funcCheck);

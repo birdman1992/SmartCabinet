@@ -421,6 +421,7 @@ void CabinetSet::on_savePos_clicked()
 
 void CabinetSet::on_finish_clicked()
 {
+    setCabType();
     emit cabinetCreated();
     if(config->getCabinetType().at(BIT_CAB_AIO))
         emit winSwitch(INDEX_AIO);

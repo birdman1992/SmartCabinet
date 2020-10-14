@@ -1320,9 +1320,9 @@ color:rgb(255,255,255);</string>
    <widget class="QLineEdit" name="cloneId">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>270</x>
       <y>70</y>
-      <width>171</width>
+      <width>151</width>
       <height>31</height>
      </rect>
     </property>
@@ -1336,7 +1336,7 @@ color:rgb(255,255,255);</string>
    <widget class="QLabel" name="label_19">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>220</x>
       <y>70</y>
       <width>41</width>
       <height>31</height>
@@ -1418,7 +1418,7 @@ color:rgb(255,255,255);</string>
      <rect>
       <x>10</x>
       <y>70</y>
-      <width>191</width>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
