@@ -209,7 +209,7 @@ void CabinetConfig::syncGoods(Goods *info, int row, int col)
         return;
 
     Q_UNUSED(info);
-#ifdef TCP_APIQ_UNUSED();
+#ifdef TCP_API
     QList<GoodsInfo*> targetList = list_cabinet[col]->list_case[row]->list_goods;
     GoodsInfo* target = NULL;
 
@@ -496,8 +496,8 @@ void CabinetConfig::readCabinetConfig()
     }
 
     int i = 0;
-    int j = 0;
-    int k = 0;
+//    int j = 0;
+//    int k = 0;
 
     if(!list_cabinet.isEmpty())
     {
@@ -601,37 +601,6 @@ void CabinetConfig::readCabinetConfig()
         }
         list_cabinet[sPos.x()]->setScreenPos(sPos.y());
     }
-
-//    for(i=0; i<cabNum; i++)
-//    {
-//        settings.beginGroup(QString("Cabinet%1").arg(i));
-//        QByteArray ctrlSeq = lockManager->getLockCtrlSeq(i);
-//        QByteArray ctrlIndex = lockManager->getLockCtrlIndex(i);
-//        for(j=0; j<list_cabinet.at(i)->getCaseNum(); j++)
-//        {
-//            int arr_size = settings.beginReadArray(QString("case%1").arg(j));
-
-//            for(k=0; k<arr_size; k++)
-//            {
-//                settings.setArrayIndex(k);
-//                GoodsInfo* info = new GoodsInfo;
-//                info->abbName = settings.value("abbName", QString()).toString();
-//                info->name = settings.value("name", QString()).toString();
-//                info->outNum = 0;
-//                info->num = settings.value("num", 0).toInt();
-//                info->id = settings.value("id", QString()).toString();
-//                info->unit = settings.value("unit", QString()).toString();
-//                info->packageId = settings.value("packageId",QString()).toString();
-//                info->goodsType = getGoodsType(info->packageId);
-//                info->Py = getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
-//                list_cabinet[i]->addCase(info,j,(cabNum <= 5));
-//            }
-//            list_cabinet[i]->setCtrlWord(j, ctrlSeq, ctrlIndex);
-//            settings.endArray();
-//        }
-//        settings.endGroup();
-//    }
-//    creatCabinetJson();
 
     specPos = getSpecialCase();
     setSpecialCase(specPos, false);

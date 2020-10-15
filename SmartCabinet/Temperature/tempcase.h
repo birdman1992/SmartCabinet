@@ -137,7 +137,7 @@ private:
     void parseLogin(QByteArray qba);
     void parseReport(QByteArray qba);
     QString pacToName(QByteArray qba);
-    QByteArray nameToPac(QString name);
+//    QByteArray nameToPac(QString name);
 
     DevType m_tempDevType;
     QString m_caseName;

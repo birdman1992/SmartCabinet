@@ -760,20 +760,12 @@ void CabinetWidget::recvScanData(QByteArray qba)
     else if(config->state == STATE_BACK)
     {
         QPoint addr = SqlManager::searchByCode(fullScanInfo);
-        Goods* info = SqlManager::searchGoodsByCode(fullScanInfo);
         if((addr.x() >= 0) && (addr.y() >= 0))
         {
             SqlManager::scanFetch(fullScanInfo, SqlManager::all_rep, SqlManager::mask_all);
             list_cabinet[addr.x()]->updateCase(addr.y());
         }
 
-//        if(info == NULL)
-//        {
-//            qDebug()<<"[fetch]"<<"scan data not find";
-//            config->showMsg(MSG_GOODS_NOT_FIND, 1);
-//            win_access->showTips(MSG_GOODS_NOT_FIND, 1);
-//            return;
-//        }
         win_access->scanOpen(scanGoodsId, fullScanInfo);
         emit goodsAccess(addr,fullScanInfo, 1, 16);
     }

@@ -53,7 +53,6 @@ private:
 
 private slots:
     void newConnection();
-    void updateDevInfo();
     void devStateChanged();
     void initDevices();
 };

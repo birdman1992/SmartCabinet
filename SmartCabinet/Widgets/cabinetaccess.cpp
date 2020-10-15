@@ -407,6 +407,7 @@ void CabinetAccess::clearAll()
 
 void CabinetAccess::recvOptGoodsNum(int num)
 {
+    Q_UNUSED(num);
 //    qDebug()<<"[recvOptGoodsNum]"<<config->state<<num;
     ui->frame_pri->hide();
     ui->info->clear();

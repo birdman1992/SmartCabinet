@@ -110,11 +110,12 @@ void FrmRfid::setDefaultSel()
 
 void FrmRfid::updateSelReader(QString devIp)
 {
-
+    Q_UNUSED(devIp);
 }
 
 void FrmRfid::closeEvent(QCloseEvent *e)
 {
+    Q_UNUSED(e);
     qDebug("close event");
     clearCurOperation();
 }
@@ -141,6 +142,7 @@ void FrmRfid::updateCurUser(QString optId)
 
 void FrmRfid::scanProgress(int curCount, int totalCount)
 {
+    Q_UNUSED(totalCount);
 //    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
     ui->count->display(curCount);
 }

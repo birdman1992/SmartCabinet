@@ -542,11 +542,13 @@ void CabinetSet::on_aio_mode_toggled(bool checked)
 
 void CabinetSet::on_high_val_mode_toggled(bool checked)
 {
+    Q_UNUSED(checked);
     setCabType();
 }
 
 void CabinetSet::on_rfid_mode_toggled(bool checked)
 {
+    Q_UNUSED(checked);
     setCabType();
 }
 

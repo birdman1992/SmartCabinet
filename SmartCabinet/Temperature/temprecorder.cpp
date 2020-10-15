@@ -41,6 +41,7 @@ TempRecorder::~TempRecorder()
 
 bool TempRecorder::recordTemp(float wData, float sData, int state, int area)
 {
+    Q_UNUSED(area);
     if(isNextDay())
     {
         f->close();

@@ -138,10 +138,10 @@ QString TempCase::pacToName(QByteArray qba)
     return name;
 }
 
-QByteArray TempCase::nameToPac(QString name)
-{
+//QByteArray TempCase::nameToPac(QString name)
+//{
 
-}
+//}
 
 void TempCase::setCaseName(QString name)
 {

@@ -201,7 +201,8 @@ void RfidManager::doorStateChanged(int id, bool isOpen)
 
 void RfidManager::epcCheck(int row, int col)
 {
-
+    Q_UNUSED(row);
+    Q_UNUSED(col);
 }
 
 void RfidManager::epcSync()

@@ -27,7 +27,7 @@ void RfidDevHub::addDevice(QString addr, quint16 port, QString type)
 
     RfReaderConfig::instance().createDevice(addr, port, type);
     list_device.insert(addr ,reader);
-    updateDevInfo();
+//    updateDevInfo();
 }
 
 void RfidDevHub::delDevice(QString devIp)
@@ -113,19 +113,8 @@ void RfidDevHub::newConnection()
         RfidReader* reader = new RfidReader(skt, list_device.count(), this);
         list_device.insert(skt->peerAddress().toString() ,reader);
         connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SIGNAL(reportEpc(QString,int,int)));
-        updateDevInfo();
+//        updateDevInfo();
     }
-}
-
-//更新设备信息
-void RfidDevHub::updateDevInfo()
-{
-    list_dev_info.clear();
-    foreach (RfidReader* reader, list_device.values())
-    {
-
-    }
-    emit devInfoChanged(list_dev_info);
 }
 
 void RfidDevHub::devStateChanged()

@@ -58,7 +58,6 @@ public:
     void showMsg(QString msg, bool iswarnning);
     void setCaseName(Goods info, int index);//设置柜格存放物品名
     bool isInLeft();//true:柜子在主柜左边 false:柜子在主柜右边
-    void searchByPinyin(QString ch);
     void clearSearch();
     void clearGoods();
 

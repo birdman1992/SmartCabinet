@@ -410,31 +410,6 @@ bool Cabinet::isInLeft()
     return posNum%2;
 }
 
-void Cabinet::searchByPinyin(QString ch)
-{
-//    int i = 0;
-//    int j = 0;
-////    qDebug()<<"searchByPinyin";
-
-//    for(i=0; i<list_case.count(); i++)
-//    {
-//        CabinetInfo* info = list_case[i];
-
-//        for(j=0; j<info->list_goods.count(); j++)
-//        {
-//            if(info->list_goods[j]->Py.indexOf(ch) != -1)
-//            {
-//                setCaseState(i, 1);
-//                break;
-//            }
-//            if(j == (info->list_goods.count()-1))
-//            {
-//                setCaseState(i, 0);
-//            }
-//        }
-//    }
-}
-
 void Cabinet::clearSearch()
 {
 //    int i = 0;
