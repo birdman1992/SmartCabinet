@@ -1935,6 +1935,9 @@ void CabinetServer::recvCabClone()
         int listSize = cJSON_GetArraySize(json_data);
         int i = 0;
 
+        SqlManager::sqlDelete();
+        config->clearGoodsConfig();
+
         for(i=0; i<listSize; i++)
         {
             cJSON* item = cJSON_GetArrayItem(json_data, i);
