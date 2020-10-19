@@ -91,6 +91,8 @@ public:
     QStringList markTab();
     void operation(QString goodsCode);
     void operation(QString goodsCode, EpcMark mark);
+    void unknowEpc(QString epc);
+    void clearUnknowEpcs();
 
 public slots:
     void syncUpload();
@@ -102,6 +104,7 @@ signals:
     void scanProgress(int scanCount, int totalCount);
     void updateCount(EpcMark mark, int count);
     void updateLockCount(int count);
+    void updateUnknowCount(int count);
     void clearCount();
     void epcAccess(QStringList epcs, UserOpt optType);
     void epcAccess(QStringList fetchEpcs, QStringList backEpcs,QString optNo);
@@ -115,6 +118,7 @@ private:
     QStringList colsName;
     QStringList markNameTab;
     QStringList optList;
+    QStringList unknowList;
     QString curOptId;
     QString operationNo;
     quint64 activeStamp;//标签活跃时间戳:最后一次标签状态发生变化的时间

@@ -172,6 +172,9 @@ void EpcModel::clearEpcMark()
     markCount = 0;
     lockCount = 0;
     clearStamp = QDateTime::currentMSecsSinceEpoch();
+
+    clearUnknowEpcs();
+    emit updateUnknowCount(0);
     emit epcConsumeCheck(consumCheckList);
     emit updateLockCount(lockCount);
     refrushModel();
@@ -484,6 +487,20 @@ void EpcModel::operation(QString goodsCode, EpcMark mark)
         setEpcMark(info->epcId, mark);
 
     lockEpcMark(info->epcId);
+}
+
+void EpcModel::unknowEpc(QString epc)
+{
+    if(!unknowList.contains(epc))
+        return;
+
+    unknowList<<epc;
+    emit updateUnknowCount(unknowList.count());
+}
+
+void EpcModel::clearUnknowEpcs()
+{
+    unknowList.clear();
 }
 
 void EpcModel::initColName()

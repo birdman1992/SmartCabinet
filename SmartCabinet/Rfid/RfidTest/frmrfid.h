@@ -38,6 +38,7 @@ public slots:
     void updateCurUser(QString optId);
     void scanProgress(int curCount, int totalCount);
     void updateLockCount(int lockCount);
+    void updateUnknowCount(int unknowCount);
     void showConfigDevice();
     void showEpcInfo();
     void rfidCheck();

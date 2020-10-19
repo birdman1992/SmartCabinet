@@ -909,7 +909,7 @@ width: 5px;margin:1px;
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>600</width>
                  <height>0</height>
                 </size>
                </property>
@@ -1000,6 +1000,32 @@ border:0px solid grey;</string>
                 </item>
                 <item>
                  <widget class="QLCDNumber" name="lock_count">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="digitCount">
+                   <number>4</number>
+                  </property>
+                  <property name="segmentStyle">
+                   <enum>QLCDNumber::Flat</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>未知标签</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLCDNumber" name="unknow_count">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
                     <horstretch>0</horstretch>

@@ -11,6 +11,12 @@
 #include <QtDebug>
 #include <QDateTime>
 
+enum RfidAction{
+    RF_REP,//库存
+    RF_FETCH,//取出
+    RF_WARNING,//警报
+};
+
 class SigInfo
 {
 public:
@@ -88,6 +94,7 @@ public slots:
     void setOutsideDev(bool outsideDev);
 
 signals:
+    void reportEpc(QString epc, RfidAction rfidAct);
     void reportEpc(QString epc, bool isOutside);
     void stateChanged();//连接状态变化
     void deviceChanged();//设备发生变化

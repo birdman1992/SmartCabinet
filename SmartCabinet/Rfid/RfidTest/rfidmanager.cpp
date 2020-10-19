@@ -307,7 +307,10 @@ void RfidManager::updateEpc(QString epc, bool isOutside)
     EpcInfo* info = eModel->getEpcInfo(epc);
 
     if(info == NULL)
+    {
+        eModel->unknowEpc(epc);
         return;
+    }
 
 //        qDebug()<<"[updateEpc]"<<epc<<isOutside;
 //    bool needUpdateOutList = false;

@@ -156,6 +156,11 @@ void FrmRfid::updateLockCount(int lockCount)
     }
 }
 
+void FrmRfid::updateUnknowCount(int unknowCount)
+{
+    ui->unknow_count->display(unknowCount);
+}
+
 void FrmRfid::showConfigDevice()
 {
 //    qDebug("configDevice");
@@ -239,6 +244,7 @@ void FrmRfid::initTabs()
     connect(eModel, SIGNAL(updateCount(EpcMark,int)), this, SLOT(updateCount(EpcMark,int)));
     connect(eModel, SIGNAL(scanProgress(int,int)), this, SLOT(scanProgress(int,int)));
     connect(eModel, SIGNAL(updateLockCount(int)), this, SLOT(updateLockCount(int)));
+    connect(eModel, SIGNAL(updateUnknowCount(int)), this, SLOT(updateUnknowCount(int)));
     connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), filterModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
     ui->tab_view->setModel(filterModel);
     ui->tab_view->setColumnWidth(0, 113);

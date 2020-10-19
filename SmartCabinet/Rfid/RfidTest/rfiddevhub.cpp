@@ -112,7 +112,7 @@ void RfidDevHub::newConnection()
         QTcpSocket* skt = sev->nextPendingConnection();
         RfidReader* reader = new RfidReader(skt, list_device.count(), this);
         list_device.insert(skt->peerAddress().toString() ,reader);
-        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SIGNAL(reportEpc(QString,int,int)));
+        connect(reader, SIGNAL(reportEpc(QString, bool)), this, SIGNAL(reportEpc(QString, bool)));
 //        updateDevInfo();
     }
 }
