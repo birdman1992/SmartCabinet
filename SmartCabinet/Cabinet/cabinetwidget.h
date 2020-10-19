@@ -211,6 +211,7 @@ private:
 
     void showEvent(QShowEvent*);
     void updateShowMap();
+    void hideAllShowMap();
     void warningMsgBox(QString title, QString msg);
     void msgShow(QString title, QString msg, bool setmodal);
     void setPowerState(int power);//设置权限状态

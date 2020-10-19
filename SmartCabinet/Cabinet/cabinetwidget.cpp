@@ -841,6 +841,15 @@ void CabinetWidget::updateShowMap()
     }
 }
 
+void CabinetWidget::hideAllShowMap()
+{
+    QMap<QWidget*, bool>::iterator it;
+    for(it=showMap.begin(); it!=showMap.end(); it++)
+    {
+        it.key()->setVisible(false);
+    }
+}
+
 bool CabinetWidget::installGlobalConfig(CabinetConfig *globalConfig)
 {
     if(globalConfig == NULL)
@@ -1677,27 +1686,11 @@ void CabinetWidget::setMenuHide(bool ishide)
 {
     if(ishide)
     {
-        ui->store->hide();
-        ui->service->hide();
-        ui->rebind->hide();
-        ui->cut->hide();
-        ui->refund->hide();
-        ui->reply->hide();
-        ui->check->hide();
-        ui->search->hide();
-        ui->quit->hide();
+        hideAllShowMap();
     }
     else
     {
-        ui->store->show();
-        ui->service->show();
-        ui->rebind->show();
-        ui->cut->show();
-        ui->reply->show();
-        ui->refund->show();
-        ui->check->show();
-        ui->search->show();
-        ui->quit->show();
+        updateShowMap();
     }
 }
 

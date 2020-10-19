@@ -913,6 +913,15 @@ void CabinetConfig::clearGoodsConfig()
     qDebug()<<"[clearGoodsConfig]"<<list_cabinet.count()<<list_cabinet[0]->rowCount();
 }
 
+void CabinetConfig::updateGoodsDisplay()
+{
+    foreach(Cabinet* cab, list_cabinet)
+    {
+        cab->clearGoods();
+        cab->updateCabinet();
+    }
+}
+
 //void CabinetConfig::writeCabinetConfig(int cabSeq, int caseIndex, CabinetInfo *info)
 //{
 

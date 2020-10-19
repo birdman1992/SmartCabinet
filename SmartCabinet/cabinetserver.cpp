@@ -472,7 +472,7 @@ void CabinetServer::cabInfoReq()
 {
     qint64 timeStamp = getApiMark();
     QByteArray qba = QString("{\"chesetCode\"\":%1\",\"timeStamp\":%2}").arg(config->getCabinetId()).arg(timeStamp).toUtf8();
-    QString nUrl = ApiAddress+QString(API_INFO_REQ)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_INFO_REQ);//+"?"+qba.toBase64();
     qDebug()<<"[cabInfoReq]"<<nUrl<<qba;
 }
 
@@ -481,7 +481,7 @@ void CabinetServer::cabCloneReq(QString oldCabinetId)
     qint64 timeStamp = getApiMark();
     regId = oldCabinetId;
     QByteArray qba = QString("{\"code\":\"%1\",\"timeStamp\":%2}").arg(oldCabinetId).arg(timeStamp).toUtf8();
-    QString nUrl = ApiAddress+QString(API_CLONE_REQ)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_CLONE_REQ);//+"?"+qba.toBase64();
     replyCheck(reply_cabinet_clone);
     reply_cabinet_clone = post(nUrl, qba, timeStamp);//manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_cabinet_clone, SIGNAL(finished()), this, SLOT(recvCabClone()));

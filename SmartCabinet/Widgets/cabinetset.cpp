@@ -432,6 +432,7 @@ void CabinetSet::on_finish_clicked()
     sTest->testFinish();
     sTest->deleteLater();
     sTest = NULL;
+//    config->updateGoodsDisplay();
 }
 
 void CabinetSet::on_cabType_currentIndexChanged(int)
