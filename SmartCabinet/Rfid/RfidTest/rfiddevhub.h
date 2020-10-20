@@ -19,7 +19,7 @@ class RfidDevHub : public QAbstractTableModel
     Q_OBJECT
 public:
     explicit RfidDevHub(QObject *parent = nullptr);
-    void addDevice(QString addr, quint16 port, QString type);
+    void addDevice(QString addr, quint16 port, DevAction act);
     QList<RfidReader*> deviceList();
     RfidReader* device(QString devIp);
     void delDevice(QString devIp);
@@ -36,6 +36,7 @@ private:
 
 signals:
     void reportEpc(QString epc, bool isOutside);
+    void reportEpc(QString epc, DevAction rfAction);
     void devInfoChanged(QList<QVariantMap>);
 
 protected:

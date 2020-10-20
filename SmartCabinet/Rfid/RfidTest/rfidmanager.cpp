@@ -30,7 +30,7 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
     connect(model, SIGNAL(epcStore(QVariantMap)), sigManager, SIGNAL(epcStore(QVariantMap)));
 
     rfidHub = new RfidDevHub(this);
-    connect(rfidHub, SIGNAL(reportEpc(QString, bool)), this, SLOT(updateEpc(QString, bool)));
+    connect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
 //    rfidHub->addDevice(QHostAddress("192.168.0.8"), 8888);
 //    rfidHub->addDevice(QHostAddress("192.168.0.9"), 8888);
 //    QHostAddress serverAddr = QHostAddress("192.168.0.8");
@@ -94,9 +94,9 @@ void RfidManager::startScan()
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
 //        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
-        reader->scanStart(RfidReader::inside,1);
+        reader->scanStart(RF_REP,1);
     }
-    connect(rfidHub, SIGNAL(reportEpc(QString,bool)), this, SLOT(updateEpc(QString,bool)));
+    connect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
     timerStart();
 }
 
@@ -113,7 +113,7 @@ void RfidManager::doorCloseScan()
     }
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
-        reader->scanStart(RfidReader::all, 1);
+        reader->scanStart(RF_REP|RF_FETCH, 1);
     }
     clsStamp = QDateTime::currentMSecsSinceEpoch();//关门时间
 //    clsTimeOut();
@@ -129,7 +129,7 @@ void RfidManager::clsFinish()
         reader->scanStop();
 //        disconnect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
     }
-    disconnect(rfidHub, SIGNAL(reportEpc(QString,bool)), this, SLOT(updateEpc(QString,bool)));
+    disconnect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
     flagScan = false;
     eModel->syncUpload();
     accessLock = false;
@@ -143,7 +143,7 @@ void RfidManager::clsGiveUp()
         reader->scanStop();
 //        disconnect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
     }
-    disconnect(rfidHub, SIGNAL(reportEpc(QString,bool)), this, SLOT(updateEpc(QString,bool)));
+    disconnect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
     flagScan = false;
     accessLock = false;
 }
@@ -302,7 +302,7 @@ void RfidManager::timerStop()
     timerUpdate();
 }
 
-void RfidManager::updateEpc(QString epc, bool isOutside)
+void RfidManager::updateEpc(QString epc, DevAction rfAct)
 {
     EpcInfo* info = eModel->getEpcInfo(epc);
 
@@ -314,7 +314,7 @@ void RfidManager::updateEpc(QString epc, bool isOutside)
 
 //        qDebug()<<"[updateEpc]"<<epc<<isOutside;
 //    bool needUpdateOutList = false;
-    if(!isOutside)//内部天线
+    if(rfAct == RF_REP)//内部天线
     {
         switch(info->state)
         {
@@ -338,11 +338,10 @@ void RfidManager::updateEpc(QString epc, bool isOutside)
             break;
         }
     }
-    else if(isOutside)//外部天线扫描到
+    else if(rfAct == RF_FETCH)//外部天线扫描到
     {
 //        eModel->setEpcMark(epc, mark_out);
 //        eModel->lockEpcMark(epc);
-
         switch(info->state)
         {
         case epc_in:

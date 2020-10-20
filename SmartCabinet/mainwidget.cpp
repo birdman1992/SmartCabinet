@@ -42,6 +42,7 @@ void MainWidget::init_huangpo()
     qRegisterMetaType<EpcInfo*>("EpcInfo*");
     qRegisterMetaType<TableMark>("TableMark");
     qRegisterMetaType<TempDevHub*>("TempDevHub*");
+    qRegisterMetaType<DevAction>("DevAction");
 
     devWatcher = new QDeviceWatcher(this);
 

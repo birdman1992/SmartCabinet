@@ -2,13 +2,13 @@
 #include <QDebug>
 
 
-RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent, DevType _type) : QObject(parent)
+RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent, DevAction act) : QObject(parent)
 {
     flagScan = false;
     flagInit = false;
     flagConnect = false;
     flagWaitBack = false;
-    devType = _type;
+    setdevAct(act);
     serverAddr = s->peerAddress().toString();
     serverPort = 0;
     readerSeq = seq;
@@ -20,13 +20,13 @@ RfidReader::RfidReader(QTcpSocket *s, int seq, QObject *parent, DevType _type) :
     initPorpertys();
 }
 
-RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent, DevType _type) : QObject(parent)
+RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent, DevAction act) : QObject(parent)
 {
     flagScan = false;
     flagInit = false;
     flagConnect = false;
     flagWaitBack = true;
-    devType = _type;
+    setdevAct(act);
     config = CabinetConfig::config();
     readerSeq = seq;
     serverAddr = server.toString();
@@ -46,8 +46,8 @@ void RfidReader::initPorpertys()
     m_confIntens = RfReaderConfig::instance().getConfIntens(serverAddr);
     m_antPowConfig = RfReaderConfig::instance().getAntPower(serverAddr);
     m_gradientThreshold = RfReaderConfig::instance().getGrandThreshold(serverAddr);
-    m_outsideDev = RfReaderConfig::instance().getDeviceType(serverAddr) == QString("outside")?true:false;
-    qDebug()<<"initPorpertys"<<serverAddr<<m_confIntens.toHex()<<m_antPowConfig.toHex()<<m_gradientThreshold<<m_outsideDev;
+    m_devAct = RfReaderConfig::instance().getDeviceAction(serverAddr);
+    qDebug()<<"initPorpertys"<<serverAddr<<m_confIntens.toHex()<<m_antPowConfig.toHex()<<m_gradientThreshold<<m_devAct;
 }
 
 void RfidReader::sendCmd(QByteArray data, bool printFlag)
@@ -78,19 +78,10 @@ void RfidReader::setAntPowConfig(QByteArray antPowConfig)
     RfReaderConfig::instance().setAntPower(serverAddr, m_antPowConfig);
 }
 
-void RfidReader::setOutsideDev(bool outsideDev)
+void RfidReader::setdevAct(DevAction devAct)
 {
-    m_outsideDev = outsideDev;
-    if(m_outsideDev)
-    {
-        devType = outside;
-        RfReaderConfig::instance().setDeviceType(serverAddr, QString("outside"));
-    }
-    else
-    {
-        devType = inside;
-        RfReaderConfig::instance().setDeviceType(serverAddr, QString("inside"));
-    }
+    m_devAct = devAct;
+    RfReaderConfig::instance().setDeviceAction(serverAddr, m_devAct);
 }
 
 bool sigIntLessThan(SigInfo* S1, SigInfo* S2)
@@ -171,7 +162,7 @@ void RfidReader::epcScaned(QString epc)
     if(sigMap[epc]->sigUpdate(curAnt ,(float)m_confIntens[curAnt-1]))
     {
 //        qDebug()<<"epcScaned:"<<epc<<sigMap[epc]->signalIntensity;
-        emit reportEpc(epc, (devType==outside));
+        emit reportEpc(epc, getdevAct());
     }
 }
 
@@ -181,7 +172,7 @@ void RfidReader::epcExist(SigInfo* info)
         return;
 
     existList.append(info->epc);
-    emit reportEpc(info->epc, (devType==outside));
+    emit reportEpc(info->epc, RF_FETCH);
 }
 
 void RfidReader::scanStop()
@@ -212,14 +203,20 @@ QString RfidReader::readerState()
 
 QString RfidReader::readerType()
 {
-    if(devType == inside)
+    if(m_devAct == RF_REP)
     {
-        return QString("内部设备");
+        return QString("存入模式");
     }
-    else
+    else if(m_devAct == RF_FETCH)
     {
-        return QString("外部设备");
+        return QString("取出模式");
     }
+    else if(m_devAct == RF_WARNING)
+    {
+        return QString("警报模式");
+    }
+
+    return QString("警报模式");
 }
 
 bool RfidReader::isConnected()
@@ -259,24 +256,24 @@ QByteArray RfidReader::antPowConfig() const
     return m_antPowConfig;
 }
 
-bool RfidReader::outsideDev() const
+DevAction RfidReader::getdevAct() const
 {
-    return m_outsideDev;
+    return m_devAct;
 }
 
 /*
 开始扫描 antState:按位使能天线  scanMode:0 扫描1次 1 一直扫描
 */
-void RfidReader::scanStart(DevType _type, quint8 scanMode)
+void RfidReader::scanStart(int actMode, quint8 scanMode)
 {
-    if(!(_type & devType))
+    if(!(actMode & m_devAct))
         return;
 
     qDeleteAll(sigMap.begin(), sigMap.end());
     sigMap.clear();
 
     quint32 antState;
-    if(devType == outside)
+    if(m_devAct == RF_FETCH)
         antState = 0x0001;
     else
         antState = 0x00ff;

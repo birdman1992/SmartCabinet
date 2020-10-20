@@ -107,7 +107,7 @@ private:
     qint64 getApiMark();
     QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
     QString autoCreateEpcInfo(QString code);
-
+    void offlineLogin(QString cardId);
 signals:
     void loginRst(UserInfo*);
     void listRst(GoodsList*);
@@ -234,7 +234,6 @@ private slots:
     void recvTempDevReport();
     void processStandardOutput();
     void updatePacFinish();
-    void netTimeout();
     int watchdogTimeout();
     void tarFinished(int code);
     QByteArray apiComplete(cJSON* json);

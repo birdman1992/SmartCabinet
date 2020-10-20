@@ -97,6 +97,9 @@ QToolButton:checked{
 QLabel{
 	background-color: rgb(3,110,170);
 }
+QComboBox{
+	background-color: rgb(3,110,170);
+}
 </string>
      </property>
      <property name="frameShape">
@@ -121,7 +124,7 @@ QLabel{
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1">
@@ -347,98 +350,28 @@ border:0px solid grey;</string>
                     <number>0</number>
                    </property>
                    <item>
-                    <widget class="QFrame" name="mode_switch">
-                     <property name="styleSheet">
-                      <string notr="true">#mode_switch{
-	background-color: rgb(3,110,170);
-	border:3px solid rgb(3,110,170);
-	border-radius:3px;
-}
-QPushButton{
-	font: 16px &quot;WenQuanYi Micro Hei Mono&quot;;
-	background-color: rgb(255, 255, 255);
-	color:rgb(255, 255, 255);
-	border:1px solid rgb(255, 255, 255);
-	border-radius:3px;
-}
-QPushButton::checked{
-	font: 16px &quot;WenQuanYi Micro Hei Mono&quot;;
-	background-color: rgb(3,110,170);
-	color:rgb(255, 255, 255);
-	border:1px solid rgb(3,110,170);
-	border-radius:3px;
-}</string>
+                    <widget class="QComboBox" name="dev_act">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
                      </property>
-                     <property name="frameShape">
-                      <enum>QFrame::StyledPanel</enum>
-                     </property>
-                     <property name="frameShadow">
-                      <enum>QFrame::Raised</enum>
-                     </property>
-                     <layout class="QHBoxLayout" name="horizontalLayout_19">
-                      <property name="leftMargin">
-                       <number>1</number>
+                     <item>
+                      <property name="text">
+                       <string>存货模式</string>
                       </property>
-                      <property name="topMargin">
-                       <number>1</number>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>取货模式</string>
                       </property>
-                      <property name="rightMargin">
-                       <number>1</number>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>预警模式</string>
                       </property>
-                      <property name="bottomMargin">
-                       <number>1</number>
-                      </property>
-                      <item>
-                       <widget class="QPushButton" name="dev_type_2">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="focusPolicy">
-                         <enum>Qt::NoFocus</enum>
-                        </property>
-                        <property name="text">
-                         <string>内部设备</string>
-                        </property>
-                        <property name="checkable">
-                         <bool>true</bool>
-                        </property>
-                        <property name="checked">
-                         <bool>true</bool>
-                        </property>
-                        <property name="autoExclusive">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="dev_type">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="focusPolicy">
-                         <enum>Qt::NoFocus</enum>
-                        </property>
-                        <property name="text">
-                         <string>外部设备</string>
-                        </property>
-                        <property name="checkable">
-                         <bool>true</bool>
-                        </property>
-                        <property name="checked">
-                         <bool>false</bool>
-                        </property>
-                        <property name="autoExclusive">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
+                     </item>
                     </widget>
                    </item>
                    <item>

@@ -11,7 +11,7 @@ RfidDevHub::RfidDevHub(QObject *parent) : QAbstractTableModel(parent)
     headerList<<"设备地址"<<"设备状态"<<"设备类型"<<"操作";
 }
 
-void RfidDevHub::addDevice(QString addr, quint16 port, QString type)
+void RfidDevHub::addDevice(QString addr, quint16 port, DevAction act)
 {
     if(list_device.contains(addr))
     {
@@ -19,13 +19,12 @@ void RfidDevHub::addDevice(QString addr, quint16 port, QString type)
         return;
     }
 
-    qDebug()<<"[RFID] addDevice:"<<addr<<port<<type;
-    RfidReader::DevType dev_type = (type == "outside")?RfidReader::outside:RfidReader::inside;
-    RfidReader* reader = new RfidReader(QHostAddress(addr), port, list_device.count(), NULL, dev_type);
-    connect(reader, SIGNAL(reportEpc(QString, bool)), this, SIGNAL(reportEpc(QString, bool)));
+    qDebug()<<"[RFID] addDevice:"<<addr<<port<<act;
+    RfidReader* reader = new RfidReader(QHostAddress(addr), port, list_device.count(), NULL, act);
+    connect(reader, SIGNAL(reportEpc(QString,DevAction)), this, SIGNAL(reportEpc(QString,DevAction)));
     connect(reader, SIGNAL(deviceChanged()), this, SLOT(devStateChanged()));
 
-    RfReaderConfig::instance().createDevice(addr, port, type);
+    RfReaderConfig::instance().createDevice(addr, port, act);
     list_device.insert(addr ,reader);
 //    updateDevInfo();
 }
@@ -112,7 +111,7 @@ void RfidDevHub::newConnection()
         QTcpSocket* skt = sev->nextPendingConnection();
         RfidReader* reader = new RfidReader(skt, list_device.count(), this);
         list_device.insert(skt->peerAddress().toString() ,reader);
-        connect(reader, SIGNAL(reportEpc(QString, bool)), this, SIGNAL(reportEpc(QString, bool)));
+        connect(reader, SIGNAL(reportEpc(QString,DevAction)), this, SIGNAL(reportEpc(QString,DevAction)));
 //        updateDevInfo();
     }
 }
@@ -130,8 +129,8 @@ void RfidDevHub::initDevices()
     foreach (QString devIp, devs)
     {
         quint16 devPort = RfReaderConfig::instance().getDevicePort(devIp);
-        QString devType = RfReaderConfig::instance().getDeviceType(devIp);
+        DevAction devAct = RfReaderConfig::instance().getDeviceAction(devIp);
 
-        addDevice(devIp,devPort,devType);
+        addDevice(devIp,devPort,devAct);
     }
 }

@@ -174,7 +174,7 @@ void EpcModel::clearEpcMark()
     clearStamp = QDateTime::currentMSecsSinceEpoch();
 
     clearUnknowEpcs();
-    emit updateUnknowCount(0);
+
     emit epcConsumeCheck(consumCheckList);
     emit updateLockCount(lockCount);
     refrushModel();
@@ -501,6 +501,7 @@ void EpcModel::unknowEpc(QString epc)
 void EpcModel::clearUnknowEpcs()
 {
     unknowList.clear();
+    emit updateUnknowCount(unknowList.count());
 }
 
 void EpcModel::initColName()

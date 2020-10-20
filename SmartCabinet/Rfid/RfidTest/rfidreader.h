@@ -11,12 +11,6 @@
 #include <QtDebug>
 #include <QDateTime>
 
-enum RfidAction{
-    RF_REP,//库存
-    RF_FETCH,//取出
-    RF_WARNING,//警报
-};
-
 class SigInfo
 {
 public:
@@ -62,19 +56,19 @@ class RfidReader : public QObject
     Q_PROPERTY(QByteArray confIntens READ confIntens WRITE setConfIntens)//置信强度
     Q_PROPERTY(QByteArray antPowConfig READ antPowConfig WRITE setAntPowConfig)//天线强度
     Q_PROPERTY(int gradientThreshold READ gradientThreshold WRITE setGradientThreshold)//梯度阈值
-    Q_PROPERTY(bool outsideDev READ outsideDev WRITE setOutsideDev)//设备类型
+    Q_PROPERTY(DevAction devAct READ getdevAct WRITE setdevAct)//设备类型
 
 public:
-    enum DevType{
-        inside=1,
-        outside=2,
-        all=3,
-    };
+//    enum DevType{
+//        inside=1,
+//        outside=2,
+//        all=3,
+//    };
 
 public:
-    explicit RfidReader(QTcpSocket* s,int seq, QObject *parent = 0, DevType _type=inside);
-    explicit RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent = 0, DevType _type=inside);
-    void scanStart(DevType _type,quint8 scanMode);
+    explicit RfidReader(QTcpSocket* s,int seq, QObject *parent = 0, DevAction act=RF_REP);
+    explicit RfidReader(QHostAddress server, quint16 port, int seq, QObject *parent = 0, DevAction act=RF_REP);
+    void scanStart(int actMode, quint8 scanMode);
     void scanStop();
     QString readerIp();//dev addr
     QString readerState();//dev state
@@ -85,16 +79,16 @@ public:
     void setGradientThreshold(int gradientThreshold);
     QByteArray confIntens() const;
     QByteArray antPowConfig() const;
-    bool outsideDev() const;
+    DevAction getdevAct() const;
 
 public slots:
     void sendCmd(QByteArray data, bool printFlag=true);
     void setConfIntens(QByteArray confIntens);
     void setAntPowConfig(QByteArray antPowConfig);
-    void setOutsideDev(bool outsideDev);
+    void setdevAct(DevAction devAct);
 
 signals:
-    void reportEpc(QString epc, RfidAction rfidAct);
+    void reportEpc(QString epc, DevAction rfidAct);
     void reportEpc(QString epc, bool isOutside);
     void stateChanged();//连接状态变化
     void deviceChanged();//设备发生变化
@@ -113,7 +107,7 @@ private:
     bool flagConnect;
     bool flagWaitBack;
     bool flagScan;
-    DevType devType;
+//    DevAction devAct;
     QTcpSocket* skt;
     RfidResponse response;
     CabinetConfig* config;
@@ -135,9 +129,9 @@ private:
     QByteArray m_confIntens;
     QByteArray m_antPowConfig;
 
-    bool m_outsideDev;
-
     void initPorpertys();
+    DevAction m_devAct;
+
 private slots:
     void connectStateChanged(QAbstractSocket::SocketState state);
     void recvData();

@@ -512,8 +512,24 @@ void FrmRfid::on_add_device_clicked()
     RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
     QString dev_addr = ui->input_addr->text();
     quint16 dev_port = ui->input_port->text().toInt();
-    QString dev_type = ui->dev_outside->isChecked()?QString("outside"):QString("inside");
-    devModel->addDevice(dev_addr, dev_port, dev_type);
+    DevAction dev_act = DevAction(1<<ui->dev_act->currentIndex());
+    devModel->addDevice(dev_addr, dev_port, dev_act);
+}
+
+/**
+ * @brief int2bit 求一个数等效于1左移多少位
+ * @param num
+ * @return
+ */
+int int2bit(int num)
+{
+    int ret;
+    while(num)
+    {
+        num = (num>>1);
+        ret++;
+    }
+    return ret;
 }
 
 void FrmRfid::on_rfidDevView_clicked(const QModelIndex &index)
@@ -541,7 +557,7 @@ void FrmRfid::on_rfidDevView_clicked(const QModelIndex &index)
     ui->conf_int->setValue((int)dev->property("confIntens").toByteArray().at(0));
     ui->ant_pow->setValue((int)dev->property("antPowConfig").toByteArray().at(0));
     ui->grad_thre->setValue(dev->property("gradientThreshold").toInt());
-    ui->dev_type->setChecked(dev->property("outsideDev").toBool());
+    ui->dev_act->setCurrentIndex(int2bit(dev->getdevAct()));
     ui->dev_name->setText(curSelRfidReader);
 }
 

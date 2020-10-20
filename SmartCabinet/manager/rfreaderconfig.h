@@ -4,8 +4,15 @@
 #include <QObject>
 #include <QSettings>
 #include <QStringList>
+#include <QMetaEnum>
 #include "manager/singleton.h"
 #include "defines.h"
+
+enum DevAction{
+    RF_REP=1,//库存
+    RF_FETCH=2,//取出
+    RF_WARNING=4,//警报
+};
 
 class RfReaderConfig : public QObject, public Singleton<RfReaderConfig>
 {
@@ -14,15 +21,15 @@ class RfReaderConfig : public QObject, public Singleton<RfReaderConfig>
 public:
     QByteArray getConfIntens(QString devName);
     QByteArray getAntPower(QString devName);
-    QString getDeviceType(QString devName);
+    DevAction getDeviceAction(QString devName);
     int getGrandThreshold(QString devName);//梯度阈值
     quint16 getDevicePort(QString devName);
     void setConfIntens(QString devName, QByteArray confIntens);
     void setAntPower(QString devName, QByteArray antPow);
     void setGrandThreshold(QString devName, int grandThre);
-    void setDeviceType(QString devName, QString devType);
+    void setDeviceAction(QString devName, DevAction devAct);
     void setDevicePort(QString devName, quint16 port);
-    void createDevice(QString devName, int port, QString devType);
+    void createDevice(QString devName, int port, DevAction devType);
     QStringList getConfigGroups();
     void delDevice(QString devName);
 

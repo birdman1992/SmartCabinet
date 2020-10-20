@@ -97,7 +97,6 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
-    apiState = 0;
     needReqCar = true;
     needSaveAddress = false;
     timeIsChecked = false;
@@ -241,7 +240,7 @@ void CabinetServer::checkTime()
         sysClock.start(60000);
         connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
     }
-    netTimeStart();
+//    netTimeStart();
 }
 
 void CabinetServer::checkSysTime(QDateTime _time)
@@ -269,7 +268,7 @@ void CabinetServer::requireListState()
     qDebug()<<qba;
     connect(reply_list_state, SIGNAL(readyRead()), this, SLOT(recvListState()));
 
-    netTimeStart();
+//    netTimeStart();
 //    sysClock.start(60000);
     //    connect(&sysClock, SIGNAL(timeout()), this, SLOT(sysTimeout()));
 }
@@ -289,8 +288,10 @@ void CabinetServer::netTimeStart()
     QTimer::singleShot(2000,this,SLOT(netTimeout()));
 }
 
+//本地离线重发
 void CabinetServer::localCacheAccess()
 {
+    return;
     list_access_cache = config->getFetchList();
 
     accessLoop();
@@ -412,6 +413,9 @@ void CabinetServer::userLogin(QString userId)
 //#ifdef NO_SERVER
 //    emit loginRst(true);
 //#endif
+    if(!config->netState)
+        offlineLogin(userId);
+
     qint64 timeStamp = getApiMark();
     QByteArray qba = QString("{\"cardId\":\"%2\",\"departId\":\"%1\",\"timeStamp\":%3}").arg(config->getCabinetId()).arg(userId).arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_LOGIN);//+'?'+qba.toBase64();
@@ -426,21 +430,20 @@ void CabinetServer::userLogin(QString userId)
     reply_login = post(nUrl, qba, timeStamp, false);//登录留下记录但不重新调用
 //    reply_login = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_login, SIGNAL(finished()), this, SLOT(recvUserLogin()));
-    apiState = 1;
-    netTimeStart();
+//    netTimeStart();
 
 
-    UserInfo* info = new UserInfo;
-    info->departName = QString();
-    info->cardId = userId;
-    info->name = QString("演示");
-    info->power = 0;
-    qDebug()<<"[recvUserLogin]"<<info->cardId<<info->power;
-    cur_user = info;
-    emit loginRst(info);
-    config->addUser(info);
-    config->wakeUp(TIMEOUT_BASE);
-    networkState = true;
+//    UserInfo* info = new UserInfo;
+//    info->departName = QString();
+//    info->cardId = userId;
+//    info->name = QString("演示");
+//    info->power = 0;
+//    qDebug()<<"[recvUserLogin]"<<info->cardId<<info->power;
+//    cur_user = info;
+//    emit loginRst(info);
+//    config->addUser(info);
+//    config->wakeUp(TIMEOUT_BASE);
+//    networkState = true;
 }
 
 void CabinetServer::listCheck(QString code)
@@ -1352,7 +1355,6 @@ void CabinetServer::recvUserLogin()
         return;
 
     apiComplete(json);
-    apiState = 0;
     netFlag = true;
     emit netState(true);
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
@@ -1383,7 +1385,7 @@ void CabinetServer::recvUserLogin()
         info->name = QString(cJSON_GetObjectItem(json_info,"name")->valuestring);
         info->power = cJSON_GetObjectItem(json_info,"power")->valueint;
         info->tel = QString(cJSON_GetObjectItem(json_info,"tel")->valuestring);
-        qDebug()<<"[recvUserLogin]"<<info->cardId<<info->power;
+        qDebug()<<"[recvUserLogin]:login success "<<info->cardId<<info->power;
         cur_user = info;
         emit loginRst(info);
         config->addUser(info);
@@ -2741,50 +2743,32 @@ void CabinetServer::updatePacFinish()
     }
 }
 
-void CabinetServer::netTimeout()
+void CabinetServer::offlineLogin(QString cardId)
 {
-    if(netFlag)
-        networkState = true;
-    else
-        networkState = false;
+    localCacheAccess();
+//    if(config->checkManagers(logId))//检查是否为管理员
+//    {
+//        cur_manager->name = "管理员";
+//        cur_manager->power = 0;
+//        cur_manager->cardId = logId;
+//        cur_user = cur_manager;
 
-//    qDebug()<<"netstate"<<networkState;
-    emit netState(networkState);
-    if(networkState)
-    {
-        localCacheAccess();
-    }
-    else
-    {
-//        replyCheck(reply_login);
-        if(apiState == 1)//登录
-        {
-            if(config->checkManagers(logId))
-            {
-                cur_manager->name = "管理员";
-                cur_manager->power = 0;
-                cur_manager->cardId = logId;
-                cur_user = cur_manager;
+//        config->wakeUp(TIMEOUT_FETCH);
+//        emit loginRst(cur_user);
+//    }
 
-                config->wakeUp(TIMEOUT_FETCH);
-                emit loginRst(cur_user);
-            }
-            else
-            {
-                cur_user = config->checkUserLocal(logId);
-                qDebug()<<"check null";
-                if(cur_user == NULL)
-                {
-                    apiState = 0;
-                    return;
-                }
-                qDebug()<<"check"<<cur_user->cardId;
-                config->wakeUp(TIMEOUT_FETCH);
-                emit loginRst(cur_user);
-            }
-        }
-        apiState = 0;
+    //检查本地用户缓存
+    cur_user = config->checkUserLocal(cardId);
+
+    if(cur_user == NULL)
+    {
+        qDebug()<<"离线登录失败";
+        return;
     }
+    qDebug()<<"离线登录成功:"<<cur_user->name<<cur_user->cardId;
+    config->wakeUp(TIMEOUT_FETCH);
+    emit loginRst(cur_user);
+
 }
 
 int CabinetServer::watchdogTimeout()
@@ -2832,6 +2816,7 @@ void CabinetServer::sysTimeout()
     {
         qDebug("[lock]");
         emit sysLock();
+        localCacheAccess();
     }
 }
 

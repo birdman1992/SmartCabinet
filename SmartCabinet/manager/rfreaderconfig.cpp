@@ -36,9 +36,10 @@ QByteArray RfReaderConfig::getAntPower(QString devName)
     return getConfig(devName+"/"+"antPower",QVariant()).toByteArray();
 }
 
-QString RfReaderConfig::getDeviceType(QString devName)
+DevAction RfReaderConfig::getDeviceAction(QString devName)
 {
-    return getConfig(devName+"/"+"type", QString("inside")).toString();
+    int ret = getConfig(devName+"/"+"type", RF_REP).toInt();
+    return DevAction(ret);
 }
 
 int RfReaderConfig::getGrandThreshold(QString devName)
@@ -68,9 +69,9 @@ void RfReaderConfig::setGrandThreshold(QString devName, int grandThre)
     setConfig(devName+"/"+"grandThreshold",grandThre);
 }
 
-void RfReaderConfig::setDeviceType(QString devName, QString devType)
+void RfReaderConfig::setDeviceAction(QString devName, DevAction devAct)
 {
-    setConfig(devName+"/"+"type",devType);
+    setConfig(devName+"/"+"type",(int)devAct);
 }
 
 void RfReaderConfig::setDevicePort(QString devName,quint16 port)
@@ -84,7 +85,7 @@ void RfReaderConfig::setDevicePort(QString devName,quint16 port)
  * @param port  设备端口
  * @param devType   设备类型:inside/outside
  */
-void RfReaderConfig::createDevice(QString devName, int port, QString devType)
+void RfReaderConfig::createDevice(QString devName, int port, DevAction devType)
 {
     if(getConfigGroups().contains(devName))
     {

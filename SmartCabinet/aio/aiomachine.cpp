@@ -82,6 +82,7 @@ AIOMachine::~AIOMachine()
 void AIOMachine::showEvent(QShowEvent *)
 {
     setAioInfo(config->getDepartName(), config->getCabinetId());
+    qDebug("show req");
     emit reqUpdateOverview();
     if((config->getCabinetType().at(BIT_CAB_AIO)) && (sysTime == NULL))
     {
@@ -207,6 +208,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     setPowState(optUser->power);
     updateState();
     sysUnlock();
+    qDebug("user req");
     emit reqUpdateOverview();
 //    win_rfid->showFullScreen();
 }
@@ -570,6 +572,7 @@ void AIOMachine::sysLock()
     loginState = false;
     optUser = NULL;
     win_rfid->updateCurUser(QString());
+    qDebug("lock req");
     emit reqUpdateOverview();
     emit updateLoginState(false);
     emit logout();

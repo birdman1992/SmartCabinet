@@ -32,6 +32,7 @@
 #include "Widgets/goodsapply.h"
 #include "Widgets/dayreport.h"
 #include "Widgets/screenpro.h"
+#include "Rfid/RfidTest/frmrfid.h"
 #include "Device/tempdev.h"
 #include "aio/aiomachine.h"
 #include "Cabinet/cabinetwidget.h"
@@ -89,6 +90,7 @@ private:
 //    FingerPrint* win_fingerPrint;
     AIOMachine* win_aio;
     ScreenPro* win_screenPro;
+    FrmRfid* win_rfid;
     RouteRepair* routeRepair;//路由修复
     QDeviceWatcher* devWatcher;
     ControlDevice* ctrlUi;
