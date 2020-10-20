@@ -14,13 +14,13 @@ FrmRfid::FrmRfid(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
 //    btnTable.insert(mark_no, ui->tab_filter_unknow);
-//    btnTable.insert(mark_new, ui->tab_filter_new);
-//    btnTable.insert(mark_back, ui->tab_filter_back);
+    btnTable.insert(mark_new, ui->tab_filter_new);
+    btnTable.insert(mark_back, ui->tab_filter_back);
     btnTable.insert(mark_out, ui->tab_filter_out);
 //    btnTable.insert(mark_con, ui->tab_filter_consume);
 //    btnTable.insert(mark_in, ui->tab_filter_in);
 //    btnTable.insert(mark_wait_back, ui->tab_filter_wait_back);
-//    btnTable.insert(mark_all, ui->tab_filter_all);
+    btnTable.insert(mark_all, ui->tab_filter_all);
 
     QRegExp ipRx("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     ui->input_addr->setValidator(new QRegExpValidator(ipRx));
@@ -86,7 +86,7 @@ void FrmRfid::updateCount(EpcMark mark, int count)
 //        btnTable[mark]->setVisible(count);//没有屏蔽掩膜
     }
 
-    setDefaultSel();//设置默认选中按钮
+//    setDefaultSel();//设置默认选中按钮
 }
 
 void FrmRfid::setDefaultSel()
@@ -105,7 +105,7 @@ void FrmRfid::setDefaultSel()
 //    }
 //    if(checkBtn)
 //        checkBtn->setChecked(true);
-    ui->tab_filter_out->setChecked(true);
+    ui->tab_filter_out->setChecked(false);
 }
 
 void FrmRfid::updateSelReader(QString devIp)
@@ -143,7 +143,7 @@ void FrmRfid::updateCurUser(QString optId)
 void FrmRfid::scanProgress(int curCount, int totalCount)
 {
     Q_UNUSED(totalCount);
-//    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
+    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
     ui->count->display(curCount);
 }
 
@@ -314,8 +314,8 @@ void FrmRfid::setPow(int pow)
         break;
     }
 
-//    if(visibleFlag[mark_all])
-    //        ui->tab_filter_all->show();
+    if(visibleFlag[mark_all])
+        ui->tab_filter_all->show();
 }
 
 void FrmRfid::clearCurOperation()
@@ -334,8 +334,8 @@ void FrmRfid::clearCountText()
         btn->hide();
         qDebug()<<"clear:"<<btn->objectName();
     }
-//    if(visibleFlag[mark_all])
-//        ui->tab_filter_all->show();
+    if(visibleFlag[mark_all])
+        ui->tab_filter_all->show();
 }
 
 void FrmRfid::showEvent(QShowEvent *)
@@ -643,4 +643,9 @@ void FrmRfid::on_operation_clicked(bool checked)
 //    Q_UNUSED(checked);
     ui->operation->setChecked(!checked);
     showOperation();
+}
+
+void FrmRfid::on_dev_act_currentIndexChanged(int index)
+{
+
 }

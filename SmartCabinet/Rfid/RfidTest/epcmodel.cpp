@@ -491,7 +491,7 @@ void EpcModel::operation(QString goodsCode, EpcMark mark)
 
 void EpcModel::unknowEpc(QString epc)
 {
-    if(!unknowList.contains(epc))
+    if(unknowList.contains(epc))
         return;
 
     unknowList<<epc;

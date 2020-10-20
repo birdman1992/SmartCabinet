@@ -100,6 +100,10 @@ QLabel{
 QComboBox{
 	background-color: rgb(3,110,170);
 }
+QComboBox::drop-down {
+	background_color:rgb(255,255,255);
+}
+
 </string>
      </property>
      <property name="frameShape">
@@ -952,6 +956,12 @@ border:0px solid grey;</string>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_5">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>未知标签</string>
                   </property>
@@ -1127,10 +1137,38 @@ border:0px solid rgb(238, 238, 236);
                      <number>0</number>
                     </property>
                     <item>
+                     <widget class="QToolButton" name="tab_filter_all">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>总览:0</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>true</bool>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                      <property name="autoExclusive">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QToolButton" name="tab_filter_out">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="minimumSize">
                        <size>
-                        <width>121</width>
+                        <width>0</width>
                         <height>51</height>
                        </size>
                       </property>
@@ -1141,12 +1179,34 @@ border:0px solid rgb(238, 238, 236);
                        <bool>true</bool>
                       </property>
                       <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                      <property name="autoExclusive">
                        <bool>true</bool>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QToolButton" name="toolButton">
+                     <widget class="QToolButton" name="tab_filter_new">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>存入:0</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>true</bool>
+                      </property>
+                      <property name="autoExclusive">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="tab_filter_back">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                         <horstretch>0</horstretch>
@@ -1155,6 +1215,15 @@ border:0px solid rgb(238, 238, 236);
                       </property>
                       <property name="text">
                        <string>还回:0</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>true</bool>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                      <property name="autoExclusive">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
