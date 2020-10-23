@@ -24,6 +24,7 @@ class RfidManager : public QObject
 public:
     explicit RfidManager(EpcModel *model, QObject *parent = 0);
     void setCurOptId(QString optId);
+    void setCurOptPow(int pow);
     void initColName();
     void startScan();//开始扫描
     void doorCloseScan();//结束扫描
@@ -78,6 +79,7 @@ private:
     quint32 doorState;
     quint16 insideAnt;
     quint16 outsideAnt;
+    int curOptPow;
     QTime scanTimer;
     QTimer upTimer;
     bool accessLock;//存取锁定状态

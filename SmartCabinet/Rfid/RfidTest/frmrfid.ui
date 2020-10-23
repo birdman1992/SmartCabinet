@@ -99,9 +99,22 @@ QLabel{
 }
 QComboBox{
 	background-color: rgb(3,110,170);
+	color:rgb(255,255,255);
 }
-QComboBox::drop-down {
-	background_color:rgb(255,255,255);
+QComboBox QAbstractItemView {
+    background-color: white;
+	color:rgb(30,110,170);
+}
+QComboBox QAbstractItemView::item {
+    background-color: white;
+	color:rgb(30,110,170);
+}
+QComboBox QAbstractItemView::item:hover {
+    background-color: rgb(30,110,170);
+	color:white;
+}
+QCheckBox{
+	color:rgb(grey);
 }
 
 </string>
@@ -128,7 +141,7 @@ QComboBox::drop-down {
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1">
@@ -361,6 +374,9 @@ border:0px solid grey;</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="currentIndex">
+                      <number>0</number>
+                     </property>
                      <item>
                       <property name="text">
                        <string>存货模式</string>
@@ -374,6 +390,11 @@ border:0px solid grey;</string>
                      <item>
                       <property name="text">
                        <string>预警模式</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>智能模式</string>
                       </property>
                      </item>
                     </widget>
@@ -393,8 +414,8 @@ border:0px solid grey;</string>
                  <widget class="QFrame" name="frame_5">
                   <property name="geometry">
                    <rect>
-                    <x>10</x>
-                    <y>100</y>
+                    <x>13</x>
+                    <y>60</y>
                     <width>371</width>
                     <height>41</height>
                    </rect>
@@ -465,6 +486,9 @@ border:0px solid grey;</string>
                        <property name="text">
                         <string>-</string>
                        </property>
+                       <property name="autoRepeat">
+                        <bool>true</bool>
+                       </property>
                       </widget>
                      </item>
                      <item>
@@ -517,6 +541,9 @@ width: 5px;margin:1px;
                        <property name="text">
                         <string>+</string>
                        </property>
+                       <property name="autoRepeat">
+                        <bool>true</bool>
+                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -526,8 +553,8 @@ width: 5px;margin:1px;
                  <widget class="QFrame" name="frame_6">
                   <property name="geometry">
                    <rect>
-                    <x>10</x>
-                    <y>150</y>
+                    <x>13</x>
+                    <y>110</y>
                     <width>371</width>
                     <height>41</height>
                    </rect>
@@ -592,6 +619,9 @@ width: 5px;margin:1px;
                        <property name="text">
                         <string>-</string>
                        </property>
+                       <property name="autoRepeat">
+                        <bool>true</bool>
+                       </property>
                       </widget>
                      </item>
                      <item>
@@ -644,6 +674,9 @@ width: 2px;margin:1px;
                        <property name="text">
                         <string>+</string>
                        </property>
+                       <property name="autoRepeat">
+                        <bool>true</bool>
+                       </property>
                       </widget>
                      </item>
                     </layout>
@@ -653,8 +686,8 @@ width: 2px;margin:1px;
                  <widget class="QFrame" name="frame_7">
                   <property name="geometry">
                    <rect>
-                    <x>10</x>
-                    <y>200</y>
+                    <x>13</x>
+                    <y>160</y>
                     <width>371</width>
                     <height>41</height>
                    </rect>
@@ -719,6 +752,9 @@ width: 2px;margin:1px;
                        <property name="text">
                         <string>-</string>
                        </property>
+                       <property name="autoRepeat">
+                        <bool>true</bool>
+                       </property>
                       </widget>
                      </item>
                      <item>
@@ -770,6 +806,94 @@ width: 5px;margin:1px;
                        </property>
                        <property name="text">
                         <string>+</string>
+                       </property>
+                       <property name="autoRepeat">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                 <widget class="QFrame" name="verticalFrame">
+                  <property name="geometry">
+                   <rect>
+                    <x>10</x>
+                    <y>210</y>
+                    <width>371</width>
+                    <height>101</height>
+                   </rect>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_6">
+                     <property name="text">
+                      <string>天线配置</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QGridLayout" name="gridLayout">
+                     <item row="0" column="1">
+                      <widget class="QCheckBox" name="ant2">
+                       <property name="text">
+                        <string>天线2</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QCheckBox" name="ant6">
+                       <property name="text">
+                        <string>天线6</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="2">
+                      <widget class="QCheckBox" name="ant3">
+                       <property name="text">
+                        <string>天线3</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="0">
+                      <widget class="QCheckBox" name="ant1">
+                       <property name="text">
+                        <string>天线1</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QCheckBox" name="ant5">
+                       <property name="text">
+                        <string>天线5</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="3">
+                      <widget class="QCheckBox" name="ant4">
+                       <property name="text">
+                        <string>天线4</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="2">
+                      <widget class="QCheckBox" name="ant7">
+                       <property name="text">
+                        <string>天线7</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="3">
+                      <widget class="QCheckBox" name="ant8">
+                       <property name="text">
+                        <string>天线8</string>
                        </property>
                       </widget>
                      </item>

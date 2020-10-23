@@ -83,7 +83,7 @@ public:
     void updateStamp(QString epcId);
     void transEpcMark(EpcMark mark_before, EpcMark mark_after);
     void clear();
-    void setOptId(QString optId);
+    void setCurOpt(QString optId);
     int getMarkCount();
     bool markInfoCompleted();
     void refrushModel();

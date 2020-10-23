@@ -56,7 +56,8 @@ class RfidReader : public QObject
     Q_PROPERTY(QByteArray confIntens READ confIntens WRITE setConfIntens)//置信强度
     Q_PROPERTY(QByteArray antPowConfig READ antPowConfig WRITE setAntPowConfig)//天线强度
     Q_PROPERTY(int gradientThreshold READ gradientThreshold WRITE setGradientThreshold)//梯度阈值
-    Q_PROPERTY(DevAction devAct READ getdevAct WRITE setdevAct)//设备类型
+    Q_PROPERTY(int devAct READ getdevAct WRITE setdevAct)//设备类型
+    Q_PROPERTY(QBitArray antState READ antState WRITE setAntState)//天线使能配置
 
 public:
 //    enum DevType{
@@ -81,11 +82,15 @@ public:
     QByteArray antPowConfig() const;
     DevAction getdevAct() const;
 
+    QBitArray antState() const;
+
 public slots:
     void sendCmd(QByteArray data, bool printFlag=true);
     void setConfIntens(QByteArray confIntens);
     void setAntPowConfig(QByteArray antPowConfig);
-    void setdevAct(DevAction devAct);
+    void setdevAct(int devAct);
+
+    void setAntState(QBitArray antState);
 
 signals:
     void reportEpc(QString epc, DevAction rfidAct);
@@ -130,8 +135,11 @@ private:
     QByteArray m_antPowConfig;
 
     void initPorpertys();
-    DevAction m_devAct;
+    int m_devAct;
 
+    QBitArray m_antState;
+
+    quint32 bit2int(QBitArray b);
 private slots:
     void connectStateChanged(QAbstractSocket::SocketState state);
     void recvData();

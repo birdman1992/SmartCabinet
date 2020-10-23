@@ -13,9 +13,11 @@
 #include <QTableView>
 #include <QToolButton>
 #include <QBitArray>
+#include <QCheckBox>
 #include <QSortFilterProxyModel>
 #include "Rfid/RfidTest/epcmodel.h"
 #include "rfidmanager.h"
+#include "cabinetconfig.h"
 
 namespace Ui {
 class FrmRfid;
@@ -50,6 +52,7 @@ private slots:
     void showOperation();
     void updateAntInCount(int count);
     void updateOperationStr(QString optStr);
+    void updateAntState(RfidReader *dev);
 //    void updateEpcInfo(EpcInfo*);
     void accessSuccess(QString msg);
     void accessFailed(QString msg);
@@ -81,8 +84,13 @@ private slots:
     void on_grad_minus_clicked();
     void on_grad_add_clicked();
     void on_grad_thre_valueChanged(int value);
+    void ant_state_changed(bool checked);
     void on_dev_type_toggled(bool checked);
     void on_operation_clicked(bool checked);
+
+//    void on_dev_act_currentIndexChanged(int index);
+
+    void on_dev_act_activated(int index);
 
 private:
     Ui::FrmRfid *ui;
@@ -90,15 +98,20 @@ private:
     QSortFilterProxyModel* filterModel;
     QTabWidget* win_tabs;
     EpcModel* eModel;
+    CabinetConfig* config;
     bool isLogin;
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
     QString curSelRfidReader;
     QString curOperation;
     QMap<EpcMark, QToolButton*> btnTable;
+    QList<QCheckBox*> listAntEnable;
+
     void initTabs();
     void setDefaultSel();//设置默认选项
     void updateSelReader(QString devIp);
+    void initAntList();
+    QBitArray curAntState();
 
 protected:
     void closeEvent(QCloseEvent*);

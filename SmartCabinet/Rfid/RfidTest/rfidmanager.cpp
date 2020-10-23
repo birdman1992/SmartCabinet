@@ -17,6 +17,7 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
     doorState = 0;
     insideAnt = 0x00fe;
     outsideAnt = 0x0001;
+    curOptPow = -1;
 
     config = CabinetConfig::config();
 
@@ -49,7 +50,12 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
 void RfidManager::setCurOptId(QString optId)
 {
     if(eModel)
-        eModel->setOptId(optId);
+        eModel->setCurOpt(optId);
+}
+
+void RfidManager::setCurOptPow(int pow)
+{
+    curOptPow = pow;
 }
 
 void RfidManager::initEpc()
@@ -94,7 +100,7 @@ void RfidManager::startScan()
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
 //        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
-        reader->scanStart(RF_REP,1);
+        reader->scanStart(RF_REP|RF_FETCH|RF_AUTO|RF_WARNING,1);
     }
     connect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
     timerStart();
@@ -113,7 +119,7 @@ void RfidManager::doorCloseScan()
     }
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
-        reader->scanStart(RF_REP|RF_FETCH, 1);
+        reader->scanStart(RF_REP|RF_FETCH|RF_AUTO|RF_WARNING, 1);
     }
     clsStamp = QDateTime::currentMSecsSinceEpoch();//关门时间
 //    clsTimeOut();
@@ -348,10 +354,36 @@ void RfidManager::updateEpc(QString epc, DevAction rfAct)
             eModel->setEpcMark(epc, mark_out);
             eModel->lockEpcMark(epc);
             break;
-        case epc_no:
-            eModel->setEpcMark(epc, mark_no);
-            eModel->lockEpcMark(epc);
+//        case epc_no://无状态的标签也会被锁定
+//            eModel->setEpcMark(epc, mark_no);
+//            eModel->lockEpcMark(epc);
+//            break;
+        default:
             break;
+        }
+    }
+    else if(rfAct == RF_AUTO)
+    {
+        switch(info->state)
+        {
+        case epc_no://入库标签
+            if(curOptPow==1 || curOptPow==2 || curOptPow==4)//护士，护士长，医院员工不关注存货
+                break;
+
+            eModel->setEpcMark(epc, mark_new);
+            break;
+//        case epc_out://还回标签
+//            eModel->setEpcMark(epc, mark_back);
+//            break;
+        case epc_in://取出标签
+            if(curOptPow==3)//仓管不关注取货
+                break;
+
+            eModel->setEpcMark(epc, mark_out);
+//            eModel->lockEpcMark(epc);
+            break;
+//        case epc_consume://已消耗标签
+//            return;
         default:
             break;
         }

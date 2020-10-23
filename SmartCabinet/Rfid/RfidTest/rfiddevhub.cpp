@@ -20,11 +20,11 @@ void RfidDevHub::addDevice(QString addr, quint16 port, DevAction act)
     }
 
     qDebug()<<"[RFID] addDevice:"<<addr<<port<<act;
+    RfReaderConfig::instance().createDevice(addr, port, act);
     RfidReader* reader = new RfidReader(QHostAddress(addr), port, list_device.count(), NULL, act);
     connect(reader, SIGNAL(reportEpc(QString,DevAction)), this, SIGNAL(reportEpc(QString,DevAction)));
     connect(reader, SIGNAL(deviceChanged()), this, SLOT(devStateChanged()));
 
-    RfReaderConfig::instance().createDevice(addr, port, act);
     list_device.insert(addr ,reader);
 //    updateDevInfo();
 }

@@ -39,6 +39,7 @@ RfidReader::RfidReader(QHostAddress server, quint16 port, int seq, QObject *pare
     speedCalTimerId = startTimer(8000);
     recvCount = 0;
     recvEpcCount = 0;
+    initPorpertys();
 }
 
 void RfidReader::initPorpertys()
@@ -47,7 +48,8 @@ void RfidReader::initPorpertys()
     m_antPowConfig = RfReaderConfig::instance().getAntPower(serverAddr);
     m_gradientThreshold = RfReaderConfig::instance().getGrandThreshold(serverAddr);
     m_devAct = RfReaderConfig::instance().getDeviceAction(serverAddr);
-    qDebug()<<"initPorpertys"<<serverAddr<<m_confIntens.toHex()<<m_antPowConfig.toHex()<<m_gradientThreshold<<m_devAct;
+    m_antState = RfReaderConfig::instance().getAntState(serverAddr);
+    qDebug()<<"initPorpertys"<<serverAddr<<m_confIntens.toHex()<<m_antPowConfig.toHex()<<m_gradientThreshold<<m_devAct<<m_antState;
 }
 
 void RfidReader::sendCmd(QByteArray data, bool printFlag)
@@ -76,12 +78,20 @@ void RfidReader::setAntPowConfig(QByteArray antPowConfig)
 {
     m_antPowConfig = antPowConfig;
     RfReaderConfig::instance().setAntPower(serverAddr, m_antPowConfig);
+
 }
 
-void RfidReader::setdevAct(DevAction devAct)
+void RfidReader::setdevAct(int devAct)
 {
+//    qDebug()<<"setdevAct:"<<devAct;
     m_devAct = devAct;
-    RfReaderConfig::instance().setDeviceAction(serverAddr, m_devAct);
+    RfReaderConfig::instance().setDeviceAction(serverAddr, DevAction(m_devAct));
+}
+
+void RfidReader::setAntState(QBitArray antState)
+{
+    m_antState = antState;
+    RfReaderConfig::instance().setAntState(serverAddr, antState);
 }
 
 bool sigIntLessThan(SigInfo* S1, SigInfo* S2)
@@ -215,6 +225,10 @@ QString RfidReader::readerType()
     {
         return QString("警报模式");
     }
+    else if(m_devAct == RF_AUTO)
+    {
+        return QString("智能模式");
+    }
 
     return QString("警报模式");
 }
@@ -258,7 +272,22 @@ QByteArray RfidReader::antPowConfig() const
 
 DevAction RfidReader::getdevAct() const
 {
-    return m_devAct;
+    return DevAction(m_devAct);
+}
+
+QBitArray RfidReader::antState() const
+{
+    return m_antState;
+}
+
+quint32 RfidReader::bit2int(QBitArray b)
+{
+    quint32 ret = 0;
+    for(int i=0; i<32 && i<b.count(); i++)
+    {
+        ret |= b.at(i)<<i;
+    }
+    return ret;
 }
 
 /*
@@ -272,18 +301,20 @@ void RfidReader::scanStart(int actMode, quint8 scanMode)
     qDeleteAll(sigMap.begin(), sigMap.end());
     sigMap.clear();
 
-    quint32 antState;
-    if(m_devAct == RF_FETCH)
-        antState = 0x0001;
-    else
-        antState = 0x00ff;
+    quint32 antWord;
+    antWord = bit2int(antState());
+
+//    if(m_devAct == RF_FETCH)
+//        antWord = 0x0001;
+//    else
+//        antWord = 0x00ff;
 
     flagScan = true;
     QByteArray cmdParam;
     cmdParam.resize(5);
     char* pos = cmdParam.data();
-    antState = htonl(antState);
-    MEM_ASSIGN(pos, antState);
+    antWord = htonl(antWord);
+    MEM_ASSIGN(pos, antWord);
     MEM_ASSIGN(pos, scanMode);
     RfidCmd cmd(0x10, cmdParam);
     sendCmd(cmd.packData());
@@ -299,7 +330,7 @@ void RfidReader::connectStateChanged(QAbstractSocket::SocketState state)
 
         setFlagConnect(true);
 //        flagConnect = true;
-        initPorpertys();
+//        initPorpertys();
         scanStop();
         break;
 

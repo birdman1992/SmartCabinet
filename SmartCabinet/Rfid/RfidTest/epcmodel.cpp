@@ -185,17 +185,15 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
     EpcInfo* info = map_rfid.value(epcId, NULL);
     if(info == NULL)
         return;
-
-    if(info->markLock)
+    if(info->markLock)//锁定的标签
         return;
-    if(info->mark == mark)
+    if(info->mark == mark)//无变化标签
         return;
-    if((!info->mark) && mark)
+    if((!info->mark) && mark)//新标记的标签
     {
         markCount++;
         emit scanProgress(markCount, map_rfid.count());
     }
-
     qint64 curStamp = QDateTime::currentMSecsSinceEpoch();
     countTab[info->mark]--;
     countTab[mark]++;
@@ -422,7 +420,7 @@ void EpcModel::curOptNoChanged(QString optNo)
     operationNo = optNo;
 }
 
-void EpcModel::setOptId(QString optId)
+void EpcModel::setCurOpt(QString optId)
 {
     curOptId = optId;
 }

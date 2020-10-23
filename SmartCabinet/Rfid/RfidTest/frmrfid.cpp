@@ -28,6 +28,8 @@ FrmRfid::FrmRfid(QWidget *parent) :
     QRegExp portRx("^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$");
     ui->input_port->setValidator(new QRegExpValidator(portRx));
 
+    config = CabinetConfig::config();
+
     eModel = new EpcModel(this);
     isLogin = false;
     rfManager = new RfidManager(eModel);
@@ -45,6 +47,16 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(ui->frm_operation, SIGNAL(curOperationStrChanged(QString)), this, SLOT(updateOperationStr(QString)));
     connect(ui->frm_operation, SIGNAL(CurOperationNoChanged(QString)), eModel, SLOT(curOptNoChanged(QString)));
     initTabs();
+    initAntList();
+
+    if(!config->getCabinetType().at(BIT_LOW_HIGH))//低值柜没有手术单
+    {
+        ui->operation->hide();
+        ui->tab_check_out->hide();
+        ui->tab_day_list->hide();
+        ui->pushButton_3->hide();
+    }
+
 #ifdef test_rfid
     QTimer::singleShot(1000, this, SLOT(testSlot()));
 #endif
@@ -111,6 +123,36 @@ void FrmRfid::setDefaultSel()
 void FrmRfid::updateSelReader(QString devIp)
 {
     Q_UNUSED(devIp);
+}
+
+void FrmRfid::initAntList()
+{
+    listAntEnable.clear();
+    listAntEnable<<ui->ant1
+                <<ui->ant2
+               <<ui->ant3
+              <<ui->ant4
+             <<ui->ant5
+            <<ui->ant6
+           <<ui->ant7
+          <<ui->ant8;
+
+    foreach (QCheckBox* b, listAntEnable)
+    {
+        connect(b, SIGNAL(toggled(bool)), this, SLOT(ant_state_changed(bool)));
+    }
+}
+
+QBitArray FrmRfid::curAntState()
+{
+    QBitArray ret = QBitArray(8);
+
+    for(int i=0; i<ret.count(); i++)
+    {
+        ret.setBit(i, listAntEnable.at(i)->isChecked());
+    }
+    qDebug()<<"curAntState:"<<ret;
+    return ret;
 }
 
 void FrmRfid::closeEvent(QCloseEvent *e)
@@ -206,6 +248,17 @@ void FrmRfid::updateOperationStr(QString optStr)
     ui->operation->setChecked(optStr.isEmpty());
 }
 
+void FrmRfid::updateAntState(RfidReader* dev)
+{
+    QBitArray state = dev->property("antState").toBitArray();
+
+    for(int i=0; i<listAntEnable.count(); i++)
+    {
+        qDebug()<<state.at(i);
+        listAntEnable[i]->setChecked(state.at(i));
+    }
+}
+
 void FrmRfid::accessSuccess(QString msg)
 {
     ui->msg->setText(msg);
@@ -297,6 +350,8 @@ void FrmRfid::initTabs()
 
 void FrmRfid::setPow(int pow)
 {
+    rfManager->setCurOptPow(pow);
+
     switch(pow)
     {
     case 0:
@@ -340,6 +395,7 @@ void FrmRfid::clearCountText()
 
 void FrmRfid::showEvent(QShowEvent *)
 {
+    clearCountText();
     ui->msg->clear();
 //    updateOperationState();
 }
@@ -523,12 +579,14 @@ void FrmRfid::on_add_device_clicked()
  */
 int int2bit(int num)
 {
-    int ret;
+    int ret=0;
     while(num)
     {
+        qDebug()<<"num:"<<num;
         num = (num>>1);
         ret++;
     }
+    qDebug()<<"int2bit"<<num<<"= 1<<"<<ret;
     return ret;
 }
 
@@ -543,22 +601,27 @@ void FrmRfid::on_rfidDevView_clicked(const QModelIndex &index)
     }
 
     curSelRfidReader = selDevIp;
-    qDebug()<<ui->dev_name->text()<<curSelRfidReader;
+
     if(ui->dev_name->text() == curSelRfidReader)
         return;
 
     RfidReader* dev = devModel->device(curSelRfidReader);
     if(dev == NULL)
         return;
-    qDebug()<<dev->property("confIntens").toByteArray().toHex();
-    qDebug()<<dev->property("antPowConfig").toByteArray().at(0);
-    qDebug()<<dev->property("gradientThreshold").toInt();
-    qDebug()<<dev->property("outsideDev").toBool();
+
+    qDebug()<<"curSelRfidReader:"<<curSelRfidReader;
+    qDebug()<<"confIntens:"<<dev->property("confIntens").toByteArray().toHex();
+    qDebug()<<"antPowConfig:"<<dev->property("antPowConfig").toByteArray().toHex();
+    qDebug()<<"gradientThreshold:"<<dev->property("gradientThreshold").toInt();
+    qDebug()<<"devAct:"<<dev->property("devAct").toInt();
+    qDebug()<<"antState:"<<dev->property("antState");
+//    qDebug()<<dev->property("outsideDev").toBool();
     ui->conf_int->setValue((int)dev->property("confIntens").toByteArray().at(0));
     ui->ant_pow->setValue((int)dev->property("antPowConfig").toByteArray().at(0));
     ui->grad_thre->setValue(dev->property("gradientThreshold").toInt());
-    ui->dev_act->setCurrentIndex(int2bit(dev->getdevAct()));
+    ui->dev_act->setCurrentIndex(int2bit(dev->property("devAct").toInt())-1);
     ui->dev_name->setText(curSelRfidReader);
+    updateAntState(dev);
 }
 
 void FrmRfid::on_sig_add_clicked()
@@ -628,6 +691,18 @@ void FrmRfid::on_grad_thre_valueChanged(int value)
     dev->setProperty("gradientThreshold", value);
 }
 
+void FrmRfid::ant_state_changed(bool)
+{
+    if(ui->dev_name->text() != curSelRfidReader)
+        return;
+    RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
+    RfidReader* dev = devModel->device(curSelRfidReader);
+    if(dev == NULL)
+        return;
+
+    dev->setProperty("antState", curAntState());
+}
+
 void FrmRfid::on_dev_type_toggled(bool checked)
 {
     RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
@@ -645,7 +720,17 @@ void FrmRfid::on_operation_clicked(bool checked)
     showOperation();
 }
 
-void FrmRfid::on_dev_act_currentIndexChanged(int index)
-{
+//void FrmRfid::on_dev_act_currentIndexChanged(int index)
+//{
 
+//}
+
+void FrmRfid::on_dev_act_activated(int index)
+{
+    RfidDevHub* devModel = (RfidDevHub*)ui->rfidDevView->model();
+    RfidReader* dev = devModel->device(curSelRfidReader);
+    if(dev == NULL)
+        return;
+
+    dev->setProperty("devAct", (1<<index));
 }

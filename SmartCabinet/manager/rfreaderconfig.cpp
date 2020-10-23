@@ -1,5 +1,6 @@
 #include "rfreaderconfig.h"
 
+
 RfReaderConfig::RfReaderConfig(QObject *parent) :
     QObject(parent),configPath(CONF_RFID_READER)
 {
@@ -22,18 +23,19 @@ void RfReaderConfig::createDefaultConfig(QString devName)
     setConfig(devName+"/"+"grandThreshold", 20);
     setConfig(devName+"/"+"port", 8888);
     setConfig(devName+"/"+"type", "inside");
+    setConfig(devName+"/"+"antState", QBitArray(8, true));
 }
 
 QByteArray RfReaderConfig::getConfIntens(QString devName)
 {
     createDefaultConfig(devName);
-    return getConfig(devName+"/"+"confIntens",QVariant()).toByteArray();
+    return getConfig(devName+"/"+"confIntens",QVariant(QByteArray(8,1))).toByteArray();
 }
 
 QByteArray RfReaderConfig::getAntPower(QString devName)
 {
     createDefaultConfig(devName);
-    return getConfig(devName+"/"+"antPower",QVariant()).toByteArray();
+    return getConfig(devName+"/"+"antPower",QVariant(QByteArray(8,30))).toByteArray();
 }
 
 DevAction RfReaderConfig::getDeviceAction(QString devName)
@@ -52,6 +54,11 @@ quint16 RfReaderConfig::getDevicePort(QString devName)
 {
     createDefaultConfig(devName);
     return getConfig(devName+"/"+"port",8888).toInt();
+}
+
+QBitArray RfReaderConfig::getAntState(QString devName)
+{
+    return getConfig(devName+"/"+"antState", QBitArray(8, true)).toBitArray();
 }
 
 void RfReaderConfig::setConfIntens(QString devName, QByteArray confIntens)
@@ -79,6 +86,11 @@ void RfReaderConfig::setDevicePort(QString devName,quint16 port)
     setConfig(devName+"/"+"port",port);
 }
 
+void RfReaderConfig::setAntState(QString devName, QBitArray state)
+{
+    setConfig(devName+"/"+"antState", state);
+}
+
 /**
  * @brief RfReaderConfig::createDevice
  * @param devName 设备IP
@@ -92,11 +104,12 @@ void RfReaderConfig::createDevice(QString devName, int port, DevAction devType)
 //        qDebug()<<"The device configuration already exists:"<<devName<<"create failed.";
         return;
     }
-    setConfig(devName+"/"+"confIntens", QByteArray::fromHex("0x500a0a0a0a0a0a0a"));
-    setConfig(devName+"/"+"antPower", QByteArray::fromHex("0x1e1e1e1e1e1e1e1e"));
+    setConfig(devName+"/"+"confIntens", QByteArray::fromHex("500a0a0a0a0a0a0a"));
+    setConfig(devName+"/"+"antPower", QByteArray::fromHex("1e1e1e1e1e1e1e1e"));
     setConfig(devName+"/"+"grandThreshold", 20);
     setConfig(devName+"/"+"port", port);
     setConfig(devName+"/"+"type", devType);
+    setConfig(devName+"/"+"antState", QBitArray(8, true));
 }
 
 void RfReaderConfig::delDevice(QString devName)
