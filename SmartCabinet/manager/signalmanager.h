@@ -26,6 +26,8 @@ signals:
     //手术单信息获取
     void requireUpdateOperation();//请求更新手术单 Operation::updateSelOperation
     void operationInfoUpdate();//手术单信息更新 CabinetServer::operationInfoUpdate
+    //device sig
+    void lockState(int id, bool isOpen);
 
 
 private:

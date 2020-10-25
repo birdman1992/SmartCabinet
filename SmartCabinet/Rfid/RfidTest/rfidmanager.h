@@ -26,6 +26,7 @@ public:
     void setCurOptId(QString optId);
     void setCurOptPow(int pow);
     void initColName();
+    void initEpc();//程序启动初始化EPC标签
     void startScan();//开始扫描
     void doorCloseScan();//结束扫描
     void epcCheck(int row=0, int col=0);//盘点标签
@@ -95,7 +96,7 @@ private:
 
 
 private slots:
-    void initEpc();//程序启动初始化EPC标签
+
     void updateEpc(QString epc, DevAction rfAct);
 //    void testUpdateEpc(QString epc, int seq, int ant);
     void clsTimeOut();

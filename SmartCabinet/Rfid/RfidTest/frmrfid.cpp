@@ -40,6 +40,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));
     connect(sigMan, SIGNAL(accessFailed(QString)), this, SLOT(accessFailed(QString)));
     connect(sigMan, SIGNAL(configRfidDevice()), this, SLOT(showConfigDevice()));
+    connect(sigMan, SIGNAL(doorState(int,bool)), this, SLOT(lockStateChanged(int,bool)));
 
     connect(ui->frm_operation, SIGNAL(winClose()), this, SLOT(showEpcInfo()));
     connect(ui->frm_operation, SIGNAL(requireUpdate()), sigMan, SIGNAL(requireUpdateOperation()));
@@ -219,8 +220,18 @@ void FrmRfid::showEpcInfo()
 void FrmRfid::rfidCheck()
 {
     showEpcInfo();
+    rfManager->initEpc();
     rfManager->startScan();
     rfManager->doorCloseScan();
+}
+
+void FrmRfid::lockStateChanged(int id, bool isOpen)
+{
+    qDebug()<<"lockState:"<<id<<isOpen;
+    if((!isOpen) && this->isVisible())
+    {
+        on_OK_clicked();
+    }
 }
 
 void FrmRfid::showOperation()
@@ -365,6 +376,16 @@ void FrmRfid::setPow(int pow)
         visibleFlag[mark_all] = true;
         visibleFlag[mark_checked] = true;
         break;
+    case 3:
+        visibleFlag = QBitArray(mark_checked+1, false);
+        visibleFlag[mark_in] = true;
+//        visibleFlag[mark_out] = true;
+//        visibleFlag[mark_back] = true;
+        visibleFlag[mark_new] = true;
+//        visibleFlag[mark_wait_back] = true;
+        visibleFlag[mark_all] = true;
+//        visibleFlag[mark_checked] = true;
+        QTimer::singleShot(2000, this, SLOT(rfidCheck()));
     default:
         break;
     }

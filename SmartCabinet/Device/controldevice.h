@@ -14,6 +14,7 @@
 #include "defines.h"
 //#include "Device/SerialPort/qserialport.h"
 #include "Structs/goodscar.h"
+#include "manager/signalmanager.h"
 
 //#ifdef PC
 //    #define SIMULATE_ON  //打开仿真
@@ -79,6 +80,7 @@ signals:
     void codeScanData(QByteArray);//当前可用
     void readyListData(QString listCode);//预备存入单号
     void tempData(QByteArray);
+    void lockState(int id, bool isOPen);
 
 public slots:
 //    void setLed(int seq, int ioState);

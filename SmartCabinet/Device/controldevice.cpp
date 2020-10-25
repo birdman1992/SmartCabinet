@@ -31,6 +31,10 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 #else
 
 #endif
+
+    SignalManager* sigMan = SignalManager::manager();
+    connect(this, SIGNAL(lockState(int,bool)), sigMan, SIGNAL(doorState(int,bool)));
+
     devWatcher = new QDeviceWatcher(this);
     connect(devWatcher, SIGNAL(deviceStateChanged(quint16 , quint16 , bool )), this, SLOT(hidStateChanged(quint16 , quint16 , bool )));
     devWatcher->start();
@@ -504,6 +508,14 @@ void ControlDevice::readLockCtrlData()
     qDebug()<<"[readLockCtrlData]"<<qba.toHex();
 //    emit lockCtrlData(qba);
     emit tempData(qba);
+
+    if(qba.size() == 6)
+    {
+        if((unsigned char)qba[0] == 0xfc && (unsigned char)qba[5] == 0xff)
+        {
+            emit lockState(qba[1],qba[3]);
+        }
+    }
 }
 
 void ControlDevice::readRfidGatewayData()

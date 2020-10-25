@@ -910,7 +910,8 @@ void CabinetConfig::clearGoodsConfig()
         cab->updateCabinet();
     }
     creatCabinetConfig(settings.value("cabLayout").toString().split("#", QString::SkipEmptyParts), screenPos);
-    qDebug()<<"[clearGoodsConfig]"<<list_cabinet.count()<<list_cabinet[0]->rowCount();
+    qDebug()<<"[clearGoodsConfig]"<<list_cabinet.count();
+//    qDebug()<<"[clearGoodsConfig]"<<list_cabinet[0]->rowCount();
 }
 
 void CabinetConfig::updateGoodsDisplay()
