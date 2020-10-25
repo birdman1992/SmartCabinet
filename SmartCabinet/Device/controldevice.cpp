@@ -509,9 +509,9 @@ void ControlDevice::readLockCtrlData()
 //    emit lockCtrlData(qba);
     emit tempData(qba);
 
-    if(qba.size() == 6)
+    if(qba.size() == 5)
     {
-        if((unsigned char)qba[0] == 0xfc && (unsigned char)qba[5] == 0xff)
+        if((unsigned char)qba[0] == 0xfc && (unsigned char)qba[4] == 0xff)
         {
             emit lockState(qba[1],qba[3]);
         }

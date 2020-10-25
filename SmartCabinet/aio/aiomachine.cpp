@@ -28,6 +28,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
 
     win_rfid = new FrmRfid();
     connect(this, SIGNAL(requireRfidCheck()), win_rfid, SLOT(rfidCheck()));
+    connect(win_rfid, SIGNAL(requireSysLock()), this, SLOT(on_aio_quit_clicked()));
 
 //    win_access = new CabinetAccess();
 //    connect(win_access, SIGNAL(saveStore(Goods*,int)), this, SLOT(saveStore(Goods*,int)));
@@ -627,7 +628,7 @@ void AIOMachine::recvClickEvent(AIOMachine::cEvent e)
     switch(e)
     {
     case AIOMachine::click_lab_temp:
-        ui->stackedWidget->setCurrentIndex(2);
+//        ui->stackedWidget->setCurrentIndex(2);
         break;
     default:
         break;

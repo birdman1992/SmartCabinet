@@ -171,6 +171,7 @@ void EpcModel::clearEpcMark()
     }
     markCount = 0;
     lockCount = 0;
+    activeStamp = 0;
     clearStamp = QDateTime::currentMSecsSinceEpoch();
 
     clearUnknowEpcs();
@@ -500,6 +501,22 @@ void EpcModel::clearUnknowEpcs()
 {
     unknowList.clear();
     emit updateUnknowCount(unknowList.count());
+}
+
+/**
+ * @brief EpcModel::checkOptTime 完成一个倒计时
+ * @param downCount 总倒数计数
+ * @return 剩余倒数计数
+ */
+int EpcModel::checkOptTime(int downCount)
+{
+    if(activeStamp == 0)
+        return downCount;
+
+     int ret = downCount - (QDateTime::currentMSecsSinceEpoch() - activeStamp/1000);
+     if(ret < 0)
+         return 0;
+     return ret;
 }
 
 void EpcModel::initColName()

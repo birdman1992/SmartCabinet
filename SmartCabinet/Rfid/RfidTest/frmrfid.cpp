@@ -32,6 +32,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
 
     eModel = new EpcModel(this);
     isLogin = false;
+    doorIsOpen = false;
     rfManager = new RfidManager(eModel);
     connect(rfManager, SIGNAL(updateTimer(int)), this, SLOT(updateScanTimer(int)));
     connect(rfManager, SIGNAL(optFinish()), this, SLOT(showEpcInfo()));
@@ -77,6 +78,8 @@ FrmRfid::~FrmRfid()
 void FrmRfid::updateScanTimer(int ms)
 {
     ui->scan_timer->display(ms);
+    if(this->isVisible() && (!doorIsOpen))//关门且在扫描状态
+        accessDownCount(eModel->checkOptTime(5));
     //刷新信号强度
 //    int index = ui->tab_view->verticalScrollBar()->value();
 //    int countMax = ui->tab_view->verticalScrollBar()->pageStep()+1;
@@ -156,6 +159,13 @@ QBitArray FrmRfid::curAntState()
     return ret;
 }
 
+void FrmRfid::accessDownCount(int count)
+{
+    ui->OK->setText(QString("确定(%1)").arg(count));
+    if(count == 0)
+        on_OK_clicked();
+}
+
 void FrmRfid::closeEvent(QCloseEvent *e)
 {
     Q_UNUSED(e);
@@ -228,9 +238,20 @@ void FrmRfid::rfidCheck()
 void FrmRfid::lockStateChanged(int id, bool isOpen)
 {
     qDebug()<<"lockState:"<<id<<isOpen;
-    if((!isOpen) && this->isVisible())
+    doorIsOpen = isOpen;
+    if((!isOpen))
     {
-        on_OK_clicked();
+        if(this->isVisible())
+            on_OK_clicked();
+        else
+        {
+            showEpcInfo();
+            rfManager->startScan();
+        }
+    }
+    else
+    {
+        rfManager->doorCloseScan();
     }
 }
 
@@ -445,6 +466,7 @@ void FrmRfid::on_OK_clicked()
     accessSuccess("操作成功");
     clearCountText();
     scanProgress(0, 0);
+    emit requireSysLock();
 }
 
 void FrmRfid::on_fresh_clicked()

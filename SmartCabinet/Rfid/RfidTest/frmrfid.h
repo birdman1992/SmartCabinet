@@ -48,6 +48,7 @@ public slots:
 
 signals:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void requireSysLock();
 
 private slots:
     void showOperation();
@@ -101,6 +102,7 @@ private:
     EpcModel* eModel;
     CabinetConfig* config;
     bool isLogin;
+    bool doorIsOpen;
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
     QString curSelRfidReader;
@@ -113,6 +115,7 @@ private:
     void updateSelReader(QString devIp);
     void initAntList();
     QBitArray curAntState();
+    void accessDownCount(int count);//存取倒计时
 
 protected:
     void closeEvent(QCloseEvent*);

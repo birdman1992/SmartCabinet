@@ -93,6 +93,7 @@ public:
     void operation(QString goodsCode, EpcMark mark);
     void unknowEpc(QString epc);
     void clearUnknowEpcs();
+    int checkOptTime(int downCount);//无操作倒计时
 
 public slots:
     void syncUpload();
