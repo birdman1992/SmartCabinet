@@ -513,7 +513,7 @@ int EpcModel::checkOptTime(int downCount)
     if(activeStamp == 0)
         return downCount;
 
-     int ret = downCount - (QDateTime::currentMSecsSinceEpoch() - activeStamp/1000);
+     int ret = downCount - (QDateTime::currentMSecsSinceEpoch() - activeStamp)/1000;
      if(ret < 0)
          return 0;
      return ret;

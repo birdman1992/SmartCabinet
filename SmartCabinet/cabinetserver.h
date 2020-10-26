@@ -63,6 +63,7 @@ private:
     QNetworkReply* reply_aio_overview;
     QNetworkReply* reply_aio_data;
     QNetworkReply* reply_rfid_sync;
+    QNetworkReply* reply_rfid_auto_store;
     QNetworkReply* reply_rfid_access;
     QNetworkReply* reply_rfid_consume;
     QNetworkReply* reply_operation;
@@ -237,6 +238,7 @@ private slots:
     int watchdogTimeout();
     void tarFinished(int code);
     QByteArray apiComplete(cJSON* json);
+    void recvRfidStoreRst();
 };
 
 #endif // CABINETSERVER_H

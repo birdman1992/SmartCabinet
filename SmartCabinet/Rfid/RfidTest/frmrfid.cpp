@@ -30,6 +30,9 @@ FrmRfid::FrmRfid(QWidget *parent) :
 
     config = CabinetConfig::config();
 
+    visibleFlag = QBitArray(mark_checked+1, false);
+    visibleFlag[mark_all] = true;
+
     eModel = new EpcModel(this);
     isLogin = false;
     doorIsOpen = false;
@@ -41,7 +44,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(sigMan, SIGNAL(accessSuccess(QString)), this, SLOT(accessSuccess(QString)));
     connect(sigMan, SIGNAL(accessFailed(QString)), this, SLOT(accessFailed(QString)));
     connect(sigMan, SIGNAL(configRfidDevice()), this, SLOT(showConfigDevice()));
-    connect(sigMan, SIGNAL(doorState(int,bool)), this, SLOT(lockStateChanged(int,bool)));
+    connect(sigMan, SIGNAL(lockState(int,bool)), this, SLOT(lockStateChanged(int,bool)));
 
     connect(ui->frm_operation, SIGNAL(winClose()), this, SLOT(showEpcInfo()));
     connect(ui->frm_operation, SIGNAL(requireUpdate()), sigMan, SIGNAL(requireUpdateOperation()));
@@ -57,6 +60,8 @@ FrmRfid::FrmRfid(QWidget *parent) :
         ui->tab_check_out->hide();
         ui->tab_day_list->hide();
         ui->pushButton_3->hide();
+        ui->label_3->hide();
+        ui->lock_count->hide();
     }
 
 #ifdef test_rfid
@@ -162,7 +167,8 @@ QBitArray FrmRfid::curAntState()
 void FrmRfid::accessDownCount(int count)
 {
     ui->OK->setText(QString("确定(%1)").arg(count));
-    if(count == 0)
+    qDebug()<<"[accessDownCount]"<<count;
+    if(count == 0 && (ui->tab_filter_new->text() == QString("存入:0")) && ui->tab_filter_new->isVisible())
         on_OK_clicked();
 }
 
@@ -239,19 +245,20 @@ void FrmRfid::lockStateChanged(int id, bool isOpen)
 {
     qDebug()<<"lockState:"<<id<<isOpen;
     doorIsOpen = isOpen;
-    if((!isOpen))
+    if(isOpen)
     {
+        qDebug()<<"[visible]"<<this->isVisible();
         if(this->isVisible())
             on_OK_clicked();
-        else
-        {
-            showEpcInfo();
-            rfManager->startScan();
-        }
+//        else
+//        {
+//            showEpcInfo();
+//            rfManager->startScan();
+//        }
     }
     else
     {
-        rfManager->doorCloseScan();
+        rfidCheck();
     }
 }
 
@@ -383,11 +390,16 @@ void FrmRfid::initTabs()
 void FrmRfid::setPow(int pow)
 {
     rfManager->setCurOptPow(pow);
+    QStringList powList;
+    powList<<"权限：管理员"
+          <<"权限：护士长"
+         <<"权限：护士"
+        <<"权限：仓管"
+       <<"权限：员工";
 
     switch(pow)
     {
     case 0:
-//        visibleFlag = QBitArray(mark_checked+1, true);
         visibleFlag = QBitArray(mark_checked+1, false);
         visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
@@ -397,19 +409,53 @@ void FrmRfid::setPow(int pow)
         visibleFlag[mark_all] = true;
         visibleFlag[mark_checked] = true;
         break;
+    case 1:
+        visibleFlag = QBitArray(mark_checked+1, false);
+//        visibleFlag[mark_in] = true;
+        visibleFlag[mark_out] = true;
+//        visibleFlag[mark_back] = true;
+//        visibleFlag[mark_new] = true;
+//        visibleFlag[mark_wait_back] = true;
+//        visibleFlag[mark_all] = true;
+//        visibleFlag[mark_checked] = true;
+        break;
+    case 2:
+        visibleFlag = QBitArray(mark_checked+1, false);
+//        visibleFlag[mark_in] = true;
+        visibleFlag[mark_out] = true;
+//        visibleFlag[mark_back] = true;
+//        visibleFlag[mark_new] = true;
+//        visibleFlag[mark_wait_back] = true;
+//        visibleFlag[mark_all] = true;
+//        visibleFlag[mark_checked] = true;
+        break;
     case 3:
         visibleFlag = QBitArray(mark_checked+1, false);
-        visibleFlag[mark_in] = true;
+//        visibleFlag[mark_in] = true;
 //        visibleFlag[mark_out] = true;
 //        visibleFlag[mark_back] = true;
         visibleFlag[mark_new] = true;
 //        visibleFlag[mark_wait_back] = true;
-        visibleFlag[mark_all] = true;
+//        visibleFlag[mark_all] = true;
 //        visibleFlag[mark_checked] = true;
         QTimer::singleShot(2000, this, SLOT(rfidCheck()));
-    default:
         break;
+    case 4:
+        visibleFlag = QBitArray(mark_checked+1, false);
+//        visibleFlag[mark_in] = true;
+        visibleFlag[mark_out] = true;
+//        visibleFlag[mark_back] = true;
+//        visibleFlag[mark_new] = true;
+//        visibleFlag[mark_wait_back] = true;
+//        visibleFlag[mark_all] = true;
+//        visibleFlag[mark_checked] = true;
+        break;
+    default:
+        return;
+//        break;
     }
+
+    ui->lab_pow->setText(powList.at(pow));
 
     if(visibleFlag[mark_all])
         ui->tab_filter_all->show();

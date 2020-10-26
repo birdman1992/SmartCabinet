@@ -404,7 +404,7 @@ padding-bottom:10px;
 </string>
            </property>
            <property name="text">
-            <string>19600
+            <string>0
 耗材品种（个）</string>
            </property>
            <property name="alignment">
@@ -446,7 +446,7 @@ padding-bottom:10px;
 </string>
              </property>
              <property name="text">
-              <string>￥1900000
+              <string>￥0
 今日出库(元)</string>
              </property>
              <property name="alignment">
@@ -465,7 +465,7 @@ padding-bottom:10px;
 </string>
              </property>
              <property name="text">
-              <string>12℃
+              <string>--℃
 当前温度</string>
              </property>
              <property name="alignment">
@@ -484,7 +484,7 @@ padding-bottom:10px;
 </string>
              </property>
              <property name="text">
-              <string>69%
+              <string>--%
 当前湿度</string>
              </property>
              <property name="alignment">
@@ -503,7 +503,7 @@ padding-bottom:10px;
 </string>
              </property>
              <property name="text">
-              <string>￥1900000
+              <string>￥0
 今日入库(元)</string>
              </property>
              <property name="alignment">
@@ -522,7 +522,7 @@ padding-bottom:10px;
 </string>
              </property>
              <property name="text">
-              <string>289
+              <string>0
 近效期物品</string>
              </property>
              <property name="alignment">
@@ -541,7 +541,7 @@ padding-bottom:10px;
 </string>
              </property>
              <property name="text">
-              <string>12
+              <string>0
 库存预警</string>
              </property>
              <property name="alignment">

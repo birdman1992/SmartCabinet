@@ -33,7 +33,7 @@ ControlDevice::ControlDevice(QObject *parent) : QObject(parent)
 #endif
 
     SignalManager* sigMan = SignalManager::manager();
-    connect(this, SIGNAL(lockState(int,bool)), sigMan, SIGNAL(doorState(int,bool)));
+    connect(this, SIGNAL(lockState(int,bool)), sigMan, SIGNAL(lockState(int,bool)));
 
     devWatcher = new QDeviceWatcher(this);
     connect(devWatcher, SIGNAL(deviceStateChanged(quint16 , quint16 , bool )), this, SLOT(hidStateChanged(quint16 , quint16 , bool )));

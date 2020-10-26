@@ -420,7 +420,7 @@ void SqlManager::replace(QString table, QList<QVariantMap> bindings)
 
         foreach (QString key, binding.keys())
         {
-            qDebug()<<key<<binding[key];
+//            qDebug()<<key<<binding[key];
             pubQuery->bindValue(QString(":%1").arg(key), binding[key]);
         }
         queryExec(pubQuery, QString("[replace] %1").arg(table));
@@ -610,7 +610,7 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
         }
         else
         {
-            qDebug()<<"[replaceCodeInfo]:"<<traceId;
+//            qDebug()<<"[replaceCodeInfo]:"<<traceId;
         }
 
         //更新库存状态

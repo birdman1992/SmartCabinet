@@ -141,7 +141,7 @@ QCheckBox{
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1">
@@ -1023,7 +1023,7 @@ border:0px solid grey;</string>
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>发现标签:</string>
+                   <string>发现定数包:</string>
                   </property>
                  </widget>
                 </item>
@@ -1109,6 +1109,19 @@ border:0px solid grey;</string>
                    <enum>QLCDNumber::Flat</enum>
                   </property>
                  </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </widget>
@@ -1459,7 +1472,7 @@ border:0px solid rgb(238, 238, 236);
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="6,0,1,0,0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,6,0,1,0,0">
             <property name="spacing">
              <number>25</number>
             </property>
@@ -1479,7 +1492,35 @@ border:0px solid rgb(238, 238, 236);
              <number>23</number>
             </property>
             <item>
+             <widget class="QLabel" name="lab_pow">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>75</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>权限：管理员</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QLabel" name="msg">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>41</height>
+               </size>
+              </property>
               <property name="styleSheet">
                <string notr="true">background-color: rgb(255, 255, 255);
 color: rgb(85, 87, 83);</string>

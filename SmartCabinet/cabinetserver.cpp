@@ -92,6 +92,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_rfid_sync = NULL;
     reply_rfid_access = NULL;
     reply_rfid_consume = NULL;
+    reply_rfid_auto_store = NULL;
     reply_operation = NULL;
     reply_aio_temp = NULL;
     versionInfo = NULL;
@@ -371,7 +372,7 @@ QString CabinetServer::autoCreateEpcInfo(QString code)
         QString epcHex = code.toLocal8Bit().toHex();
         QString epcStr = QString("%1").arg(epcHex, -24, '0');
 //        ret<<epcStr;
-        qDebug()<<"[autoCreateEpcinfo]"<<code<<epcStr;
+//        qDebug()<<"[autoCreateEpcinfo]"<<code<<epcStr;
 //    }
     return epcStr;
 }
@@ -1063,6 +1064,7 @@ void CabinetServer::rfidAccessOpt(QString storeListCode, QMap<QString, QStringLi
     cJSON_Delete(json);
 
     QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
+    replyCheck(reply_rfid_access);
     reply_rfid_access = post(nUrl, qba, timeStamp, false);
     connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
 }
@@ -1104,6 +1106,7 @@ void CabinetServer::rfidAccessOpt(QStringList epcs, UserOpt optType)
 
     qDebug()<<"[rfidAccessOpt]"<<qba;
     QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
+    replyCheck(reply_rfid_access);
     reply_rfid_access = post(nUrl, qba, timeStamp, false);
     connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
 }
@@ -1111,7 +1114,9 @@ void CabinetServer::rfidAccessOpt(QStringList epcs, UserOpt optType)
 void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, QString optNo)
 {
     qint64 timeStamp = getApiMark();
-    QByteArray optName = cur_user->cardId.toLocal8Bit();
+    QByteArray optName = QByteArray("UNKNOW");
+    if(cur_user)
+        optName = cur_user->cardId.toLocal8Bit();
     QByteArray departCode = config->getCabinetId().toLocal8Bit();
     QByteArray dateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit();
 
@@ -1166,6 +1171,7 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, Q
 
     qDebug()<<"[rfidAccessOpt]"<<qba;
     QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
+    replyCheck(reply_rfid_access);
     reply_rfid_access = post(nUrl, qba, timeStamp, false);
     connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
 }
@@ -1173,7 +1179,9 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, Q
 void CabinetServer::rfidAutoStore(QVariantMap reportMap)
 {
     qint64 timeStamp = getApiMark();
-    QByteArray optName = cur_user->cardId.toLocal8Bit();
+    QByteArray optName = QByteArray("UNKNOW");
+    if(cur_user)
+        optName = cur_user->cardId.toLocal8Bit();
     QByteArray departCode = config->getCabinetId().toLocal8Bit();
 //    QByteArray barCode = storeListCode.toLocal8Bit();
     QByteArray dateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit();
@@ -1228,8 +1236,9 @@ void CabinetServer::rfidAutoStore(QVariantMap reportMap)
     cJSON_Delete(json);
     qDebug()<<"[rfidAutoStore]"<<qba;
     QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
-    reply_rfid_access = post(nUrl, qba, timeStamp, false);
-    connect(reply_rfid_access, SIGNAL(finished()), this, SLOT(recvRfidAccessRst()));
+    replyCheck(reply_rfid_auto_store);
+    reply_rfid_auto_store = post(nUrl, qba, timeStamp, false);
+    connect(reply_rfid_auto_store, SIGNAL(finished()), this, SLOT(recvRfidStoreRst()));
 }
 
 void CabinetServer::rfidCheckConsume(QStringList epcs)
@@ -2578,9 +2587,9 @@ void CabinetServer::recvRfidListSync()
 //            codeList[goodsMap["package_id"].toString()]["sup_name"] = goodsMap["sup_name"];
         }
         //更新物品信息
-        SqlManager::replace("GoodsInfo", goodsList.values());
-        SqlManager::replace("CodeInfo", codeList.values());
-        SqlManager::replace("EpcInfo", epcList);
+        SqlManager::insert("GoodsInfo", goodsList.values());
+        SqlManager::insert("CodeInfo", codeList.values());
+        SqlManager::insert("EpcInfo", epcList);
         emit epcInfoUpdate();
 
         //自动存物品
@@ -2608,6 +2617,28 @@ void CabinetServer::recvRfidAccessRst()
     reply_rfid_access = NULL;
     cJSON* json = cJSON_Parse(qba.data());
     qDebug()<<"[recvRfidAccessRst]"<<cJSON_Print(json);
+    if(!json)
+        return;
+
+    cJSON* json_rst = cJSON_GetObjectItem(json, "success");
+    QString msg = QString::fromUtf8(cJSON_GetObjectItem(json, "msg")->valuestring);
+    if(json_rst->type == cJSON_True)
+    {
+
+    }
+    else
+    {
+
+    }
+}
+
+void CabinetServer::recvRfidStoreRst()
+{
+    QByteArray qba = QByteArray::fromBase64(reply_rfid_auto_store->readAll());
+    reply_rfid_auto_store->deleteLater();
+    reply_rfid_auto_store = NULL;
+    cJSON* json = cJSON_Parse(qba.data());
+    qDebug()<<"[recvRfidStoreRst]"<<cJSON_Print(json);
     if(!json)
         return;
 
