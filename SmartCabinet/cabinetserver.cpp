@@ -2481,7 +2481,7 @@ void CabinetServer::recvRfidListSync()
     reply_rfid_sync->deleteLater();
     reply_rfid_sync = NULL;
     cJSON* json = cJSON_Parse(qba.data());
-    qDebug()<<"[recvRfidListSync]"<<cJSON_Print(json);
+//    qDebug()<<"[recvRfidListSync]"<<cJSON_Print(json);
     if(!json)
         return;
 
@@ -2490,9 +2490,10 @@ void CabinetServer::recvRfidListSync()
 
     if(json_rst->type == cJSON_False)//失败
     {
-        qDebug()<<msg;
+        qDebug()<<"[recvRfidListSync] error:"<<msg;
         return;
     }
+    qDebug()<<"[recvRfidListSync]:success";
 
     cJSON* data = cJSON_GetObjectItem(json, "data");//data []
     int szData = cJSON_GetArraySize(data);

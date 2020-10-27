@@ -111,12 +111,13 @@ void CabinetService::on_back_clicked()
         emit winSwitch(INDEX_AIO);
     else
         emit winSwitch(INDEX_CAB_SHOW);
-//    if(sTest != NULL)
-//    {
-//        sTest->testFinish();
-//        delete sTest;
-//        sTest = NULL;
-//    }
+
+    if(sTest != NULL)
+    {
+        sTest->testFinish();
+        delete sTest;
+        sTest = NULL;
+    }
 }
 
 void CabinetService::showEvent(QShowEvent *)
@@ -821,7 +822,7 @@ void CabinetService::on_testServer_clicked()
     if(sTest != NULL)
         delete sTest;
 
-    QString testApi = ui->server_addr->text() + "/spd-web/sarkApi/Time/query/";
+    QString testApi = ui->server_addr->text() + "/sarkApi/Time/query/";
     sTest = new ServerTest(testApi, QByteArray(), this, NULL);
     connect(sTest, SIGNAL(apiMsg(QString)), ui->api_msg, SLOT(setText(QString)));
     connect(sTest, SIGNAL(pingMsg(QString)), ui->ping_msg, SLOT(setText(QString)));

@@ -32,6 +32,7 @@ bool EpcInfo::epcScaned(qint64 scanMs)
 EpcModel::EpcModel(QObject *parent)
     :QAbstractTableModel(parent)
 {
+    config = CabinetConfig::config();
     markCount = 0;
     curOptId = QString();
     colsName.clear();
@@ -156,16 +157,19 @@ void EpcModel::clearEpcMark()
         info->signalIntensity = 0;
         info->scanedTimes = 0;
 
-        if(info->state == epc_out)//取出
+        if(config->getCabinetType().at(BIT_LOW_HIGH))//高值柜
         {
-            qDebug()<<"[out mark]"<<info->goodsCode;
-            consumCheckList<<info->epcId;
-            if(QDateTime::fromMSecsSinceEpoch(info->lastStamp) < outOverTime)//未归还
-                setEpcMark(info->epcId, mark_wait_back);
-            else
+            if(info->state == epc_out)//取出
             {
-                qDebug()<<"mark_away";
-                setEpcMark(info->epcId, mark_away);
+                qDebug()<<"[out mark]"<<info->goodsCode;
+                consumCheckList<<info->epcId;
+                if(QDateTime::fromMSecsSinceEpoch(info->lastStamp) < outOverTime)//未归还
+                    setEpcMark(info->epcId, mark_wait_back);
+                else
+                {
+                    qDebug()<<"mark_away";
+                    setEpcMark(info->epcId, mark_away);
+                }
             }
         }
     }
@@ -178,6 +182,7 @@ void EpcModel::clearEpcMark()
 
     emit epcConsumeCheck(consumCheckList);
     emit updateLockCount(lockCount);
+    emit scanProgress(markCount, map_rfid.count());
     refrushModel();
 }
 
@@ -510,8 +515,10 @@ void EpcModel::clearUnknowEpcs()
  */
 int EpcModel::checkOptTime(int downCount)
 {
-    if(activeStamp == 0)
+    if(activeStamp == 0){
+        activeStamp = QDateTime::currentMSecsSinceEpoch();
         return downCount;
+    }
 
      int ret = downCount - (QDateTime::currentMSecsSinceEpoch() - activeStamp)/1000;
      if(ret < 0)

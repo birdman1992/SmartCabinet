@@ -8,6 +8,7 @@
 #include <QModelIndex>
 #include "sql/sqlmanager.h"
 #include "defines.h"
+#include "cabinetconfig.h"
 
 enum EpcState{
     epc_no,//标签未被发现
@@ -124,6 +125,7 @@ private:
     QString operationNo;
     quint64 activeStamp;//标签活跃时间戳:最后一次标签状态发生变化的时间
     quint64 clearStamp;//初始化时间戳:用于计算扫描强度
+    CabinetConfig* config;
     int countTab[20];
     int markCount;//count be marked
     int outCount;//count for fetch out
