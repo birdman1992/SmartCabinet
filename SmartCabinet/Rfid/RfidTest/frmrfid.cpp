@@ -167,7 +167,7 @@ QBitArray FrmRfid::curAntState()
 void FrmRfid::accessDownCount(int count)
 {
     ui->OK->setText(QString("确定(%1)").arg(count));
-    qDebug()<<"[accessDownCount]"<<count<<ui->tab_filter_new->text();
+//    qDebug()<<"[accessDownCount]"<<count<<ui->tab_filter_new->text();
     if(count == 0 && ((ui->tab_filter_new->text() == QString("存入:0")) || (!ui->tab_filter_new->isVisible())))//没有存入数量或者存入按钮不可见
         on_OK_clicked();
 }

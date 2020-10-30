@@ -322,7 +322,28 @@ void AIOMachine::initColMap()
     mapColName.insert("操作时间", optTime);
     mapColName.insert("批次", batchNumber);
     mapColName.insert("条码", traceId);
-    listColName<<"物品编码"<<"物品名称"<<"包类型"<<"生产商"<<"供应商"<<"规格"<<"单位"<<"预警数量"<<"最大数量"<<"包数"<<"耗材数量"<<"效期天数"<<"有效期至"<<"生产日期"<<"单价"<<"总价"<<"入库数"<<"出库数"<<"操作人"<<"操作时间"<<"批次"<<"条码";
+    listColName<<"物品编码"
+              <<"物品名称"
+             <<"包类型"
+            <<"生产商"
+           <<"供应商"
+          <<"规格"
+         <<"单位"
+        <<"预警数量"
+       <<"最大数量"
+      <<"包数"
+     <<"耗材数量"
+    <<"效期天数"
+    <<"有效期至"
+    <<"生产日期"
+    <<"单价"
+    <<"总价"
+    <<"入库数"
+    <<"出库数"
+    <<"操作人"
+    <<"操作时间"
+    <<"批次"
+    <<"条码";
     //    qDebug()<<"[listColName]"<<listColName;
 }
 
@@ -463,6 +484,8 @@ void AIOMachine::showNumGoods(QList<Goods *> lInfo)
     colNames<<listColName.at(unit);
     colNames<<listColName.at(threshold);
     colNames<<listColName.at(maxThreshold);
+    colNames<<listColName.at(packageCount);
+    colNames<<listColName.at(goodsCount);
     showTable(title, colNames, lInfo);
 }
 

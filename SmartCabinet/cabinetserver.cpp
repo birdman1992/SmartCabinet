@@ -1195,7 +1195,7 @@ void CabinetServer::rfidAutoStore(QVariantMap reportMap)
 
     foreach (QString _barcode, reportMap.uniqueKeys())//按送货单遍历
     {
-//        qDebug()<<"barcode:"<<_barcode<<reportMap.values(_barcode).count();
+        qDebug()<<"barcode:"<<_barcode<<reportMap.values(_barcode).count();
         foreach (QVariant packageMap, reportMap.values(_barcode))//同送货单物品
         {
             qDebug()<<"package count:"<<packageMap.toMap().uniqueKeys().count();
@@ -2588,8 +2588,8 @@ void CabinetServer::recvRfidListSync()
 //            codeList[goodsMap["package_id"].toString()]["sup_name"] = goodsMap["sup_name"];
         }
         //更新物品信息
-        SqlManager::insert("GoodsInfo", goodsList.values());
-        SqlManager::insert("CodeInfo", codeList.values());
+        SqlManager::replace("GoodsInfo", goodsList.values());
+        SqlManager::replace("CodeInfo", codeList.values());
         SqlManager::insert("EpcInfo", epcList);
         emit epcInfoUpdate();
 

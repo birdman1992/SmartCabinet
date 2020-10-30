@@ -377,7 +377,7 @@ QPushButton::checked{
         <number>0</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,4">
+        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,4,2">
          <property name="spacing">
           <number>10</number>
          </property>
@@ -454,38 +454,19 @@ padding-bottom:10px;
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="lab_temp">
+           <item row="0" column="0">
+            <widget class="QLabel" name="num_expired">
              <property name="styleSheet">
-              <string notr="true">border-image: url(:/image/image/aio/monitor_temperature.png);
-font: 75 24px &quot;Microsoft YaHei&quot;;
-color: #9BE5F0;
+              <string notr="true">border-image: url(:/image/image/aio/btn_home_byck.png);
+font: 75 18px &quot;WenQuanYi Micro Hei Mono&quot;;
+color: rgb(255, 255, 255);
 padding-left:10px;
 padding-bottom:10px;
 </string>
              </property>
              <property name="text">
-              <string>--℃
-当前温度</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="lab_hum">
-             <property name="styleSheet">
-              <string notr="true">border-image: url(:/image/image/aio/monitor_humidity.png);
-font: 75 24px &quot;WenQuanYi Micro Hei Mono&quot;;
-color: #9BE5F0;
-padding-left:10px;
-padding-bottom:10px;
-</string>
-             </property>
-             <property name="text">
-              <string>--%
-当前湿度</string>
+              <string>0
+近效期物品</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -511,25 +492,6 @@ padding-bottom:10px;
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="num_expired">
-             <property name="styleSheet">
-              <string notr="true">border-image: url(:/image/image/aio/btn_home_byck.png);
-font: 75 18px &quot;WenQuanYi Micro Hei Mono&quot;;
-color: rgb(255, 255, 255);
-padding-left:10px;
-padding-bottom:10px;
-</string>
-             </property>
-             <property name="text">
-              <string>0
-近效期物品</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="0">
             <widget class="QLabel" name="num_warning_rep">
              <property name="styleSheet">
@@ -543,6 +505,54 @@ padding-bottom:10px;
              <property name="text">
               <string>0
 库存预警</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <property name="spacing">
+            <number>10</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="lab_hum">
+             <property name="styleSheet">
+              <string notr="true">border-image: url(:/image/image/aio/monitor_humidity.png);
+font: 75 24px &quot;WenQuanYi Micro Hei Mono&quot;;
+color: #9BE5F0;
+padding-left:10px;
+padding-bottom:10px;
+</string>
+             </property>
+             <property name="text">
+              <string>--%
+当前湿度</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="lab_temp">
+             <property name="styleSheet">
+              <string notr="true">border-image: url(:/image/image/aio/monitor_temperature.png);
+font: 75 24px &quot;Microsoft YaHei&quot;;
+color: #9BE5F0;
+padding-left:10px;
+padding-bottom:10px;
+</string>
+             </property>
+             <property name="text">
+              <string>--℃
+当前温度</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
