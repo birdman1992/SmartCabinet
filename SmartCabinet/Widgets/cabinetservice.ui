@@ -141,7 +141,7 @@ QPushButton::pressed{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_0">
       <widget class="QFrame" name="network">
@@ -1032,7 +1032,7 @@ font:20px&quot;WenQuanYi Micro Hei Mono&quot;;
 </string>
        </property>
        <property name="text">
-        <string>1.7.1.20201026_beta</string>
+        <string>1.7.2.20201102_beta</string>
        </property>
       </widget>
       <widget class="QWidget" name="verticalLayoutWidget">

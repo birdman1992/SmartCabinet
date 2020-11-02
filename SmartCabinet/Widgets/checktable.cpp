@@ -82,6 +82,7 @@ void CheckTable::showEvent(QShowEvent *)
 
 void CheckTable::setCheckTables(QStringList l)
 {
+    ui->list_table_id->horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
     ui->list_table_id->clearContents();
     ui->list_table_id->setRowCount(l.count());
     ui->list_table_id->setColumnCount(1);
@@ -96,6 +97,7 @@ void CheckTable::setCheckTables(QStringList l)
 //物品名 编号 规格 入柜 出柜 退货 库存
 void CheckTable::setCurCheckTable(CheckList *l)
 {
+    ui->list_table->horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
     ui->list_table->clearContents();
     ui->list_table->setColumnCount(7);
     ui->list_table->setRowCount(l->listInfo.count());
@@ -148,6 +150,7 @@ void CheckTable::on_list_table_id_cellClicked(int row, int)
     if(row > listCheckTables.count())
         return;
 
+    ui->list_table->horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
     ui->list_table->clearContents();
     ui->list_table->setRowCount(0);
     emit askCheckInfo(listCheckTables.at(row)->id);

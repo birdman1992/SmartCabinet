@@ -8,6 +8,7 @@
 #include "funcs/systool.h"
 #include "defines.h"
 #include "iconfont/iconhelper.h"
+#include "MessageDialog.h"
 
 //提示信息
 
@@ -1189,46 +1190,12 @@ void CabinetWidget::searchByPinyin(QString str)
     setSearchState(l_search);
 }
 
-void CabinetWidget::warningMsgBox(QString title, QString msg)
-{
-    QMessageBox* box = new QMessageBox(QMessageBox::NoIcon, title, msg,QMessageBox::Ok,NULL,
-           Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
-    box->setModal(true);
-    box->exec();
-    box->deleteLater();
-}
 
 void CabinetWidget::msgClear()
 {
-    if(msgBox != NULL)
-    {
-        msgBox->close();
-        msgBox->deleteLater();
-        msgBox = NULL;
-    }
+    MessageDialog::instance().showFinish();
 }
 
-void CabinetWidget::msgShow(QString title, QString msg, bool setmodal)
-{
-    msgClear();
-
-    if(setmodal)
-    {
-        msgBox = new QMessageBox(QMessageBox::NoIcon, title, msg,QMessageBox::Ok,NULL,
-                                 Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
-        msgBox->setModal(true);
-        msgBox->exec();
-        msgClear();
-    }
-    else
-    {
-        msgBox = new QMessageBox(QMessageBox::NoIcon, title, msg,QMessageBox::Ok,NULL,
-                                 Qt::Dialog|Qt::MSWindowsFixedSizeDialogHint|Qt::WindowStaysOnTopHint);
-        msgBox->setModal(false);
-        msgBox->show();
-    }
-    QTimer::singleShot(10000, this, SLOT(msgClear()));
-}
 /*
 |补货|退货|服务|退出|
 */
@@ -1415,7 +1382,8 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
         return;
     }
 
-    msgShow("身份验证", "身份验证中...",false);
+    MessageDialog::instance().showMessage("身份验证中...", 10);
+//    msgShow("身份验证", "身份验证中...",false);
     emit requireUserCheck(QString(qba));
 
 //        setPowerState(0);

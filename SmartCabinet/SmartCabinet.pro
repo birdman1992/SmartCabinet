@@ -37,6 +37,7 @@ LIBS += -L$$PWD/libs/MY/Crypto -lcrypto
 SOURCES += main.cpp\
     Device/doorcontroler.cpp \
     FingerPrint/fingerdatacache.cpp \
+    MessageDialog.cpp \
     Rfid/RfidTest/checkmanager.cpp \
     Rfid/RfidTest/epcmodel.cpp \
     Rfid/RfidTest/frmrfid.cpp \
@@ -153,6 +154,7 @@ HEADERS  += mainwidget.h \
     Device/devicesimulate.h \
     Device/doorcontroler.h \
     FingerPrint/fingerdatacache.h \
+    MessageDialog.h \
     Rfid/RfidTest/checkmanager.h \
     Rfid/RfidTest/epcmodel.h \
     Rfid/RfidTest/frmrfid.h \
@@ -261,6 +263,7 @@ HEADERS  += mainwidget.h \
 FORMS    += mainwidget.ui \
     Cabinet/cabinetpanel.ui \
     Device/devicesimulate.ui \
+    MessageDialog.ui \
     Rfid/RfidTest/frmrfid.ui \
     Rfid/RfidTest/operation.ui \
     Temperature/tempcase.ui \

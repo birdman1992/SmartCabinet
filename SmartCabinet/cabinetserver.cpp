@@ -104,7 +104,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     fWatchdog = -1;
     checkId = -1;
 #ifndef SIMULATE_ON
-//    watchdogStart();
+    watchdogStart();
 #endif
     connect(&tarProcess, SIGNAL(finished(int)), this, SLOT(tarFinished(int)));
     connect(&tarProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(processStandardOutput()));
@@ -2324,13 +2324,13 @@ void CabinetServer::recvGoodsReply()
 
 void CabinetServer::recvDayReportInfo()
 {
-//    QByteArray qba = QByteArray::fromBase64(reply_day_report->readAll());
-    QFile testFile("/home/dayreport.test");
-    if(!testFile.open(QFile::ReadOnly))
-    {
-        qDebug("day report open failed");
-    }
-    QByteArray qba = testFile.readAll();
+    QByteArray qba = QByteArray::fromBase64(reply_day_report->readAll());
+//    QFile testFile("/home/dayreport.test");
+//    if(!testFile.open(QFile::ReadOnly))
+//    {
+//        qDebug("day report open failed");
+//    }
+//    QByteArray qba = testFile.readAll();
     reply_day_report->deleteLater();
     reply_day_report = NULL;
     cJSON* json = cJSON_Parse(qba.data());
