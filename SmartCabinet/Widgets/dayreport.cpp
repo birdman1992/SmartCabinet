@@ -110,6 +110,7 @@ void DayReport::showEvent(QShowEvent *)
 //物品编码 批号 物品名称 规格 数量 单位 消耗类型 操作人 时间 物品条码 生产商 供应商 单价 合计
 void DayReport::setCurReportTable(QList<DayReportInfo *> l)
 {
+    ui->list_table->horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
     ui->list_table->clearContents();
     ui->list_table->setColumnCount(14);
     ui->list_table->setRowCount(l.count());

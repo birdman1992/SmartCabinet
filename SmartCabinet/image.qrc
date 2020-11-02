@@ -69,6 +69,8 @@
         <file>image/rmxx.png</file>
         <file>image/aio/arrow_up.png</file>
         <file>image/aio/arrow_down.png</file>
+        <file>image/aio/pop_tip_icon.png</file>
+        <file>image/aio/btn_close.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

@@ -2324,7 +2324,13 @@ void CabinetServer::recvGoodsReply()
 
 void CabinetServer::recvDayReportInfo()
 {
-    QByteArray qba = QByteArray::fromBase64(reply_day_report->readAll());
+//    QByteArray qba = QByteArray::fromBase64(reply_day_report->readAll());
+    QFile testFile("/home/dayreport.test");
+    if(!testFile.open(QFile::ReadOnly))
+    {
+        qDebug("day report open failed");
+    }
+    QByteArray qba = testFile.readAll();
     reply_day_report->deleteLater();
     reply_day_report = NULL;
     cJSON* json = cJSON_Parse(qba.data());
