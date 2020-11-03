@@ -2,6 +2,7 @@
 #include "ui_frmrfid.h"
 #include <QDebug>
 #include <QByteArray>
+#include "MessageDialog.h"
 #include "manager/signalmanager.h"
 //#define test_rfid
 
@@ -33,6 +34,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     visibleFlag = QBitArray(mark_checked+1, false);
     visibleFlag[mark_all] = true;
 
+    downCount = 60;
     eModel = new EpcModel(this);
     isLogin = false;
     doorIsOpen = false;
@@ -84,7 +86,7 @@ void FrmRfid::updateScanTimer(int ms)
 {
     ui->scan_timer->display(ms);
     if(this->isVisible() && (!doorIsOpen))//关门且在扫描状态
-        accessDownCount(eModel->checkOptTime(5));
+        accessDownCount(eModel->checkOptTime(downCount));
     //刷新信号强度
 //    int index = ui->tab_view->verticalScrollBar()->value();
 //    int countMax = ui->tab_view->verticalScrollBar()->pageStep()+1;
@@ -166,6 +168,12 @@ QBitArray FrmRfid::curAntState()
 
 void FrmRfid::accessDownCount(int count)
 {
+    if(downCount == 0)
+    {
+        ui->OK->setText(QString("确定"));
+        return;
+    }
+
     ui->OK->setText(QString("确定(%1)").arg(count));
 //    qDebug()<<"[accessDownCount]"<<count<<ui->tab_filter_new->text();
     if(count == 0 && ((ui->tab_filter_new->text() == QString("存入:0")) || (!ui->tab_filter_new->isVisible())))//没有存入数量或者存入按钮不可见
@@ -245,19 +253,28 @@ void FrmRfid::lockStateChanged(int id, bool isOpen)
 {
     qDebug()<<"lockState:"<<id<<isOpen;
     doorIsOpen = isOpen;
+    if(!isLogin)
+    {
+        if(doorIsOpen)
+            MessageDialog::instance().showMessage("非法开启门禁！", 20);
+        else
+            MessageDialog::instance().showFinish();
+        return;
+    }
+
     if(isOpen)
     {
         qDebug()<<"[visible]"<<this->isVisible();
-        if(this->isVisible())
-            on_OK_clicked();
-//        else
-//        {
-//            showEpcInfo();
-//            rfManager->startScan();
-//        }
+        if(this->isVisible())//未结算的情况下再次开门
+        {
+            MessageDialog::instance().showMessage("检测到开门，扫描暂停", 60);
+            rfManager->setScanLock(true);
+        }
     }
     else
     {
+        setDownCount(60);
+        MessageDialog::instance().showFinish();
         rfidCheck();
     }
 }
@@ -459,6 +476,11 @@ void FrmRfid::setPow(int pow)
 
     if(visibleFlag[mark_all])
         ui->tab_filter_all->show();
+}
+
+void FrmRfid::setDownCount(int count)
+{
+    downCount = count;
 }
 
 void FrmRfid::clearCurOperation()

@@ -209,6 +209,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     setPowState(optUser->power);
     updateState();
     sysUnlock();
+    win_rfid->setLoginState(true);
     qDebug("user req");
     emit reqUpdateOverview();
 //    win_rfid->showFullScreen();
@@ -594,6 +595,7 @@ void AIOMachine::sysLock()
     ui->setting->hide();
     ui->aio_hello->clear();
     loginState = false;
+    win_rfid->setLoginState(false);
     optUser = NULL;
     win_rfid->updateCurUser(QString());
     qDebug("lock req");
@@ -782,6 +784,7 @@ void AIOMachine::on_aio_day_report_clicked()
 void AIOMachine::on_aio_check_create_clicked()
 {
 //    emit aio_check(true);
+    win_rfid->setDownCount(0);
     emit requireRfidCheck();
 }
 

@@ -31,6 +31,7 @@ public:
     explicit FrmRfid(QWidget *parent = 0);
     void setLoginState(bool login);
     void setPow(int pow);
+    void setDownCount(int count);
     void clearCurOperation();
     ~FrmRfid();
 
@@ -103,6 +104,8 @@ private:
     CabinetConfig* config;
     bool isLogin;
     bool doorIsOpen;
+
+    int downCount;
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
     QString curSelRfidReader;

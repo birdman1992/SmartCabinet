@@ -94,6 +94,7 @@ void RfidManager::initColName()
 void RfidManager::startScan()
 {
 //    testReader->scanStop();
+    setScanLock(false);
     flagScan = true;
     eModel->clearEpcMark();
     qDebug()<<"[startScan]";
@@ -112,6 +113,7 @@ void RfidManager::startScan()
  */
 void RfidManager::doorCloseScan()
 {
+    setScanLock(false);
     qDebug()<<"[doorCloseScan]";
     foreach (RfidReader* reader, rfidHub->deviceList())
     {
@@ -221,6 +223,11 @@ void RfidManager::epcSync()
     SqlManager::commit();
 }
 
+void RfidManager::setScanLock(bool lock)
+{
+    scanLock = lock;
+}
+
 void RfidManager::newRfidMark(QString epc, QString goodsCode, QString goodsId)
 {
     if(map_rfid.contains(epc))
@@ -310,6 +317,9 @@ void RfidManager::timerStop()
 
 void RfidManager::updateEpc(QString epc, DevAction rfAct)
 {
+    if(scanLock)
+        return;
+
     EpcInfo* info = eModel->getEpcInfo(epc);
 
     if(info == NULL)

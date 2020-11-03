@@ -52,6 +52,7 @@ private:
     QTimer* timer_beat;
     GoodsCar curCar;
     QTimer timer;
+    QByteArray scanCache;
     bool scanState;
     bool cardReaderState;
 
@@ -101,6 +102,7 @@ private slots:
     void timeout();
     void readSerialCardReader();
     void readTempHum();
+    void resetCodeScan();
 };
 
 #endif // CONTROLDEVICE_H

@@ -31,6 +31,7 @@ public:
     void doorCloseScan();//结束扫描
     void epcCheck(int row=0, int col=0);//盘点标签
     void epcSync();//同步标签信息
+    void setScanLock(bool lock);
     void timerClear();
     bool accessIsLock();
     RfidDevHub* rfidReaderModel();
@@ -83,6 +84,7 @@ private:
     int curOptPow;
     QTime scanTimer;
     QTimer upTimer;
+    bool scanLock;
     bool accessLock;//存取锁定状态
     bool flagInit;//初始化标志
     bool flagScan;//扫描状态

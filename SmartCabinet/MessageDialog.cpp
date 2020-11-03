@@ -15,6 +15,11 @@ MessageDialog::~MessageDialog()
     delete ui;
 }
 
+void MessageDialog::updateMessage()
+{
+    ui->lab_msg->setText(QString("%1(%2)").arg(message).arg(curCount));
+}
+
 /**
  * @brief MessageDialog::showFinish 显示完成
  */
@@ -33,10 +38,11 @@ void MessageDialog::showFinish()
  */
 void MessageDialog::showMessage(QString msg, int showS)
 {
-    ui->lab_msg->setText(QString("%1(%2)").arg(msg).arg(showS));
-    this->showMaximized();
+    message = msg;
     curCount = showS;
     downCount = showS;
+    updateMessage();
+    this->showMaximized();
 }
 
 void MessageDialog::paintEvent(QPaintEvent*)
@@ -53,6 +59,10 @@ void MessageDialog::timerEvent(QTimerEvent *)
     if(curCount <= 0 && downCount)//倒计时被启动且小于等于0
     {
         showFinish();
+    }
+    else
+    {
+        updateMessage();
     }
 }
 

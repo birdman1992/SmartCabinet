@@ -158,7 +158,7 @@ void CabinetWidget::cabLock()
     config->state = STATE_NO;
     clearCaseState();
     config->wakeUp(0);
-    emit checkLockState();
+//    emit checkLockState();
     if(config->getCabinetType().at(BIT_CAB_AIO))
         emit stack_switch(INDEX_AIO);
 }

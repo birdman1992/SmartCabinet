@@ -547,6 +547,11 @@ void ControlDevice::readTempHum()
     emit tempData(qba);
 }
 
+void ControlDevice::resetCodeScan()
+{
+    scanCache = QByteArray();
+}
+
 QByteArray ControlDevice::tty2UsbData(QByteArray ttyData)
 {
     return ttyData.mid(6,8);
@@ -587,9 +592,16 @@ void ControlDevice::readCodeScanData(QByteArray qba)
 //    qba = (index==-1)?qba:qba.left(index);
 //    qDebug()<<"[readCodeScanData]"<<qba;
 //    emit codeScanData(qba);
+
+    if(qba == scanCache)
+        return;
+
+    scanCache = qba;
     config->clearTimeoutFlag();
     qDebug()<<"[readCodeScanData]"<<qba;
     emit codeScanData(qba);
+
+    QTimer::singleShot(1000, this, SLOT(resetCodeScan()));
 }
 
 void ControlDevice::readRfidData(QByteArray qba)

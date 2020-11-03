@@ -35,7 +35,9 @@ private:
     Ui::MessageDialog *ui;
     explicit MessageDialog(QWidget *parent = nullptr);
     ~MessageDialog();
+    void updateMessage();
 
+    QString message;
     int timerId;
     int curCount;
     int downCount;

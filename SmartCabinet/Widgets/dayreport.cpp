@@ -82,6 +82,7 @@ bool DayReport::eventFilter(QObject *w, QEvent *e)
 
 void DayReport::showEvent(QShowEvent *)
 {
+    QDate curStartDate = ui->date_start->date();
     ui->date_start->setDisplayFormat("yyyy/MM/dd");
     ui->date_finish->setDisplayFormat("yyyy/MM/dd");
     ui->date_start->setDate(QDate::currentDate());
@@ -90,7 +91,9 @@ void DayReport::showEvent(QShowEvent *)
     ui->date_finish->setMinimumDate(QDate::currentDate());
     ui->date_finish->setMaximumDate(QDate::currentDate());
     ui->date_finish->hide();
-//    emit askListInfo(ui->date_start->date(), ui->date_start->date());
+
+    if(curStartDate == ui->date_start->date())
+        emit askListInfo(ui->date_start->date(), ui->date_start->date());
 }
 
 //void DayReport::setCheckTables(QStringList l)
