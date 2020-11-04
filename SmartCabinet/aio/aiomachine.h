@@ -54,6 +54,8 @@ public slots:
     void updateTemp(QString);
     void updateHum(QString);
     void winMsg(QString);
+    void updateDelay(int delay);
+    void recvCabSyncResult(bool rst);
 
 signals:
     void requireUserCheck(QString);//请求身份验证
@@ -101,6 +103,7 @@ signals:
     void stack_switch(int index);
     void logout();
     void aio_check(bool);
+    void requireCabSync();
 
 private slots:
     void on_aio_quit_clicked();
@@ -124,6 +127,7 @@ private:
     bool winActive;
 //    FingerPrint* win_fingerPrint;
     bool loginState;
+    bool netCheckState;
     int curPage;
     int curState;
     int timerCheckDev;
@@ -159,6 +163,7 @@ private:
     void magicCmd(QString cmd);
     void showEvent(QShowEvent *);
     void setPowState(int power);
+    void updateNetState(bool connected);
 private slots:
     void loginTimeout();
     void updateTime();
@@ -179,6 +184,7 @@ private slots:
     void on_mode_view_toggled(bool checked);
     void on_mode_temp_toggled(bool checked);
     void on_set_dev_params_clicked();
+    void on_netState_clicked();
 };
 
 #endif // AIOMACHINE_H

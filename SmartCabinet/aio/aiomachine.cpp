@@ -676,6 +676,30 @@ void AIOMachine::winMsg(QString msg)
     QTimer::singleShot(4000, ui->msg, SLOT(clear()));
 }
 
+void AIOMachine::updateDelay(int delay)
+{
+//    qDebug()<<"update delay"<<delay;
+    updateNetState(delay);
+//    ui->delay->setText(QString("%1ms").arg(delay));
+//    config->netState = ((delay<1000) && (delay>0));
+//    ui->delay->setChecked(config->netState);
+}
+
+void AIOMachine::recvCabSyncResult(bool rst)
+{
+    if(rst)
+        winMsg("智能柜数据同步成功");
+    else
+        winMsg("智能柜数据同步失败");
+}
+
+void AIOMachine::updateNetState(bool connected)
+{
+//    qDebug()<<"AIOMachine::updateNetState"<<connected;
+    netCheckState = connected;
+    ui->netState->setChecked(netCheckState);
+}
+
 void AIOMachine::sysUnlock()
 {
     ui->frame_aio->show();
@@ -847,4 +871,12 @@ void AIOMachine::on_set_dev_params_clicked()
     bool soundOff = ui->set_sound_off->isChecked();
     selectedDev->setTempParams(max, min, max, report, soundOff);
     ui->frame_dev_panel->hide();
+}
+
+void AIOMachine::on_netState_clicked()
+{
+//    ui->netState->setChecked(netCheckState);
+    updateNetState(netCheckState);
+    winMsg("智能柜数据同步中..");
+    emit requireCabSync();
 }

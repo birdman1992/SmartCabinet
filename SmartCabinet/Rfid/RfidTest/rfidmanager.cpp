@@ -382,9 +382,9 @@ void RfidManager::updateEpc(QString epc, DevAction rfAct)
 
             eModel->setEpcMark(epc, mark_new);
             break;
-//        case epc_out://还回标签
-//            eModel->setEpcMark(epc, mark_back);
-//            break;
+        case epc_out://还回标签
+            eModel->setEpcMark(epc, mark_back);
+            break;
         case epc_in://取出标签
             if(curOptPow==3)//仓管不关注取货
                 break;
