@@ -1133,6 +1133,7 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, Q
         foreach (QString epc, fetchEpcs)
         {
             QByteArray packageBarcode = epc.toLocal8Bit();
+            QByteArray surgeryBillNo = optNo.toLocal8Bit();
 
             cJSON* li_info = cJSON_CreateObject();
 
@@ -1141,6 +1142,7 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, Q
             cJSON_AddItemToObject(li_info ,"optType", cJSON_CreateNumber(opt_fetch));
             cJSON_AddItemToObject(li_info ,"optCount", cJSON_CreateNumber(1));
             cJSON_AddItemToObject(li_info ,"dateTime", cJSON_CreateString(dateTime.data()));
+            cJSON_AddItemToObject(li_info , "sscSurgeryBillId", cJSON_CreateString(surgeryBillNo.data()));
 
             cJSON_AddItemToArray(li, li_info);
         }
@@ -1150,7 +1152,6 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, Q
         foreach (QString epc, backEpcs)
         {
             QByteArray packageBarcode = epc.toLocal8Bit();
-            QByteArray surgeryBillNo = optNo.toLocal8Bit();
             cJSON* li_info = cJSON_CreateObject();
 
             cJSON_AddItemToObject(li_info ,"chesetCode", cJSON_CreateString(departCode.data()));
@@ -1158,7 +1159,6 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, Q
             cJSON_AddItemToObject(li_info ,"optType", cJSON_CreateNumber(opt_back));
             cJSON_AddItemToObject(li_info ,"optCount", cJSON_CreateNumber(1));
             cJSON_AddItemToObject(li_info ,"dateTime", cJSON_CreateString(dateTime.data()));
-            cJSON_AddItemToObject(li_info , "surgeryBillNo", cJSON_CreateString(surgeryBillNo.data()));
 
             cJSON_AddItemToArray(li, li_info);
         }
@@ -1169,6 +1169,7 @@ void CabinetServer::rfidAccessOpt(QStringList fetchEpcs, QStringList backEpcs, Q
     QByteArray qba = QByteArray(cJSON_Print(json));
     cJSON_Delete(json);
 
+//    qDebug()<<"optNo:"<<optNo;
     qDebug()<<"[rfidAccessOpt]"<<qba;
     QString nUrl = ApiAddress+QString(API_RFID_ACCESS);//+"?"+qba.toBase64();
     replyCheck(reply_rfid_access);
@@ -2599,6 +2600,7 @@ void CabinetServer::recvRfidListSync()
         SqlManager::replace("CodeInfo", codeList.values());
         SqlManager::insert("EpcInfo", epcList);
         emit epcInfoUpdate();
+        qDebug()<<"[recvRfidListSync]:new"<<codeList.count();
 
         //自动存物品
 //        rfidAutoStore(codeList);
@@ -2720,7 +2722,7 @@ void CabinetServer::recvOperationInfo()
     {
         cJSON* dataItem = cJSON_GetArrayItem(data, i);//data[i]
         QVariantMap optInfo;
-        optInfo.insert("ssc_surgery_bill_id", GET_JSON_QSTRING(dataItem, "surgeryBillNo"));
+        optInfo.insert("ssc_surgery_bill_id", QString::number(GET_JSON_INT(dataItem, "sscSurgeryBillId")));
         optInfo.insert("surgery_bill_no", GET_JSON_QSTRING(dataItem, "surgeryBillNo"));
         optInfo.insert("surgery_bill_name", GET_JSON_QSTRING(dataItem, "surgeryBillName"));
         optInfo.insert("apply_surgery_date", GET_JSON_QSTRING(dataItem, "applySurgeryDate"));
@@ -2736,6 +2738,7 @@ void CabinetServer::recvOperationInfo()
         optInfo.insert("patient_age", GET_JSON_QSTRING(dataItem, "patientAge"));
         optInfo.insert("patient_no", GET_JSON_QSTRING(dataItem, "patientNo"));
         optList<<optInfo;
+//        qDebug()<<GET_JSON_QSTRING(dataItem, "sscSurgeryBillId")<<GET_JSON_QSTRING(dataItem, "surgeryBillNo");
     }
     //更新到数据库
     SqlManager::insert("OperationInfo", optList);

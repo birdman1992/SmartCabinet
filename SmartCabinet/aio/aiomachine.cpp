@@ -204,7 +204,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
         setAioInfo(config->getDepartName(), config->getCabinetId());
     }
 
-    ui->aio_hello->setText(QString("您好！%1").arg(user->name));
+    ui->aio_quit->setText(QString("您好！%1").arg(user->name));
     config->state = STATE_FETCH;
     setPowState(optUser->power);
     updateState();
@@ -222,9 +222,10 @@ void AIOMachine::recvUserInfo(QByteArray qba)
         if(optUser->cardId == QString(qba))
             return;
     }
-    ui->frame_quit->show();
-    ui->aio_hello->show();
-    ui->aio_hello->setText("正在识别");
+//    ui->frame_quit->show();
+    ui->stacked_hello->setCurrentWidget(ui->page_hello);
+//    ui->aio_quit->show();
+    ui->lab_tip->setText("正在识别");
     emit requireUserCheck(QString(qba));
     QTimer::singleShot(5000, this, SLOT(loginTimeout()));
 }
@@ -590,10 +591,13 @@ QList<Goods *> AIOMachine::listPage(unsigned int pageNum)
 
 void AIOMachine::sysLock()
 {
+    ui->stacked_footer->setCurrentIndex(1);
+    ui->lab_tip->setText("请将识别卡放入下方感应区");
+    ui->aio_quit->setText("");
+    ui->stacked_hello->setCurrentWidget(ui->page_scan_tip);
     win_rfid->close();
     ui->frame_aio->hide();
     ui->setting->hide();
-    ui->aio_hello->clear();
     loginState = false;
     win_rfid->setLoginState(false);
     optUser = NULL;
@@ -703,6 +707,8 @@ void AIOMachine::updateNetState(bool connected)
 void AIOMachine::sysUnlock()
 {
     ui->frame_aio->show();
+    ui->stacked_hello->setCurrentWidget(ui->page_hello);
+    ui->stacked_footer->setCurrentIndex(0);
     //    ui->frame_quit->show();
 }
 
@@ -710,7 +716,8 @@ void AIOMachine::loginTimeout()
 {
     if(loginState == false)
     {
-        ui->aio_hello->clear();
+        ui->lab_tip->setText("请将识别卡放入下方感应区");
+//        ui->aio_quit->clear();
     }
 }
 
@@ -765,7 +772,7 @@ void AIOMachine::checkTempDev()
 void AIOMachine::on_aio_quit_clicked()
 {
     sysLock();
-    ui->aio_hello->clear();
+
 }
 
 //void AIOMachine::timerEvent(QTimerEvent *event)
@@ -846,7 +853,7 @@ void AIOMachine::on_mode_view_toggled(bool checked)
     }
     else
     {
-        ui->mode_temp->setChecked(true);
+
     }
 }
 
@@ -859,7 +866,7 @@ void AIOMachine::on_mode_temp_toggled(bool checked)
     }
     else
     {
-        ui->mode_view->setChecked(true);
+
     }
 }
 

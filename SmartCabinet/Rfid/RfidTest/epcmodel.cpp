@@ -423,6 +423,7 @@ void EpcModel::epcConsume(QStringList epcs)
 
 void EpcModel::curOptNoChanged(QString optNo)
 {
+//    qDebug();
     operationNo = optNo;
 }
 

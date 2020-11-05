@@ -514,6 +514,9 @@ void SqlManager::sqlDelete()
 
     cmd = QString("DELETE FROM EpcInfo");
     queryExec(&query, "sqlDelete", cmd);
+
+    cmd = QString("DELETE FROM OperationInfo");
+    queryExec(&query, "sqlDelete", cmd);
 //    QString cmd = QString("DELETE FROM CodeInfo").arg(col).arg(row).arg(goodsId);
 //    QSqlQuery query(db_cabinet);
 //    queryExec(&query, cmd, "sqlDelete");

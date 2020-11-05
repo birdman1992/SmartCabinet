@@ -128,7 +128,7 @@ void Operation::setViewStyle()
 void Operation::selCurOperation(QString optId)
 {
     QSqlQuery query = SqlManager::query(QString("select "
-                      "surgery_bill_no,"
+                      "ssc_surgery_bill_id,"
                       "patient_name,"
                       "patient_gender,"
                       "patient_age,"
@@ -151,10 +151,24 @@ void Operation::selCurOperation(QString optId)
     {
         for(int i=0; i<lab_opt_info_list.count(); i++)
         {
-            qDebug()<<query.value(i).toString();
+//            qDebug()<<query.value(i).toString();
             lab_opt_info_list[i]->setText(query.value(i).toString());
         }
     }
+
+    QString cmd = QString("SELECT"
+                          "CI.code,"
+                          "GI.name,"
+                          "GI.size,"
+                          "GI.pro_name,"
+                          "GI.sup_name,"
+                          "GI.single_price"
+                          "FROM"
+                          "EpcInfo AS EI"
+                          "LEFT JOIN CodeInfo AS CI ON EI.goods_code = CI.code"
+            "LEFT JOIN GoodsInfo AS GI ON CI.package_id = GI.package_id"
+            "WHERE"
+            "CI.surgery_bill_no='123'");
 
     setCurOperationNo(ui->surgery_bill_no->text());
     setCurOperationStr(QString("手术单:%1 %2").arg(ui->surgery_bill_no->text()).arg(ui->surgery_bill_name->text()));

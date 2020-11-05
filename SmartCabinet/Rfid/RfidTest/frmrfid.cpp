@@ -53,6 +53,8 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(sigMan, SIGNAL(operationInfoUpdate()), ui->frm_operation, SLOT(loadOperations()));
     connect(ui->frm_operation, SIGNAL(curOperationStrChanged(QString)), this, SLOT(updateOperationStr(QString)));
     connect(ui->frm_operation, SIGNAL(CurOperationNoChanged(QString)), eModel, SLOT(curOptNoChanged(QString)));
+
+//    connect(eModel, SIGNAL(epcAccess(QStringList,QStringList,QString)), sigMan, SIGNAL(epcAccess(QStringList,QStringList,QString)));
     initTabs();
     initAntList();
 
