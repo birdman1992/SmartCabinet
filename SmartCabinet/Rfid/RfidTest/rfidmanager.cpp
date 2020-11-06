@@ -45,6 +45,7 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
 //    }
     QTimer::singleShot(1000, this, SLOT(initEpc()));
     initColName();
+    setScanLock(true);
 }
 
 void RfidManager::setCurOptId(QString optId)
@@ -154,6 +155,7 @@ void RfidManager::clsGiveUp()
     disconnect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
     flagScan = false;
     accessLock = false;
+    setScanLock(true);
 }
 
 //open: mark_in -> mark_checked
@@ -328,6 +330,7 @@ void RfidManager::updateEpc(QString epc, DevAction rfAct)
         return;
     }
 
+//    qDebug()<<"updateEpc"<<epc;
 //        qDebug()<<"[updateEpc]"<<epc<<isOutside;
 //    bool needUpdateOutList = false;
     if(rfAct == RF_REP)//内部天线

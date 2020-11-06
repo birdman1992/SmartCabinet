@@ -237,6 +237,25 @@ QString SqlManager::getPackageId(QString code)
     return ret;
 }
 
+QString SqlManager::getEpcCode(QString code)
+{
+    QString ret = QString();
+    QString cmd = QString("SELECT EI.epc_code FROM CodeInfo AS CI LEFT JOIN EpcInfo AS EI ON EI.goods_code=CI.code WHERE CI.code='%1'").arg(code);
+    QSqlQuery query(db_cabinet);
+    if(!queryExec(&query, "getPackageId", cmd))
+    {
+        return QString();
+    }
+    qDebug()<<query.isActive()<<query.isSelect();
+
+    if(query.next())
+        ret = query.value(0).toString();
+    else
+        qDebug("getPackageId failed");
+
+    return ret;
+}
+
 QStringList SqlManager::getCaseText(int col, int row)
 {
     QSqlQuery query(db_cabinet);

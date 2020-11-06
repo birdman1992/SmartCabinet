@@ -97,9 +97,12 @@ private:
     void timerStop();
 
 
+public slots:
+    void updateEpc(QString epc, DevAction rfAct);
+
 private slots:
 
-    void updateEpc(QString epc, DevAction rfAct);
+
 //    void testUpdateEpc(QString epc, int seq, int ant);
     void clsTimeOut();
     void timerUpdate();

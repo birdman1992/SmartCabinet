@@ -28,6 +28,7 @@ public:
     static QList<Goods*> getGoodsList();
     static QList<Goods*> getGoodsList(int col, int row);
     static QString getPackageId(QString code);//goodsCode->goodsId
+    static QString getEpcCode(QString code);//goodsCode->epcCode
     static QStringList getCaseText(int col, int row);
     static int getGoodsCount(QString packageId);
     static QPoint getGoodsPos(QString packageId);

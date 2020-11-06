@@ -109,10 +109,13 @@ void AIOMachine::recvScanData(QByteArray qba)
 
     if((qba.indexOf("CK") == 0) && (qba.indexOf("-") == -1))//存货单
     {
-
+        return;
     }
 
-    qDebug()<<config->state;
+//    qDebug()<<"rfid"<<config->getCabinetType().at(BIT_RFID);
+    if(config->getCabinetType().at(BIT_RFID))
+        win_rfid->scanData(qba);
+//    qDebug()<<config->state;
 
     switch(config->state)
     {
@@ -261,12 +264,15 @@ bool AIOMachine::eventFilter(QObject *obj, QEvent *e)
     }
     if(e->type() == QEvent::MouseButtonRelease)
     {
-        cEvent eventNum = (cEvent)l_num_label.indexOf((QLabel*)obj);
-        if(eventNum>=0)
+        if(loginState)
         {
-            qDebug()<<"[click event]"<<eventNum;
-            emit click_event(eventNum);
-            recvClickEvent(eventNum);
+            cEvent eventNum = (cEvent)l_num_label.indexOf((QLabel*)obj);
+            if(eventNum>=0)
+            {
+                qDebug()<<"[click event]"<<eventNum;
+                emit click_event(eventNum);
+                recvClickEvent(eventNum);
+            }
         }
     }
     return QWidget::eventFilter(obj, e);

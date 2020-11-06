@@ -33,6 +33,7 @@ public:
     void setPow(int pow);
     void setDownCount(int count);
     void clearCurOperation();
+    void scanData(QByteArray scanCode);
     ~FrmRfid();
 
 public slots:
@@ -72,7 +73,7 @@ private slots:
     void on_tab_filter_in_toggled(bool checked);
     void on_tab_filter_unknow_toggled(bool checked);
     void on_tab_filter_wait_back_toggled(bool checked);
-    void on_tab_view_clicked(const QModelIndex &index);
+    void on_tab_details_clicked(const QModelIndex &index);
     void on_tab_filter_out_toggled(bool checked);
     void on_stop_scan_clicked();
     void on_close_2_clicked();
@@ -95,12 +96,17 @@ private slots:
 
     void on_dev_act_activated(int index);
 
+    void on_show_summary_toggled(bool checked);
+
+    void on_show_details_toggled(bool checked);
+
 private:
     Ui::FrmRfid *ui;
     RfidManager* rfManager;
     QSortFilterProxyModel* filterModel;
     QTabWidget* win_tabs;
     EpcModel* eModel;
+    EpcSumModel* eSumModel;
     CabinetConfig* config;
     bool isLogin;
     bool doorIsOpen;
@@ -119,6 +125,7 @@ private:
     void initAntList();
     QBitArray curAntState();
     void accessDownCount(int count);//存取倒计时
+    void updateCountInfo(EpcMark scene);
 
 protected:
     void closeEvent(QCloseEvent*);

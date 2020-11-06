@@ -40,6 +40,7 @@ SOURCES += main.cpp\
     MessageDialog.cpp \
     Rfid/RfidTest/checkmanager.cpp \
     Rfid/RfidTest/epcmodel.cpp \
+    Rfid/RfidTest/epcsummodel.cpp \
     Rfid/RfidTest/frmrfid.cpp \
     Rfid/RfidTest/operation.cpp \
     Rfid/RfidTest/rfiddevhub.cpp \
@@ -157,6 +158,7 @@ HEADERS  += mainwidget.h \
     MessageDialog.h \
     Rfid/RfidTest/checkmanager.h \
     Rfid/RfidTest/epcmodel.h \
+    Rfid/RfidTest/epcsummodel.h \
     Rfid/RfidTest/frmrfid.h \
     Rfid/RfidTest/operation.h \
     Rfid/RfidTest/rfiddevhub.h \

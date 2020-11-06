@@ -28,18 +28,18 @@ QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical
 QScrollBar::add-line:vertical
 {
      border: 1px solid grey;
-     background: rgb(125, 193, 222);
+     background: rgb(245,245,245);
      height: 40px;
      subcontrol-position: bottom;
      subcontrol-origin: margin;
-     image: url(:/image/image/aio/arrow_down.png);
+     image: url(:/image/image/aio/icon_slide_down.png);
 }
 
 QScrollBar::sub-line:vertical
 {
     border: 1px solid grey;
-    background: rgb(125, 193, 222);
+    background: rgb(245,245,245);
     height: 40px;
     subcontrol-position: top;
-    image: url(:/image/image/aio/arrow_up.png);
+    image: url(:/image/image/aio/icon_slide_up.png);
 }

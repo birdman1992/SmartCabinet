@@ -13,6 +13,7 @@ EpcInfo::EpcInfo(QString id, QString _goodsCode)
     colPos = 0;
     scanedTimes = 0;
     signalIntensity = 0;
+
 }
 
 bool EpcInfo::epcScaned(qint64 scanMs)
@@ -34,6 +35,7 @@ EpcModel::EpcModel(QObject *parent)
 {
     config = CabinetConfig::config();
     markCount = 0;
+    eSumModel = new EpcSumModel;
     curOptId = QString();
     colsName.clear();
 //    colsName<<"物品"<<"条码"<<"规格"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";
@@ -41,6 +43,11 @@ EpcModel::EpcModel(QObject *parent)
     markNameTab.clear();
     markNameTab<<"未发现"<<"存入"<<"还回"<<"取出"<<"登记"<<"实时库存"<<"取出未还"<<"总览"<<"离柜"<<"发现";
     optList    <<"--"   <<"--"  <<"--" <<"移除"<<"--" <<"--"     <<"--"    <<"--"  <<"--" <<"--";
+}
+
+EpcModel::~EpcModel()
+{
+    delete eSumModel;
 }
 
 int EpcModel::rowCount(const QModelIndex &) const
@@ -139,6 +146,11 @@ EpcInfo *EpcModel::getEpcInfo(QString code)
     return map_rfid.value(code, NULL);
 }
 
+EpcSumModel *EpcModel::getSumModel()
+{
+    return eSumModel;
+}
+
 //void EpcModel::updateColumn(int col)
 //{
 //    emit dataChanged(createIndex(0, col), createIndex(rowCount()-1, col));
@@ -201,11 +213,12 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
         emit scanProgress(markCount, map_rfid.count());
     }
     qint64 curStamp = QDateTime::currentMSecsSinceEpoch();
-    countTab[info->mark]--;
+    EpcMark oldMark = info->mark;
+
+    countTab[oldMark]--;
     countTab[mark]++;
-    emit updateCount(mark, countTab[mark]);//更新旧的标记数量
-    emit updateCount(info->mark, countTab[info->mark]);//更新新的标记数量
     qDebug()<<"[setEpcMark]"<<epcId<<info->mark<<"->"<<mark<<"count:"<<markCount<<"countTab:"<<countTab[mark];
+    eSumModel->setEpcMark(info->package_id, mark, info->mark);
 
     info->mark = mark;
     if(info->mark != mark_wait_back)
@@ -222,6 +235,8 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
 
 //    reset();
     emit dataChanged(topLeft, bottomRight);
+    emit updateCount(oldMark, countTab[oldMark]);//更新旧的标记数量
+    emit updateCount(info->mark, countTab[info->mark]);//更新新的标记数量
 //    qDebug()<<"[setover]"<<countTab[info->mark];
 }
 
@@ -406,6 +421,8 @@ void EpcModel::syncDownload()
 //        qDebug()<<info->state;
 //        emit updateEpcInfo(info);
     }
+    //注册汇总信息
+    eSumModel->regSumInfo(map_rfid);
     refrushModel();
     countTab[0] = map_rfid.count();
     qDebug()<<"[model row]"<<map_rfid.count();

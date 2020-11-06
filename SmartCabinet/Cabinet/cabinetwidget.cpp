@@ -643,6 +643,7 @@ void CabinetWidget::clearCaseState()
 void CabinetWidget::recvScanData(QByteArray qba)
 {qDebug()<<"recvScanData"<<qba<<qba.toHex()<<config->state;
     magicCmd(QString(qba));
+
     if(config->getCabinetType().at(BIT_CAB_AIO))//一体机模式，无需通过按钮进入存取货模式
     {
         if(optUser == NULL)//未登录

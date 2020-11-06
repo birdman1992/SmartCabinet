@@ -21,7 +21,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
 //    btnTable.insert(mark_con, ui->tab_filter_consume);
 //    btnTable.insert(mark_in, ui->tab_filter_in);
 //    btnTable.insert(mark_wait_back, ui->tab_filter_wait_back);
-    btnTable.insert(mark_all, ui->tab_filter_all);
+//    btnTable.insert(mark_all, ui->tab_filter_all);
 
     QRegExp ipRx("\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b");
     ui->input_addr->setValidator(new QRegExpValidator(ipRx));
@@ -36,6 +36,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
 
     downCount = 60;
     eModel = new EpcModel(this);
+    eSumModel = eModel->getSumModel();
     isLogin = false;
     doorIsOpen = false;
     rfManager = new RfidManager(eModel);
@@ -61,11 +62,9 @@ FrmRfid::FrmRfid(QWidget *parent) :
     if(!config->getCabinetType().at(BIT_LOW_HIGH))//低值柜没有手术单
     {
         ui->operation->hide();
-        ui->tab_check_out->hide();
-        ui->tab_day_list->hide();
-        ui->pushButton_3->hide();
-        ui->label_3->hide();
-        ui->lock_count->hide();
+//        ui->tab_check_out->hide();
+//        ui->tab_day_list->hide();
+//        ui->pushButton_3->hide();
     }
 
 #ifdef test_rfid
@@ -86,12 +85,12 @@ FrmRfid::~FrmRfid()
 
 void FrmRfid::updateScanTimer(int ms)
 {
-    ui->scan_timer->display(ms);
+    ui->scan_timer->setText(QString::number(ms));
     if(this->isVisible() && (!doorIsOpen))//关门且在扫描状态
         accessDownCount(eModel->checkOptTime(downCount));
     //刷新信号强度
-//    int index = ui->tab_view->verticalScrollBar()->value();
-//    int countMax = ui->tab_view->verticalScrollBar()->pageStep()+1;
+//    int index = ui->tab_details->verticalScrollBar()->value();
+//    int countMax = ui->tab_details->verticalScrollBar()->pageStep()+1;
 //    int updateRowCount = qMin(countMax, filterModel->rowCount());
 
 //    qDebug()<<"update col"<<index<<updateRowCount;
@@ -108,10 +107,18 @@ void FrmRfid::updateCount(EpcMark mark, int count)
     {
         btnTable[mark]->setText(btnTable[mark]->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(count)));
         btnTable[mark]->setVisible(count && (visibleFlag[mark]));//加入屏蔽掩膜
+
+        if((!btnTable[mark]->isChecked()) && btnTable[mark]->isVisible())
+        {
+            btnTable[mark]->setChecked(true);
+        }
 //        btnTable[mark]->setVisible(count);//没有屏蔽掩膜
     }
 
-//    setDefaultSel();//设置默认选中按钮
+//    qDebug()<<mark<<eSumModel->scene();
+    updateCountInfo(mark);
+
+    setDefaultSel();//设置默认选中按钮
 }
 
 void FrmRfid::setDefaultSel()
@@ -182,6 +189,16 @@ void FrmRfid::accessDownCount(int count)
         on_OK_clicked();
 }
 
+void FrmRfid::updateCountInfo(EpcMark scene)
+{
+    if(scene == eSumModel->scene())//
+    {
+        ui->lab_cur_scene->setText(QString("%1:").arg(eModel->markTab().at(scene)));
+        ui->lab_count->setText(QString("%1").arg(filterModel->rowCount()));
+        ui->lab_pac->setText(QString("%1").arg(eSumModel->rowCount()));
+    }
+}
+
 void FrmRfid::closeEvent(QCloseEvent *e)
 {
     Q_UNUSED(e);
@@ -212,13 +229,15 @@ void FrmRfid::updateCurUser(QString optId)
 void FrmRfid::scanProgress(int curCount, int totalCount)
 {
     Q_UNUSED(totalCount);
-    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
-    ui->count->display(curCount);
+//    ui->tab_filter_all->setText(QString("总览:%1").arg(totalCount));
+    ui->count->setText(QString::number(curCount));
 }
 
+//unuse 2020-11-06
 void FrmRfid::updateLockCount(int lockCount)
 {
-    ui->lock_count->display(lockCount);
+    return;
+//    ui->lock_count->display(lockCount);
     if(lockCount>0 && !ui->tab_filter_out->isChecked())
     {
         ui->tab_filter_out->setChecked(true);
@@ -227,7 +246,7 @@ void FrmRfid::updateLockCount(int lockCount)
 
 void FrmRfid::updateUnknowCount(int unknowCount)
 {
-    ui->unknow_count->display(unknowCount);
+    ui->unknow_count->setText(QString::number(unknowCount));
 }
 
 void FrmRfid::showConfigDevice()
@@ -357,22 +376,22 @@ void FrmRfid::initTabs()
     connect(eModel, SIGNAL(updateLockCount(int)), this, SLOT(updateLockCount(int)));
     connect(eModel, SIGNAL(updateUnknowCount(int)), this, SLOT(updateUnknowCount(int)));
     connect(this, SIGNAL(dataChanged(QModelIndex,QModelIndex)), filterModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)));
-    ui->tab_view->setModel(filterModel);
-    ui->tab_view->setColumnWidth(0, 113);
-    ui->tab_view->setColumnWidth(1, 109);
-    ui->tab_view->setColumnWidth(2, 137);
-    ui->tab_view->setColumnWidth(3, 210);
-    ui->tab_view->setColumnWidth(4, 77);
-    ui->tab_view->setColumnWidth(5, 228);
-    ui->tab_view->setColumnWidth(6, 245);
-    ui->tab_view->setColumnWidth(7, 90);
-    ui->tab_view->setColumnWidth(8, 190);
-    ui->tab_view->setColumnWidth(9, 77);
-//    ui->tab_view->setColumnWidth(10, 100);
-    ui->tab_view->setColumnWidth(10, 60);
-    ui->tab_view->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
-    ui->tab_view->setAlternatingRowColors(true);
-    ui->tab_view->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
+    ui->tab_details->setModel(filterModel);
+    ui->tab_details->setColumnWidth(0, 113);
+    ui->tab_details->setColumnWidth(1, 109);
+    ui->tab_details->setColumnWidth(2, 137);
+    ui->tab_details->setColumnWidth(3, 210);
+    ui->tab_details->setColumnWidth(4, 77);
+    ui->tab_details->setColumnWidth(5, 228);
+    ui->tab_details->setColumnWidth(6, 245);
+    ui->tab_details->setColumnWidth(7, 90);
+    ui->tab_details->setColumnWidth(8, 190);
+    ui->tab_details->setColumnWidth(9, 77);
+//    ui->tab_details->setColumnWidth(10, 100);
+    ui->tab_details->setColumnWidth(10, 60);
+    ui->tab_details->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
+    ui->tab_details->setAlternatingRowColors(true);
+    ui->tab_details->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
                                 "background:white;"
                                 "gridline-color:rgb(161,161,161);"
                                 "alternate-background-color:rgb(244, 244, 244);"
@@ -399,11 +418,21 @@ void FrmRfid::initTabs()
                                 "selection-color:white;    /*鼠标选中时前景色：文字颜色*/"
                                 "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
 
+    //初始化汇总信息展示
+    ui->tab_summary->setModel(eSumModel);
+//    ui->tab_summary->setColumnWidth(0, 150);
+//    ui->tab_summary->setColumnWidth(1, 80);
+//    ui->tab_summary->setColumnWidth(2, 80);
+//    ui->tab_summary->setColumnWidth(3,80);
+    ui->tab_summary->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+    ui->tab_summary->setAlternatingRowColors(true);
+    ui->tab_summary->setStyleSheet("color: rgb(0, 0, 0);    /*前景色：文字颜色*/"
+                                   "background:white;"
+                                   "gridline-color:rgb(161,161,161);"
+                                   "alternate-background-color:rgb(244, 244, 244);"
+                                   "selection-color:white;    /*鼠标选中时前景色：文字颜色*/"
+                                   "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
 
-//    foreach (QToolButton* btn, btnTable)
-//    {
-//        btn->hide();
-//    }
 }
 
 void FrmRfid::setPow(int pow)
@@ -415,6 +444,14 @@ void FrmRfid::setPow(int pow)
          <<"权限：护士"
         <<"权限：仓管"
        <<"权限：员工";
+
+    QStringList sceneList;
+    sceneList<<"综合"
+            <<"取货"
+           <<"取货"
+          <<"存货"
+         <<"取货";
+    ui->lab_scene->setText(sceneList.at(pow));
 
     switch(pow)
     {
@@ -432,6 +469,7 @@ void FrmRfid::setPow(int pow)
         visibleFlag = QBitArray(mark_checked+1, false);
 //        visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
+        btnTable[mark_out]->setChecked(true);
 //        visibleFlag[mark_back] = true;
 //        visibleFlag[mark_new] = true;
 //        visibleFlag[mark_wait_back] = true;
@@ -442,6 +480,7 @@ void FrmRfid::setPow(int pow)
         visibleFlag = QBitArray(mark_checked+1, false);
 //        visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
+        btnTable[mark_out]->setChecked(true);
 //        visibleFlag[mark_back] = true;
 //        visibleFlag[mark_new] = true;
 //        visibleFlag[mark_wait_back] = true;
@@ -454,6 +493,7 @@ void FrmRfid::setPow(int pow)
 //        visibleFlag[mark_out] = true;
 //        visibleFlag[mark_back] = true;
         visibleFlag[mark_new] = true;
+        btnTable[mark_new]->setChecked(true);
 //        visibleFlag[mark_wait_back] = true;
 //        visibleFlag[mark_all] = true;
 //        visibleFlag[mark_checked] = true;
@@ -463,6 +503,7 @@ void FrmRfid::setPow(int pow)
         visibleFlag = QBitArray(mark_checked+1, false);
 //        visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
+        btnTable[mark_out]->setChecked(true);
 //        visibleFlag[mark_back] = true;
 //        visibleFlag[mark_new] = true;
 //        visibleFlag[mark_wait_back] = true;
@@ -476,8 +517,8 @@ void FrmRfid::setPow(int pow)
 
     ui->lab_pow->setText(powList.at(pow));
 
-    if(visibleFlag[mark_all])
-        ui->tab_filter_all->show();
+//    if(visibleFlag[mark_all])
+//        ui->tab_filter_all->show();
 }
 
 void FrmRfid::setDownCount(int count)
@@ -492,6 +533,21 @@ void FrmRfid::clearCurOperation()
     ui->frm_operation->setCurOperationStr(QString());
 }
 
+/**
+ * @brief FrmRfid::scanData 扫码操作转为等效的RFID扫描信息
+ * @param scanCode
+ */
+void FrmRfid::scanData(QByteArray scanCode)
+{
+    QString epcCode = SqlManager::getEpcCode(QString(scanCode));
+    qDebug()<<"[scanEpcCode]"<<epcCode;
+
+    if(epcCode.isEmpty())
+        return;
+
+    rfManager->updateEpc(epcCode, RF_AUTO);
+}
+
 void FrmRfid::clearCountText()
 {
     scanProgress(0, 0);
@@ -501,8 +557,8 @@ void FrmRfid::clearCountText()
         btn->hide();
         qDebug()<<"clear:"<<btn->objectName();
     }
-    if(visibleFlag[mark_all])
-        ui->tab_filter_all->show();
+//    if(visibleFlag[mark_all])
+//        ui->tab_filter_all->show();
 }
 
 void FrmRfid::showEvent(QShowEvent *)
@@ -517,17 +573,17 @@ void FrmRfid::paintEvent(QPaintEvent *e)
     Q_UNUSED(e);
     QPainter painter(this);
     painter.fillRect(rect(), QColor(50,50,50,0));
-//    qDebug()<<"COL SIZE"<<ui->tab_view->columnWidth(0)
-//              <<ui->tab_view->columnWidth(1)
-//                <<ui->tab_view->columnWidth(2)
-//                  <<ui->tab_view->columnWidth(3)
-//                    <<ui->tab_view->columnWidth(4)
-//                      <<ui->tab_view->columnWidth(5)
-//                        <<ui->tab_view->columnWidth(6)
-//                          <<ui->tab_view->columnWidth(7)
-//                            <<ui->tab_view->columnWidth(8)
-//                              <<ui->tab_view->columnWidth(9)
-//                                <<ui->tab_view->columnWidth(10);
+//    qDebug()<<"COL SIZE"<<ui->tab_details->columnWidth(0)
+//              <<ui->tab_details->columnWidth(1)
+//                <<ui->tab_details->columnWidth(2)
+//                  <<ui->tab_details->columnWidth(3)
+//                    <<ui->tab_details->columnWidth(4)
+//                      <<ui->tab_details->columnWidth(5)
+//                        <<ui->tab_details->columnWidth(6)
+//                          <<ui->tab_details->columnWidth(7)
+//                            <<ui->tab_details->columnWidth(8)
+//                              <<ui->tab_details->columnWidth(9)
+//                                <<ui->tab_details->columnWidth(10);
 }
 
 void FrmRfid::on_OK_clicked()
@@ -563,7 +619,7 @@ void FrmRfid::on_tab_filter_all_toggled(bool checked)
     {
         filterModel->setFilterKeyColumn(9);
         filterModel->setFilterRegExp(".*");
-//        ui->tab_view->resizeColumnsToContents();
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
@@ -574,13 +630,18 @@ void FrmRfid::on_tab_filter_out_toggled(bool checked)
     {
         filterModel->setFilterKeyColumn(9);
         filterModel->setFilterRegExp("取出$");
-//        ui->tab_view->resizeColumnsToContents();
+//        filterModel->setFilterFixedString(eModel->markTab().at(mark_out));
+        ui->lab_cur_scene->setText("当前取出");
+
+        eSumModel->setScene(mark_out);
+        updateCountInfo(mark_out);
+//        ui->tab_details->resizeColumnsToContents();
     }
     else
     {
-        filterModel->setFilterKeyColumn(9);
-        filterModel->setFilterRegExp(".*");
-//        ui->tab_view->resizeColumnsToContents();
+//        filterModel->setFilterKeyColumn(9);
+//        filterModel->setFilterRegExp(".*");
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
@@ -589,9 +650,13 @@ void FrmRfid::on_tab_filter_new_toggled(bool checked)
     if(checked)
     {
         filterModel->setFilterKeyColumn(9);
+        ui->lab_cur_scene->setText("当前存入");
 //        filterModel->setFilterRegExp("存入");
         filterModel->setFilterFixedString(eModel->markTab().at(mark_new));
-//        ui->tab_view->resizeColumnsToContents();
+
+        eSumModel->setScene(mark_new);
+        updateCountInfo(mark_new);
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
@@ -601,8 +666,12 @@ void FrmRfid::on_tab_filter_back_toggled(bool checked)
     {
         filterModel->setFilterKeyColumn(9);
 //        filterModel->setFilterRegExp("还回");
+        ui->lab_cur_scene->setText("当前还回");
         filterModel->setFilterFixedString(eModel->markTab().at(mark_back));
-//        ui->tab_view->resizeColumnsToContents();
+
+        eSumModel->setScene(mark_back);
+        updateCountInfo(mark_back);
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
@@ -613,7 +682,10 @@ void FrmRfid::on_tab_filter_consume_toggled(bool checked)
         filterModel->setFilterKeyColumn(9);
 //        filterModel->setFilterRegExp("登记");
         filterModel->setFilterFixedString(eModel->markTab().at(mark_con));
-//        ui->tab_view->resizeColumnsToContents();
+
+        eSumModel->setScene(mark_con);
+        updateCountInfo(mark_con);
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
@@ -624,7 +696,10 @@ void FrmRfid::on_tab_filter_in_toggled(bool checked)
         filterModel->setFilterKeyColumn(9);
 //        filterModel->setFilterRegExp("柜内");
         filterModel->setFilterFixedString(eModel->markTab().at(mark_in));
-//        ui->tab_view->resizeColumnsToContents();
+
+        eSumModel->setScene(mark_in);
+        updateCountInfo(mark_in);
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
@@ -635,7 +710,10 @@ void FrmRfid::on_tab_filter_unknow_toggled(bool checked)
         filterModel->setFilterKeyColumn(9);
 //        filterModel->setFilterRegExp("未知");
         filterModel->setFilterFixedString(eModel->markTab().at(mark_no));
-//        ui->tab_view->resizeColumnsToContents();
+
+        eSumModel->setScene(mark_no);
+        updateCountInfo(mark_no);
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
@@ -646,23 +724,26 @@ void FrmRfid::on_tab_filter_wait_back_toggled(bool checked)
         filterModel->setFilterKeyColumn(9);
 //        filterModel->setFilterRegExp("取出未还");
         filterModel->setFilterFixedString(eModel->markTab().at(mark_wait_back));
-//        ui->tab_view->resizeColumnsToContents();
+
+        eSumModel->setScene(mark_wait_back);
+        updateCountInfo(mark_wait_back);
+//        ui->tab_details->resizeColumnsToContents();
     }
 }
 
-void FrmRfid::on_tab_view_clicked(const QModelIndex &index)
+void FrmRfid::on_tab_details_clicked(const QModelIndex &index)
 {
-    if(index.column() != (ui->tab_view->model()->columnCount()-1))//不是最后一列的操作,排除
+    if(index.column() != (ui->tab_details->model()->columnCount()-1))//不是最后一列的操作,排除
     {
         return;
     }
 
     if(rfManager->accessIsLock())
-        eModel->operation(ui->tab_view->model()->index(index.row(), 1).data().toString(), mark_in);
+        eModel->operation(ui->tab_details->model()->index(index.row(), 1).data().toString(), mark_in);
     else
-        eModel->operation(ui->tab_view->model()->index(index.row(), 1).data().toString(), mark_checked);
+        eModel->operation(ui->tab_details->model()->index(index.row(), 1).data().toString(), mark_checked);
 
-//    qDebug()<<ui->tab_view->model()->index(index.row(), 1).data().toString();
+//    qDebug()<<ui->tab_details->model()->index(index.row(), 1).data().toString();
 }
 
 void FrmRfid::on_stop_scan_clicked()
@@ -846,4 +927,20 @@ void FrmRfid::on_dev_act_activated(int index)
         return;
 
     dev->setProperty("devAct", (1<<index));
+}
+
+void FrmRfid::on_show_summary_toggled(bool checked)
+{
+    if(checked)
+    {
+        ui->stacked_view->setCurrentWidget(ui->page_summary);
+    }
+}
+
+void FrmRfid::on_show_details_toggled(bool checked)
+{
+    if(checked)
+    {
+        ui->stacked_view->setCurrentWidget(ui->page_details);
+    }
 }
