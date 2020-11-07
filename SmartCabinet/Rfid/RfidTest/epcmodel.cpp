@@ -328,6 +328,11 @@ void EpcModel::syncUpload()
     QString cmd;
     foreach (EpcInfo* info, map_rfid)
     {
+        if(info->mark != eSumModel->scene()){
+//            qDebug()<<"[syncUpload]:ignore"<<info->epcId<<info->mark<<eSumModel->scene();
+            continue;
+        }
+
         cmd = QString();
         switch(info->mark)
         {

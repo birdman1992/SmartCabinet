@@ -2632,6 +2632,7 @@ void CabinetServer::recvRfidAccessRst()
 
     cJSON* json_rst = cJSON_GetObjectItem(json, "success");
     QString msg = QString::fromUtf8(cJSON_GetObjectItem(json, "msg")->valuestring);
+    emit aioMsg(msg);
     if(json_rst->type == cJSON_True)
     {
 

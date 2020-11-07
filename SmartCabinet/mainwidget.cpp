@@ -166,6 +166,7 @@ void MainWidget::init_huangpo()
         connect(cabTcp, SIGNAL(serverDelay(int)), win_aio, SLOT(updateDelay(int)));
         connect(win_aio, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
         connect(cabServer, SIGNAL(cabSyncResult(bool)), win_aio, SLOT(recvCabSyncResult(bool)));
+        connect(cabServer, SIGNAL(aioMsg(QString)), win_aio, SLOT(winMsg(QString)));
         aio_connect_mode(true);
         cab_connect_mode(false);
 

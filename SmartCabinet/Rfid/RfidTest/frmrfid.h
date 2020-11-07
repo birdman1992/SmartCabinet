@@ -34,6 +34,7 @@ public:
     void setDownCount(int count);
     void clearCurOperation();
     void scanData(QByteArray scanCode);
+    void setScene(EpcMark mark);
     ~FrmRfid();
 
 public slots:
@@ -117,6 +118,7 @@ private:
     int downCount;
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark
     QStringList list_win_name;
+    QStringList sceneList;
     QString curSelRfidReader;
     QString curOperation;
     QMap<EpcMark, QToolButton*> btnTable;
@@ -126,7 +128,7 @@ private:
     void setDefaultSel();//设置默认选项
     void updateSelReader(QString devIp);
     void initAntList();
-    void setScene(EpcMark mark);
+
     QBitArray curAntState();
     void accessDownCount(int count);//存取倒计时
     void updateCountInfo(EpcMark scene);

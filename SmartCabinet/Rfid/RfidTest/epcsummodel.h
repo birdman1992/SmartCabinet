@@ -96,6 +96,7 @@ public:
 private:
     EpcMark curScene;//当前计数场景
     QStringList colsName;
+    QStringList markNameTab;
     void refrushModel();
 };
 

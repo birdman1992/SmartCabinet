@@ -18,6 +18,18 @@ FrmRfid::FrmRfid(QWidget *parent) :
     btnTable.insert(mark_new, ui->tab_filter_new);
     btnTable.insert(mark_back, ui->tab_filter_back);
     btnTable.insert(mark_out, ui->tab_filter_out);
+
+    sceneList<<"未发现"
+            <<"存货"
+           <<"还货"
+          <<"取货"
+         <<"登记"
+        <<"实时库存"
+       <<"取出未还"
+      <<"总览"
+     <<"离柜"
+    <<"发现";
+
 //    btnTable.insert(mark_con, ui->tab_filter_consume);
 //    btnTable.insert(mark_in, ui->tab_filter_in);
 //    btnTable.insert(mark_wait_back, ui->tab_filter_wait_back);
@@ -104,6 +116,10 @@ void FrmRfid::updateCount(EpcMark mark, int count)
 //        return;
 
 //    qDebug()<<"updateCount:"<<mark<<count;
+
+    if(mark != eSumModel->scene())//
+        return;
+
     if(btnTable.contains(mark))
     {
         btnTable[mark]->setText(btnTable[mark]->text().replace(QRegExp(":[0-9]*"), QString(":%1").arg(count)));
@@ -138,7 +154,7 @@ void FrmRfid::setDefaultSel()
 //    }
 //    if(checkBtn)
 //        checkBtn->setChecked(true);
-    ui->tab_filter_out->setChecked(false);
+//    ui->tab_filter_out->setChecked(false);
 }
 
 void FrmRfid::updateSelReader(QString devIp)
@@ -170,6 +186,7 @@ void FrmRfid::setScene(EpcMark mark)
     rfScene = QBitArray(mark_checked+1);
     rfScene.setBit(mark, true);
     eSumModel->setScene(mark);
+    ui->lab_scene->setText(sceneList[mark]);
 }
 
 QBitArray FrmRfid::curAntState()
@@ -460,13 +477,14 @@ void FrmRfid::setPow(int pow)
         <<"权限：仓管"
        <<"权限：员工";
 
-    QStringList sceneList;
-    sceneList<<"综合"
+    QStringList defSceneList;
+
+    defSceneList<<"取货"
             <<"取货"
            <<"取货"
           <<"存货"
          <<"取货";
-    ui->lab_scene->setText(sceneList.at(pow));
+    ui->lab_scene->setText(defSceneList.at(pow));
 
     switch(pow)
     {
@@ -474,7 +492,7 @@ void FrmRfid::setPow(int pow)
         visibleFlag = QBitArray(mark_checked+1, false);
         visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
-//        visibleFlag[mark_back] = true;
+        visibleFlag[mark_back] = true;
         visibleFlag[mark_new] = true;
         visibleFlag[mark_wait_back] = true;
         visibleFlag[mark_all] = true;
@@ -485,7 +503,7 @@ void FrmRfid::setPow(int pow)
 //        visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
         btnTable[mark_out]->setChecked(true);
-//        visibleFlag[mark_back] = true;
+        visibleFlag[mark_back] = true;
 //        visibleFlag[mark_new] = true;
 //        visibleFlag[mark_wait_back] = true;
 //        visibleFlag[mark_all] = true;
@@ -496,7 +514,7 @@ void FrmRfid::setPow(int pow)
 //        visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
         btnTable[mark_out]->setChecked(true);
-//        visibleFlag[mark_back] = true;
+        visibleFlag[mark_back] = true;
 //        visibleFlag[mark_new] = true;
 //        visibleFlag[mark_wait_back] = true;
 //        visibleFlag[mark_all] = true;
@@ -506,7 +524,7 @@ void FrmRfid::setPow(int pow)
         visibleFlag = QBitArray(mark_checked+1, false);
 //        visibleFlag[mark_in] = true;
 //        visibleFlag[mark_out] = true;
-//        visibleFlag[mark_back] = true;
+        visibleFlag[mark_back] = true;
         visibleFlag[mark_new] = true;
         btnTable[mark_new]->setChecked(true);
 //        visibleFlag[mark_wait_back] = true;
@@ -519,7 +537,7 @@ void FrmRfid::setPow(int pow)
 //        visibleFlag[mark_in] = true;
         visibleFlag[mark_out] = true;
         btnTable[mark_out]->setChecked(true);
-//        visibleFlag[mark_back] = true;
+        visibleFlag[mark_back] = true;
 //        visibleFlag[mark_new] = true;
 //        visibleFlag[mark_wait_back] = true;
 //        visibleFlag[mark_all] = true;

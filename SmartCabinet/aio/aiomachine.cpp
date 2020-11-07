@@ -15,7 +15,6 @@ AIOMachine::AIOMachine(QWidget *parent) :
     initNumLabel();
     initColMap();
     initIcons();
-    ui->aio_check_in->hide();
     ui->setting->hide();
     winActive = true;
     QWidget::installEventFilter(this);
@@ -49,10 +48,14 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->page_table->setAttribute(Qt::WA_TranslucentBackground);
     ui->page_temp->setAttribute(Qt::WA_TranslucentBackground);
 
+    ui->aio_check_in->hide();
     ui->aio_return->hide();
     ui->aio_check_create->hide();
 //    ui->aio_check->hide();
     ui->frame_dev_panel->hide();
+    ui->aio_store->hide();
+    ui->aio_fetch->hide();
+    ui->aio_back->hide();
 //    ui->info_table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
     loginState = false;
@@ -140,8 +143,10 @@ void AIOMachine::setPowState(int power)
     ui->aio_check_create->hide();//盘点
     ui->aio_return->hide();//退货
     ui->aio_check_in->hide();//消耗登记
+    ui->aio_store->hide();//存货
+    ui->aio_fetch->hide();//取货
+    ui->aio_back->hide();//还货
     ui->setting->hide();
-    optList.clear();
     curState = 0;
 
     switch(power)
@@ -149,38 +154,48 @@ void AIOMachine::setPowState(int power)
     case 0://超级管理员:|补货|退货|服务|退出|
         ui->aio_day_report->show();
         ui->setting->show();
+        ui->aio_store->show();//存货
+        ui->aio_fetch->show();//取货
+        ui->aio_back->show();//还货
+        setState(STATE_FETCH);
 //        ui->aio_check->show();
 //        ui->aio_return->show();
-        ui->aio_check_create->show();
-        optList<<"取"<<"存"<<"还";
+//        ui->aio_check_create->show();
         break;
 
     case 1://护士长:|退货|退出|
         ui->aio_day_report->show();
+        ui->aio_fetch->show();//取货
+        ui->aio_back->show();//还货
+        setState(STATE_FETCH);
 //        ui->aio_check->show();
 //        ui->aio_return->show();
-        optList<<"取"<<"还";
 //        ui->aio_check_create->show();
         break;
 
     case 2://护士:|退出|
         ui->aio_day_report->show();
+        ui->aio_fetch->show();//取货
+        ui->aio_back->show();//还货
+        setState(STATE_FETCH);
 //        ui->aio_check->show();
-        optList<<"取"<<"还";
         break;
 
     case 3://管理员:|补货|退货|退出|
         ui->aio_day_report->show();
+        ui->aio_store->show();//存货
+        setState(STATE_STORE);
 //        ui->aio_check->show();
 //        ui->aio_return->show();
 //        ui->aio_check_create->show();
-        optList<<"取"<<"存"<<"还";
         break;
 
     case 4://医院员工:|退出|
         ui->aio_day_report->show();
+        ui->aio_fetch->show();//取货
+        ui->aio_back->show();//还货
+        setState(STATE_FETCH);
 //        ui->aio_check->show();
-        optList<<"取"<<"还";
 //        ui->aio_return->show();
 //        ui->aio_check_create->show();
         break;
@@ -208,9 +223,9 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     }
 
     ui->aio_quit->setText(QString("您好！%1").arg(user->name));
-    config->state = STATE_FETCH;
+//    config->state = STATE_FETCH;
     setPowState(optUser->power);
-    updateState();
+//    updateState();
     sysUnlock();
     win_rfid->setLoginState(true);
     qDebug("user req");
@@ -251,10 +266,10 @@ bool AIOMachine::eventFilter(QObject *obj, QEvent *e)
             {
                 emit aio_check(false);
             }
-            if((!winActive) && (loginState))//窗口被激活，排除初始显示被激活的情况,排除未登录情况
-            {
-                updateState();
-            }
+//            if((!winActive) && (loginState))//窗口被激活，排除初始显示被激活的情况,排除未登录情况
+//            {
+//                updateState();
+//            }
             winActive = true;
         }
         else if(e->type() == QEvent::WindowDeactivate)
@@ -380,30 +395,27 @@ void AIOMachine::initAioMode()
     }
 }
 
-void AIOMachine::updateState()
+void AIOMachine::setState(CabState state)
 {
-    QString stateStr = optList.at(curState);
-    ui->cur_state->setText(stateStr);
-    config->state = (CabState)curStateText.value(stateStr,1);
-    qDebug()<<"[updateState]"<<stateStr<<config->state;
-}
+    curState = state;
+    config->state = state;
+    switch (state) {
+    case STATE_STORE:
+        win_rfid->setScene(mark_new);
+        break;
 
-void AIOMachine::nextState()
-{
-    curState = optList.indexOf(ui->cur_state->text());qDebug()<<"cur state1"<<curState;
-    if((curState<0) || (curState >= optList.count()-1))
-        curState = 0;
-    else
-        curState++;
-    qDebug()<<"cur state2"<<curState;
-    updateState();
-}
+    case STATE_FETCH:
+        win_rfid->setScene(mark_out);
+        break;
 
-void AIOMachine::setState(QString stateStr)
-{
-    ui->cur_state->setText(stateStr);
-    config->state = (CabState)curStateText.value(stateStr,1);
-    qDebug()<<"[updateState]"<<stateStr<<config->state;
+    case STATE_BACK:
+        win_rfid->setScene(mark_back);
+        break;
+    default:
+        break;
+    }
+
+    qDebug()<<"[updateState]"<<state<<config->state;
 }
 
 void AIOMachine::setAioInfo(QString departName, QString departId)
@@ -413,13 +425,23 @@ void AIOMachine::setAioInfo(QString departName, QString departId)
 
 void AIOMachine::setNumLabel(AIOOverview *overview)
 {
-    ui->num_expired->setText(QString("%1\n近效期物品").arg(overview->lifeTimeGoodsCount));
-    ui->num_goods->setText(QString("%1\n耗材品种（个）").arg(overview->chesetGoodsCount));
-    ui->num_today_in->setText(QString("￥%1\n今日入库(元)").arg(overview->inSumCount));
-    ui->num_today_out->setText(QString("￥%1\n今日出库(元)").arg(overview->outSumCount));
-    ui->num_warning_rep->setText(QString("%1\n库存预警").arg(overview->warnGoodsCount));
-//    ui->lab_temp->setText(QString("%1\n耗材品种（个）").arg(overview->chesetGoodsCount));
-    //    ui->lab_hum->setText(QString("%1\n耗材品种（个）").arg(overview->chesetGoodsCount));
+    if(loginState)
+    {
+        ui->num_expired->setText(QString("%1\n近效期物品").arg(overview->lifeTimeGoodsCount));
+        ui->num_goods->setText(QString("%1\n耗材品种（个）").arg(overview->chesetGoodsCount));
+        ui->num_today_in->setText(QString("￥%1\n今日入库(元)").arg(overview->inSumCount));
+        ui->num_today_out->setText(QString("￥%1\n今日出库(元)").arg(overview->outSumCount));
+        ui->num_warning_rep->setText(QString("%1\n库存预警").arg(overview->warnGoodsCount));
+    }
+    else
+    {
+        ui->num_expired->setText(QString("%1\n近效期物品").arg(overview->lifeTimeGoodsCount));
+        ui->num_goods->setText(QString("%1\n耗材品种（个）").arg(overview->chesetGoodsCount));
+        ui->num_today_in->setText(QString("￥---\n今日入库(元)"));
+        ui->num_today_out->setText(QString("￥---\n今日出库(元)"));
+        ui->num_warning_rep->setText(QString("%1\n库存预警").arg(overview->warnGoodsCount));
+    }
+
 }
 
 void AIOMachine::showTable(QString title, QStringList colNames, QList<Goods*>listInfo)
@@ -609,6 +631,9 @@ void AIOMachine::sysLock()
     optUser = NULL;
     win_rfid->updateCurUser(QString());
     qDebug("lock req");
+    ui->num_today_in->setText(QString("￥---\n今日入库(元)"));
+    ui->num_today_out->setText(QString("￥---\n今日出库(元)"));
+
     emit reqUpdateOverview();
     emit updateLoginState(false);
     emit logout();
@@ -840,11 +865,6 @@ void AIOMachine::on_setting_clicked()
     emit stack_switch(INDEX_CAB_SERVICE);
 }
 
-void AIOMachine::on_cur_state_clicked()
-{
-    nextState();
-}
-
 void AIOMachine::on_temp_btn_back_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -892,4 +912,25 @@ void AIOMachine::on_netState_clicked()
     updateNetState(netCheckState);
     winMsg("智能柜数据同步中..");
     emit requireCabSync();
+}
+
+void AIOMachine::on_aio_store_clicked()
+{
+    setState(STATE_STORE);
+    win_rfid->setDownCount(0);
+    win_rfid->rfidCheck();
+}
+
+void AIOMachine::on_aio_fetch_clicked()
+{
+    setState(STATE_FETCH);
+    win_rfid->setDownCount(0);
+    win_rfid->rfidCheck();
+}
+
+void AIOMachine::on_aio_back_clicked()
+{
+    setState(STATE_BACK);
+    win_rfid->setDownCount(0);
+    win_rfid->rfidCheck();
 }
