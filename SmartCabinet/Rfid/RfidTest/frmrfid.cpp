@@ -33,6 +33,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
 
     visibleFlag = QBitArray(mark_checked+1, false);
     visibleFlag[mark_all] = true;
+    rfScene = QBitArray(mark_checked+1);
 
     downCount = 60;
     eModel = new EpcModel(this);
@@ -161,6 +162,14 @@ void FrmRfid::initAntList()
     {
         connect(b, SIGNAL(toggled(bool)), this, SLOT(ant_state_changed(bool)));
     }
+}
+
+void FrmRfid::setScene(EpcMark mark)
+{
+    sceneMark = mark;
+    rfScene = QBitArray(mark_checked+1);
+    rfScene.setBit(mark, true);
+    eSumModel->setScene(mark);
 }
 
 QBitArray FrmRfid::curAntState()
@@ -419,7 +428,13 @@ void FrmRfid::initTabs()
                                 "selection-background-color:rgb(23, 166, 255);   /*鼠标选中时背景色*/");
 
     //初始化汇总信息展示
-    ui->tab_summary->setModel(eSumModel);
+    sumFilterModel = new QSortFilterProxyModel;
+    sumFilterModel->setSourceModel(eSumModel);
+    sumFilterModel->setDynamicSortFilter(true);
+    sumFilterModel->setFilterKeyColumn(3);
+    sumFilterModel->setFilterRegExp("^[1-9]*[1-9][0-9]*$");
+
+    ui->tab_summary->setModel(sumFilterModel);
 //    ui->tab_summary->setColumnWidth(0, 150);
 //    ui->tab_summary->setColumnWidth(1, 80);
 //    ui->tab_summary->setColumnWidth(2, 80);
@@ -557,6 +572,8 @@ void FrmRfid::clearCountText()
         btn->hide();
         qDebug()<<"clear:"<<btn->objectName();
     }
+    ui->lab_count->setText("0");
+    ui->lab_pac->setText("0");
 //    if(visibleFlag[mark_all])
 //        ui->tab_filter_all->show();
 }

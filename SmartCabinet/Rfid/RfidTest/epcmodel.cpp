@@ -185,6 +185,8 @@ void EpcModel::clearEpcMark()
             }
         }
     }
+    //清除计数
+    eSumModel->clear();
     markCount = 0;
     lockCount = 0;
     activeStamp = 0;

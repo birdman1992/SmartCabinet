@@ -104,10 +104,13 @@ private:
     Ui::FrmRfid *ui;
     RfidManager* rfManager;
     QSortFilterProxyModel* filterModel;
+    QSortFilterProxyModel* sumFilterModel;
     QTabWidget* win_tabs;
     EpcModel* eModel;
     EpcSumModel* eSumModel;
     CabinetConfig* config;
+    QBitArray rfScene;
+    EpcMark sceneMark;
     bool isLogin;
     bool doorIsOpen;
 
@@ -123,6 +126,7 @@ private:
     void setDefaultSel();//设置默认选项
     void updateSelReader(QString devIp);
     void initAntList();
+    void setScene(EpcMark mark);
     QBitArray curAntState();
     void accessDownCount(int count);//存取倒计时
     void updateCountInfo(EpcMark scene);

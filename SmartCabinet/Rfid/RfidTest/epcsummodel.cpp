@@ -68,6 +68,15 @@ EpcMark EpcSumModel::scene()
     return curScene;
 }
 
+void EpcSumModel::clear()
+{
+    foreach (EpcSumInfo* info, map_sumInfo)
+    {
+        info->clearCount();
+    }
+    refrushModel();
+}
+
 /**
  * @brief EpcSumModel::regSumInfo 初始化注册汇总信息
  * @param map_rfid
