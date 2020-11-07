@@ -144,7 +144,7 @@ private:
     void initAioMode();
     void updateState();
     void nextState();
-    void setState(QString stateStr);
+    void setState(CabState state);
     void setAioInfo(QString departName, QString departId);
     void setNumLabel(AIOOverview* overview);
     void showTable(QString title, QStringList colNames, QList<Goods*>);
@@ -179,12 +179,14 @@ private slots:
     void on_tab_last_clicked();
     void on_tab_next_clicked();
     void on_setting_clicked();
-    void on_cur_state_clicked();
     void on_temp_btn_back_clicked();
     void on_mode_view_toggled(bool checked);
     void on_mode_temp_toggled(bool checked);
     void on_set_dev_params_clicked();
     void on_netState_clicked();
+    void on_aio_store_clicked();
+    void on_aio_fetch_clicked();
+    void on_aio_back_clicked();
 };
 
 #endif // AIOMACHINE_H

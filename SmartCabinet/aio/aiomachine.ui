@@ -716,7 +716,7 @@ padding-bottom:30px;
              <property name="currentIndex">
               <number>0</number>
              </property>
-             <widget class="QWidget" name="page_hello" native="true">
+             <widget class="QWidget" name="page_hello">
               <property name="styleSheet">
                <string notr="true"/>
               </property>
@@ -828,7 +828,7 @@ padding-top:16px;</string>
            <property name="currentIndex">
             <number>0</number>
            </property>
-           <widget class="QWidget" name="footer_login" native="true">
+           <widget class="QWidget" name="footer_login">
             <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,5">
              <property name="leftMargin">
               <number>68</number>
@@ -853,6 +853,22 @@ padding-top:16px;</string>
                  <height>0</height>
                 </size>
                </property>
+               <property name="styleSheet">
+                <string notr="true">#aio_fetch,#aio_back,#aio_store{
+	border-image:url(:/image/image/aio/btn_bottom_null.png);
+	font: 75 46px &quot;WenQuanYi Micro Hei Mono&quot;;
+	border-bottom:35px;
+	color: rgb(255, 255, 255);
+}
+
+##aio_fetch::pressed,#aio_back::pressed,#aio_store::pressed{
+	border-image: url(:/image/image/aio/btn_bottom_null.png);
+font: 75 60px &quot;WenQuanYi Micro Hei Mono&quot;;
+margin:5px;
+border-bottom:35px;
+color: rgb(255, 255, 255);
+}</string>
+               </property>
                <layout class="QHBoxLayout" name="aio_btn_layout">
                 <property name="leftMargin">
                  <number>1</number>
@@ -864,7 +880,7 @@ padding-top:16px;</string>
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="cur_state">
+                 <widget class="QPushButton" name="aio_store">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -887,23 +903,60 @@ padding-top:16px;</string>
                    <enum>Qt::NoFocus</enum>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">#cur_state{
-	border-image:url(:/image/image/aio/btn_bottom_null.png);
-	font: 75 80px &quot;WenQuanYi Micro Hei Mono&quot;;
-border-bottom:35px;
-	color: rgb(255, 255, 255);
-}
-
-#cur_state:pressed{
-	border-image: url(:/image/image/aio/btn_bottom_null.png);
-font: 75 60px &quot;WenQuanYi Micro Hei Mono&quot;;
-margin:5px;
-border-bottom:35px;
-color: rgb(255, 255, 255);
-}</string>
+                   <string notr="true"/>
                   </property>
                   <property name="text">
-                   <string>存</string>
+                   <string>存货</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="aio_fetch">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>234</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>234</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>取货</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="aio_back">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>234</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>234</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>还货</string>
                   </property>
                  </widget>
                 </item>

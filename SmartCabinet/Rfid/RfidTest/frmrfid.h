@@ -34,6 +34,7 @@ public:
     void setDownCount(int count);
     void clearCurOperation();
     void scanData(QByteArray scanCode);
+    void setScene(EpcMark mark);
     ~FrmRfid();
 
 public slots:
@@ -126,7 +127,7 @@ private:
     void setDefaultSel();//设置默认选项
     void updateSelReader(QString devIp);
     void initAntList();
-    void setScene(EpcMark mark);
+
     QBitArray curAntState();
     void accessDownCount(int count);//存取倒计时
     void updateCountInfo(EpcMark scene);

@@ -6,6 +6,9 @@ EpcSumModel::EpcSumModel()
     curScene = mark_out;
     colsName.clear();
     colsName<<"ID"<<"物品"<<"规格"<<"数量"<<"生产商"<<"供应商";
+    markNameTab.clear();
+    markNameTab<<"未发现"<<"存入"<<"还回"<<"取出"<<"登记"<<"实时库存"<<"取出未还"<<"总览"<<"离柜"<<"发现";
+
 }
 
 int EpcSumModel::rowCount(const QModelIndex &) const
@@ -66,6 +69,11 @@ QVariant EpcSumModel::headerData(int section, Qt::Orientation orientation, int r
 EpcMark EpcSumModel::scene()
 {
     return curScene;
+}
+
+QString EpcSumModel::sceneStr()
+{
+    return markNameTab.at(curScene);
 }
 
 void EpcSumModel::clear()
