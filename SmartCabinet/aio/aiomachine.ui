@@ -507,7 +507,7 @@ padding-bottom:40px;</string>
           <widget class="QFrame" name="frm_msg">
            <property name="styleSheet">
             <string notr="true">#frm_msg{
-border-image: url(:/image/image/aio/tip_home_check.png);
+border-image: url(:/image/image/aio/tip_home_check_xy.png);
 }
 </string>
            </property>

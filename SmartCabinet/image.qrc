@@ -75,6 +75,7 @@
         <file>image/aio/icon_x_lable.png</file>
         <file>image/aio/icon_slide_down.png</file>
         <file>image/aio/icon_slide_up.png</file>
+        <file>image/aio/tip_home_check_xy.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>

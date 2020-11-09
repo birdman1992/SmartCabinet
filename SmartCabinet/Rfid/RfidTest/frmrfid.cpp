@@ -187,6 +187,7 @@ void FrmRfid::setScene(EpcMark mark)
     rfScene.setBit(mark, true);
     eSumModel->setScene(mark);
     ui->lab_scene->setText(sceneList[mark]);
+    btnTable[mark]->setChecked(true);
 }
 
 QBitArray FrmRfid::curAntState()
@@ -221,7 +222,7 @@ void FrmRfid::updateCountInfo(EpcMark scene)
     {
         ui->lab_cur_scene->setText(QString("%1:").arg(eModel->markTab().at(scene)));
         ui->lab_count->setText(QString("%1").arg(filterModel->rowCount()));
-        ui->lab_pac->setText(QString("%1").arg(eSumModel->rowCount()));
+        ui->lab_pac->setText(QString("%1").arg(sumFilterModel->rowCount()));
     }
 }
 
