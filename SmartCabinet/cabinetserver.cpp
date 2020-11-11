@@ -22,6 +22,7 @@
 #define API_LOGIN "/sarkApi/UserInfo/query/"  //登录接口
 #define API_LIST_CHECK "/sarkApi/OutStorage/query/goods/" //送货单检查接口
 #define API_LIST_STORE "/sarkApi/OutStorage/query/"      //存入完毕销单接口
+#define API_LIST_STORE_SCAN    "/sarkApi/Cheset/trace/doGoods/"  //低值柜扫码存货接口
 #define API_CAB_BIND "/sarkApi/Cheset/register/"     //柜格物品绑定接口
 #define API_GOODS_ACCESS  "/sarkApi/Cheset/doGoods/"
 //#define API_GOODS_CHECK  "/sarkApi/Cheset/doUpdataGoods/"     //盘点接口
@@ -577,7 +578,7 @@ void CabinetServer::goodsAccess(QPoint addr, QString id, int num, int optType)
     }
 }
 
-void CabinetServer::listAccess(QStringList list, UserOpt optType)//store:1  fetch:2 refund:3 back:16
+void CabinetServer::listAccess(QStringList list, int optType)//store:1  fetch:2 refund:3 back:16
 {
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();
@@ -761,13 +762,89 @@ void CabinetServer::goodsCheck(QStringList l, CaseAddress)
     free(buff);
 }
 
-void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
+void CabinetServer::goodsListStoreScanAll(QString barcode ,QList<CabinetStoreListItem *> l)
+{
+    qint64 timeStamp = getApiMark();
+
+    cJSON* json = cJSON_CreateObject();
+    cJSON* jlist = cJSON_CreateArray();
+
+    CabinetStoreListItem* goodsItem;
+    int optType = 2;
+    QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
+    QByteArray dateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit();
+
+
+    foreach (goodsItem, l)
+    {
+        QStringList itemCodes = goodsItem->itemGoods()->codes;
+        QStringList itemCache = goodsItem->itemGoods()->scanCache;
+        qDebug()<<"[ListStore]"<<"物品:"<<goodsItem->itemId()<<"扫描:"<<itemCache.count()<<"拒收:"<<goodsItem->waitNum();
+        QByteArray packageBarcode = goodsItem->itemId().toLocal8Bit();
+//        QByteArray _barcode = barCode.toLocal8Bit();
+        QByteArray _barcode = barcode.toLocal8Bit();
+        cJSON* obj = cJSON_CreateObject();
+        cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
+        cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));
+        cJSON_AddItemToObject(obj, "optType", cJSON_CreateNumber(optType));
+        cJSON_AddItemToObject(obj, "optCount", cJSON_CreateNumber(itemCache.count()));
+        cJSON_AddItemToObject(obj, "barcode", cJSON_CreateString(_barcode.data()));
+        cJSON_AddItemToObject(obj ,"dateTime", cJSON_CreateString(dateTime.data()));
+        cJSON* li_rfidCodes = cJSON_CreateArray();
+        cJSON* li_refuseCodes = cJSON_CreateArray();
+
+        foreach (QString code, itemCodes)
+        {
+            QByteArray bCode = code.toLocal8Bit();
+            if(itemCache.contains(code))//扫描的标签
+            {
+                cJSON_AddItemToArray(li_rfidCodes, cJSON_CreateString(bCode.data()));
+            }
+            else//拒收的标签
+            {
+                cJSON_AddItemToArray(li_refuseCodes, cJSON_CreateString(bCode.data()));
+            }
+        }
+
+        cJSON_AddItemToObject(obj, "rfidCodes", li_rfidCodes);
+        cJSON_AddItemToObject(obj, "refuseCodes", li_refuseCodes);
+
+        cJSON_AddItemToArray(jlist, obj);
+    }
+    cJSON_AddItemToObject(json, "li",jlist);
+
+    QByteArray optId = config->getOptId().toLocal8Bit();
+    cJSON_AddItemToObject(json,"optName", cJSON_CreateString(optId.data()));
+    cJSON_AddItemToObject(json, "timeStamp", cJSON_CreateNumber(timeStamp));
+
+    char* buff = cJSON_Print(json);
+    cJSON_Delete(json);
+    QByteArray qba = QByteArray(buff);
+
+//    QString nUrl = ApiAddress+QString(API_GOODS_ACCESS)+"?"+qba.toBase64();
+    QString nUrl = ApiAddress+QString(API_LIST_STORE_SCAN);
+    qDebug()<<"[goodsListStoreScanAll]"<<nUrl;
+    qDebug()<<qba;
+//    return;
+    replyCheck(reply_goods_access);
+//    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
+    reply_goods_access = post(nUrl, qba, timeStamp);
+    connect(reply_goods_access, SIGNAL(finished()), this, SLOT(recvListAccess()));
+    free(buff);
+}
+
+void CabinetServer::goodsListStore(QString barcode, QList<CabinetStoreListItem *> l)
 {
     qDebug("goodsListStore");
     qDebug()<<l.count();
-    qint64 timeStamp = getApiMark();
+    bool needScanAll = config->getStoreMode();
+    if(needScanAll)
+    {
+        goodsListStoreScanAll(barcode, l);
+        return;
+    }
 
-//    return;
+    qint64 timeStamp = getApiMark();
 
     cJSON* json = cJSON_CreateObject();
     cJSON* jlist = cJSON_CreateArray();
@@ -785,7 +862,7 @@ void CabinetServer::goodsListStore(QList<CabinetStoreListItem *> l)
         QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
         QPoint addr = SqlManager::searchByPackageId(pack_id);
         QByteArray goodsCode = QString::number(config->getLockId(addr.x(), addr.y())).toLocal8Bit();
-        QByteArray _barcode = barCode.toLocal8Bit();
+        QByteArray _barcode = barcode.toLocal8Bit();
         cJSON* obj = cJSON_CreateObject();
         cJSON_AddItemToObject(obj, "packageBarcode",cJSON_CreateString(packageBarcode.data()));
         cJSON_AddItemToObject(obj, "chesetCode", cJSON_CreateString(chesetCode.data()));

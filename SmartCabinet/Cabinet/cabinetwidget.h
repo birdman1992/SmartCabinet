@@ -97,7 +97,7 @@ signals:
     void requireAccessList(QStringList list, int optType);
     void checkCase(QList<CabinetCheckItem*> l, CaseAddress addr);
     void checkCase(QStringList, CaseAddress);
-    void storeList(QList<CabinetStoreListItem*>);
+    void storeList(QString barcode ,QList<CabinetStoreListItem*>);
     void newStoreBarCode(QString);
     void requireTimeout();
     void requireCabSync();

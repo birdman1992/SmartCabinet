@@ -72,7 +72,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(win_store_list, SIGNAL(requireBind(Goods*)), this, SLOT(cabinetBind(Goods*)));
     connect(win_store_list, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
     connect(win_store_list, SIGNAL(requireGoodsListCheck(QString)), this, SIGNAL(requireGoodsListCheck(QString)));
-    connect(win_store_list, SIGNAL(storeList(QList<CabinetStoreListItem*>)), this, SIGNAL(storeList(QList<CabinetStoreListItem*>)));
+    connect(win_store_list, SIGNAL(storeList(QString ,QList<CabinetStoreListItem*>)), this, SIGNAL(storeList(QString ,QList<CabinetStoreListItem*>)));
     connect(win_store_list, SIGNAL(newStoreBarCode(QString)), this, SIGNAL(newStoreBarCode(QString)));
     connect(win_store_list, SIGNAL(requireScanState(bool)), this, SLOT(updateScanState(bool)));
     connect(win_store_list, SIGNAL(reportTraceId(QString)), this, SIGNAL(reportTraceId(QString)));

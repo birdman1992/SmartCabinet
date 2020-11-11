@@ -71,6 +71,7 @@ private:
     QTimer time_test;
     bool loginState;
     bool needScanAll;
+    bool flagReject;//拒收确认标志
     GOODS_STATE curState;
     GoodsManager* manager;
     StoreListManager* storeManager;
@@ -81,7 +82,10 @@ private:
     QStringList list_msg;
     CabinetStoreListItem* bindItem;
     QList<CabinetStoreListItem*> list_item;
-    QMap<QString, CabinetStoreListItem*> map_item;
+    QMap<QString, CabinetStoreListItem*> map_item;//key:package_id
+    bool checkFlagReject();
+    void initFlagReject();
+    void storeRecover(QString scanCode);
 private slots:
 //    void timeOut();
     void itemBind(Goods*, CabinetStoreListItem*);
@@ -93,10 +97,14 @@ private slots:
     void on_stackedWidget_currentChanged(int arg1);
     void on_list_part_cellClicked(int row, int column);
 
+    void on_box_reject_clicked(bool checked);
+
+    void on_btn_store_continue_clicked();
+
 signals:
     void requireBind(Goods*);
     void requireOpenCase(int seq, int index);
-    void storeList(QList<CabinetStoreListItem*>);
+    void storeList(QString ,QList<CabinetStoreListItem*>);
     void requireScanState(bool);
     void requireGoodsListCheck(QString listCode);
     void newStoreBarCode(QString);

@@ -15,7 +15,7 @@ public:
     GoodsList* recoverGoodsList(QString listCode);
     void creatStoreCache(GoodsList* goodsList);
     void removeStoreCache(QString listCode);
-    bool storeGoodsCode(QString goodsCode);//存入一个条码
+    bool storeGoodsCode(QString packageId, QString goodsCode);//存入一个条码
     QString getErrorMsg();
 
 private:
@@ -29,7 +29,7 @@ private:
     QString errorMsg;
     QString curList;
     QString configPath;
-    QString scanDataTrans(QString code);
+//    QString scanDataTrans(QString code);
 };
 
 #endif // STORELISTMANAGER_H

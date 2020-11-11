@@ -55,6 +55,7 @@ void CabinetAccess::setStoreList(GoodsList *list)
 {
     storeList = list;
     isStore = true;
+
 }
 
 void CabinetAccess::clickOpen(QString goodsId)

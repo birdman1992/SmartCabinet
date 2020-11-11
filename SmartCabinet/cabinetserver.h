@@ -109,6 +109,7 @@ private:
     QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
     QString autoCreateEpcInfo(QString code);
     void offlineLogin(QString cardId);
+    void goodsListStoreScanAll(QString barcode, QList<CabinetStoreListItem *> l);
 signals:
     void loginRst(UserInfo*);
     void listRst(GoodsList*);
@@ -161,13 +162,13 @@ public slots:
     void cabColInsert(int pos, int num);
     void cabinetBind(int, int, QString);
     void goodsAccess(QPoint, QString, int, int optType);
-    void listAccess(QStringList list, UserOpt optType);
+    void listAccess(QStringList list, int optType);
     void goodsCheckReq();
     void goodsCheckFinish();
     void goodsBack(QString);//退货
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
     void goodsCheck(QStringList l, CaseAddress);
-    void goodsListStore(QList<CabinetStoreListItem*> l);
+    void goodsListStore(QString barcode, QList<CabinetStoreListItem*> l);
     void goodsStoreTrace(QString goodsCode);
     void goodsCarScan();
     void sysTimeout();

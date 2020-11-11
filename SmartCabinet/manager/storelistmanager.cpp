@@ -37,7 +37,7 @@ QStringList StoreListManager::getStoreCacheList()
 QStringList StoreListManager::getStoreCacheCodes(QString goodsId)
 {
     QString configGroup = goodsId + "/";
-    return getConfig(configGroup+"codes", QStringList()).toStringList();
+    return getConfig(configGroup+"cacheCodes", QStringList()).toStringList();
 }
 
 void StoreListManager::setStoreList(QString lCode)
@@ -71,7 +71,7 @@ GoodsList *StoreListManager::recoverGoodsList(QString listCode)
         goods->totalNum = getConfig(configGroup+"totalNum", 0).toInt();
         goods->takeCount = goods->totalNum;
         goods->codes = getConfig(configGroup+"codes", QStringList()).toStringList();
-        goods->scanCache = getConfig(configGroup+"scanCache", QStringList()).toStringList();
+        goods->scanCache = getConfig(configGroup+"cacheCodes", QStringList()).toStringList();
         goods->waitNum = goods->totalNum-goods->codes.count();
         goods->pos = getConfig(configGroup+"pos", QPoint()).toPoint();
         list->addGoods(goods);
@@ -109,20 +109,19 @@ void StoreListManager::removeStoreCache(QString listCode)
     QFile::remove(configPath);
 }
 
-bool StoreListManager::storeGoodsCode(QString goodsCode)
+bool StoreListManager::storeGoodsCode(QString packageId ,QString goodsCode)
 {
-    QString goodsId = scanDataTrans(goodsCode);
     QStringList groups = getGroups();
-    int idx = groups.indexOf(goodsId);
+    int idx = groups.indexOf(packageId);
     if(idx == -1)
     {
         errorMsg = "不识别的物品";
         return false;
     }
-    QString configGroup = goodsId + "/";
-    QStringList cacheCodes = getConfig(configGroup+"scanCache", QStringList()).toStringList();
+    QString configGroup = packageId + "/";
+    QStringList cacheCodes = getConfig(configGroup+"cacheCodes", QStringList()).toStringList();
     idx = cacheCodes.indexOf(goodsCode);
-    qDebug()<<goodsCode<<cacheCodes;
+//    qDebug()<<goodsCode<<cacheCodes;
     if(idx != -1)
     {
         errorMsg = "重复扫描的物品";
@@ -130,8 +129,10 @@ bool StoreListManager::storeGoodsCode(QString goodsCode)
     }
     else
     {
+        qDebug()<<"[storeGoodsCode] cache before:"<<packageId<<cacheCodes;
         cacheCodes<<goodsCode;
-        setConfig(configGroup+"scanCache", cacheCodes);
+        setConfig(configGroup+"cacheCodes", cacheCodes);
+        qDebug()<<"[storeGoodsCode] cache:"<<packageId<<cacheCodes;
     }
     return true;
 }
@@ -148,17 +149,17 @@ StoreListManager::StoreListManager()
     configPath = QString();
 }
 
-QString StoreListManager::scanDataTrans(QString code)
-{
-    QStringList strList = code.split("-", QString::SkipEmptyParts);
-    if(strList.count() < 4)
-        return QString();
+//QString StoreListManager::scanDataTrans(QString code)
+//{
+//    QStringList strList = code.split("-", QString::SkipEmptyParts);
+//    if(strList.count() < 4)
+//        return QString();
 
-    strList.removeLast();
-    strList = strList.mid(strList.count()-2, 2);
-    QString ret = strList.join("-");
-    return ret;
-}
+//    strList.removeLast();
+//    strList = strList.mid(strList.count()-2, 2);
+//    QString ret = strList.join("-");
+//    return ret;
+//}
 
 /********base functions*******/
 void StoreListManager::setConfig(QString key, QVariant value)

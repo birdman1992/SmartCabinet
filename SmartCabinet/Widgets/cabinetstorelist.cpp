@@ -17,10 +17,12 @@ CabinetStoreList::CabinetStoreList(QWidget *parent) :
     this->setAttribute(Qt::WA_TranslucentBackground, true);
     bindItem = NULL;
     list_store = NULL;
+    initFlagReject();
     clearList();
     manager = GoodsManager::manager();
     storeManager = StoreListManager::manager();
     loginState = false;
+    flagReject = false;
     QFile qssScrollbar(":/stylesheet/styleSheet/ScrollBar.qss");
     qssScrollbar.open(QIODevice::ReadOnly);
     QString style = QString(qssScrollbar.readAll());
@@ -37,6 +39,7 @@ CabinetStoreList::~CabinetStoreList()
 
 void CabinetStoreList::show()
 {
+    initFlagReject();
     this->showFullScreen();
     if(bindItem != NULL)
         return;
@@ -61,13 +64,14 @@ void CabinetStoreList::recvStoreTraceRst(bool success, QString msg, QString good
     QString goodsId = scanDataTrans(goodsCode);
     QString showMsg = QString("%1 %2").arg(goodsCode).arg(msg);
     newMsg(showMsg);
+    initFlagReject();
 
     if(success)
     {
         msg = "存入成功";
         setStateMsg(STATE_PASS, msg);
         newMsg(msg);
-        if(!storeManager->storeGoodsCode(goodsCode))
+        if(!storeManager->storeGoodsCode(goodsId, goodsCode))
         {
             QString errorMsg = QString("%1 %2").arg(goodsCode).arg(storeManager->getErrorMsg());
             newMsg(errorMsg);
@@ -100,7 +104,9 @@ void CabinetStoreList::storeStart(GoodsList *l)
 
     list_store = l;
     ui->cur_list->setText(list_store->barcode);
+
     storeManager->creatStoreCache(list_store);
+//    list_store = storeManager->recoverGoodsList(list_store->barcode);
     CabinetStoreListItem* item;
     int i = 0;
 
@@ -144,6 +150,23 @@ void CabinetStoreList::storeFinish()
     clearList();
 }
 
+void CabinetStoreList::initFlagReject()
+{
+    flagReject = false;
+    ui->box_reject->setChecked(false);
+    ui->box_reject->hide();
+}
+
+bool CabinetStoreList::checkFlagReject()
+{
+    if(flagReject)
+        return flagReject;
+
+    ui->ok->setEnabled(false);
+    ui->box_reject->show();
+    return flagReject;
+}
+
 void CabinetStoreList::recvScanCode(QString scanCode)
 {
     if(!needScanAll)//无需扫描全部物品，忽略扫描输入
@@ -155,6 +178,9 @@ void CabinetStoreList::recvScanCode(QString scanCode)
     {
         newMsg("系统超时锁定，请刷卡再继续操作");
     }
+
+    initFlagReject();
+    ui->msg->clear();
     int curStack = ui->stackedWidget->currentIndex();//当前stack页面
     if(curStack == 0)//存物品界面
     {
@@ -173,17 +199,23 @@ void CabinetStoreList::recvScanCode(QString scanCode)
             if(list_store != NULL)
                 delete list_store;
 
-            emit newStoreBarCode(scanCode);
-            list_store = storeManager->recoverGoodsList(scanCode);
-            storeContinue(list_store);
+            storeRecover(scanCode);
         }
     }
+}
+
+void CabinetStoreList::storeRecover(QString scanCode)
+{
+    emit newStoreBarCode(scanCode);
+    list_store = storeManager->recoverGoodsList(scanCode);
+    storeContinue(list_store);
 }
 
 void CabinetStoreList::storeScan(QString scanCode)
 {
     QString goodsId = scanDataTrans(scanCode);
     Goods* scanGoods = list_store->map_goods.value(goodsId, NULL);
+    qDebug()<<"[storeScan]"<<goodsId<<list_store->map_goods.keys();
     if(scanGoods == NULL)
     {
         QString msg = QString("%1 %2").arg(scanCode).arg("unknow goods.");
@@ -198,8 +230,17 @@ void CabinetStoreList::storeScan(QString scanCode)
         newMsg(msg);
         return;
     }
-    storeManager->storeGoodsCode(scanCode);
+
+    if(!storeManager->storeGoodsCode(goodsId, scanCode))
+    {
+        QString errorMsg = QString("%1 %2").arg(scanCode).arg(storeManager->getErrorMsg());
+        newMsg(errorMsg);
+        qWarning()<<"[storeManager] store failed."<<errorMsg;
+    }
+
     scanGoods->scanCache<<scanCode;
+    scanGoods->waitNum = scanGoods->codes.count() - scanGoods->scanCache.count();
+    qDebug()<<"waitnum:"<<scanGoods->codes.count() - scanGoods->scanCache.count();
     updateScanPanel(goodsId);
 //    setStateMsg(STATE_WAIT, "已扫描，请等待");
 //    emit reportTraceId(scanCode);
@@ -224,9 +265,9 @@ QString CabinetStoreList::scanDataTrans(QString code)
 {
     foreach (Goods* goods, list_store->list_goods)
     {
-//        qDebug()<<code<<goods->codes;
+        qDebug()<<"[scanDataTrans]"<<code<<goods->codes;
         if(goods->codes.contains(code))
-            return goods->goodsId;
+            return goods->packageId;
     }
 
     return QString();
@@ -288,7 +329,7 @@ void CabinetStoreList::showListPart(GoodsList *l)
     int i = 0;
     foreach (Goods* goods, l->list_goods)
     {
-        QString str = QString("%1[%2](%3/%4)x%5").arg(goods->name).arg(goods->size).arg(goods->codes.count()).arg(goods->totalNum).arg(goods->packageType);
+        QString str = QString("%1[%2](%3/%4)x%5").arg(goods->name).arg(goods->size).arg(goods->scanCache.count()).arg(goods->totalNum).arg(goods->packageType);
         ui->list_part->setItem(i, 0, new QTableWidgetItem(str));
         list_part<<goods->goodsId;
         qDebug()<<"showListPart"<<goods->goodsId;
@@ -376,9 +417,13 @@ void CabinetStoreList::clearList()
 void CabinetStoreList::closeClear()
 {
     ui->list_part->clear();
+    ui->list_part->setRowCount(0);
     ui->list_code->clear();
+    ui->list_code->setRowCount(0);
     ui->msgLog->clear();
+    updateScanGoods(NULL);
     list_msg.clear();
+    clearList();
     if(list_store != NULL)
         delete list_store;
     list_store = NULL;
@@ -413,7 +458,7 @@ void CabinetStoreList::storeContinue(GoodsList *l)
         QPoint addr = SqlManager::searchByPackageId(goods->packageId);
         goods->pos = QPoint(addr.x(), addr.y());
 #endif
-        qDebug()<<"storeStart"<<goods->abbName<<goods->pos;
+        qDebug()<<"storeContinue"<<goods->abbName<<goods->pos;
         item = new CabinetStoreListItem(goods, addr);
         connect(item, SIGNAL(requireBind(Goods*,CabinetStoreListItem*)), this, SLOT(itemBind(Goods*,CabinetStoreListItem*)));
         connect(item, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
@@ -462,6 +507,17 @@ void CabinetStoreList::updateStoreList(QList<CabinetStoreListItem *> l)
 
 void CabinetStoreList::updateScanGoods(Goods *goods)
 {
+    if(goods == NULL)
+    {
+        ui->goods_id->clear();
+        ui->goods_name->clear();
+        ui->goods_size->clear();
+        ui->goods_producer->clear();
+        ui->goods_suplier->clear();
+        ui->wait_num->clear();
+        return;
+    }
+
     ui->goods_id->setText(goods->packageId);
     ui->goods_name->setText(goods->name);
     ui->goods_size->setText(goods->size);
@@ -476,6 +532,7 @@ void CabinetStoreList::updateScanPanel(QString goodsId)
     if(item == NULL)
         return;
 
+    item->infoUpdate();
     Goods* goods = item->itemGoods();
     updateScanGoods(goods);
 }
@@ -543,12 +600,22 @@ void CabinetStoreList::on_ok_clicked()
             SqlManager::listStoreAffirm(list_store->barcode, SqlManager::local_rep);//本地确认存货
             newMsg("已存入本地库存,正在提交..");
             ui->ok->setEnabled(false);
-            emit storeList(list_item);
+            emit storeList(list_store->barcode, list_item);
         }
-        else
+        else if(!checkFlagReject())//未勾选拒收
         {
-            newMsg("存货单有物品未扫描");
+            newMsg("存货单有物品未扫描,是否拒收？");
             return;
+        }
+        else//已勾选拒收
+        {
+            if(list_store == NULL)
+                return;
+
+            SqlManager::listStoreAffirm(list_store->barcode, SqlManager::local_rep);//本地确认存货
+            newMsg("已存入本地库存,正在提交..");
+            ui->ok->setEnabled(false);
+            emit storeList(list_store->barcode, list_item);
         }
     }
     else
@@ -559,7 +626,7 @@ void CabinetStoreList::on_ok_clicked()
         SqlManager::listStoreAffirm(list_store->barcode, SqlManager::local_rep);//本地确认存货
         newMsg("已存入本地库存,正在提交..");
         ui->ok->setEnabled(false);
-        emit storeList(list_item);
+        emit storeList(list_store->barcode, list_item);
     }
 }
 
@@ -605,4 +672,23 @@ void CabinetStoreList::on_list_part_cellClicked(int row, int)
     QString selGoodsId = list_part.at(row);
     QStringList codes = storeManager->getStoreCacheCodes(selGoodsId);
     showStoreCacheCode(codes);
+}
+
+//拒收选项
+void CabinetStoreList::on_box_reject_clicked(bool checked)
+{
+    ui->ok->setEnabled(checked);
+    flagReject = checked;
+//    if(checked)
+//    {
+
+//    }
+}
+
+void CabinetStoreList::on_btn_store_continue_clicked()
+{
+    if(list_store == NULL)
+        return;
+
+    storeRecover(list_store->barcode);
 }
