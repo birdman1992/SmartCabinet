@@ -191,17 +191,19 @@ void CabinetStoreList::storeScan(QString scanCode)
         newMsg(msg);
         return;
     }
-    if(scanGoods->codes.indexOf(scanCode) != -1)
+    if(scanGoods->scanCache.indexOf(scanCode) != -1)
     {
         QString msg = QString("%1 %2").arg(scanCode).arg("重复扫描的物品");
         qDebug()<<QString("[storeScan]:%1").arg(msg);
         newMsg(msg);
         return;
     }
+    storeManager->storeGoodsCode(scanCode);
+    scanGoods->scanCache<<scanCode;
     updateScanPanel(goodsId);
-    setStateMsg(STATE_WAIT, "已扫描，请等待");
-    emit reportTraceId(scanCode);
-    QTimer::singleShot(5000, this, SLOT(goodsTraceTimeout()));
+//    setStateMsg(STATE_WAIT, "已扫描，请等待");
+//    emit reportTraceId(scanCode);
+//    QTimer::singleShot(5000, this, SLOT(goodsTraceTimeout()));
 }
 
 void CabinetStoreList::bindRst(CaseAddress addr)
@@ -213,16 +215,21 @@ void CabinetStoreList::bindRst(CaseAddress addr)
     bindItem = NULL;
 }
 
+/**
+ * @brief CabinetStoreList::scanDataTrans 物品条码转换为物品ID
+ * @param code 物品条码
+ * @return 物品ID
+ */
 QString CabinetStoreList::scanDataTrans(QString code)
 {
-    QStringList strList = code.split("-", QString::SkipEmptyParts);
-    if(strList.count() < 4)
-        return QString();
+    foreach (Goods* goods, list_store->list_goods)
+    {
+//        qDebug()<<code<<goods->codes;
+        if(goods->codes.contains(code))
+            return goods->goodsId;
+    }
 
-    strList.removeLast();
-    strList = strList.mid(strList.count()-2, 2);
-    QString ret = strList.join("-");
-    return ret;
+    return QString();
 }
 
 QString CabinetStoreList::stateStyleSheet(CabinetStoreList::GOODS_STATE state)
@@ -267,8 +274,10 @@ void CabinetStoreList::recoverStoreCache()
 
 void CabinetStoreList::showListPart(GoodsList *l)
 {
-    if(l == NULL)
+    if(l == NULL){
+        ui->list_part->clearContents();
         return;
+    }
 
     qDebug()<<"showListPart";
     list_part.clear();

@@ -108,6 +108,12 @@ Goods *CabinetStoreListItem::itemGoods()
     return cabGoods;
 }
 
+void CabinetStoreListItem::infoUpdate()
+{
+    ui->num->setText(QString::number(cabGoods->waitNum));
+    updateOptState();
+}
+
 void CabinetStoreListItem::paintEvent(QPaintEvent*)
 {
     QStyleOption opt;

@@ -26,6 +26,7 @@ public:
     bool samePos(QPoint pos);
     void storeOnePac();
     Goods* itemGoods();
+    void infoUpdate();
 
 private slots:
     void on_minus_clicked();

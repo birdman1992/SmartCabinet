@@ -71,6 +71,7 @@ GoodsList *StoreListManager::recoverGoodsList(QString listCode)
         goods->totalNum = getConfig(configGroup+"totalNum", 0).toInt();
         goods->takeCount = goods->totalNum;
         goods->codes = getConfig(configGroup+"codes", QStringList()).toStringList();
+        goods->scanCache = getConfig(configGroup+"scanCache", QStringList()).toStringList();
         goods->waitNum = goods->totalNum-goods->codes.count();
         goods->pos = getConfig(configGroup+"pos", QPoint()).toPoint();
         list->addGoods(goods);
@@ -98,6 +99,7 @@ void StoreListManager::creatStoreCache(GoodsList *goodsList)
         setConfig(configGroup+"totalNum", goods->totalNum);
         setConfig(configGroup+"codes", goods->codes);
         setConfig(configGroup+"pos", goods->pos);
+        setConfig(configGroup+"cacheCodes", goods->scanCache);
     }
 }
 
@@ -118,8 +120,9 @@ bool StoreListManager::storeGoodsCode(QString goodsCode)
         return false;
     }
     QString configGroup = goodsId + "/";
-    QStringList codes = getConfig(configGroup+"codes", QStringList()).toStringList();
-    idx = codes.indexOf(goodsCode);
+    QStringList cacheCodes = getConfig(configGroup+"scanCache", QStringList()).toStringList();
+    idx = cacheCodes.indexOf(goodsCode);
+    qDebug()<<goodsCode<<cacheCodes;
     if(idx != -1)
     {
         errorMsg = "重复扫描的物品";
@@ -127,8 +130,8 @@ bool StoreListManager::storeGoodsCode(QString goodsCode)
     }
     else
     {
-        codes<<goodsCode;
-        setConfig(configGroup+"codes", codes);
+        cacheCodes<<goodsCode;
+        setConfig(configGroup+"scanCache", cacheCodes);
     }
     return true;
 }

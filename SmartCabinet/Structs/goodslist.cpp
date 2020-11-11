@@ -104,6 +104,7 @@ Goods::Goods()
     curNum = 0;
     finish = false;
     pos = QPoint(-1, -1);
+    scanCache.clear();
 }
 
 Goods::Goods(QString _goodsId , QString goodsName, int goodsNum)
@@ -114,10 +115,12 @@ Goods::Goods(QString _goodsId , QString goodsName, int goodsNum)
     finish = false;
     curNum = 0;
     goodsId = _goodsId;
+    scanCache.clear();
 }
 
 Goods::Goods(Goods *goods)
 {
+    scanCache.clear();
     abbName = goods->abbName;
     name = goods->name;
     goodsId = goods->goodsId;

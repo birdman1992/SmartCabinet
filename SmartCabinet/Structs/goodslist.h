@@ -13,6 +13,7 @@ public:
     Goods(QString _goodsId, QString goodsName, int goodsNum);
     Goods(Goods* goods);
     QStringList codes;
+    QStringList scanCache;
     QString name;//耗材名
     QString abbName;//简称
     QString goodsId;//耗材id
