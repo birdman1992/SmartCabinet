@@ -81,7 +81,7 @@ private:
     QStringList list_msg;
     CabinetStoreListItem* bindItem;
     QList<CabinetStoreListItem*> list_item;
-    QMap<QString, CabinetStoreListItem*> map_item;
+    QMap<QString, CabinetStoreListItem*> map_item;//key:package_id
 private slots:
 //    void timeOut();
     void itemBind(Goods*, CabinetStoreListItem*);

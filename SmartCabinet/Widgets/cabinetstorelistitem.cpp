@@ -10,6 +10,7 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
     ui->setupUi(this);
 //    cabGoods = new Goods(goods);
     cabGoods = goods;
+    goods->waitNum = goods->codes.count() - goods->scanCache.count();
     name = goods->name+QString("[%1](%2)").arg(goods->size).arg(goods->packageType);
     num = goods->waitNum;
 
@@ -110,7 +111,8 @@ Goods *CabinetStoreListItem::itemGoods()
 
 void CabinetStoreListItem::infoUpdate()
 {
-    ui->num->setText(QString::number(cabGoods->waitNum));
+    num = cabGoods->waitNum;
+    ui->num->setText(QString::number(num));
     updateOptState();
 }
 

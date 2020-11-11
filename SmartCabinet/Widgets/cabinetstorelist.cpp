@@ -200,6 +200,7 @@ void CabinetStoreList::storeScan(QString scanCode)
     }
     storeManager->storeGoodsCode(scanCode);
     scanGoods->scanCache<<scanCode;
+    scanGoods->waitNum = scanGoods->codes.count() - scanGoods->scanCache.count();
     updateScanPanel(goodsId);
 //    setStateMsg(STATE_WAIT, "已扫描，请等待");
 //    emit reportTraceId(scanCode);
@@ -476,6 +477,7 @@ void CabinetStoreList::updateScanPanel(QString goodsId)
     if(item == NULL)
         return;
 
+    item->infoUpdate();
     Goods* goods = item->itemGoods();
     updateScanGoods(goods);
 }
