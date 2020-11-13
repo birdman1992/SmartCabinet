@@ -168,7 +168,7 @@ void MainWidget::init_huangpo()
         connect(cabServer, SIGNAL(cabSyncResult(bool)), win_aio, SLOT(recvCabSyncResult(bool)));
         connect(cabServer, SIGNAL(aioMsg(QString)), win_aio, SLOT(winMsg(QString)));
         aio_connect_mode(true);
-        cab_connect_mode(false);
+//        cab_connect_mode(false);
 
         //        qDebug()<<win_aio->findChild<TempDevHub *>("tempHub");
         //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));

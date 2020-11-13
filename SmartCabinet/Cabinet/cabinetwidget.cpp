@@ -646,17 +646,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
 
     if(config->getCabinetType().at(BIT_CAB_AIO))//一体机模式，无需通过按钮进入存取货模式
     {
-        if(optUser == NULL)//未登录
-            return;
-
-//        if(isListCode(qba))//是存货单，进入存模式
-//        {
-//            waitForGoodsListCode = true;
-//            switchCabinetState(STATE_STORE);
-//        }
-//        if(config->state == STATE_FETCH)
-        switchCabinetState(config->state);
-//        waitForCodeScan = true;
+        return;
     }
 
     if(!waitForCodeScan)
@@ -1346,9 +1336,9 @@ void CabinetWidget::recvUserInfo(QByteArray qba)
 {
 //    calCheck(QString(qba));
 
-    if(this->isHidden() && (!config->getCabinetType().at(BIT_CAB_AIO)))
+    if(this->isHidden() && (config->getCabinetType().at(BIT_CAB_AIO)))
     {
-        qDebug()<<"recvUserInfo"<<qba<<"ignore..";
+        qDebug()<<"[CabinetWidget]"<<"recvUserInfo"<<qba<<"ignore..";
         return;
     }
 
