@@ -26,7 +26,7 @@ public:
     void setCurOptId(QString optId);
     void setCurOptPow(int pow);
     void initColName();
-    void initEpc();//程序启动初始化EPC标签
+
     void startScan();//开始扫描
     void doorCloseScan();//结束扫描
     void epcCheck(int row=0, int col=0);//盘点标签
@@ -37,6 +37,7 @@ public:
     RfidDevHub* rfidReaderModel();
 
 public slots:
+    void initEpc();//程序启动初始化EPC标签
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);
     void clsFinish();//结束结算
     void clsGiveUp();//放弃结算

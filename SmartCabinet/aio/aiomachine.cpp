@@ -210,6 +210,7 @@ void AIOMachine::recvUserCheckRst(UserInfo *user)
     if(user == NULL)
         return;
 
+    ui->stacked_hello->setCurrentWidget(ui->page_hello);
     emit updateLoginState(true);
     optUser = user;
     win_rfid->updateCurUser(optUser->name);
@@ -241,7 +242,6 @@ void AIOMachine::recvUserInfo(QByteArray qba)
             return;
     }
 //    ui->frame_quit->show();
-    ui->stacked_hello->setCurrentWidget(ui->page_hello);
 //    ui->aio_quit->show();
     ui->lab_tip->setText("正在识别");
     emit requireUserCheck(QString(qba));

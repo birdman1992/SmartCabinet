@@ -552,7 +552,10 @@ QList<QPoint> SqlManager::goodsSearch(QString searchStr)
     queryExec(&query, "goodsSearch", cmd);
 
     while (query.next()) {
-        searchRst<<QPoint(query.value(1).toInt(),query.value(0).toInt());
+        QPoint pos = QPoint(query.value(1).toInt(),query.value(0).toInt());
+        if(pos.x()<0 || pos.y()<0)
+            continue;
+        searchRst<<pos;
     }
     return searchRst;
 }
