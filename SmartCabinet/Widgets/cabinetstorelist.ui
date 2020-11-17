@@ -41,9 +41,9 @@ color: rgb(46, 52, 54);
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="page">
+     <widget class="QWidget" name="page_goods">
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <property name="spacing">
         <number>0</number>
@@ -632,7 +632,7 @@ background-color: rgb(255, 255, 255);</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
+     <widget class="QWidget" name="page_list">
       <property name="styleSheet">
        <string notr="true">QWidget{
 font: 16px &quot;WenQuanYi Micro Hei Mono&quot;;
@@ -726,14 +726,21 @@ color: rgb(255, 255, 255);</string>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_7">
+          <widget class="QLabel" name="msg_list">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>80</height>
+            </size>
+           </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">color: rgb(204, 0, 0);</string>
            </property>
            <property name="text">
-            <string>开始新的存货单请扫码
-继续完成旧的存货单请扫送货单
-重新开始旧的存货单请先删除</string>
+            <string>请扫描送货单</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>

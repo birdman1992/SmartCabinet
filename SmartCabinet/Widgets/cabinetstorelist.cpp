@@ -51,6 +51,8 @@ void CabinetStoreList::show()
         return;
     }
 
+    ui->msg_list->setText("请扫描送货单");
+
     //恢复存货单缓存
     recoverStoreCache();
     ui->stackedWidget->setCurrentIndex(1);
@@ -98,6 +100,13 @@ bool sortByPos(CabinetStoreListItem* item1, CabinetStoreListItem* item2)
 
 void CabinetStoreList::storeStart(GoodsList *l)
 {
+//    qDebug()<<"storeStart"<<l->list_goods.count()<<l->legalList;
+    if((l->list_goods.count() == 0) || (!l->legalList))
+    {
+        ui->msg_list->setText("无效的送货单");
+        return;
+    }
+
     clearList();
     if(list_store != NULL)
         delete list_store;
@@ -137,7 +146,8 @@ void CabinetStoreList::storeStart(GoodsList *l)
 
 void CabinetStoreList::listError(QString msg)
 {
-    ui->stackedWidget->setCurrentIndex(0);
+//    ui->stackedWidget->setCurrentIndex(0);
+    ui->msg_list->setText(msg);
     newMsg(msg);
 }
 
@@ -493,6 +503,12 @@ bool CabinetStoreList::checkStoreList()
 
 void CabinetStoreList::updateStoreList(QList<CabinetStoreListItem *> l)
 {
+    if(l.count() <=0)
+    {
+        ui->msg_list->setText("无效的送货单");
+        return;
+    }
+
     ui->storeTable->clear();
     ui->storeTable->setRowCount(l.count());
     ui->storeTable->setColumnCount(1);
