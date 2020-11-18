@@ -766,12 +766,15 @@ void SqlManager::replaceGoodsInfo(Goods* info, QString listCode, RepState state,
 }
 
 //确认物品存入状态
-void SqlManager::listStoreAffirm(QString listCode, RepState state)
+void SqlManager::listStoreAffirm(QString listCode, RepState state, QStringList rejectList)
 {
     QSqlQuery query(db_cabinet);
     if(state & local_rep)//本地存入
     {
-        QString cmd = QString("UPDATE CodeInfo SET state_local=1 WHERE store_list='%1';").arg(listCode);
+        QString rejectCode = rejectList.join("','");
+        QString cmd = QString("UPDATE CodeInfo SET state_local=1 WHERE store_list='%1' AND code NOT IN ('%2');").arg(listCode).arg(rejectCode);
+        qDebug()<<"CMD"<<cmd;
+        return;
         if(!queryExec(&query, "listStoreAffirm", cmd))
         {
             qDebug()<<"[listStoreAffirm failed]"<<query.lastError().text();

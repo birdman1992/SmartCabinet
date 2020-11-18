@@ -192,12 +192,13 @@ void CabinetStoreList::recvScanCode(QString scanCode)
     initFlagReject();
     ui->msg->clear();
     int curStack = ui->stackedWidget->currentIndex();//当前stack页面
-    if(curStack == 0)//存物品界面
+    if(curStack == 0 && this->isVisible())//存物品界面
     {
         storeScan(scanCode);
     }
-    else if(curStack == 1)//存货单界面
+    else if(curStack == 1 || (!this->isVisible()))//存货单界面
     {
+        show();
         //检查存货单是否有缓存
         int idx = list_store_cache.indexOf(scanCode);
         if(idx == -1)//是新的存货单
@@ -415,6 +416,11 @@ void CabinetStoreList::clearList()
     if(!map_item.isEmpty())
         map_item.clear();
 
+    if(!list_store_cache.isEmpty())
+    {
+        list_store_cache.clear();
+    }
+
     if(!list_item.isEmpty())
     {
         qDeleteAll(list_item.begin(), list_item.end());
@@ -451,6 +457,7 @@ void CabinetStoreList::saveList()
 
 void CabinetStoreList::storeContinue(GoodsList *l)
 {
+    ui->cur_list->setText(l->barcode);
     storeManager->creatStoreCache(l);
     CabinetStoreListItem* item;
     int i = 0;

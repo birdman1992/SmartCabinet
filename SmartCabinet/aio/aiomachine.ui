@@ -826,7 +826,7 @@ padding-top:16px;</string>
             <enum>QFrame::Raised</enum>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="footer_login">
             <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,5">
@@ -1199,7 +1199,7 @@ color: #fff;
 padding-bottom:50px;</string>
                </property>
                <property name="text">
-                <string>欢迎使用智医云柜智能终端管理系统！</string>
+                <string>欢迎使用医用高值耗材交接管理系统！</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>

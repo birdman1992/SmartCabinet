@@ -75,7 +75,7 @@ public:
     static void scanFetch(QString code, RepState state, RepMask stateMask);//
     void replaceGoodsInfo(Goods *info, RepState state=no_rep, RepMask stateMask=mask_no);
     void replaceGoodsInfo(Goods* info, QString listCode, RepState state=no_rep, RepMask stateMask=mask_no);
-    static void listStoreAffirm(QString listCode, RepState state);//送货单确认存入
+    static void listStoreAffirm(QString listCode, RepState state, QStringList rejectList=QStringList());//送货单确认存入
     static QPoint searchByPackageId(QString packageId);
     static QSqlQuery query(QString cmd, QString msg);
 
