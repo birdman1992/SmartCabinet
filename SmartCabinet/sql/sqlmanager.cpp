@@ -775,8 +775,7 @@ void SqlManager::listStoreAffirm(QString listCode, RepState state, QStringList r
     {
         QString rejectCode = rejectList.join("','");
         QString cmd = QString("UPDATE CodeInfo SET state_local=1 WHERE store_list='%1' AND code NOT IN ('%2');").arg(listCode).arg(rejectCode);
-        qDebug()<<"CMD"<<cmd;
-        return;
+//        qDebug()<<"CMD"<<cmd;
         if(!queryExec(&query, "listStoreAffirm", cmd))
         {
             qDebug()<<"[listStoreAffirm failed]"<<query.lastError().text();
@@ -784,7 +783,8 @@ void SqlManager::listStoreAffirm(QString listCode, RepState state, QStringList r
     }
     if(state & remote_rep)//远程存入
     {
-        QString cmd = QString("UPDATE CodeInfo SET state_remote=1 WHERE store_list='%1';").arg(listCode);
+        QString rejectCode = rejectList.join("','");
+        QString cmd = QString("UPDATE CodeInfo SET state_remote=1 WHERE store_list='%1' AND code NOT IN ('%2');").arg(listCode).arg(rejectCode);
         if(!queryExec(&query, "listStoreAffirm", cmd))
         {
             qDebug()<<"[listStoreAffirm failed]"<<query.lastError().text();

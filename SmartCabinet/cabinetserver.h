@@ -75,6 +75,7 @@ private:
     QString regId;
     QString logId;
     QString barCode;
+    QStringList rejectList;//拒收条码
     QString ApiAddress;
     bool timeIsChecked;
     bool needReqCar;

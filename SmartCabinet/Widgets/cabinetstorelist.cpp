@@ -250,6 +250,7 @@ void CabinetStoreList::storeScan(QString scanCode)
     }
 
     scanGoods->scanCache<<scanCode;
+    scanGoods->rejectList.removeOne(scanCode);
     scanGoods->waitNum = scanGoods->codes.count() - scanGoods->scanCache.count();
     qDebug()<<"waitnum:"<<scanGoods->codes.count() - scanGoods->scanCache.count();
     updateScanPanel(goodsId);
@@ -635,7 +636,13 @@ void CabinetStoreList::on_ok_clicked()
             if(list_store == NULL)
                 return;
 
-            SqlManager::listStoreAffirm(list_store->barcode, SqlManager::local_rep);//本地确认存货
+            QStringList rejectList;
+            foreach (Goods* goods, list_store->list_goods)
+            {
+                rejectList<<goods->rejectList;
+            }
+            qDebug()<<"listStoreAffirm:reject"<<rejectList;
+            SqlManager::listStoreAffirm(list_store->barcode, SqlManager::local_rep, rejectList);//本地确认存货
             newMsg("已存入本地库存,正在提交..");
             ui->ok->setEnabled(false);
             emit storeList(list_store->barcode, list_item);

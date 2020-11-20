@@ -14,6 +14,7 @@ public:
     Goods(Goods* goods);
     QStringList codes;
     QStringList scanCache;
+    QStringList rejectList;
     QString name;//耗材名
     QString abbName;//简称
     QString goodsId;//耗材id

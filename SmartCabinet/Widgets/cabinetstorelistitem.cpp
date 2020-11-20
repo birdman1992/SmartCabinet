@@ -13,6 +13,7 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, CaseAddress addr, QWidg
     goods->waitNum = goods->codes.count() - goods->scanCache.count();
     name = goods->name+QString("[%1](%2)").arg(goods->size).arg(goods->packageType);
     num = goods->waitNum;
+    goods->rejectList = goods->codes;
 
     package_id = goods->packageId;
     pos_seq = addr.cabinetSeqNum;
@@ -36,6 +37,7 @@ CabinetStoreListItem::CabinetStoreListItem(Goods *goods, QPoint addr, QWidget *p
     name = goods->name+QString("[%1](%2)").arg(goods->size).arg(goods->packageType);
     goods->waitNum = goods->codes.count() - goods->scanCache.count();
     num = goods->waitNum;
+    goods->rejectList = goods->codes;
     package_id = goods->packageId;
     pos_seq = addr.x();
     pos_index = addr.y();

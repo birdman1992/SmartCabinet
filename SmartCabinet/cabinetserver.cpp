@@ -773,7 +773,7 @@ void CabinetServer::goodsListStoreScanAll(QString barcode ,QList<CabinetStoreLis
     int optType = 2;
     QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
     QByteArray dateTime = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit();
-
+    rejectList.clear();
 
     foreach (goodsItem, l)
     {
@@ -802,6 +802,7 @@ void CabinetServer::goodsListStoreScanAll(QString barcode ,QList<CabinetStoreLis
             }
             else//拒收的标签
             {
+                rejectList<<code;
                 cJSON_AddItemToArray(li_refuseCodes, cJSON_CreateString(bCode.data()));
             }
         }
@@ -1623,7 +1624,7 @@ void CabinetServer::recvListCheck()
 
             qDebug()<<"[goods]"<<info->name<<info->goodsId<<info->takeCount<<info->unit;
             list->addGoods(info);
-            sqlManager->replaceGoodsInfo(info, list->barcode, SqlManager::local_rep, SqlManager::mask_all);
+            sqlManager->replaceGoodsInfo(info, list->barcode, SqlManager::no_rep, SqlManager::mask_all);
         }
         cJSON* json_list_info = cJSON_GetObjectItem(json_data,"store");
         list->barcode = QString::fromUtf8(cJSON_GetObjectItem(json_list_info, "barcode")->valuestring);
@@ -1717,7 +1718,8 @@ void CabinetServer::recvListAccess()
     if(json_rst->type == cJSON_True)
     {
         goodsCarScan();
-        SqlManager::listStoreAffirm(barCode, SqlManager::remote_rep);
+        SqlManager::listStoreAffirm(barCode, SqlManager::remote_rep, rejectList);
+        rejectList.clear();
         qDebug()<<"ACCESS success";
         cJSON* data = cJSON_GetObjectItem(json, "data");
         int listCount = cJSON_GetArraySize(data);

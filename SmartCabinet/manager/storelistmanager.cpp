@@ -74,6 +74,12 @@ GoodsList *StoreListManager::recoverGoodsList(QString listCode)
         goods->scanCache = getConfig(configGroup+"cacheCodes", QStringList()).toStringList();
         goods->waitNum = goods->totalNum-goods->codes.count();
         goods->pos = getConfig(configGroup+"pos", QPoint()).toPoint();
+        goods->rejectList = goods->codes;
+        foreach (QString code, goods->scanCache)
+        {
+            goods->rejectList.removeOne(code);
+        }
+
         list->addGoods(goods);
     }
     return list;
