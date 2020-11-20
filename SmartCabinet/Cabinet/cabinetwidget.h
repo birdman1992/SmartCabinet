@@ -155,6 +155,7 @@ private slots:
 
 protected:
     bool eventFilter(QObject *, QEvent *);
+    void resizeEvent(QResizeEvent*);
 
 private:
     Ui::CabinetWidget *ui;

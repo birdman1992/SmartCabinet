@@ -278,7 +278,7 @@ QString CasePanel::getShowStr(Goods *info)
 //    if(info->num == 0)
 //        return QString();
     QString str = info->name;
-    QString strTail = QString("×%1").arg(info->num);
+    QString strTail = QString("[%2]×%1").arg(info->num).arg(info->size);
 
     if(!info->abbName.isEmpty())
         str = info->abbName;
@@ -289,7 +289,7 @@ QString CasePanel::getShowStr(Goods *info)
         maxWidth = maxWidth/2;
     }
     maxWidth = maxWidth - getStringWidth(strTail) - 10;
-//    qDebug()<<"[getshow str]"<<showDoubleCol<<ui->left->width()<<ui->right->width()<<this->width()<<getStringWidth(strTail);
+    qDebug()<<"[getshow str]"<<showDoubleCol<<ui->left->width()<<ui->right->width()<<this->width()<<getStringWidth(strTail);
 
     str = geteElidedText(*font, str, maxWidth);
     str += strTail;

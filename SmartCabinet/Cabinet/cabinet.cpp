@@ -188,7 +188,7 @@ void Cabinet::setScreenPos(int pos)
     {
         logo = new QLabel(this);
         logo->setWordWrap(true);
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"WenQuanYi Micro Hei Mono\";");
+        logo->setStyleSheet("background-color: rgb(13,96,150);font: 18pt \"WenQuanYi Micro Hei Mono\";");
         ui->tableWidget->setCellWidget(pos,0,logo);
     }
 }
@@ -364,9 +364,9 @@ void Cabinet::showMsg(QString msg, bool iswarnning)
     logo->setText(msg);
     logo->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
     if(iswarnning)
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 18pt \"WenQuanYi Micro Hei Mono\";image:url(:/image/image/warning.png);image-position:top left");
+        logo->setStyleSheet("color:#fff; background-color: rgb(13,96,150);font: 18px \"WenQuanYi Micro Hei Mono\";image:url(:/image/image/warning.png);image-position:top left");
     else
-        logo->setStyleSheet("background-color: rgb(85, 170, 255);font: 20px \"WenQuanYi Micro Hei Mono\";");
+        logo->setStyleSheet("color:#fff;background-color: rgb(13,96,150);font: 18px \"WenQuanYi Micro Hei Mono\";");
 }
 
 void Cabinet::setCaseName(Goods info, int index)

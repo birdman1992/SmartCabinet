@@ -90,13 +90,12 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     showMap.insert(ui->reply, false);
     showMap.insert(ui->quit, false);
     showMap.insert(ui->back, false);
-    showMap.insert(ui->frame_check_history, false);
+    showMap.insert(ui->btn_check_table, false);
     showMap.insert(ui->consume_date, false);
     updateShowMap();
 
     ui->menuWidget->setCurrentIndex(0);
 //    IconHelper::Instance()->SetIcon(ui->back, QChar(0xf18e)+QString("  还货"), 42);
-
 //#ifndef SIMULATE_ON
 //    ui->msk1->hide();
 //    ui->msk2->hide();
@@ -127,7 +126,7 @@ void CabinetWidget::cabLock()
     emit updateLoginState(false);
     tsCalFlag = 0;
     optUser = NULL;
-    ui->userInfo->setText("请刷卡使用");
+    ui->userInfo->setText("     请刷卡使用");
     storeNum = 0;
     loginState = false;
     win_store_list->setLoginState(loginState);
@@ -151,7 +150,7 @@ void CabinetWidget::cabLock()
     showMap[ui->quit] = false;
     showMap[ui->consume_date] = false;
     showMap[ui->reply] = false;
-    showMap[ui->frame_check_history] = false;
+    showMap[ui->btn_check_table] = false;
     updateShowMap();
     win_access->hide();
     curStoreList = NULL;
@@ -1208,7 +1207,7 @@ void CabinetWidget::setPowerState(int power)
     showMap[ui->search] = true;
     showMap[ui->rebind] = false;
     showMap[ui->quit] = false;
-    showMap[ui->frame_check_history] = true;
+    showMap[ui->btn_check_table] = true;
     showMap[ui->consume_date] = true;
 
     if(ui->netState->isChecked())
@@ -1222,6 +1221,7 @@ void CabinetWidget::setPowerState(int power)
             showMap[ui->rebind] = true;
             showMap[ui->cut] = true;
             showMap[ui->check] = true;
+            showMap[ui->quit] = true;
             showMap[ui->reply] = true;
             showMap[ui->back] = config->getFuncWord() & funcBack;
             showMap[ui->refund] = config->getFuncWord() & funcRefun;
@@ -1273,6 +1273,7 @@ void CabinetWidget::setPowerState(int power)
             showMap[ui->cut] = true;
             showMap[ui->check] = true;
             showMap[ui->reply] = true;
+            showMap[ui->quit] = true;
             showMap[ui->back] = config->getFuncWord() & funcBack;
             showMap[ui->refund] = config->getFuncWord() & funcRefun;
             showMap[ui->check] = config->getFuncWord() & funcCheck;
@@ -1296,15 +1297,18 @@ void CabinetWidget::setPowerState(int power)
         switch(power)
         {
         case 0://超级管理员:|服务|
+            showMap[ui->quit] = true;
             showMap[ui->service] = true;
             showMap[ui->cut] = true;
             break;
 
         case 1://仓库员工:
+            showMap[ui->quit] = true;
             showMap[ui->cut] = true;
             break;
 
         case 2://医院管理:
+            showMap[ui->quit] = true;
             showMap[ui->cut] = true;
             //        showMap[ui->service] = true;
             break;
@@ -1714,7 +1718,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
     config->setOptId(info->cardId);
     qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
     config->state = STATE_FETCH;
-    ui->userInfo->setText(QString("您好！%1").arg(optUser->name));
+    ui->userInfo->setText(QString("     您好！%1").arg(optUser->name));
     setPowerState(info->power);
     loginState = true;
 
@@ -1822,6 +1826,14 @@ bool CabinetWidget::eventFilter(QObject *w, QEvent *e)
         }
     }
     return QWidget::eventFilter(w, e);
+}
+
+void CabinetWidget::resizeEvent(QResizeEvent *)
+{
+    QRect rect_menu = ui->frm_menu->geometry();
+    rect_menu.moveTo(0,0);
+    ui->menuWidget->setGeometry(rect_menu);
+    ui->lab_copyright->setGeometry(rect_menu);
 }
 
 void CabinetWidget::on_quit_clicked()

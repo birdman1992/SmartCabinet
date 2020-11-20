@@ -263,6 +263,7 @@ QStringList SqlManager::getCaseText(int col, int row)
                           "GoodsInfo.abbname,"
                           "GoodsInfo.cab_col,"
                           "GoodsInfo.cab_row,"
+                          "GoodsInfo.size,"
                           "IFNULL(CodeInfo.package_count,0) package_count "
                       "FROM "
                           "GoodsInfo "
@@ -282,8 +283,9 @@ QStringList SqlManager::getCaseText(int col, int row)
     while(query.next())
     {
         QString abbName = query.value(0).toString();
-        int packageCount = query.value(3).toInt();
-        QString showStr = QString("%1x%2").arg(abbName).arg(packageCount);
+        QString size = query.value(3).toString();
+        int packageCount = query.value(4).toInt();
+        QString showStr = QString("%1[%3]x%2").arg(abbName).arg(packageCount).arg(size);
         last_show_list<<showStr;
     }
     return last_show_list;

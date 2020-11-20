@@ -12,7 +12,6 @@
         <file>image/btn_out_normal.png</file>
         <file>image/btn_in_sel.png</file>
         <file>image/btn_in_normal.png</file>
-        <file>image/bg_main.png</file>
         <file>image/bg_input_normal.png</file>
         <file>image/btn_quit_normal.png</file>
         <file>image/btn_quit_sel.png</file>
@@ -29,15 +28,12 @@
         <file>image/scanner.png</file>
         <file>image/volume.png</file>
         <file>image/warning.png</file>
-        <file>image/bg_main_new.png</file>
-        <file>image/bg_main_noname.png</file>
         <file>image/icon_volume.png</file>
         <file>image/check_history.png</file>
         <file>image/btn_check_over_sel.png</file>
         <file>image/btn_check_over_normal.png</file>
         <file>image/btn_notice_sel.png</file>
         <file>image/btn_notice_normal.png</file>
-        <file>image/bg_main_1600.png</file>
         <file>image/aio/bg.png</file>
         <file>image/aio/tip_home_check.png</file>
         <file>image/aio/monitor_temperature.png</file>
@@ -76,6 +72,17 @@
         <file>image/aio/icon_slide_down.png</file>
         <file>image/aio/icon_slide_up.png</file>
         <file>image/aio/tip_home_check_xy.png</file>
+        <file>image/bg_main.png</file>
+        <file>image/icon/btn_icon_server.png</file>
+        <file>image/icon/btn_icon_search.png</file>
+        <file>image/icon/btn_icon_pl.png</file>
+        <file>image/icon/btn_icon_out.png</file>
+        <file>image/icon/btn_icon_in.png</file>
+        <file>image/icon/btn_icon_check.png</file>
+        <file>image/icon/icon_title.png</file>
+        <file>image/icon/icon_slide_up.png</file>
+        <file>image/icon/icon_slide_down.png</file>
+        <file>image/icon/icon_check.png</file>
     </qresource>
     <qresource prefix="/stylesheet">
         <file>styleSheet/ScrollBar.qss</file>
