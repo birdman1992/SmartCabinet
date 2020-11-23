@@ -906,7 +906,6 @@ void CabinetConfig::clearGoodsConfig()
     }
     foreach(Cabinet* cab, list_cabinet)
     {
-        cab->clearGoods();
         cab->updateCabinet();
     }
     creatCabinetConfig(settings.value("cabLayout").toString().split("#", QString::SkipEmptyParts), screenPos);
@@ -918,7 +917,6 @@ void CabinetConfig::updateGoodsDisplay()
 {
     foreach(Cabinet* cab, list_cabinet)
     {
-        cab->clearGoods();
         cab->updateCabinet();
     }
 }

@@ -267,7 +267,7 @@ QStringList SqlManager::getCaseText(int col, int row)
                           "IFNULL(CodeInfo.package_count,0) package_count "
                       "FROM "
                           "GoodsInfo "
-                          "LEFT JOIN(SELECT COUNT( * ) package_count, package_id FROM CodeInfo WHERE CodeInfo.state_local = 1 GROUP BY package_id) "
+                          "LEFT JOIN(SELECT COUNT( * ) package_count, package_id FROM CodeInfo WHERE CodeInfo.state_remote = 1 GROUP BY package_id) "
                           "CodeInfo ON CodeInfo.package_id = GoodsInfo.package_id "
                       "WHERE "
                           "GoodsInfo.cab_col = %1 "

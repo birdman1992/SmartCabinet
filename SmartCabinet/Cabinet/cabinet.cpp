@@ -422,14 +422,6 @@ void Cabinet::clearSearch()
 //    }
 }
 
-void Cabinet::clearGoods()
-{
-//    foreach(CabinetInfo* info, list_case)
-//    {
-//        info->clearList();
-//    }
-}
-
 void Cabinet::on_tableWidget_cellClicked(int row, int)
 {
     emit caseSelect(row, seqNum);

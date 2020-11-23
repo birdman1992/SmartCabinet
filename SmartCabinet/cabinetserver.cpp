@@ -826,7 +826,6 @@ void CabinetServer::goodsListStoreScanAll(QString barcode ,QList<CabinetStoreLis
     QString nUrl = ApiAddress+QString(API_LIST_STORE_SCAN);
     qDebug()<<"[goodsListStoreScanAll]"<<nUrl;
     qDebug()<<qba;
-//    return;
     replyCheck(reply_goods_access);
 //    reply_goods_access = manager->get(QNetworkRequest(QUrl(nUrl)));
     reply_goods_access = post(nUrl, qba, timeStamp);
@@ -1753,7 +1752,7 @@ void CabinetServer::recvListAccess()
                 config->showMsg(QString("还货成功:%1\n%2").arg(traceId).arg(goodsName), false);
             }
         }
-
+        config->updateGoodsDisplay();
     }
     else
     {
