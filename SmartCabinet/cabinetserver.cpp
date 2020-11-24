@@ -96,6 +96,7 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     reply_rfid_auto_store = NULL;
     reply_operation = NULL;
     reply_aio_temp = NULL;
+    reply_camera = NULL;
     versionInfo = NULL;
     needClearBeforeClone = false;
     list_access_cache.clear();
@@ -963,6 +964,11 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
 //    reply_day_report = manager->get(QNetworkRequest(QUrl(nUrl)));
     connect(reply_day_report, SIGNAL(finished()), this, SLOT(recvDayReportInfo()));
     qDebug()<<"[requireListInfo]"<<nUrl<<qba;
+}
+
+void CabinetServer::cameraSnapshot()
+{
+
 }
 
 void CabinetServer::requireAioOverview()

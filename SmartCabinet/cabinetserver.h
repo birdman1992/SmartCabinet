@@ -68,6 +68,7 @@ private:
     QNetworkReply* reply_rfid_consume;
     QNetworkReply* reply_operation;
     QNetworkReply* reply_aio_temp;
+    QNetworkReply* reply_camera;
     AIOMachine::cEvent aio_state;
     CheckList* checkList;
     SqlManager* sqlManager;
@@ -179,6 +180,8 @@ public slots:
     void replyRequire(QList<GoodsCheckInfo *> l);
     void requireCheckTableInfo(QString id);
     void requireListInfo(QDate sDate, QDate eDate);
+    //camera
+    void cameraSnapshot();
     //aio
     void requireAioOverview();
     void requireAioData(int cevent);
