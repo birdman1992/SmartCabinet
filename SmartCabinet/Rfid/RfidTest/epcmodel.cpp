@@ -340,7 +340,7 @@ void EpcModel::syncUpload()
             break;
         case mark_back://还回标记
             info->state = epc_in;
-            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3 WHERE epc_code='%4'")
+            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, operation_list='' WHERE epc_code='%4'")
                     .arg(info->lastStamp)
                     .arg(info->lastOpt)
                     .arg(info->state)
@@ -376,11 +376,12 @@ void EpcModel::syncUpload()
                 list_store<<info->epcId;
             }
             info->state = epc_out;
-            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3 WHERE epc_code='%4'")
+            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3 operation_list='%4', WHERE epc_code='%4'")
                     .arg(info->lastStamp)
                     .arg(info->lastOpt)
                     .arg(info->state)
-                    .arg(info->epcId);
+                    .arg(info->epcId)
+                    .arg(operationNo);
             list_fetch<<info->epcId;
             break;
         default:

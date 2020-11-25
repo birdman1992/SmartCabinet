@@ -361,7 +361,7 @@ void RfidReader::recvData()
     if(!response.appendData(qba))
         return;
 
-    qDebug()<<"[recv pack]"<<response.mid<<response.paramData.toHex();
+//    qDebug()<<"[recv pack]"<<response.mid<<response.paramData.toHex();
     dataParse(response.mid, response.paramData);
     while(response.appendData())
     {
