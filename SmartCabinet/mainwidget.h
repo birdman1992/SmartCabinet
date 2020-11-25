@@ -68,6 +68,7 @@ private slots:
 
     void on_stackedWidget_currentChanged(int arg1);
 
+    void aioCreate();
 private:
     Ui::MainWidget *ui;
     CabinetConfig* cabinetConf;

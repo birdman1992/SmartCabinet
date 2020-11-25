@@ -143,39 +143,7 @@ void MainWidget::init_huangpo()
     connect(tempDev, SIGNAL(updateHum(float)), cabTcp, SLOT(updateHum(float)));
     connect(tempDev, SIGNAL(updateTemp(float)), cabTcp, SLOT(updateTemp(float)));
 
-    if(cabinetConf->getCabinetType().at(BIT_CAB_AIO))
-    {
-        win_aio = new AIOMachine(this);
-        connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
-        connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
-        connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
-        connect(win_aio, SIGNAL(aio_check(bool)), win_cabinet, SLOT(on_check_clicked(bool)));
-//        connect(win_aio, SIGNAL(service_show()), win_cab_service, SLOT(show()));
-        connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
-        connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
-        connect(win_aio, SIGNAL(logout()), win_cabinet, SLOT(sysLock()));
-        connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
-        connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
-        connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
-        connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<Goods*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<Goods*>)));
-        connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
-        connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
-        connect(tempDev, SIGNAL(updateHumString(QString)), win_aio, SLOT(updateHum(QString)));
-        connect(tempDev, SIGNAL(updateTempString(QString)), win_aio, SLOT(updateTemp(QString)));
-        connect(win_aio->findChild<TempDevHub *>("tempHub"), SIGNAL(tempDevReport(QByteArray)), cabServer, SLOT(tempDevReport(QByteArray)));
-        connect(cabTcp, SIGNAL(serverDelay(int)), win_aio, SLOT(updateDelay(int)));
-        connect(win_aio, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
-        connect(cabServer, SIGNAL(cabSyncResult(bool)), win_aio, SLOT(recvCabSyncResult(bool)));
-        connect(cabServer, SIGNAL(aioMsg(QString)), win_aio, SLOT(winMsg(QString)));
-        aio_connect_mode(true);
-//        cab_connect_mode(false);
-
-        //        qDebug()<<win_aio->findChild<TempDevHub *>("tempHub");
-        //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
-    //    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
-        ui->page_2->layout()->addWidget(win_aio);
-//        win_aio->sysLock();
-    }
+    aioCreate();
 
     //待机界面
     win_standby = new StandbyWidget(this);
@@ -194,6 +162,7 @@ void MainWidget::init_huangpo()
     win_cabinet_set->installGlobalConfig(cabinetConf);
     connect(win_cabinet_set, SIGNAL(winSwitch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
     connect(win_cabinet_set, SIGNAL(cabinetCreated()), win_cabinet, SLOT(cabinetInit()));
+    connect(win_cabinet_set, SIGNAL(cabinetCreated()), this, SLOT(aioCreate()));
     connect(win_cabinet_set, SIGNAL(lockTest()), win_cab_service, SLOT(ctrl_boardcast()));
     connect(win_cabinet_set, SIGNAL(requireOpenCase(int,int)), ctrlUi, SLOT(openLock(int,int)));
     connect(win_cabinet_set, SIGNAL(updateServerAddr()),cabServer, SLOT(getServerAddr()));
@@ -239,6 +208,47 @@ void MainWidget::init_huangpo()
         ui->stackedWidget->setCurrentIndex(0);
 #endif
     qDebug()<<"[currentIndex]"<<ui->stackedWidget->currentIndex();
+}
+
+void MainWidget::aioCreate()
+{
+    if(cabinetConf->getCabinetType().at(BIT_CAB_AIO))
+    {
+        if(win_aio != NULL)
+            return;
+
+        qDebug()<<"[MainWidget] aioCreate";
+        win_aio = new AIOMachine(this);
+        connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
+        connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
+        connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+        connect(win_aio, SIGNAL(aio_check(bool)), win_cabinet, SLOT(on_check_clicked(bool)));
+//        connect(win_aio, SIGNAL(service_show()), win_cab_service, SLOT(show()));
+        connect(cabServer, SIGNAL(loginRst(UserInfo*)), win_aio, SLOT(recvUserCheckRst(UserInfo*)));
+        connect(cabServer, SIGNAL(sysLock()), win_aio, SLOT(sysLock()));
+        connect(win_aio, SIGNAL(logout()), win_cabinet, SLOT(sysLock()));
+        connect(win_aio, SIGNAL(reqUpdateOverview()), cabServer, SLOT(requireAioOverview()));
+        connect(cabServer, SIGNAL(aioOverview(QString,AIOOverview*)), win_aio, SLOT(recvAioOverview(QString,AIOOverview*)));
+        connect(win_aio, SIGNAL(click_event(int)), cabServer, SLOT(requireAioData(int)));
+        connect(cabServer, SIGNAL(aioData(QString,AIOMachine::cEvent,QList<Goods*>)), win_aio, SLOT(recvAioData(QString,AIOMachine::cEvent,QList<Goods*>)));
+        connect(win_aio, SIGNAL(tsCalReq()), win_cab_service, SLOT(tsCalibration()));
+        connect(win_aio, SIGNAL(cabinetStateChange(CabState)), win_cabinet, SLOT(switchCabinetState(CabState)));
+        connect(tempDev, SIGNAL(updateHumString(QString)), win_aio, SLOT(updateHum(QString)));
+        connect(tempDev, SIGNAL(updateTempString(QString)), win_aio, SLOT(updateTemp(QString)));
+        connect(win_aio->findChild<TempDevHub *>("tempHub"), SIGNAL(tempDevReport(QByteArray)), cabServer, SLOT(tempDevReport(QByteArray)));
+        connect(cabTcp, SIGNAL(serverDelay(int)), win_aio, SLOT(updateDelay(int)));
+        connect(win_aio, SIGNAL(requireCabSync()), cabServer, SLOT(cabInfoSync()));
+        connect(cabServer, SIGNAL(cabSyncResult(bool)), win_aio, SLOT(recvCabSyncResult(bool)));
+        connect(cabServer, SIGNAL(aioMsg(QString)), win_aio, SLOT(winMsg(QString)));
+        aio_connect_mode(true);
+//        cab_connect_mode(false);
+
+        //        qDebug()<<win_aio->findChild<TempDevHub *>("tempHub");
+        //    connect(win_aio, SIGNAL(aio_fetch(int,int)), win_cabinet, SLOT(caseClicked(int,int)));
+    //    connect(win_aio, SIGNAL(aio_return(bool)), win_cabinet, SLOT(on_refund_clicked(bool)));
+        ui->page_2->layout()->addWidget(win_aio);
+//        win_aio->sysLock();
+    }
 }
 
 void MainWidget::connect_master()
