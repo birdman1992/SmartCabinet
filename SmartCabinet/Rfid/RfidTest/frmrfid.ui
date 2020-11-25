@@ -945,7 +945,7 @@ margin-right:24px;
               <number>0</number>
              </property>
              <property name="bottomMargin">
-              <number>0</number>
+              <number>3</number>
              </property>
              <item>
               <widget class="QLabel" name="lab_scene">
@@ -1143,7 +1143,11 @@ color: rgb(255,49,48);</string>
                <property name="styleSheet">
                 <string notr="true">QPushButton::checked{
 	background-color: rgb(247,10,12);
-}</string>
+}
+QPushButton{
+	background-color: rgb(3,97,219);
+}
+</string>
                </property>
                <property name="text">
                 <string>请选择手术单</string>

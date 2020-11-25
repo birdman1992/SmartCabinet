@@ -158,8 +158,12 @@ void RfidReader::devReconnect()
     if(serverPort == 0)
         return;
 
-    skt->disconnectFromHost();
-    skt->connectToHost(serverAddr, serverPort);
+    if(skt->state() == QAbstractSocket::UnconnectedState)
+    {
+//        skt->disconnectFromHost();
+        skt->connectToHost(serverAddr, serverPort);
+        return;
+    }
 }
 
 void RfidReader::epcScaned(QString epc)
@@ -357,7 +361,7 @@ void RfidReader::recvData()
     if(!response.appendData(qba))
         return;
 
-//    qDebug()<<"[recv pack]"<<response.mid<<response.paramData.toHex();
+    qDebug()<<"[recv pack]"<<response.mid<<response.paramData.toHex();
     dataParse(response.mid, response.paramData);
     while(response.appendData())
     {

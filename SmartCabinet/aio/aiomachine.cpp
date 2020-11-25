@@ -243,6 +243,7 @@ void AIOMachine::recvUserInfo(QByteArray qba)
     }
 //    ui->frame_quit->show();
 //    ui->aio_quit->show();
+    qDebug()<<"[AIOMachine] recvUserInfo:"<<qba;
     ui->lab_tip->setText("正在识别");
     emit requireUserCheck(QString(qba));
     QTimer::singleShot(5000, this, SLOT(loginTimeout()));
