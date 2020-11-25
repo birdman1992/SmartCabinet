@@ -94,7 +94,7 @@ private:
 
     void initDatabase();
     void createTable();
-    void createField(QString tabName, QString fieldName);//创建字段
+    void createField(QString tabName, QString fieldName, int fSize=50);//创建字段
     static bool queryExec(QSqlQuery *q, QString msg=QString(), QString cmd=QString());
 };
 

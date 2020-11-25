@@ -16,6 +16,7 @@ SqlManager::SqlManager(QObject *parent) : QObject(parent)
     initDatabase();
     createTable();
     createField("GoodsInfo", "pinyin");
+    createField("CodeInfo", "operation_list", 20);
 }
 
 SqlManager *SqlManager::manager()
@@ -821,18 +822,19 @@ void SqlManager::createTable()
     if(tables.indexOf("CodeInfo") == -1)
     {
         QSqlQuery query(db_cabinet);
-        QString cmd = QString("create table CodeInfo(\
-                              code CHAR(50) PRIMARY KEY NOT NULL,\
-                              package_id CHAR(15) NOT NULL,\
-                              batch_number CHAR(50) DEFAULT('NULL'),\
-                              pro_name CHAR(50) DEFAULT('NULL'),\
-                              sup_name CHAR(50) DEFAULT('NULL'),\
-                              state_local INT(3) DEFAULT(1),\
-                              state_remote INT(3) DEFAULT(1),\
-                              store_list CHAR(20) DEFAULT('NULL'),\
-                              surgery_bill_no CHAR(20) DEFAULT('NULL'),\
-                              check_time_stamp INT(15) DEFAULT(0)\
-                              );");
+        QString cmd = QString("create table CodeInfo("
+                              "code CHAR(50) PRIMARY KEY NOT NULL,"
+                              "package_id CHAR(15) NOT NULL,"
+                              "batch_number CHAR(50) DEFAULT('NULL'),"
+                              "pro_name CHAR(50) DEFAULT('NULL'),"
+                              "sup_name CHAR(50) DEFAULT('NULL'),"
+                              "state_local INT(3) DEFAULT(1),"
+                              "state_remote INT(3) DEFAULT(1),"
+                              "store_list CHAR(20) DEFAULT('NULL'),"
+                              "operation_list CHAR(20) DEFAULT(''),"
+                              "surgery_bill_no CHAR(20) DEFAULT('NULL'),"
+                              "check_time_stamp INT(15) DEFAULT(0)"
+                              ");");
 //        qDebug()<<cmd;
         if(query.exec(cmd))
         {
@@ -952,7 +954,7 @@ void SqlManager::createTable()
     }
 }
 
-void SqlManager::createField(QString tabName ,QString fieldName)
+void SqlManager::createField(QString tabName ,QString fieldName, int fSize)
 {
     QSqlQuery query(db_cabinet);
     QString cmd = QString("select sql from sqlite_master where type = 'table' and name = '%1'").arg(tabName);
@@ -962,10 +964,11 @@ void SqlManager::createField(QString tabName ,QString fieldName)
     if(query.next())
     {
         QString tabStr = query.value(0).toString();
+//        qDebug()<<tabStr;
         if(tabStr.indexOf(fieldName) == -1)//不存在字段
         {
-            qDebug()<<"createField";
-            cmd = QString("ALTER TABLE GoodsInfo ADD COLUMN %1 CHAR(50) DEFAULT('')").arg(fieldName);
+            qDebug()<<"[SqlManager]:createField:"<<fieldName<<"in table"<<tabName;
+            cmd = QString("ALTER TABLE %1 ADD COLUMN %2 CHAR(%3) DEFAULT('')").arg(tabName).arg(fieldName).arg(fSize);
             queryExec(&query, QString("[Create Field] %1").arg(fieldName), cmd);
         }
     }
