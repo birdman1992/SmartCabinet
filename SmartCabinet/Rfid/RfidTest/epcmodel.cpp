@@ -13,7 +13,6 @@ EpcInfo::EpcInfo(QString id, QString _goodsCode)
     colPos = 0;
     scanedTimes = 0;
     signalIntensity = 0;
-
 }
 
 bool EpcInfo::epcScaned(qint64 scanMs)
@@ -37,6 +36,7 @@ EpcModel::EpcModel(QObject *parent)
     markCount = 0;
     eSumModel = new EpcSumModel;
     curOptId = QString();
+    operationNo = QString();
     colsName.clear();
 //    colsName<<"物品"<<"条码"<<"规格"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";
     colsName<<"ID"<<"HIS编码"<<"物品"<<"规格"<<"单价"<<"生产商"<<"供应商"<<"操作人"<<"时间"<<"标记"<<"操作";

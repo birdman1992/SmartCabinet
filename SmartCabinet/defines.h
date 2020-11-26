@@ -65,6 +65,7 @@
 #define MSG_REBIND_SCAN     "点击柜格：开门\n扫描条码：选择需要变更的物品"
 #define MSG_SET_SPEC    "请选择护士长储物柜"
 #define MSG_REBIND_SELECT   "请选择物品重新绑定的柜格"
+#define MSG_REBIND_UNKNOW   "绑定物品不识别"
 
 //1取货2存货3退货16还货
 enum UserOpt{

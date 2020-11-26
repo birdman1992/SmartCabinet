@@ -744,6 +744,12 @@ void CabinetWidget::recvScanData(QByteArray qba)
     }
     else if(config->state == STATE_REBIND)
     {
+        if(scanGoodsId.isEmpty())
+        {
+            config->showMsg(MSG_REBIND_UNKNOW, 0);
+            return;
+        }
+
         config->showMsg(MSG_REBIND_SELECT, 0);
         rebindGoods = scanGoodsId;
         waitForCodeScan = false;
@@ -1056,6 +1062,14 @@ void CabinetWidget::on_store_clicked(bool checked)
     {
         cabLock();
         initAccessState();
+    }
+}
+
+void CabinetWidget::on_store_toggled(bool checked)
+{
+    if(!checked)
+    {
+        waitForGoodsListCode = false;
     }
 }
 

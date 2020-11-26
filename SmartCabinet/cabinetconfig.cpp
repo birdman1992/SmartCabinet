@@ -692,6 +692,10 @@ void CabinetConfig::setStoreMode(bool needScanAll)
     settings.sync();
 }
 
+/**
+ * @brief CabinetConfig::getStoreMode
+ * @return true:需要扫描所有条码  false:不需要扫描所有条码存货
+ */
 bool CabinetConfig::getStoreMode()
 {
     QSettings settings(CONF_CABINET,QSettings::IniFormat);

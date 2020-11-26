@@ -153,6 +153,7 @@ private slots:
 
     void on_rebind_clicked(bool checked);
 
+    void on_store_toggled(bool checked);
 protected:
     bool eventFilter(QObject *, QEvent *);
     void resizeEvent(QResizeEvent*);
