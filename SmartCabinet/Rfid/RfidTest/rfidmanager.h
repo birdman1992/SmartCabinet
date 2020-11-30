@@ -36,6 +36,7 @@ public:
     bool accessIsLock();
     RfidDevHub* rfidReaderModel();
 
+    void scanRestart();
 public slots:
     void initEpc();//程序启动初始化EPC标签
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);

@@ -29,6 +29,7 @@ enum CabState
     CMD_CHECK_SHOW = 8,//显示盘点单
     CMD_DAY_REPORT_SHOW = 9,//显示结算单
     STATE_BACK = 10,//还货
+    STATE_CONSUME = 11,//库外结算
 };
 
 //|一体机|RFID|高低值|

@@ -826,7 +826,7 @@ padding-top:16px;</string>
             <enum>QFrame::Raised</enum>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="footer_login">
             <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,5">
@@ -854,14 +854,14 @@ padding-top:16px;</string>
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">#aio_fetch,#aio_back,#aio_store{
+                <string notr="true">#aio_fetch,#aio_back,#aio_store,#aio_external{
 	border-image:url(:/image/image/aio/btn_bottom_null.png);
 	font: 75 46px &quot;WenQuanYi Micro Hei Mono&quot;;
 	border-bottom:35px;
 	color: rgb(255, 255, 255);
 }
 
-##aio_fetch::pressed,#aio_back::pressed,#aio_store::pressed{
+#aio_fetch::pressed,#aio_back::pressed,#aio_store,#aio_external::pressed{
 	border-image: url(:/image/image/aio/btn_bottom_null.png);
 font: 75 60px &quot;WenQuanYi Micro Hei Mono&quot;;
 margin:5px;
@@ -957,6 +957,31 @@ color: rgb(255, 255, 255);
                   </property>
                   <property name="text">
                    <string>还货</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="aio_external">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>234</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>234</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>三级库</string>
                   </property>
                  </widget>
                 </item>

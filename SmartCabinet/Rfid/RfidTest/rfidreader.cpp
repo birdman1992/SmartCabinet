@@ -108,7 +108,7 @@ void RfidReader::timerEvent(QTimerEvent * e)
 
         if(flagWaitBack)//disconnected
         {
-//            qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
+            qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
             setFlagConnect(false);
 //            flagConnect = false;
             devReconnect();
@@ -400,11 +400,11 @@ void RfidReader::parseEpc(QByteArray epcData)
     //读取变长EPC
     MEM_FETCH(len, pos);
     len = ntohs(len);
-    if(len != epcData.size()-7)
-    {
-        qDebug()<<"[unknow]"<<epcData.toHex()<<len<<epcData.size();
-        return;
-    }
+//    if(len != epcData.size()-7)
+//    {
+//        qDebug()<<"[unknow]"<<epcData.toHex()<<len<<epcData.size();
+//        return;
+//    }
 
     QByteArray epc = QByteArray(pos, len);
     pos += len;

@@ -187,6 +187,7 @@ private slots:
     void on_aio_store_clicked();
     void on_aio_fetch_clicked();
     void on_aio_back_clicked();
+    void on_aio_external_clicked();
 };
 
 #endif // AIOMACHINE_H

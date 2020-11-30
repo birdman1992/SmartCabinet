@@ -206,7 +206,10 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
     if(info == NULL)
         return;
     if(info->markLock)//锁定的标签
+    {
+        qDebug()<<"[ignore]:lock epc"<<epcId<<mark;
         return;
+    }
     if(info->mark == mark)//无变化标签
         return;
     if((!info->mark) && mark)//新标记的标签
@@ -340,7 +343,8 @@ void EpcModel::syncUpload()
             break;
         case mark_back://还回标记
             info->state = epc_in;
-            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, operation_list='' WHERE epc_code='%4'")
+            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, operation_list='' WHERE epc_code='%4';"
+                          "CodeInfo SET operation_list='%5' WHERE code=(SELECT goods_code FROM EpcInfo WHERE epc_code='%4');")
                     .arg(info->lastStamp)
                     .arg(info->lastOpt)
                     .arg(info->state)
@@ -376,7 +380,8 @@ void EpcModel::syncUpload()
                 list_store<<info->epcId;
             }
             info->state = epc_out;
-            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3 operation_list='%4', WHERE epc_code='%4'")
+            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, operation_list='%5' WHERE epc_code='%4';"
+                          "CodeInfo SET operation_list='%5' WHERE code=(SELECT goods_code FROM EpcInfo WHERE epc_code='%4');")
                     .arg(info->lastStamp)
                     .arg(info->lastOpt)
                     .arg(info->state)

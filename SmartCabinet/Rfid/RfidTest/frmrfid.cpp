@@ -293,8 +293,9 @@ void FrmRfid::rfidCheck()
 {
     showEpcInfo();
     rfManager->initEpc();
-    rfManager->startScan();
-    rfManager->doorCloseScan();
+    rfManager->scanRestart();
+//    rfManager->startScan();
+//    rfManager->doorCloseScan();
 }
 
 void FrmRfid::lockStateChanged(int id, bool isOpen)
@@ -366,12 +367,13 @@ void FrmRfid::updateAntState(RfidReader* dev)
 void FrmRfid::accessSuccess(QString msg)
 {
     ui->msg->setText(msg);
-    QTimer::singleShot(2000, this, SLOT(hide()));
+    QTimer::singleShot(5000, this, SLOT(hide()));
 }
 
 void FrmRfid::accessFailed(QString msg)
 {
     ui->msg->setText(msg);
+    QTimer::singleShot(2000, ui->msg, SLOT(clear()));
 }
 
 void FrmRfid::on_scan_clicked()
@@ -622,8 +624,27 @@ void FrmRfid::paintEvent(QPaintEvent *e)
 //                                <<ui->tab_details->columnWidth(10);
 }
 
+/**
+ * @brief FrmRfid::operationCheck  检查手术单选择
+ * @return 是否通过
+ */
+bool FrmRfid::operationCheck()
+{
+    if((sceneMark | mark_out) && (ui->operation->isChecked()))//有取出物品且未选择手术单
+    {
+        return false;
+    }
+    return true;
+}
+
 void FrmRfid::on_OK_clicked()
 {
+    if(!operationCheck())
+    {
+        accessFailed("取出物品请先选择手术单");
+        return;
+    }
+
     rfManager->clsFinish();
     accessSuccess("操作成功");
     clearCountText();

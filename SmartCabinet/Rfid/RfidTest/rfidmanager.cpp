@@ -108,6 +108,23 @@ void RfidManager::startScan()
     timerStart();
 }
 
+void RfidManager::scanRestart()
+{
+    setScanLock(false);
+    eModel->clearEpcMark();
+    qDebug()<<"[RFID scan] restart";
+    foreach (RfidReader* reader, rfidHub->deviceList())
+    {
+        reader->scanStop();
+    }
+    foreach(RfidReader* reader, rfidHub->deviceList())
+    {
+        reader->scanStart(RF_REP|RF_FETCH|RF_AUTO|RF_WARNING, 1);
+    }
+    timerStart();
+    clsStamp = QDateTime::currentMSecsSinceEpoch();//关门时间
+}
+
 /**
  * @brief RfidManager::doorCloseScan
  * 关门扫描,仅使用外部天线
@@ -330,7 +347,7 @@ void RfidManager::updateEpc(QString epc, DevAction rfAct)
         return;
     }
 
-//    qDebug()<<"updateEpc"<<epc;
+//    qDebug()<<"updateEpc"<<epc<<rfAct;
 //        qDebug()<<"[updateEpc]"<<epc<<isOutside;
 //    bool needUpdateOutList = false;
     if(rfAct == RF_REP)//内部天线

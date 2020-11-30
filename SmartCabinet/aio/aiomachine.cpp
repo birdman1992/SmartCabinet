@@ -73,6 +73,7 @@ AIOMachine::AIOMachine(QWidget *parent) :
     ui->stackedWidget->setCurrentIndex(0);
     sysLock();
     initAioMode();
+    ui->aio_external->hide();
 //    timerCheckDev = startTimer(10000);
 }
 
@@ -932,6 +933,13 @@ void AIOMachine::on_aio_fetch_clicked()
 void AIOMachine::on_aio_back_clicked()
 {
     setState(STATE_BACK);
+    win_rfid->setDownCount(0);
+    win_rfid->rfidCheck();
+}
+
+void AIOMachine::on_aio_external_clicked()
+{
+    setState(STATE_CONSUME);
     win_rfid->setDownCount(0);
     win_rfid->rfidCheck();
 }

@@ -132,7 +132,7 @@ private:
     QBitArray curAntState();
     void accessDownCount(int count);//存取倒计时
     void updateCountInfo(EpcMark scene);
-
+    bool operationCheck();
 protected:
     void closeEvent(QCloseEvent*);
     void showEvent(QShowEvent *);
