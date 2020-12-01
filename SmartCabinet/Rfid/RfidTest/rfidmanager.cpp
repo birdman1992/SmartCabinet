@@ -102,7 +102,8 @@ void RfidManager::startScan()
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
 //        connect(reader, SIGNAL(reportEpc(QString,int,int)), this, SLOT(updateEpc(QString, int, int)));
-        reader->scanStart(RF_REP|RF_FETCH|RF_AUTO|RF_WARNING,1);
+//        reader->scanStart(RF_REP|RF_FETCH|RF_AUTO|RF_WARNING,1);
+        reader->scanStart(RF_REP|RF_AUTO, 1);
     }
     connect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
     timerStart();
@@ -119,6 +120,7 @@ void RfidManager::scanRestart()
     }
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
+//        reader->scanStart(RF_REP|RF_AUTO, 1);
         reader->scanStart(RF_REP|RF_FETCH|RF_AUTO|RF_WARNING, 1);
     }
     timerStart();

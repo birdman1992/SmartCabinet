@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QAbstractTableModel>
 #include <QStringList>
+#include <QFlags>
 
 enum EpcState{
     epc_no,//标签未被发现
@@ -26,6 +27,7 @@ enum EpcMark{
     mark_away,//离柜标签
     mark_checked,//发现标签
 };
+Q_DECLARE_FLAGS(SceneMark, EpcMark)
 
 enum TableMark
 {

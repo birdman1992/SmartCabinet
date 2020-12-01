@@ -108,8 +108,11 @@ void RfidReader::timerEvent(QTimerEvent * e)
 
         if(flagWaitBack)//disconnected
         {
-            qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
-            setFlagConnect(false);
+            if(flagConnect)
+            {
+                qDebug()<<"[RfidReader] heartbeat"<<skt->peerAddress().toString()<<"disconnected";
+                setFlagConnect(false);
+            }
 //            flagConnect = false;
             devReconnect();
         }

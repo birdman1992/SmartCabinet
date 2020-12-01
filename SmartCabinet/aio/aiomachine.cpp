@@ -413,7 +413,13 @@ void AIOMachine::setState(CabState state)
     case STATE_BACK:
         win_rfid->setScene(mark_back);
         break;
+
+//    case STATE_AUTO:
+//        win_rfid->setScene(mark_all);
+//        break;
+
     default:
+        win_rfid->setScene(mark_out);
         break;
     }
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2024</width>
+    <width>2264</width>
     <height>1080</height>
    </rect>
   </property>
@@ -861,7 +861,7 @@ padding-top:16px;</string>
 	color: rgb(255, 255, 255);
 }
 
-#aio_fetch::pressed,#aio_back::pressed,#aio_store,#aio_external::pressed{
+#aio_fetch::pressed,#aio_back::pressed,#aio_store::pressed,#aio_external::pressed{
 	border-image: url(:/image/image/aio/btn_bottom_null.png);
 font: 75 60px &quot;WenQuanYi Micro Hei Mono&quot;;
 margin:5px;

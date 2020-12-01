@@ -207,7 +207,7 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
         return;
     if(info->markLock)//锁定的标签
     {
-        qDebug()<<"[ignore]:lock epc"<<epcId<<mark;
+//        qDebug()<<"[ignore]:lock epc"<<epcId<<mark;
         return;
     }
     if(info->mark == mark)//无变化标签

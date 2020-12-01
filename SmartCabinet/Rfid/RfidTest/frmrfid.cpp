@@ -564,7 +564,6 @@ void FrmRfid::setDownCount(int count)
 
 void FrmRfid::clearCurOperation()
 {
-    qDebug("clear");
     ui->frm_operation->setCurOperationNo(QString());
     ui->frm_operation->setCurOperationStr(QString());
 }
