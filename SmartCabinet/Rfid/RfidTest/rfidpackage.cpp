@@ -13,6 +13,7 @@ bool RfidResponse::appendData(QByteArray _data)
 {
     dataCache.append(_data);
 
+    reparse:
     while(((unsigned char)dataCache[0] != 0x5a) && (dataCache.size() > 0))
     {
 //        qDebug()<<"[loss]:1byte";
@@ -29,6 +30,12 @@ bool RfidResponse::appendData(QByteArray _data)
     len = ntohs(len);
     word = ntohl(word);
     mid = word & 0xff;
+    if(len>1024)
+    {
+        dataCache.remove(0,1);
+        goto reparse;
+    }
+
     if(dataCache.size() < len+9)
         return false;
 
@@ -43,9 +50,17 @@ bool RfidResponse::appendData(QByteArray _data)
     if(CheckManager::CRC16(packData) != cks)
     {
         qDebug()<<"[RfidResponse]:package check err."<<cks<<CheckManager::CRC16(packData);
+        qDebug()<<"packinfo:"<<"mid:"<<mid<<"len:"<<len;
+        qDebug()<<"packData:"<<packData.size()<<packData.toHex();
         packData.clear();
         return false;
     }
+//    else
+//    {
+//        qDebug()<<"[RfidResponse]:package check pass."<<cks<<CheckManager::CRC16(packData);
+//        qDebug()<<"packinfo:"<<"mid:"<<mid<<"len:"<<len;
+//        qDebug()<<"packData:"<<packData.size()<<packData.toHex();
+//    }
     return true;
 }
 
