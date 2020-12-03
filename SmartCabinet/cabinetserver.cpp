@@ -116,8 +116,9 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
 
     SignalManager* sigMan = SignalManager::manager();
 //    connect(sigMan, SIGNAL(epcAccess(QStringList, UserOpt)), this, SLOT(listAccess(QStringList, UserOpt)));
-    connect(this, SIGNAL(accessSuccess(QString)), sigMan, SIGNAL(accessSuccess(QString)));
-    connect(this, SIGNAL(accessFailed(QString)), sigMan, SIGNAL(accessFailed(QString)));
+//    connect(this, SIGNAL(accessSuccess(QString)), sigMan, SIGNAL(accessSuccess(QString)));
+//    connect(this, SIGNAL(accessFailed(QString)), sigMan, SIGNAL(accessFailed(QString)));
+    connect(this, SIGNAL(rfidOptRst(bool,QString)),sigMan, SIGNAL(rfidOptRst(bool,QString)));
     connect(this, SIGNAL(epcInfoUpdate()), sigMan, SIGNAL(epcInfoUpdate()));
     connect(this, SIGNAL(epcConsumed(QStringList)), sigMan, SIGNAL(epcConsumed(QStringList)));
     connect(this, SIGNAL(operationInfoUpdate()), sigMan, SIGNAL(operationInfoUpdate()));
@@ -1331,6 +1332,7 @@ void CabinetServer::rfidCheckConsume(QStringList epcs)
     qint64 timeStamp = getApiMark();
     QByteArray qba = QString("{\"chesetCode\":\"%1\", \"rfidCodes\":[\"%2\"],\"timeStamp\":\"%3\"}").arg(departCode.data()).arg(epcs.join("\",\"")).arg(timeStamp).toLocal8Bit();
     QString nUrl = ApiAddress+QString(API_RFID_CONSUME);//+"?"+qba.toBase64();
+    replyCheck(reply_rfid_consume);
     reply_rfid_consume = post(nUrl, qba, timeStamp, false);
     connect(reply_rfid_consume, SIGNAL(finished()), this, SLOT(recvRfidConsume()));
 }
@@ -1341,6 +1343,7 @@ void CabinetServer::requireOperationInfo()
     qint64 timeStamp = getApiMark();
     QByteArray qba = QString("{\"departCode\":\"%1\",\"timeStamp\":\"%2\"}").arg(departCode).arg(timeStamp).toLocal8Bit();
     QString nUrl = ApiAddress+QString(API_OPERATION_REQUIRE);
+    replyCheck(reply_operation);
     reply_operation = post(nUrl, qba, timeStamp, false);
     connect(reply_operation, SIGNAL(finished()), this, SLOT(recvOperationInfo()));
     qDebug()<<"[requireOperationInfo]"<<qba;
@@ -2719,11 +2722,13 @@ void CabinetServer::recvRfidAccessRst()
     emit aioMsg(msg);
     if(json_rst->type == cJSON_True)
     {
-
+        emit rfidOptRst(true, msg);
+        SqlManager::commit();
     }
     else
     {
-
+        emit rfidOptRst(false, msg);
+        SqlManager::rollback();
     }
 }
 
@@ -2741,11 +2746,13 @@ void CabinetServer::recvRfidStoreRst()
     QString msg = QString::fromUtf8(cJSON_GetObjectItem(json, "msg")->valuestring);
     if(json_rst->type == cJSON_True)
     {
-
+        SqlManager::commit();
+        emit rfidOptRst(true, msg);
     }
     else
     {
-
+        SqlManager::rollback();
+        emit rfidOptRst(false, msg);
     }
 }
 

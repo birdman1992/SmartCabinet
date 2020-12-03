@@ -149,6 +149,7 @@ signals:
     void rfidAccess();
     void epcInfoUpdate();
     void epcConsumed(QStringList epcs);
+    void rfidOptRst(bool success, QString msg);
     //operation
     void operationInfoUpdate();
 

@@ -11,7 +11,8 @@ RfidManager::RfidManager(EpcModel *model, QObject *parent) : QObject(parent)
 {
     eModel = model;
     accessLock = false;
-    flagInit = false;
+    doorIsOpen = false;
+    flagSession = false;
     flagScan = false;
     clsTime = 2000;
     doorState = 0;
@@ -109,10 +110,16 @@ void RfidManager::startScan()
     timerStart();
 }
 
-void RfidManager::scanRestart()
+/**
+ * @brief RfidManager::scanRestart
+ * @param needClear 是否清除标签状态
+ */
+void RfidManager::scanRestart(bool needClear)
 {
-    setScanLock(false);
-    eModel->clearEpcMark();
+    if(needClear)
+    {
+        eModel->clearEpcMark();
+    }
     qDebug()<<"[RFID scan] restart";
     foreach (RfidReader* reader, rfidHub->deviceList())
     {
@@ -121,8 +128,18 @@ void RfidManager::scanRestart()
     foreach(RfidReader* reader, rfidHub->deviceList())
     {
 //        reader->scanStart(RF_REP|RF_AUTO, 1);
-        reader->scanStart(RF_REP|RF_FETCH|RF_AUTO|RF_WARNING, 1);
+        if(doorIsOpen)
+        {
+            reader->scanStart(RF_WARNING|RF_RANGE_SMALL, 1);
+        }
+        else
+        {
+            reader->scanStart(RF_AUTO|RF_WARNING|RF_RANGE_SMALL, 1);
+        }
+
     }
+    connect(rfidHub, SIGNAL(reportEpc(QString,DevAction)), this, SLOT(updateEpc(QString,DevAction)));
+    setScanLock(false);
     timerStart();
     clsStamp = QDateTime::currentMSecsSinceEpoch();//关门时间
 }
@@ -324,6 +341,11 @@ bool RfidManager::accessIsLock()
     return accessLock;
 }
 
+void RfidManager::setDoorState(bool isOpen)
+{
+    doorIsOpen = isOpen;
+}
+
 RfidDevHub *RfidManager::rfidReaderModel()
 {
     return rfidHub;
@@ -338,14 +360,19 @@ void RfidManager::timerStop()
 
 void RfidManager::updateEpc(QString epc, DevAction rfAct)
 {
+//    qDebug()<<"updateEpc"<<epc<<rfAct;
     if(scanLock)
+    {
+        qDebug("scan lock");
         return;
+    }
 
     EpcInfo* info = eModel->getEpcInfo(epc);
 
     if(info == NULL)
     {
         eModel->unknowEpc(epc);
+//        qDebug()<<"[unknowEpc]"<<epc;
         return;
     }
 
@@ -394,7 +421,7 @@ void RfidManager::updateEpc(QString epc, DevAction rfAct)
             break;
         }
     }
-    else if(rfAct == RF_AUTO)
+    else if((rfAct == RF_AUTO) || (rfAct == RF_RANGE_SMALL))
     {
         switch(info->state)
         {

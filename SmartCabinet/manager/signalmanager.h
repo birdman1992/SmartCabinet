@@ -18,6 +18,7 @@ signals:
     void epcConsumeCheck(QStringList);
     void epcConsumed(QStringList epcs);
     void epcStore(QVariantMap);
+    void rfidOptRst(bool success, QString msg);
     void doorState(int id, bool isOpen);
     void accessSuccess(QString msg);//存取成功信息
     void accessFailed(QString msg);//存取失败信息

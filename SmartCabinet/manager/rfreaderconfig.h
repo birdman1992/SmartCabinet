@@ -14,6 +14,7 @@ enum DevAction{
     RF_FETCH=2,//取出
     RF_WARNING=4,//警报
     RF_AUTO=8,//智能
+    RF_RANGE_SMALL=16,
 };
 
 class RfReaderConfig : public QObject, public Singleton<RfReaderConfig>

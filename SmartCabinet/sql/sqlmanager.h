@@ -54,6 +54,7 @@ public:
     static void replace(QString table, QList<QVariantMap> rows);
     static void insert(QString table, QList<QVariantMap> bindings);
     static void commit();
+    static void rollback();
     static QSqlQuery checkRfid(quint32 cutOffStamp, int row=0, int col=0);
     static QSqlQuery checkRfid(QString epcCode);
     static QSqlQuery checkRfid(QStringList epcCodes);
@@ -80,6 +81,7 @@ public:
     static QSqlQuery query(QString cmd, QString msg);
 
     static QSqlDatabase db_cabinet;
+
 
 public slots:
 

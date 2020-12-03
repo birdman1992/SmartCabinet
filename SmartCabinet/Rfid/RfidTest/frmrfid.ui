@@ -376,6 +376,11 @@ border:0px solid grey;</string>
                        <string>智能模式</string>
                       </property>
                      </item>
+                     <item>
+                      <property name="text">
+                       <string>聚焦模式</string>
+                      </property>
+                     </item>
                     </widget>
                    </item>
                    <item>

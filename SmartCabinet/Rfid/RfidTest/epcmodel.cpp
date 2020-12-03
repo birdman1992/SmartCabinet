@@ -207,7 +207,7 @@ void EpcModel::setEpcMark(QString epcId, EpcMark mark)
         return;
     if(info->markLock)//锁定的标签
     {
-//        qDebug()<<"[ignore]:lock epc"<<epcId<<mark;
+        qDebug()<<"[ignore]:lock epc"<<epcId<<mark;
         return;
     }
     if(info->mark == mark)//无变化标签
@@ -405,7 +405,7 @@ void EpcModel::syncUpload()
 
     //删除已登记消耗物品
     SqlManager::querySingle(QString("DELETE FROM EpcInfo WHERE state=%1").arg(epc_consume));
-    SqlManager::commit();
+//    SqlManager::commit();
 }
 
 void EpcModel::syncDownload()

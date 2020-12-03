@@ -14,6 +14,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setAttribute(Qt::WA_TranslucentBackground, true);
+    flagSession = false;
 //    btnTable.insert(mark_no, ui->tab_filter_unknow);
     btnTable.insert(mark_new, ui->tab_filter_new);
     btnTable.insert(mark_back, ui->tab_filter_back);
@@ -61,6 +62,7 @@ FrmRfid::FrmRfid(QWidget *parent) :
     connect(sigMan, SIGNAL(accessFailed(QString)), this, SLOT(accessFailed(QString)));
     connect(sigMan, SIGNAL(configRfidDevice()), this, SLOT(showConfigDevice()));
     connect(sigMan, SIGNAL(lockState(int,bool)), this, SLOT(lockStateChanged(int,bool)));
+    connect(sigMan, SIGNAL(rfidOptRst(bool,QString)),this, SLOT(showMsg(bool,QString)));
 
     connect(ui->frm_operation, SIGNAL(winClose()), this, SLOT(showEpcInfo()));
     connect(ui->frm_operation, SIGNAL(requireUpdate()), sigMan, SIGNAL(requireUpdateOperation()));
@@ -182,6 +184,7 @@ void FrmRfid::initAntList()
 
 void FrmRfid::setScene(EpcMark mark)
 {
+    flagSession = false;
     sceneMark = mark;
     rfScene = QBitArray(mark_checked+1);
     rfScene.setBit(mark, true);
@@ -291,8 +294,12 @@ void FrmRfid::showEpcInfo()
 
 void FrmRfid::rfidCheck()
 {
-    showEpcInfo();
-    rfManager->initEpc();
+    if(!flagSession)
+    {
+        showEpcInfo();
+        rfManager->initEpc();
+        flagSession = true;
+    }
     rfManager->scanRestart();
 //    rfManager->startScan();
 //    rfManager->doorCloseScan();
@@ -302,6 +309,7 @@ void FrmRfid::lockStateChanged(int id, bool isOpen)
 {
     qDebug()<<"lockState:"<<id<<isOpen;
     doorIsOpen = isOpen;
+    rfManager->setDoorState(doorIsOpen);
     if(!isLogin)
     {
         if(doorIsOpen)
@@ -313,11 +321,18 @@ void FrmRfid::lockStateChanged(int id, bool isOpen)
 
     if(isOpen)
     {
-        qDebug()<<"[visible]"<<this->isVisible();
-        if(this->isVisible())//未结算的情况下再次开门
+//        qDebug()<<"[visible]"<<this->isVisible();
+//        if(this->isVisible())//未结算的情况下再次开门
+//        {
+//            MessageDialog::instance().showMessage("检测到开门，扫描暂停", 60);
+        if(!flagSession)
         {
-            MessageDialog::instance().showMessage("检测到开门，扫描暂停", 60);
+            rfidCheck();
+        }
+        else
+        {
             rfManager->setScanLock(true);
+            rfManager->scanRestart(false);
         }
     }
     else
@@ -364,16 +379,33 @@ void FrmRfid::updateAntState(RfidReader* dev)
     }
 }
 
+void FrmRfid::showMsg(bool success, QString msg)
+{
+    if(success)
+    {
+        ui->msg->setStyleSheet("background-color: rgb(255, 255, 255);"
+                               "color: rgb(0, 187, 0);");
+        ui->msg->setText(msg);
+        QTimer::singleShot(5000, this, SLOT(hide()));
+        QTimer::singleShot(5000, this, SIGNAL(requireSysLock()));
+    }
+    else
+    {
+        ui->msg->setStyleSheet("background-color: rgb(255, 255, 255);"
+                               "color: rgb(187, 0, 0);");
+        ui->msg->setText(msg);
+        QTimer::singleShot(2000, ui->msg, SLOT(clear()));
+    }
+}
+
 void FrmRfid::accessSuccess(QString msg)
 {
-    ui->msg->setText(msg);
-    QTimer::singleShot(5000, this, SLOT(hide()));
+    showMsg(true, msg);
 }
 
 void FrmRfid::accessFailed(QString msg)
 {
-    ui->msg->setText(msg);
-    QTimer::singleShot(2000, ui->msg, SLOT(clear()));
+    showMsg(false, msg);
 }
 
 void FrmRfid::on_scan_clicked()
@@ -629,7 +661,8 @@ void FrmRfid::paintEvent(QPaintEvent *e)
  */
 bool FrmRfid::operationCheck()
 {
-    if((sceneMark | mark_out) && (ui->operation->isChecked()))//有取出物品且未选择手术单
+    qDebug()<<"[operationCheck]"<<sceneMark<<mark_out;
+    if((sceneMark == mark_out) && (ui->operation->isChecked()))//取出场景且未选择手术单
     {
         return false;
     }
@@ -645,10 +678,11 @@ void FrmRfid::on_OK_clicked()
     }
 
     rfManager->clsFinish();
-    accessSuccess("操作成功");
+//    accessSuccess("操作成功");
     clearCountText();
     scanProgress(0, 0);
-    emit requireSysLock();
+//    emit requireSysLock();
+    flagSession = false;
 }
 
 void FrmRfid::on_fresh_clicked()
@@ -666,6 +700,7 @@ void FrmRfid::on_close_clicked()
 #else
     this->close();
     rfManager->clsGiveUp();
+    flagSession = false;
 #endif
 }
 

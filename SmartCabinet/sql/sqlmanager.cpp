@@ -469,10 +469,27 @@ void SqlManager::insert(QString table, QList<QVariantMap> bindings)
 
 void SqlManager::commit()
 {
+    if(queryNum == 0)
+        return;
+
     queryNum--;
     if(queryNum == 0)//没有别的正在执行的事务
     {
         pubQuery->exec("COMMIT;");
+        delete pubQuery;
+        pubQuery = NULL;
+    }
+}
+
+void SqlManager::rollback()
+{
+    if(queryNum == 0)
+        return;
+
+    queryNum--;
+    if(queryNum == 0)//没有别的正在执行的事务
+    {
+        pubQuery->exec("ROLLBACK;");
         delete pubQuery;
         pubQuery = NULL;
     }

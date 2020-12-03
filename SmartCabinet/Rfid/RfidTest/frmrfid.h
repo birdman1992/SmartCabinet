@@ -48,7 +48,7 @@ public slots:
     void showEpcInfo();
     void rfidCheck();
     void lockStateChanged(int id, bool isOpen);
-
+    void showMsg(bool success, QString msg);
 signals:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void requireSysLock();
@@ -114,6 +114,7 @@ private:
     EpcMark sceneMark;
     bool isLogin;
     bool doorIsOpen;
+    bool flagSession;//扫描会话标志
 
     int downCount;
     QBitArray visibleFlag;//控制各个按钮是否可见,下标为EpcMark

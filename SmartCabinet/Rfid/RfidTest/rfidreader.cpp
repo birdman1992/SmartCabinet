@@ -236,6 +236,10 @@ QString RfidReader::readerType()
     {
         return QString("智能模式");
     }
+    else if(m_devAct == RF_RANGE_SMALL)
+    {
+        return QString("聚焦模式");
+    }
 
     return QString("警报模式");
 }

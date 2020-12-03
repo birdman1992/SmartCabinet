@@ -34,9 +34,10 @@ public:
     void setScanLock(bool lock);
     void timerClear();
     bool accessIsLock();
+    void setDoorState(bool isOpen);
     RfidDevHub* rfidReaderModel();
 
-    void scanRestart();
+    void scanRestart(bool needClear=true);
 public slots:
     void initEpc();//程序启动初始化EPC标签
     void newRfidMark(QString epc, QString goodsCode, QString goodsId);
@@ -86,9 +87,10 @@ private:
     int curOptPow;
     QTime scanTimer;
     QTimer upTimer;
+    bool doorIsOpen;
     bool scanLock;
     bool accessLock;//存取锁定状态
-    bool flagInit;//初始化标志
+    bool flagSession;//扫描会话标志
     bool flagScan;//扫描状态
     int clsTime;//结算延迟
     int tabMark;
