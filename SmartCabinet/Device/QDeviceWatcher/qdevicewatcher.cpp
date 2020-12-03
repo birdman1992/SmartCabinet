@@ -47,7 +47,7 @@ void QDeviceWatcher::run()
     netLinkInit();//socket初始化
 
     int len = 0;
-    int i = 0;
+//    int i = 0;
     loopFlag = true;
     qDebug("[QDeviceWatcher]:start");
 

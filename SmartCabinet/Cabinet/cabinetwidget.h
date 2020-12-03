@@ -46,6 +46,7 @@ public:
     void caseLock();
     void caseUnlock();
     void updateCase(int col, int row);
+    void updateCase(QPoint pos);
     void updateOptStamp();//更新操作时间戳
 
 public slots:
@@ -234,9 +235,12 @@ private:
     void magicCmd(QString cmd);
     QByteArray scanDataTrans(QByteArray code);//扫描条码转换
     bool isListCode(QByteArray qba);
-    void setCheckState(QPoint pos);
     void setSearchState(QList<QPoint> l);
     void clearCaseState();
+
+    bool caseHasPos(int seq, int index);
+    void checkCabinetCase(int seq, int index);
+    void searchCabinetCase(int seq, int index);
 };
 
 #endif // CABINETWIDGET_H

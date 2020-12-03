@@ -228,7 +228,7 @@ void Cabinet::updateCase(int caseIndex)
     if(isMainCabinet && (caseIndex == screenPos))
         return;
 
-    if(caseIndex >= ui->tableWidget->rowCount())
+    if((caseIndex >= ui->tableWidget->rowCount()) || (caseIndex<0))
         return;
 
     CasePanel* lab = (CasePanel*)ui->tableWidget->cellWidget(caseIndex,0);
