@@ -23,6 +23,7 @@ void GoodsList::addGoods(Goods *_goods)
         list_goods[repeatIndex]->takeCount += _goods->takeCount;
         list_goods[repeatIndex]->waitNum = list_goods[repeatIndex]->takeCount;
         list_goods[repeatIndex]->totalNum = list_goods[repeatIndex]->takeCount;
+        list_goods[repeatIndex]->codes<<_goods->codes;
     }
     else
     {

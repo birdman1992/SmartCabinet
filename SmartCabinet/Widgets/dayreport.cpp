@@ -122,12 +122,12 @@ void DayReport::setCurReportTable(QList<DayReportInfo *> l)
         return;
 
     QStringList lState;
-    lState<<""<<""<<"正常消耗"<<""<<"盘点消耗";
+    lState<<""<<""<<"正常消耗"<<""<<"盘点消耗"<<""<<"手术单取出";
 
     for(int i=0; i<l.count(); i++)
     {
         DayReportInfo* info = l.at(i);
-
+//        qDebug()<<info->state<<lState;
         ui->list_table->setItem(i, 0, new QTableWidgetItem(info->goodsId));
         ui->list_table->setItem(i, 1, new QTableWidgetItem(info->batchNumber));
         ui->list_table->setItem(i, 2, new QTableWidgetItem(info->goodsName));
@@ -144,6 +144,7 @@ void DayReport::setCurReportTable(QList<DayReportInfo *> l)
         ui->list_table->setItem(i, 13, new QTableWidgetItem(QString::number(info->sumCount, 'f', 2)));
 
     }
+
     ui->list_table->resizeColumnsToContents();
 }
 

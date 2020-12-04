@@ -71,6 +71,7 @@ void SqlManager::scanFetch(QString code, RepState state, RepMask stateMask)
     if(stateMask & 0x01)
     {
         QString cmd = QString("UPDATE CodeInfo SET state_local=%1 where code='%2'").arg(state&0x1).arg(code);
+//        qDebug()<<"[back]"<<cmd;
         if(!query.exec(cmd))
         {
             qDebug()<<query.lastQuery()<<query.lastError().text();
@@ -80,6 +81,7 @@ void SqlManager::scanFetch(QString code, RepState state, RepMask stateMask)
     if(stateMask & 0x02)
     {
         QString cmd = QString("UPDATE CodeInfo SET state_remote=%1 where code='%2'").arg((state&0x2)>>1).arg(code);
+//        qDebug()<<"[back]"<<cmd;
         query.bindValue(0, QVariant((state&0x2)>>1));
         if(!query.exec(cmd))
         {

@@ -71,14 +71,14 @@ void CabinetRefund::refundScan(QString scanId, QString fullId)
     refundRst("退货失败,该物品不属于此柜格");
 }
 
-void CabinetRefund::refundStart(CaseAddress addr)
+void CabinetRefund::refundStart(QPoint addr)
 {qDebug("[refundStart]");
     ui->msg->setText("");
     ui->ok->setText("提交");
 
-    curAddr.cabinetSeqNum = addr.cabinetSeqNum;
-    curAddr.caseIndex = addr.caseIndex;
-    QList<Goods*> list_goods = SqlManager::getGoodsList(addr.cabinetSeqNum, addr.caseIndex);
+    curAddr.cabinetSeqNum = addr.x();
+    curAddr.caseIndex = addr.y();
+    QList<Goods*> list_goods = SqlManager::getGoodsList(addr.x(), addr.y());
 
     int i = 0;
     ui->checktable->setRowCount(list_goods.count());

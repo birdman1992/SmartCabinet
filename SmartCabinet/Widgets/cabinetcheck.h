@@ -20,7 +20,7 @@ class CabinetCheck : public QWidget
 public:
     explicit CabinetCheck(QWidget *parent = 0);
     ~CabinetCheck();
-    void checkStart(CaseAddress addr);
+    void checkStart(QPoint addr);
     bool installGlobalConfig(CabinetConfig *globalConfig);
     void checkStop();
     void checkRst(QString msg);
@@ -33,12 +33,11 @@ private slots:
     void on_ok_clicked();
 
 signals:
-    void checkCase(QList<CabinetCheckItem*>,CaseAddress);
-    void checkCase(QStringList, CaseAddress);
+    void checkCase(QList<CabinetCheckItem*>,QPoint);
 
 private:
     Ui::CabinetCheck *ui;
-    CaseAddress curAddr;
+    QPoint curAddr;
     CabinetInfo* curCheckCab;
     CabinetConfig* config;
     QList<CabinetCheckItem*> list_item;

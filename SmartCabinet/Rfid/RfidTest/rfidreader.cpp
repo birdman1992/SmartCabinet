@@ -306,6 +306,7 @@ quint32 RfidReader::bit2int(QBitArray b)
 */
 void RfidReader::scanStart(int actMode, quint8 scanMode)
 {
+    qDebug()<<"[scanStart]"<<actMode<<m_devAct;
     if(!(actMode & m_devAct))
         return;
 

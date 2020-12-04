@@ -117,8 +117,7 @@ void FrmRfid::updateCount(EpcMark mark, int count)
 //    if(mark == 0)
 //        return;
 
-//    qDebug()<<"updateCount:"<<mark<<count;
-
+    qDebug()<<"updateCount:"<<eSumModel->scene()<<mark<<count;
     if(mark != eSumModel->scene())//
         return;
 
@@ -634,6 +633,7 @@ void FrmRfid::showEvent(QShowEvent *)
 {
     clearCountText();
     ui->msg->clear();
+    ui->operation->setVisible(eSumModel->scene() == mark_out);
 //    updateOperationState();
 }
 

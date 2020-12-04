@@ -729,7 +729,7 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     free(buff);
 }
 
-void CabinetServer::goodsCheck(QStringList l, CaseAddress)
+void CabinetServer::goodsCheck(QStringList l, QPoint)
 {
     qint64 timeStamp = getApiMark();
     cJSON* json = cJSON_CreateObject();
@@ -2722,6 +2722,10 @@ void CabinetServer::recvRfidAccessRst()
     emit aioMsg(msg);
     if(json_rst->type == cJSON_True)
     {
+        if(msg.isEmpty())
+        {
+            msg = QString("物品操作成功");
+        }
         emit rfidOptRst(true, msg);
         SqlManager::commit();
     }
@@ -2747,6 +2751,10 @@ void CabinetServer::recvRfidStoreRst()
     if(json_rst->type == cJSON_True)
     {
         SqlManager::commit();
+        if(msg.isEmpty())
+        {
+            msg = QString("物品存入成功");
+        }
         emit rfidOptRst(true, msg);
     }
     else
@@ -2833,7 +2841,7 @@ void CabinetServer::recvOperationInfo()
 //        qDebug()<<GET_JSON_QSTRING(dataItem, "sscSurgeryBillId")<<GET_JSON_QSTRING(dataItem, "surgeryBillNo");
     }
     //更新到数据库
-    SqlManager::insert("OperationInfo", optList);
+    SqlManager::replace("OperationInfo", optList);
     SqlManager::commit();
     emit operationInfoUpdate();
 }

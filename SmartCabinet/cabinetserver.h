@@ -170,7 +170,7 @@ public slots:
     void goodsCheckFinish();
     void goodsBack(QString);//退货
     void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
-    void goodsCheck(QStringList l, CaseAddress);
+    void goodsCheck(QStringList l, QPoint);
     void goodsListStore(QString barcode, QList<CabinetStoreListItem*> l);
     void goodsStoreTrace(QString goodsCode);
     void goodsCarScan();

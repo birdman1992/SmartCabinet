@@ -66,8 +66,7 @@ CabinetWidget::CabinetWidget(QWidget *parent) :
     connect(win_cab_list_view, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
     connect(win_cab_list_view, SIGNAL(searchGoods(QString)), this, SLOT(searchByPinyin(QString)));
 
-    connect(win_check, SIGNAL(checkCase(QList<CabinetCheckItem*>,CaseAddress)), this, SLOT(checkOneCase(QList<CabinetCheckItem*>,CaseAddress)));
-    connect(win_check, SIGNAL(checkCase(QStringList,CaseAddress)), this, SLOT(checkOneCase(QStringList,CaseAddress)));
+    connect(win_check, SIGNAL(checkCase(QList<CabinetCheckItem*>,QPoint)), this, SLOT(checkOneCase(QList<CabinetCheckItem*>,QPoint)));
 
     connect(win_store_list, SIGNAL(requireBind(Goods*)), this, SLOT(cabinetBind(Goods*)));
     connect(win_store_list, SIGNAL(requireOpenCase(int,int)), this, SIGNAL(requireOpenCase(int,int)));
@@ -178,7 +177,8 @@ void CabinetWidget::cabInfoBind(int seq, int index, QString info)
 {
     QPoint addr = SqlManager::searchByPackageId(info);
     SqlManager::bindGoodsId(seq, index, info);
-    updateCase(addr);
+    updateCase(addr);//更新旧位置
+    updateCase(seq, index);//刷新新位置
 //    qDebug()<<"bind"<<info.id<<info.abbName;
 //    info.goodsType = config->getGoodsType(info.packageId);
 //    qDebug()<<info.goodsType;
@@ -562,8 +562,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     }
     else if(config->state == STATE_REFUN)
     {
-        casePos.cabinetSeqNum = cabSeqNum;
-        casePos.caseIndex = caseIndex;
+        casePos = QPoint(cabSeqNum, caseIndex);
         win_refund->refundStart(casePos);
         clickLock = false;
         emit requireOpenCase(cabSeqNum, caseIndex);
@@ -578,8 +577,7 @@ void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
     else if(config->state == STATE_CHECK)
     {
         emit requireOpenCase(cabSeqNum, caseIndex);
-        casePos.cabinetSeqNum = cabSeqNum;
-        casePos.caseIndex = caseIndex;
+        casePos = QPoint(cabSeqNum, caseIndex);
         win_check->checkStart(casePos);
 //        setCheckState(QPoint(cabSeqNum, caseIndex));
         checkCabinetCase(cabSeqNum, caseIndex);
@@ -675,6 +673,7 @@ void CabinetWidget::recvScanData(QByteArray qba)
         return;
     }
 
+    qDebug()<<waitForGoodsListCode<<"need scan all:"<<config->getStoreMode();
     if(waitForGoodsListCode && (!config->getStoreMode()))//不用扫描全部物品的模式,扫描全部物品的模式下由存货窗口接管此信号的发射
     {
         qDebug()<<"requireGoodsListCheck";
@@ -1096,6 +1095,10 @@ void CabinetWidget::on_store_toggled(bool checked)
     if(!checked)
     {
         waitForGoodsListCode = false;
+    }
+    else
+    {
+        waitForGoodsListCode = true;
     }
 }
 
@@ -1710,13 +1713,7 @@ void CabinetWidget::cabinetBind(Goods *goods)
         win_store_list->hide();
 }
 
-void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, CaseAddress addr)
-{
-    updateCase(addr);
-    emit checkCase(l, addr);
-}
-
-void CabinetWidget::checkOneCase(QStringList l, CaseAddress addr)
+void CabinetWidget::checkOneCase(QList<CabinetCheckItem *> l, QPoint addr)
 {
     updateCase(addr);
     emit checkCase(l, addr);

@@ -329,6 +329,8 @@ void EpcModel::syncUpload()
 //    QStringList list_consume;
     SqlManager::begin();
     QString cmd;
+    QString cmd2 = QString();
+
     foreach (EpcInfo* info, map_rfid)
     {
         if(info->mark != eSumModel->scene()){
@@ -343,12 +345,15 @@ void EpcModel::syncUpload()
             break;
         case mark_back://还回标记
             info->state = epc_in;
-            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, operation_list='' WHERE epc_code='%4';"
-                          "CodeInfo SET operation_list='%5' WHERE code=(SELECT goods_code FROM EpcInfo WHERE epc_code='%4');")
+            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3 WHERE epc_code='%4';")
                     .arg(info->lastStamp)
                     .arg(info->lastOpt)
                     .arg(info->state)
                     .arg(info->epcId);
+
+            cmd2 = QString("UPDATE CodeInfo SET operation_list='' WHERE code=(SELECT goods_code FROM EpcInfo WHERE epc_code='%1');")
+                    .arg(info->epcId);
+
             list_back<<info->epcId;
             break;
         case mark_checked://盘点标记
@@ -380,11 +385,13 @@ void EpcModel::syncUpload()
                 list_store<<info->epcId;
             }
             info->state = epc_out;
-            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3, operation_list='%5' WHERE epc_code='%4';"
-                          "CodeInfo SET operation_list='%5' WHERE code=(SELECT goods_code FROM EpcInfo WHERE epc_code='%4');")
+            cmd = QString("UPDATE EpcInfo SET time_stamp=%1, opt_id='%2', state=%3 WHERE epc_code='%4';")
                     .arg(info->lastStamp)
                     .arg(info->lastOpt)
                     .arg(info->state)
+                    .arg(info->epcId);
+
+            cmd2 = QString("UPDATE CodeInfo SET operation_list='%2' WHERE code=(SELECT goods_code FROM EpcInfo WHERE epc_code='%1');")
                     .arg(info->epcId)
                     .arg(operationNo);
             list_fetch<<info->epcId;
@@ -393,6 +400,8 @@ void EpcModel::syncUpload()
             break;
         }
         if(!cmd.isEmpty())
+            SqlManager::querySingle(cmd, "[syncUpload]");
+        if(!cmd2.isEmpty())
             SqlManager::querySingle(cmd, "[syncUpload]");
     }
     qDebug()<<"存入:"<<list_store.count()<<"取出:"<<list_fetch.count()<<"还回:"<<list_back.count();

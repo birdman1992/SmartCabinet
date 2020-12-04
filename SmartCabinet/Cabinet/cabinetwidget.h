@@ -96,8 +96,7 @@ signals:
     void scanData(QByteArray qba);
     void requireFetchList();
     void requireAccessList(QStringList list, int optType);
-    void checkCase(QList<CabinetCheckItem*> l, CaseAddress addr);
-    void checkCase(QStringList, CaseAddress);
+    void checkCase(QList<CabinetCheckItem*> l, QPoint addr);
     void storeList(QString barcode ,QList<CabinetStoreListItem*>);
     void newStoreBarCode(QString);
     void requireTimeout();
@@ -119,8 +118,7 @@ private slots:
     void msgClear();
     void setMenuHide(bool ishide);
     void cabinetBind(Goods* goods);
-    void checkOneCase(QList<CabinetCheckItem*> l, CaseAddress addr);
-    void checkOneCase(QStringList l, CaseAddress addr);
+    void checkOneCase(QList<CabinetCheckItem*> l, QPoint addr);
     void checkPush();
     void saveStore(Goods* goods, int num);
     void saveFetch(QString name, int num);
@@ -198,7 +196,7 @@ private:
     QString fullScanInfo;
     QString scanGoodsId;
     UserInfo* optUser;//操作者id
-    CaseAddress casePos;
+    QPoint casePos;
     CaseAddress rebind_old_addr;
     CaseAddress rebind_new_addr;
     QMessageBox* msgBox;

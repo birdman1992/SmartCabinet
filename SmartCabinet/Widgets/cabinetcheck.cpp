@@ -75,14 +75,13 @@ void CabinetCheck::checkScan(QString scanId, QString fullId)
     checkRst("添加失败,该物品不属于此柜格");
 }
 
-void CabinetCheck::checkStart(CaseAddress addr)
+void CabinetCheck::checkStart(QPoint addr)
 {
     ui->msg->setText("");
     ui->ok->setText("提交");
 
-    curAddr.cabinetSeqNum = addr.cabinetSeqNum;
-    curAddr.caseIndex = addr.caseIndex;
-    QList<Goods*>list_goods = SqlManager::getGoodsList(addr.cabinetSeqNum, addr.caseIndex);
+    curAddr = addr;
+    QList<Goods*>list_goods = SqlManager::getGoodsList(addr.x(), addr.y());
 
     int i = 0;
     ui->checktable->setRowCount(list_goods.count());
@@ -147,6 +146,5 @@ void CabinetCheck::on_pushButton_clicked()
 void CabinetCheck::on_ok_clicked()
 {
     ui->msg->setText("正在提交");
-//    emit checkCase(list_code, curAddr);
     emit checkCase(list_item, curAddr);
 }

@@ -20,7 +20,7 @@ class CabinetRefund : public QWidget
 public:
     explicit CabinetRefund(QWidget *parent = 0);
     ~CabinetRefund();
-    void refundStart(CaseAddress addr);
+    void refundStart(QPoint addr);
     bool installGlobalConfig(CabinetConfig *globalConfig);
     void refundRst(QString msg);
     void refundScan(QString scanId, QString fullId);
