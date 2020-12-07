@@ -561,6 +561,7 @@ QByteArray ControlDevice::tty2UsbData(QByteArray ttyData)
 
 void ControlDevice::setLed(int doorState)
 {
+    Q_UNUSED(doorState)
     QByteArray qba = QByteArray::fromHex("8a000000a8");
     qba[2] = 0xff;//doorState;
     qba[3] = 0;

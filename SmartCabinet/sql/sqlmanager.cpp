@@ -645,13 +645,6 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
                         VALUES(:code,:package_id)");
         query.bindValue(0, QVariant(traceId));
         query.bindValue(1, QVariant(info->packageId));
-//        query.prepare("REPLACE INTO CodeInfo(code,package_id,pro_name,sup_name,store_list)\
-                        VALUES(:code,:package_id,:pro_name,:sup_name,:store_list)");
-//        query.bindValue(0, QVariant(traceId));
-//        query.bindValue(1, QVariant(info->packageId));
-//        query.bindValue(2, QVariant(info->proName));
-//        query.bindValue(3, QVariant(info->supName));
-//        query.bindValue(4, QVariant(listCode));
 
         if(!query.exec())
         {

@@ -293,6 +293,7 @@ void CabinetWidget::clearMenuState()
     ui->service->setChecked(false);
     ui->rebind->setChecked(false);
     ui->back->setChecked(false);
+    config->showMsg(MSG_EMPTY,false);
 }
 
 void CabinetWidget::volumTest()
@@ -306,9 +307,9 @@ void CabinetWidget::checkStart()
     config->state = STATE_CHECK;
     waitForCodeScan = true;
     waitForGoodsListCode = false;
+    clearMenuState();
     config->showMsg(MSG_CHECK,false);
     clickLock = false;
-    clearMenuState();
     ui->check->setChecked(true);
     config->wakeUp(TIMEOUT_CHECK);
 
@@ -1000,7 +1001,6 @@ void CabinetWidget::on_service_clicked(bool checked)
         clearMenuState();
         ui->service->setChecked(true);
         config->state = STATE_FETCH;
-        config->showMsg(MSG_EMPTY,false);
         config->wakeUp(TIMEOUT_BASE);
     }
     else
@@ -1032,8 +1032,8 @@ void CabinetWidget::on_refund_clicked(bool checked)//退货模式
         qDebug()<<"[REFUND]";
         clickLock = false;
         config->state = STATE_REFUN;
-        config->showMsg(MSG_REFUND,false);
         clearMenuState();
+        config->showMsg(MSG_REFUND,false);
         ui->refund->setChecked(true);
         waitForCodeScan = true;
         waitForGoodsListCode = false;
@@ -1052,8 +1052,8 @@ void CabinetWidget::on_back_clicked(bool checked)
         qDebug()<<"[BACK]";
         clickLock = false;
         config->state = STATE_BACK;
-        config->showMsg(MSG_BACK,false);
         clearMenuState();
+        config->showMsg(MSG_BACK,false);
         ui->back->setChecked(true);
         waitForCodeScan = true;
         waitForGoodsListCode = false;
@@ -1073,11 +1073,11 @@ void CabinetWidget::on_store_clicked(bool checked)
         waitForCardReader = false;
         clickLock = true;
         config->state = STATE_STORE;
+        clearMenuState();
         config->showMsg(MSG_SCAN_LIST, false);
         waitForCodeScan = true;
         waitForGoodsListCode = true;
         win_access->setAccessModel(true);
-        clearMenuState();
         ui->store->setChecked(true);
         config->wakeUp(TIMEOUT_BASE);
         if(config->getStoreMode())
@@ -1119,8 +1119,8 @@ void CabinetWidget::on_check_clicked(bool checked)
 #ifndef TCP_API
     if(checked)
     {
-        config->showMsg(MSG_CHECK_CREAT,false);
         clearMenuState();
+        config->showMsg(MSG_CHECK_CREAT,false);
         emit requireGoodsCheck();
     }
     else
@@ -1760,7 +1760,6 @@ void CabinetWidget::on_search_clicked()
     clearMenuState();
     config->wakeUp(TIMEOUT_BASE);
     config->state = STATE_FETCH;
-    config->showMsg(MSG_EMPTY,false);
     ui->menuWidget->setCurrentIndex(1);
 }
 
