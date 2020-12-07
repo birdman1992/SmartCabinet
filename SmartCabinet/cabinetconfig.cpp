@@ -32,8 +32,8 @@ CabinetConfig *CabinetConfig::config()
 
 void CabinetConfig::configInit()
 {
-    if(lockManager != NULL)//已经初始化了一次
-        return;
+//    if(lockManager != NULL)//已经初始化了一次
+//        return;
     lockManager = LockManager::manager();
     state = STATE_NO;
     sleepFlag = 0;

@@ -219,7 +219,7 @@ void CabinetServer::updateLayout()
             .arg(config->getCabinetType().at(BIT_LOW_HIGH)+1)
             .arg(timeStamp).toUtf8();
     QString nUrl = ApiAddress+QString(API_REG);//+'?'+qba.toBase64();
-    qDebug()<<"[cabRegister]"<<nUrl<<qba;
+    qDebug()<<"[updateLayout]"<<nUrl<<qba;
     replyCheck(reply_register);
     reply_register = post(nUrl, qba,timeStamp, true);//注册无离线处理
     connect(reply_register, SIGNAL(finished()), this, SLOT(recvCabRegister()));
@@ -677,7 +677,7 @@ void CabinetServer::goodsCheckFinish()
     qDebug()<<"[goodsCheckFinish]"<<nUrl<<qba;
 }
 
-void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
+void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, QPoint addr)
 {
     cJSON* json = cJSON_CreateObject();
     cJSON* packageList = cJSON_CreateArray();
@@ -687,7 +687,7 @@ void CabinetServer::goodsCheck(QList<CabinetCheckItem *> l, CaseAddress addr)
     int i = 0;
 
     QByteArray chesetCode = config->getCabinetId().toLocal8Bit();
-    QByteArray goodsCode = QString::number(config->getLockId(addr.cabinetSeqNum, addr.caseIndex)).toLocal8Bit();
+    QByteArray goodsCode = QString::number(config->getLockId(addr.x(), addr.y())).toLocal8Bit();
     cJSON_AddItemToObject(json, "departCode", cJSON_CreateString(chesetCode.data()));
     cJSON_AddItemToObject(json, "cabinetId", cJSON_CreateString(goodsCode.data()));
     cJSON_AddItemToObject(json, "timeStamp", cJSON_CreateNumber(timeStamp));
@@ -2054,6 +2054,9 @@ void CabinetServer::recvCabClone()
             info->size = QString(cJSON_GetObjectItem(item, "size")->valuestring);
             info->Py = config->getPyCh(info->name);//qDebug()<<"[PY]"<<info->Py;
             info->packageId = info->goodsId;
+            info->pos = QPoint(col, row);
+//            info->row = row;
+//            info->col = col;
 
             //codes
             info->codes.clear();
@@ -2092,8 +2095,8 @@ void CabinetServer::recvCabClone()
                 SqlManager::replace("EpcInfo", epcList);
                 SqlManager::commit();
             }
-            if(col < config->list_cabinet.count() && col >= 0)
-                config->list_cabinet[col]->updateCase(row);
+//            if(col < config->list_cabinet.count() && col >= 0)
+//                config->list_cabinet[col]->updateCase(row);
         }
     }
     else
@@ -2101,9 +2104,14 @@ void CabinetServer::recvCabClone()
         emit cloneResult(false,"柜子编码无效");
         return;
     }
-    emit cloneResult(true,"智能柜数据克隆成功");
+
     cJSON_Delete(json);
+    config->configInit();
+    config->setCabinetId(regId);
     updateLayout();//更新柜子布局到后台
+    config->updateGoodsDisplay();
+    emit cabinetCreated();
+    emit cloneResult(true,"智能柜数据克隆成功");
 }
 
 void CabinetServer::recvCabSync()
@@ -2161,8 +2169,9 @@ void CabinetServer::recvCabSync()
 //            info->size = GET_JSON_QSTRING(item, "size");
 //            info->proName = GET_JSON_QSTRING(item, "proName");
             info->packageId = info->goodsId;
-            info->row = row;
-            info->col = col;
+//            info->row = row;
+//            info->col = col;
+            info->pos = QPoint(col, row);
 
             info->codes.clear();
             cJSON* jTraceIds = cJSON_GetObjectItem(item, "traceIds");

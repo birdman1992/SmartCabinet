@@ -225,6 +225,7 @@ void Cabinet::initCase(int index)
 
 void Cabinet::updateCase(int caseIndex)
 {
+    qDebug()<<"[updateCase]";
     if(isMainCabinet && (caseIndex == screenPos))
         return;
 

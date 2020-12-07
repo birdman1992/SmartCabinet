@@ -113,6 +113,7 @@ private:
     void offlineLogin(QString cardId);
     void goodsListStoreScanAll(QString barcode, QList<CabinetStoreListItem *> l);
 signals:
+    void cabinetCreated();
     void loginRst(UserInfo*);
     void listRst(GoodsList*);
     void bindRst(bool);
@@ -169,7 +170,7 @@ public slots:
     void goodsCheckReq();
     void goodsCheckFinish();
     void goodsBack(QString);//退货
-    void goodsCheck(QList<CabinetCheckItem*> l, CaseAddress addr);
+    void goodsCheck(QList<CabinetCheckItem*> l, QPoint addr);
     void goodsCheck(QStringList l, QPoint);
     void goodsListStore(QString barcode, QList<CabinetStoreListItem*> l);
     void goodsStoreTrace(QString goodsCode);

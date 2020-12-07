@@ -38,8 +38,8 @@ public:
     int goodsCount;//拆散数量
     int num;//耗材数量
     int outNum;//取出数量
-    int col;
-    int row;
+//    int col;
+//    int row;
     float price;//单价
     float sumCount;//总价
     QString aioInNum;//入库数

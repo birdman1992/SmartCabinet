@@ -625,8 +625,8 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
     query.bindValue(4, QVariant(info->abbName));
     query.bindValue(5, QVariant(info->size));
     query.bindValue(6, QVariant(info->unit));
-    query.bindValue(7, QVariant(info->col));
-    query.bindValue(8, QVariant(info->row));
+    query.bindValue(7, QVariant(info->pos.x()));
+    query.bindValue(8, QVariant(info->pos.y()));
     query.bindValue(9, QVariant(info->price));
     query.bindValue(10, QVariant(info->Py));
     if(!query.exec())
@@ -646,7 +646,7 @@ void SqlManager::replaceGoodsInfo(Goods *info, RepState state, RepMask stateMask
         query.bindValue(0, QVariant(traceId));
         query.bindValue(1, QVariant(info->packageId));
 //        query.prepare("REPLACE INTO CodeInfo(code,package_id,pro_name,sup_name,store_list)\
-//                        VALUES(:code,:package_id,:pro_name,:sup_name,:store_list)");
+                        VALUES(:code,:package_id,:pro_name,:sup_name,:store_list)");
 //        query.bindValue(0, QVariant(traceId));
 //        query.bindValue(1, QVariant(info->packageId));
 //        query.bindValue(2, QVariant(info->proName));
@@ -758,7 +758,7 @@ void SqlManager::replaceGoodsInfo(Goods* info, QString listCode, RepState state,
         //更新库存状态
         if(stateMask & 0x01)
         {
-            query.prepare("UPDATE CodeInfo SET state_local=:state_local");
+            query.prepare(QString("UPDATE CodeInfo SET state_local=:state_local WHERE code='%1'").arg(traceId));
             query.bindValue(0, QVariant(state&0x1));
             if(!query.exec())
             {
@@ -768,7 +768,7 @@ void SqlManager::replaceGoodsInfo(Goods* info, QString listCode, RepState state,
         }
         if(stateMask & 0x02)
         {
-            query.prepare("UPDATE CodeInfo SET state_remote=:state_remote");
+            query.prepare(QString("UPDATE CodeInfo SET state_remote=:state_remote WHERE code='%1'").arg(traceId));
             query.bindValue(0, QVariant((state&0x2)>>1));
             if(!query.exec())
             {
@@ -805,6 +805,7 @@ void SqlManager::listStoreAffirm(QString listCode, RepState state, QStringList r
     {
         QString rejectCode = rejectList.join("','");
         QString cmd = QString("UPDATE CodeInfo SET state_remote=1 WHERE store_list='%1' AND code NOT IN ('%2');").arg(listCode).arg(rejectCode);
+//        qDebug()<<"CMD"<<cmd;
         if(!queryExec(&query, "listStoreAffirm", cmd))
         {
             qDebug()<<"[listStoreAffirm failed]"<<query.lastError().text();
