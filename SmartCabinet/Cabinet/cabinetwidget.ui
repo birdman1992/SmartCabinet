@@ -588,7 +588,7 @@ color: rgb(255, 255, 255);
        <string notr="true">font: 16px &quot;WenQuanYi Micro Hei&quot;;
 color:rgb(255, 255, 255);
 padding-right:20px;
-padding-bottom:20px;
+padding-bottom:4px;
 </string>
       </property>
       <property name="text">
