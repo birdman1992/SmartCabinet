@@ -1742,6 +1742,7 @@ void CabinetWidget::recvUserCheckRst(UserInfo* info)
 //    tsCalFlag = 0;
     config->setOptId(info->cardId);
     qDebug()<<"[recvUserCheckRst]"<<optUser->cardId;
+    config->showMsg(MSG_EMPTY, false);
     config->state = STATE_FETCH;
     ui->userInfo->setText(QString("     您好！%1").arg(optUser->name));
     setPowerState(info->power);

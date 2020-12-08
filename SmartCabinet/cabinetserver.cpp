@@ -1726,7 +1726,9 @@ void CabinetServer::recvListAccess()
     if(json_rst->type == cJSON_True)
     {
         goodsCarScan();
-        SqlManager::listStoreAffirm(barCode, SqlManager::remote_rep, rejectList);
+        if(config->state == STATE_STORE)
+            SqlManager::listStoreAffirm(barCode, SqlManager::remote_rep, rejectList);
+
         rejectList.clear();
         qDebug()<<"ACCESS success";
         cJSON* data = cJSON_GetObjectItem(json, "data");
@@ -1737,6 +1739,7 @@ void CabinetServer::recvListAccess()
             return;
         }
         int i=0;
+        SqlManager::begin();
         for(i=0; i<listCount; i++)
         {
             cJSON* item = cJSON_GetArrayItem(data, i);
@@ -1745,6 +1748,7 @@ void CabinetServer::recvListAccess()
             int goodsNum = cJSON_GetObjectItem(item, "packageCount")->valueint;
             float goodsPrice = cJSON_GetObjectItem(item, "price")->valuedouble;
 
+            //goodsId=packageId
             if(goodsType<10)
                 goodsId += "-0"+QString::number(goodsType);
             else
@@ -1759,8 +1763,16 @@ void CabinetServer::recvListAccess()
                 QString goodsName = QString::fromUtf8(cJSON_GetObjectItem(item, "goodsName")->valuestring);
                 QString traceId = QString::fromUtf8(cJSON_GetObjectItem(item,"traceId")->valuestring);
                 config->showMsg(QString("还货成功:%1\n%2").arg(traceId).arg(goodsName), false);
+                QList<QVariantMap> backGoods;
+                QVariantMap backMap;
+                backMap.insert("code", traceId);
+                backMap.insert("package_id", goodsId);
+                backGoods<<backMap;
+                SqlManager::replace("CodeInfo", backGoods);
+                qDebug()<<"replace"<<backMap;
             }
         }
+        SqlManager::commit();
         config->updateGoodsDisplay();
     }
     else

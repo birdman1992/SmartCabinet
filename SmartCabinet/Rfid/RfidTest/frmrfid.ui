@@ -1046,7 +1046,7 @@ image-position:left;</string>
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>ms</string>
+                     <string>s</string>
                     </property>
                    </widget>
                   </item>

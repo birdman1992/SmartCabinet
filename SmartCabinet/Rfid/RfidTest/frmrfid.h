@@ -38,7 +38,7 @@ public:
     ~FrmRfid();
 
 public slots:
-    void updateScanTimer(int ms);
+    void updateScanTimer(int s);
     void updateCount(EpcMark mark, int count);
     void updateCurUser(QString optId);
     void scanProgress(int curCount, int totalCount);

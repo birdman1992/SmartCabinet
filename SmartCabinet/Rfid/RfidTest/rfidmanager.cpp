@@ -466,6 +466,6 @@ void RfidManager::clsTimeOut()
 
 void RfidManager::timerUpdate()
 {
-    emit updateTimer(scanTimer.elapsed());
+    emit updateTimer(scanTimer.elapsed()/1000);
 }
 

@@ -572,10 +572,10 @@ color: rgb(255, 255, 255);
      <widget class="QLabel" name="lab_copyright">
       <property name="geometry">
        <rect>
-        <x>1112</x>
+        <x>0</x>
         <y>0</y>
-        <width>488</width>
-        <height>111</height>
+        <width>1600</width>
+        <height>123</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -614,7 +614,7 @@ padding-bottom:4px;
        <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="button_stackedWidgetPage1">
        <property name="styleSheet">
@@ -646,6 +646,9 @@ QPushButton:checked ,QPushButton:pressed{
 </string>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <property name="bottomMargin">
+         <number>30</number>
+        </property>
         <item>
          <widget class="QPushButton" name="cut">
           <property name="sizePolicy">

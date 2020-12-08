@@ -1008,6 +1008,6 @@ bool SqlManager::queryExec(QSqlQuery* q, QString msg, QString cmd)
             return false;
         }
     }
-    //qDebug()<<q->lastQuery();
+//    qDebug()<<msg<<q->lastQuery();
     return true;
 }

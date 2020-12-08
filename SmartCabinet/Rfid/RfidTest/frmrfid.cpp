@@ -98,9 +98,9 @@ FrmRfid::~FrmRfid()
     delete ui;
 }
 
-void FrmRfid::updateScanTimer(int ms)
+void FrmRfid::updateScanTimer(int s)
 {
-    ui->scan_timer->setText(QString::number(ms));
+    ui->scan_timer->setText(QString::number(s));
     if(this->isVisible() && (!doorIsOpen))//关门且在扫描状态
         accessDownCount(eModel->checkOptTime(downCount));
     //刷新信号强度
