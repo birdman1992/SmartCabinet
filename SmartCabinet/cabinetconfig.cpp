@@ -1020,6 +1020,14 @@ int CabinetConfig::getCaseWidth()
     return caseWidth;
 }
 
+QWidget* CabinetConfig::getCase(QPoint pos)
+{
+    if(pos.x() >= list_cabinet.count())
+        return NULL;
+
+    return list_cabinet[pos.x()]->getCase(pos.y());
+}
+
 void CabinetConfig::removeConfig(CaseAddress addr)
 {
     if((addr.cabinetSeqNum<0) || (addr.caseIndex<0) || (addr.goodsIndex<0))

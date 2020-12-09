@@ -69,6 +69,28 @@ void CasePanel::resizeEvent(QResizeEvent *)
     updatePanel();
 }
 
+void CasePanel::enterEvent(QEvent *e)
+{
+//    qDebug()<<"enter panel";
+    QWidget::enterEvent(e);
+}
+
+void CasePanel::leaveEvent(QEvent *e)
+{
+//    qDebug()<<"leave panel";
+    QWidget::leaveEvent(e);
+}
+
+bool CasePanel::event(QEvent *e)
+{
+//    qDebug()<<e->type()<<this;
+//    if(e->type() == QEvent::Enter)
+//        qDebug()<<"enter"<<this;
+//    if(e->type() == QEvent::Leave)
+//        qDebug()<<"leave"<<this;
+    return QWidget::event(e);
+}
+
 void CasePanel::setText(QStringList text)
 {
     if(isSpec)
@@ -131,6 +153,7 @@ void CasePanel::setText(QStringList text)
         }
         ui->left->setText(left);
     }
+    this->setToolTip(text.join("\n"));
 }
 
 void CasePanel::setText(QList<Goods *> list)

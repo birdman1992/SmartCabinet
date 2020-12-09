@@ -1769,7 +1769,21 @@ void CabinetServer::recvListAccess()
                 backMap.insert("package_id", goodsId);
                 backGoods<<backMap;
                 SqlManager::replace("CodeInfo", backGoods);
-                qDebug()<<"replace"<<backMap;
+//                qDebug()<<"replace"<<backMap;
+
+                if(config->getCabinetType().at(BIT_RFID))//RFID模式下还需要插入RFID信息
+                {
+                    QString epc = autoCreateEpcInfo(traceId);
+                    QList<QVariantMap> backEpcs;
+                    QVariantMap backEpcMap;
+                    backEpcMap.insert("epc_code", epc);
+                    backEpcMap.insert("goods_code", traceId);
+                    backEpcMap.insert("state", epc_in);
+                    backEpcs<<backEpcMap;
+                    SqlManager::replace("EpcInfo", backEpcs);
+//                    qDebug()<<"replace"<<backEpcs;
+                    emit rfidOptRst(true, QString("还货成功:%1 %2").arg(goodsName).arg(traceId));
+                }
             }
         }
         SqlManager::commit();
@@ -1777,7 +1791,12 @@ void CabinetServer::recvListAccess()
     }
     else
     {
-        emit accessFailed(QString(cJSON_GetObjectItem(json,"msg")->valuestring));
+        QString msg = QString(cJSON_GetObjectItem(json,"msg")->valuestring);
+        emit accessFailed(msg);
+        if(config->getCabinetType().at(BIT_RFID))//返回RFID操作信息
+        {
+            emit rfidOptRst(false, msg);
+        }
     }
     cJSON_Delete(json);
 

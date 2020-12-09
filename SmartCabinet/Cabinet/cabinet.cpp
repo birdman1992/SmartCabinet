@@ -223,6 +223,14 @@ void Cabinet::initCase(int index)
     setCaseState(index, 0);
 }
 
+QWidget* Cabinet::getCase(int row)
+{
+    if(row >= ui->tableWidget->rowCount())
+        return NULL;
+
+    return ui->tableWidget->cellWidget(row, 0);
+}
+
 void Cabinet::updateCase(int caseIndex)
 {
     qDebug()<<"[updateCase]";

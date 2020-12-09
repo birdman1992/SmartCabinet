@@ -64,6 +64,7 @@ public:
 
 //    QList<CabinetInfo*> list_case;//柜格列表
 
+    QWidget *getCase(int row);
 protected:
     void leaveEvent(QEvent*);
 

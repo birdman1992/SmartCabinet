@@ -426,8 +426,8 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     {
         ui->cabinet_layout->addWidget(cabinets.at(i));
         connect(cabinets.at(i), SIGNAL(caseSelect(int,int)), this, SLOT(caseClicked(int,int)));
-//        connect(cabinets.at(i), SIGNAL(caseEntered(QPoint)), this, SLOT(caseEntered(QPoint)));
-//        connect(cabinets.at(i), SIGNAL(caseLeaved()), this, SLOT(caseLeaved()));
+        connect(cabinets.at(i), SIGNAL(caseEntered(QPoint)), this, SLOT(caseEntered(QPoint)));
+        connect(cabinets.at(i), SIGNAL(caseLeaved()), this, SLOT(caseLeaved()));
 
 //        if(cabinets.at(i)->getScreenPos() > 0)//点击logo触发动作，暂无用，屏蔽
 //        {
@@ -477,12 +477,12 @@ void CabinetWidget::caseEntered(QPoint pos)
 {
     QStringList caseStrList = SqlManager::getCaseDetailText(pos.x(), pos.y());
     qDebug()<<"caseEntered"<<caseStrList;
-    MsgTips::instance().showText(caseStrList.join("\n"));
+    MsgTips::instance().showText(config->getCase(pos), caseStrList);
 }
 
 void CabinetWidget::caseLeaved()
 {
-    MsgTips::instance().hide();
+    MsgTips::instance().lower();
     qDebug()<<"caseLeaved";
 }
 

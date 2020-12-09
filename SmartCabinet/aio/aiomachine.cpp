@@ -119,6 +119,8 @@ void AIOMachine::recvScanData(QByteArray qba)
 //    qDebug()<<"rfid"<<config->getCabinetType().at(BIT_RFID);
     if(config->getCabinetType().at(BIT_RFID))
         win_rfid->scanData(qba);
+
+    QString fullScanInfo = QString(qba);
 //    qDebug()<<config->state;
 
     switch(config->state)
@@ -131,6 +133,10 @@ void AIOMachine::recvScanData(QByteArray qba)
         break;
     case STATE_STORE:
 
+        break;
+    case STATE_BACK:
+        if(win_rfid->isUnknowEpc(fullScanInfo))//未知标签通过扫码还回
+            emit goodsAccess(QPoint(0,0),fullScanInfo, 1, 16);
         break;
     default:
         break;

@@ -192,6 +192,11 @@ void FrmRfid::setScene(EpcMark mark)
     btnTable[mark]->setChecked(true);
 }
 
+bool FrmRfid::isUnknowEpc(QString epc)
+{
+    return eModel->getEpcInfo(epc) == NULL;
+}
+
 QBitArray FrmRfid::curAntState()
 {
     QBitArray ret = QBitArray(8);
@@ -215,7 +220,10 @@ void FrmRfid::accessDownCount(int count)
     ui->OK->setText(QString("确定(%1)").arg(count));
 //    qDebug()<<"[accessDownCount]"<<count<<ui->tab_filter_new->text();
     if(count == 0 && ((ui->tab_filter_new->text() == QString("存入:0")) || (!ui->tab_filter_new->isVisible())))//没有存入数量或者存入按钮不可见
+    {
+        qDebug()<<"[FrmRfid] downCount quit";
         on_OK_clicked();
+    }
 }
 
 void FrmRfid::updateCountInfo(EpcMark scene)
@@ -385,15 +393,16 @@ void FrmRfid::showMsg(bool success, QString msg)
         ui->msg->setStyleSheet("background-color: rgb(255, 255, 255);"
                                "color: rgb(0, 187, 0);");
         ui->msg->setText(msg);
-        QTimer::singleShot(5000, this, SLOT(hide()));
-        QTimer::singleShot(5000, this, SIGNAL(requireSysLock()));
+        QTimer::singleShot(5000, ui->msg, SLOT(clear()));
+//        QTimer::singleShot(5000, this, SLOT(hide()));
+//        QTimer::singleShot(5000, this, SIGNAL(requireSysLock()));
     }
     else
     {
         ui->msg->setStyleSheet("background-color: rgb(255, 255, 255);"
                                "color: rgb(187, 0, 0);");
         ui->msg->setText(msg);
-        QTimer::singleShot(2000, ui->msg, SLOT(clear()));
+        QTimer::singleShot(5000, ui->msg, SLOT(clear()));
     }
 }
 

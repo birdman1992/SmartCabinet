@@ -14,10 +14,11 @@ class MsgTips : public QLabel, public Singleton<MsgTips>
 public:
     MsgTips(QWidget* parent = 0);
     ~MsgTips();
-    void showText(QString text);
 
+    void showText(QWidget *anchor, QStringList texts);
 private:
     QFont* font;
+    QRect calTextRect(QWidget *anchor, QStringList texts);
 };
 
 #endif // MSGTIPS_H

@@ -219,6 +219,7 @@ void MainWidget::aioCreate()
 
         qDebug()<<"[MainWidget] aioCreate";
         win_aio = new AIOMachine(this);
+        connect(win_aio, SIGNAL(goodsAccess(QPoint,QString,int,int)), cabServer, SLOT(goodsAccess(QPoint,QString,int,int)));
         connect(win_aio, SIGNAL(requireOpenLock(int,int)), ctrlUi, SLOT(openLock(int,int)));
         connect(win_aio, SIGNAL(requireUserCheck(QString)), cabServer, SLOT(userLogin(QString)));
         connect(win_aio, SIGNAL(stack_switch(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));

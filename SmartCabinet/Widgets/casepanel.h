@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QFont>
 #include <QResizeEvent>
+#include <QMouseEvent>
 #include "Structs/cabinetinfo.h"
 
 namespace Ui {
@@ -42,6 +43,9 @@ private:
     void updatePanel();
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent* );
+    void enterEvent(QEvent*);
+    void leaveEvent(QEvent*);
+    bool event(QEvent *);
     QString cellStyle(QColor rgb);
 };
 

@@ -161,6 +161,7 @@ public:
     void setCabinetColMap(QString map);
     void setLockCtrl(int cabSeq, int cabIndex, int ctrlSeq, int ctrlIndex);
 
+    QWidget *getCase(QPoint pos);
 private:
     CabinetConfig();
     static CabinetConfig* c;

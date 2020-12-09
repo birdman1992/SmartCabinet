@@ -35,6 +35,7 @@ public:
     void clearCurOperation();
     void scanData(QByteArray scanCode);
     void setScene(EpcMark mark);
+    bool isUnknowEpc(QString epc);
     ~FrmRfid();
 
 public slots:

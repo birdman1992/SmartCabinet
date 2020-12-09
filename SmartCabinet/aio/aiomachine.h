@@ -64,6 +64,7 @@ signals:
     void requireOpenLock(int seq, int index);
     void updateLoginState(bool isLogin);
     void requireRfidCheck();
+    void goodsAccess(QPoint, QString, int, int);//柜格坐标，完整条码,数量，操作码(1取货2存货3退货)
 
 private:
     enum colMark
