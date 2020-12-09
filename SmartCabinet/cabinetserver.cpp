@@ -2102,6 +2102,7 @@ void CabinetServer::recvCabClone()
                     QString epc = autoCreateEpcInfo(code);
                     epcMap.insert("epc_code", epc);
                     epcMap.insert("goods_code", code);
+                    epcMap.insert("state", epc_in);
                     epcList<<epcMap;
                 }
                 SqlManager::replace("EpcInfo", epcList);
