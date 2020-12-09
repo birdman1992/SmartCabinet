@@ -59,6 +59,9 @@ font: 12px &quot;WenQuanYi Micro Hei Mono&quot;;</string>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
      </property>

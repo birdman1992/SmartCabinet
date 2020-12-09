@@ -47,6 +47,7 @@ SOURCES += main.cpp\
     Rfid/RfidTest/rfidmanager.cpp \
     Rfid/RfidTest/rfidpackage.cpp \
     Rfid/RfidTest/rfidreader.cpp \
+    Widgets/msgtips.cpp \
     funcs/secwatch.cpp \
     Temperature/tempcase.cpp \
     Temperature/tempdevhub.cpp \
@@ -165,6 +166,7 @@ HEADERS  += mainwidget.h \
     Rfid/RfidTest/rfidmanager.h \
     Rfid/RfidTest/rfidpackage.h \
     Rfid/RfidTest/rfidreader.h \
+    Widgets/msgtips.h \
     funcs/secwatch.h \
     manager/rfreaderconfig.h \
     manager/signalmanager.h \

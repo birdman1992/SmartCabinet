@@ -30,6 +30,7 @@ public:
     static QString getPackageId(QString code);//goodsCode->goodsId
     static QString getEpcCode(QString code);//goodsCode->epcCode
     static QStringList getCaseText(int col, int row);
+    static QStringList getCaseDetailText(int col, int row);
     static int getGoodsCount(QString packageId);
     static QPoint getGoodsPos(QString packageId);
     static void newApiLog(QString url, QByteArray data, quint64 time_stamp, bool need_resend=true);
@@ -81,6 +82,7 @@ public:
     static QSqlQuery query(QString cmd, QString msg);
 
     static QSqlDatabase db_cabinet;
+
 
 
 public slots:

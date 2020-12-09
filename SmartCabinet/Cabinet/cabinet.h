@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QTableWidget>
+#include <QEvent>
 #include "Structs/cabinetinfo.h"
 #include "Structs/caseaddress.h"
 #include "Widgets/casepanel.h"
@@ -63,11 +64,18 @@ public:
 
 //    QList<CabinetInfo*> list_case;//柜格列表
 
+protected:
+    void leaveEvent(QEvent*);
+
 private slots:
     void on_tableWidget_cellClicked(int row, int column);
 
+    void on_tableWidget_cellEntered(int row, int column);
+
 signals:
     void caseSelect(int caseIndex, int seqNum);//柜格下标,柜子序号
+    void caseEntered(QPoint pos);//柜格下标,柜子序号
+    void caseLeaved();
     void logoClicked();
 
 private:

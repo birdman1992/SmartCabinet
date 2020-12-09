@@ -420,12 +420,24 @@ void Cabinet::clearSearch()
 //        if((i==screenPos)&&isMainCabinet)
 //            continue;
 //        setCaseState(i,0);
-//    }
+    //    }
+}
+
+void Cabinet::leaveEvent(QEvent *)
+{
+    emit caseLeaved();
 }
 
 void Cabinet::on_tableWidget_cellClicked(int row, int)
 {
+//    qDebug()<<"cell clicked:"<<row<<col;
     emit caseSelect(row, seqNum);
+}
+
+void Cabinet::on_tableWidget_cellEntered(int row, int)
+{
+//    qDebug()<<"cell entered:"<<row<<col;
+    emit caseEntered(QPoint(seqNum, row));
 }
 
 void Cabinet::caseDraw(int _type)
@@ -550,3 +562,4 @@ void Cabinet::paintEvent(QPaintEvent*)
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
+

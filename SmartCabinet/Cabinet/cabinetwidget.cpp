@@ -9,6 +9,7 @@
 #include "defines.h"
 #include "iconfont/iconhelper.h"
 #include "MessageDialog.h"
+#include "Widgets/msgtips.h"
 
 //提示信息
 
@@ -425,6 +426,9 @@ void CabinetWidget::panel_init(QList<Cabinet *> cabinets)
     {
         ui->cabinet_layout->addWidget(cabinets.at(i));
         connect(cabinets.at(i), SIGNAL(caseSelect(int,int)), this, SLOT(caseClicked(int,int)));
+//        connect(cabinets.at(i), SIGNAL(caseEntered(QPoint)), this, SLOT(caseEntered(QPoint)));
+//        connect(cabinets.at(i), SIGNAL(caseLeaved()), this, SLOT(caseLeaved()));
+
 //        if(cabinets.at(i)->getScreenPos() > 0)//点击logo触发动作，暂无用，屏蔽
 //        {
 //            connect(cabinets.at(i), SIGNAL(logoClicked()), this, SLOT(logoClicked()));
@@ -467,6 +471,19 @@ void CabinetWidget::searchCabinetCase(int seq, int index)
 
     list_cabinet[seq]->searchCase(index);
     list_state_case<<QPoint(seq, index);
+}
+
+void CabinetWidget::caseEntered(QPoint pos)
+{
+    QStringList caseStrList = SqlManager::getCaseDetailText(pos.x(), pos.y());
+    qDebug()<<"caseEntered"<<caseStrList;
+    MsgTips::instance().showText(caseStrList.join("\n"));
+}
+
+void CabinetWidget::caseLeaved()
+{
+    MsgTips::instance().hide();
+    qDebug()<<"caseLeaved";
 }
 
 void CabinetWidget::caseClicked(int caseIndex, int cabSeqNum)
@@ -1850,6 +1867,7 @@ bool CabinetWidget::eventFilter(QObject *w, QEvent *e)
             return true;
         }
     }
+
     return QWidget::eventFilter(w, e);
 }
 

@@ -153,6 +153,8 @@ private slots:
     void on_rebind_clicked(bool checked);
 
     void on_store_toggled(bool checked);
+    void caseEntered(QPoint pos);
+    void caseLeaved();
 protected:
     bool eventFilter(QObject *, QEvent *);
     void resizeEvent(QResizeEvent*);
@@ -239,6 +241,7 @@ private:
     bool caseHasPos(int seq, int index);
     void checkCabinetCase(int seq, int index);
     void searchCabinetCase(int seq, int index);
+
 };
 
 #endif // CABINETWIDGET_H

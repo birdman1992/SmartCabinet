@@ -259,6 +259,41 @@ QString SqlManager::getEpcCode(QString code)
     return ret;
 }
 
+QStringList SqlManager::getCaseDetailText(int col, int row)
+{
+    QSqlQuery query(db_cabinet);
+    QString cmd = QString("SELECT "
+                          "GoodsInfo.abbname,"
+                          "GoodsInfo.cab_col,"
+                          "GoodsInfo.cab_row,"
+                          "GoodsInfo.size,"
+                          "IFNULL(CodeInfo.package_count,0) package_count "
+                      "FROM "
+                          "GoodsInfo "
+                          "LEFT JOIN(SELECT COUNT( * ) package_count, package_id FROM CodeInfo WHERE CodeInfo.state_remote = 1 GROUP BY package_id) "
+                          "CodeInfo ON CodeInfo.package_id = GoodsInfo.package_id "
+                      "WHERE "
+                          "GoodsInfo.cab_col = %1 "
+                          "AND GoodsInfo.cab_row = %2")
+            .arg(col).arg(row);
+
+    if(!queryExec(&query, "getCaseText", cmd))
+        return QStringList();
+
+    QStringList last_show_list;
+    last_show_list.clear();
+
+    while(query.next())
+    {
+        QString abbName = query.value(0).toString();
+        QString size = query.value(3).toString();
+        int packageCount = query.value(4).toInt();
+        QString showStr = QString("%1[%3]x%2").arg(abbName).arg(packageCount).arg(size);
+        last_show_list<<showStr;
+    }
+    return last_show_list;
+}
+
 QStringList SqlManager::getCaseText(int col, int row)
 {
     QSqlQuery query(db_cabinet);
