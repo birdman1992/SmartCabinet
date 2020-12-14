@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QUrl>
+#include <QCryptographicHash>
 #include <QtGlobal>
 #include <fcntl.h>
 #include <unistd.h>
@@ -45,6 +46,7 @@
 #define API_GOODS_TRACE  "/sarkApi/Cheset/doSaveTraceId"  //物品存入跟踪
 #define API_RFID_CONSUME "/sarkApi/Cheset/rfid/consume/goods"   //登记消耗查询
 #define API_OPERATION_REQUIRE "/sarkApi/Cheset/query/operate"   //手术单查询
+#define API_SNAPSHOT_UPLOAD "/sarkApi/cheset/image/upload"  //抓拍上传
 
 #define API_AIO_OVERVIEW "/sarkApi/Cheset/collect/goods"  //一体机数据总览
 #define API_AIO_EXPIRED "/sarkApi/Cheset/effective/goods" //一体机近效期物品
@@ -122,11 +124,13 @@ CabinetServer::CabinetServer(QObject *parent) : QObject(parent)
     connect(this, SIGNAL(epcInfoUpdate()), sigMan, SIGNAL(epcInfoUpdate()));
     connect(this, SIGNAL(epcConsumed(QStringList)), sigMan, SIGNAL(epcConsumed(QStringList)));
     connect(this, SIGNAL(operationInfoUpdate()), sigMan, SIGNAL(operationInfoUpdate()));
+    connect(this, SIGNAL(cameraCapture()), sigMan, SIGNAL(cameraCapture()));
     connect(sigMan, SIGNAL(epcConsumeCheck(QStringList)), this, SLOT(rfidCheckConsume(QStringList)));
     connect(sigMan, SIGNAL(epcAccess(QStringList,UserOpt)), this, SLOT(rfidAccessOpt(QStringList,UserOpt)));
     connect(sigMan, SIGNAL(epcAccess(QStringList,QStringList, QString)), this, SLOT(rfidAccessOpt(QStringList,QStringList, QString)));
     connect(sigMan, SIGNAL(epcStore(QVariantMap)), this, SLOT(rfidAutoStore(QVariantMap)));
     connect(sigMan, SIGNAL(requireUpdateOperation()), this, SLOT(requireOperationInfo()));
+    connect(sigMan, SIGNAL(cameraSnapshot(QString)), this, SLOT(cameraSnapshot(QString)));
 }
 
 CabinetServer::~CabinetServer()
@@ -389,6 +393,19 @@ QNetworkReply *CabinetServer::post(QString url, QByteArray postData, qint64 time
         sqlManager->newApiLog(url, postData, timeStamp,need_resend);
 
     return manager->post(request, postData.toBase64());
+}
+
+QNetworkReply *CabinetServer::post(QString url, QHttpMultiPart* multiData)
+{
+    QNetworkRequest request;
+//    request.setHeader(QNetworkRequest::ContentTypeHeader, "multipart/form-data");
+    request.setUrl(url);
+//    if(timeStamp != 0)//timeStamp=0表示无需记录此次调用
+//        sqlManager->newApiLog(url, postData, timeStamp,need_resend);
+
+    qDebug()<<multiData;
+    QNetworkReply* reply = manager->post(request, multiData);
+    return reply;
 }
 
 qint64 CabinetServer::getApiMark()
@@ -967,9 +984,61 @@ void CabinetServer::requireListInfo(QDate sDate, QDate eDate)
     qDebug()<<"[requireListInfo]"<<nUrl<<qba;
 }
 
-void CabinetServer::cameraSnapshot()
+void CabinetServer::cameraSnapshot(QString optMsg)
 {
+    snapShotMsg = optMsg;
+    QFile f("/home/test.jpg");
+    if(!f.open(QFile::ReadOnly))
+    {
+        qDebug()<<"snapshot test failed";
+        return;
+    }
+    QByteArray testData = f.readAll();
+    snapShotUpload(testData);
+    f.close();
+    emit cameraCapture();//触发相机拍摄
+}
 
+void CabinetServer::snapShotUpload(QByteArray snapShotData)
+{
+    qint64 timeStamp = getApiMark();
+    QString cabId = config->getCabinetId();
+    QString snapshotMD5 = QCryptographicHash::hash(snapShotData, QCryptographicHash::Md5);
+
+    QByteArray paramData = QString("\"chesetCode\":\"%1\", \"cardId\":\"%2\",\"content\":\"%3\",\"str\":\"%4\",\"timeStamp\":%5")
+            .arg(cabId)
+            .arg(cur_user->cardId)
+            .arg(snapShotMsg)
+            .arg(snapshotMD5)
+            .arg(timeStamp).toUtf8();
+
+    QFile* f = new QFile("/home/test.jpg");
+    if(!f->open(QFile::ReadOnly))
+    {
+        qDebug()<<"snapshot test failed";
+        return;
+    }
+
+    QHttpMultiPart* multiData = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+    QHttpPart filePart;
+//    filePart.setBodyDevice(f);
+    filePart.setBody(snapShotData);
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"file\""));
+
+    QHttpPart paramPart;
+    paramPart.setBody(paramData.toBase64());
+    paramPart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+    paramPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data;name=\"params\""));
+
+    multiData->append(filePart);
+    multiData->append(paramPart);
+//    multiData->setBoundary(QByteArray("------------birdman-----------"));
+    QString nUrl = ApiAddress+QString(API_SNAPSHOT_UPLOAD);
+//    QString nUrl = QString("http://114.115.178.49:9888/file");
+    replyCheck(reply_camera);
+    reply_camera = post(nUrl, multiData);
+    connect(reply_camera, SIGNAL(finished()), this, SLOT(recvSnamshotUpload()));
 }
 
 void CabinetServer::requireAioOverview()
@@ -1487,6 +1556,7 @@ void CabinetServer::recvUserLogin()
         config->addUser(info);
         config->wakeUp(TIMEOUT_BASE);
         networkState = true;
+        cameraSnapshot(QString("用户登录:%1").arg(info->cardId));
         if(config->getCabinetType().at(BIT_RFID))
             rfidListSync();//同步入柜信息
     }
@@ -1641,6 +1711,7 @@ void CabinetServer::recvListCheck()
         {
             list->legalList = true;//合法送货单
             emit listRst(list);
+            cameraSnapshot(QString("送货单扫描:%1").arg(list->barcode));
         }
         else
         {
@@ -1727,7 +1798,10 @@ void CabinetServer::recvListAccess()
     {
         goodsCarScan();
         if(config->state == STATE_STORE)
+        {
             SqlManager::listStoreAffirm(barCode, SqlManager::remote_rep, rejectList);
+            cameraSnapshot(QString("送货单存入:%1").arg(barCode));
+        }
 
         rejectList.clear();
         qDebug()<<"ACCESS success";
@@ -1739,6 +1813,7 @@ void CabinetServer::recvListAccess()
             return;
         }
         int i=0;
+        QStringList codes;
         SqlManager::begin();
         for(i=0; i<listCount; i++)
         {
@@ -2885,6 +2960,14 @@ void CabinetServer::recvOperationInfo()
     SqlManager::replace("OperationInfo", optList);
     SqlManager::commit();
     emit operationInfoUpdate();
+}
+
+void CabinetServer::recvSnamshotUpload()
+{
+    QByteArray qba = QByteArray(reply_camera->readAll());
+    qDebug()<<"[recvSnamshotUpload]"<<qba;
+    reply_camera->deleteLater();
+    reply_camera = NULL;
 }
 
 void CabinetServer::recvTempDevReport()

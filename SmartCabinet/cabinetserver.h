@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QHttpMultiPart>
 #include <QNetworkReply>
 #include <QDateTime>
 #include <QProcess>
@@ -78,6 +79,7 @@ private:
     QString barCode;
     QStringList rejectList;//拒收条码
     QString ApiAddress;
+    QString snapShotMsg;
     bool timeIsChecked;
     bool needReqCar;
     bool needSaveAddress;
@@ -107,11 +109,13 @@ private:
     QString getAbbName(QString fullName);
     void watchdogStart();
     QNetworkReply* post(QString url, QByteArray postData, qint64 timeStamp=0, bool need_resend=true);
+    QNetworkReply *post(QString url, QHttpMultiPart *multiData);
     qint64 getApiMark();
     QVariant getCjsonItem(cJSON* json, QByteArray key, QVariant defaultRet=QVariant());
     QString autoCreateEpcInfo(QString code);
     void offlineLogin(QString cardId);
     void goodsListStoreScanAll(QString barcode, QList<CabinetStoreListItem *> l);
+
 signals:
     void cabinetCreated();
     void loginRst(UserInfo*);
@@ -153,6 +157,8 @@ signals:
     void rfidOptRst(bool success, QString msg);
     //operation
     void operationInfoUpdate();
+    //camera
+    void cameraCapture();
 
 public slots:
     void cabRegister();
@@ -183,7 +189,8 @@ public slots:
     void requireCheckTableInfo(QString id);
     void requireListInfo(QDate sDate, QDate eDate);
     //camera
-    void cameraSnapshot();
+    void cameraSnapshot(QString optMsg);
+    void snapShotUpload(QByteArray snapShotData);
     //aio
     void requireAioOverview();
     void requireAioData(int cevent);
@@ -238,6 +245,8 @@ private slots:
     void recvRfidConsume();
     //operation
     void recvOperationInfo();
+    //camera
+    void recvSnamshotUpload();
 
     void recvTempDevReport();
     void processStandardOutput();

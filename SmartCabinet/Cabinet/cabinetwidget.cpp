@@ -10,6 +10,10 @@
 #include "iconfont/iconhelper.h"
 #include "MessageDialog.h"
 #include "Widgets/msgtips.h"
+#define SNAPSHOT_FETCH "取货抓拍"
+#define SNAPSHOT_BACK "还货抓拍"
+#define SNAPSHOT_REFUN "退货抓拍"
+#define SNAPSHOT_STORE "存货抓拍"
 
 //提示信息
 

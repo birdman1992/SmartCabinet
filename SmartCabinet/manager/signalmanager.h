@@ -29,6 +29,8 @@ signals:
     void operationInfoUpdate();//手术单信息更新 CabinetServer::operationInfoUpdate
     //device sig
     void lockState(int id, bool isOpen);
+    void cameraCapture();//触发相机拍摄
+    void cameraSnapshot(QString msg);//触发抓拍事件
 
 
 private:
