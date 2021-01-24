@@ -135,9 +135,11 @@ void MainWidget::init_huangpo()
     connect_master();
 #endif
 
+#ifndef PC
     ledCtrl = new LedCtrl(this);
     connect(win_cabinet, SIGNAL(cpuFanOn(bool)), ledCtrl, SLOT(fanSwitch(bool)));
 //    connect(win_cabinet, SIGNAL(updateLoginState(int,bool)), ledCtrl, SLOT(ledSwitch(int,bool)));//登入登出控制led
+#endif
     connect(win_cab_service, SIGNAL(doorState(int)), ctrlUi, SLOT(setLed(int)));
 
     tempDev = new TempDev(this);
